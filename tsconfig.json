@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "ignoreDeprecations": "5.0",
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/ui": ["./src/ui/index"],
+      "@/ui/*": ["./src/ui/*"],
+      "@/hooks": ["./src/hooks/index"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/utils": ["./src/utils/index"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/types": ["./src/types/index"],
+      "@/types/*": ["./src/types/*"],
+      "@/components": ["./src/components"],
+      "@/components/*": ["./src/components/*"],
+      "@/modals": ["./src/components/modals"],
+      "@/modals/*": ["./src/components/modals/*"],
+      "@/providers": ["./src/app/providers"],
+      "@/providers/*": ["./src/app/providers/*"],
+      "@/data": ["./src/data/index"],
+      "@/data/*": ["./src/data/*"],
+      "@/pages": ["./src/pages/index"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/*": ["./src/*"]
+    }, 
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
