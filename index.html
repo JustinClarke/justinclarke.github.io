@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React." />
+  <title>Justin Clarke ⋅ Analytics Engineer ⋅ Full-Stack</title>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://justinclarke.github.io/">
+  <meta property="og:title" content="Justin Clarke ⋅ Analytics Engineer ⋅ Full-Stack">
+  <meta property="og:description"
+    content="Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React.">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://justinclarke.github.io/">
+  <meta property="twitter:title" content="Justin Clarke ⋅ Analytics Engineer ⋅ Full-Stack">
+  <meta property="twitter:description"
+    content="Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React.">
+
+  <!-- GitHub Pages 404 Redirect Handler -->
+  <script type="text/javascript">
+    (function (l) {
+      if (l.search[1] === '/') {
+        var decoded = l.search.slice(1).split('&').map(function (s) {
+          return s.replace(/~and~/g, '&')
+        }).join('?');
+        window.history.replaceState(null, null,
+          l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    }(window.location))
+  </script>
+
+  <!-- Theme: apply before first paint to prevent flash (FOUC guard) -->
+  <script>
+    (function(){var s=localStorage.getItem('theme');var d=document.documentElement;var t=s==='light'?'light':s==='dark'?'dark':(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark'){d.classList.add('dark');}d.style.colorScheme=t;})();
+  </script>
+  <!-- Prevent white flash during JS bootup -->
+  <style>html,body,#root{background:#050505;min-height:100vh}</style>
+
+  <!-- Browser Theme & Icons -->
+  <meta name="theme-color" content="#050505">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="mask-icon" href="/favicon.svg" color="#050505">
+
+  <!-- Font Preconnect & Critical Loading Optimization -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Critical: Preload core structural fonts (Inter + IBM Plex Mono) -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+    rel="stylesheet">
+
+  <!-- Non-Critical: Display fonts (Noto Sans headings, DM Serif + Playfair italic emphasis) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=DM+Serif+Text:ital@0;1&family=Playfair+Display:ital,wght@1,800&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'">
+
+  <!-- Non-Critical: JetBrains Mono (F1 / Off The Pace telemetry sections) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+    rel="stylesheet" media="print" onload="this.media='all'">
+
+  <noscript>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=DM+Serif+Text:ital@0;1&family=Playfair+Display:ital,wght@1,800&display=swap"
+      rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+      rel="stylesheet">
+  </noscript>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/app/main.tsx"></script>
+</body>
+
+</html>

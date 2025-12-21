@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disaster Response Coordination System Database</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #05080f;
+      --bg2: #0b1120;
+      --bg3: #101828;
+      --border: rgba(80, 140, 255, 0.1);
+      --border2: rgba(80, 140, 255, 0.18);
+      --text: #bfcfe8;
+      --text2: #3d5570;
+      --text3: #5a7090;
+      --c-d: #ff3c3c;
+      --c-r: #ffaa2e;
+      --c-a: #3b8eff;
+      --c-t: #00e5cc;
+      --c-v: #c06ef0;
+      --c-s: #2dce68;
+      --c-sp: #ff6a25;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text)
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, .06) 2px, rgba(0, 0, 0, .06) 4px);
+      pointer-events: none;
+      z-index: 9999
+    }
+
+    /* HEADER */
+    header {
+      flex-shrink: 0;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(11, 17, 32, .97) 0%, rgba(5, 8, 15, .85) 100%);
+      position: relative;
+      z-index: 10;
+      gap: 16px
+    }
+
+    .hd-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0
+    }
+
+    .hd-logo {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(59, 142, 255, .08);
+      flex-shrink: 0
+    }
+
+    .hd-logo svg {
+      width: 18px;
+      height: 18px
+    }
+
+    h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #d4e6ff;
+      white-space: nowrap
+    }
+
+    .hd-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2);
+      letter-spacing: .06em;
+      margin-top: 1px
+    }
+
+    .hd-center {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 300px;
+      margin: 0 auto
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 100%
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 12px;
+      height: 12px;
+      opacity: .3;
+      pointer-events: none
+    }
+
+    #search-input {
+      width: 100%;
+      height: 28px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 0 28px 0 28px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s, background .2s
+    }
+
+    #search-input::placeholder {
+      color: var(--text2)
+    }
+
+    #search-input:focus {
+      border-color: rgba(59, 142, 255, .4);
+      background: rgba(59, 142, 255, .05)
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: var(--text2);
+      cursor: pointer;
+      display: none;
+      line-height: 1;
+      font-family: monospace
+    }
+
+    .search-clear:hover {
+      color: var(--text)
+    }
+
+    .hd-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0
+    }
+
+    .live-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 60, 60, .08);
+      border: 1px solid rgba(255, 60, 60, .2);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #ff6b6b;
+      letter-spacing: .06em;
+      white-space: nowrap
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ff3c3c;
+      animation: livepulse 1.8s ease-in-out infinite
+    }
+
+    @keyframes livepulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 60, 60, .6)
+      }
+
+      50% {
+        box-shadow: 0 0 0 5px rgba(255, 60, 60, 0)
+      }
+    }
+
+    .hd-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2);
+      letter-spacing: .05em;
+      text-align: right;
+      line-height: 1.7
+    }
+
+    /* STAT BAR */
+    .stat-bar {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2)
+    }
+
+    .stat {
+      padding: 9px 14px 7px;
+      border-right: 1px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      transition: background .15s;
+      overflow: hidden
+    }
+
+    .stat:last-child {
+      border-right: none
+    }
+
+    .stat:hover {
+      background: rgba(255, 255, 255, .025)
+    }
+
+    .stat::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .25s ease
+    }
+
+    .stat.on::after {
+      transform: scaleX(1)
+    }
+
+    .stat[data-t=disaster]::after {
+      background: var(--c-d)
+    }
+
+    .stat[data-t=region]::after {
+      background: var(--c-r)
+    }
+
+    .stat[data-t=agency]::after {
+      background: var(--c-a)
+    }
+
+    .stat[data-t=team]::after {
+      background: var(--c-t)
+    }
+
+    .stat[data-t=volunteer]::after {
+      background: var(--c-v)
+    }
+
+    .stat[data-t=shelter]::after {
+      background: var(--c-s)
+    }
+
+    .stat[data-t=supply]::after {
+      background: var(--c-sp)
+    }
+
+    .stat-glow {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 40px;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity .3s;
+      filter: blur(12px)
+    }
+
+    .stat.on .stat-glow {
+      opacity: .12
+    }
+
+    .stat[data-t=disaster] .stat-glow {
+      background: var(--c-d)
+    }
+
+    .stat[data-t=region] .stat-glow {
+      background: var(--c-r)
+    }
+
+    .stat[data-t=agency] .stat-glow {
+      background: var(--c-a)
+    }
+
+    .stat[data-t=team] .stat-glow {
+      background: var(--c-t)
+    }
+
+    .stat[data-t=volunteer] .stat-glow {
+      background: var(--c-v)
+    }
+
+    .stat[data-t=shelter] .stat-glow {
+      background: var(--c-s)
+    }
+
+    .stat[data-t=supply] .stat-glow {
+      background: var(--c-sp)
+    }
+
+    .stat-n {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+      position: relative;
+      z-index: 1
+    }
+
+    .stat-l {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-top: 3px;
+      position: relative;
+      z-index: 1
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 215px 1fr;
+      min-height: 0
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      border-right: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    /* TABS */
+    .tab-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0
+    }
+
+    .tab-btn {
+      height: 34px;
+      background: none;
+      border: none;
+      border-right: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text2);
+      cursor: pointer;
+      transition: color .15s, background .15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      position: relative
+    }
+
+    .tab-btn:last-child {
+      border-right: none
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, .02)
+    }
+
+    .tab-btn.active {
+      color: #a8c8ff;
+      background: rgba(59, 142, 255, .06)
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: rgba(59, 142, 255, .5)
+    }
+
+    .alert-badge {
+      background: rgba(255, 60, 60, .2);
+      border: 1px solid rgba(255, 60, 60, .35);
+      border-radius: 8px;
+      padding: 1px 5px;
+      font-size: 7px;
+      color: #ff7070
+    }
+
+    /* TAB PANES */
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1
+    }
+
+    .tab-pane.active {
+      display: flex
+    }
+
+    ::-webkit-scrollbar {
+      width: 3px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 2px
+    }
+
+    /* SECTION TITLE */
+    .s-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 5px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    /* LEGEND */
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background .12s;
+      margin-bottom: 1px
+    }
+
+    .leg-item:hover {
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .leg-item.off {
+      opacity: .22
+    }
+
+    .leg-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .leg-name {
+      font-size: 11px;
+      font-weight: 400;
+      flex: 1
+    }
+
+    .leg-ct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2);
+      background: rgba(255, 255, 255, .04);
+      border-radius: 3px;
+      padding: 1px 5px
+    }
+
+    /* REL COUNTS */
+    .rel-ct-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2)
+    }
+
+    .rel-ct-row:last-child {
+      border-bottom: none
+    }
+
+    /* HELP */
+    .help-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2);
+      line-height: 1.9
+    }
+
+    .help-key {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 8px;
+      color: var(--text);
+      white-space: nowrap
+    }
+
+    /* ALERTS */
+    .alert-item {
+      background: var(--bg3);
+      border-radius: 6px;
+      padding: 9px 10px;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      transition: background .15s
+    }
+
+    .alert-item:hover {
+      background: rgba(255, 255, 255, .04)
+    }
+
+    .alert-item.critical {
+      border-left-color: #ff3c3c
+    }
+
+    .alert-item.warning {
+      border-left-color: #ffaa2e
+    }
+
+    .alert-item.info {
+      border-left-color: #3b8eff
+    }
+
+    .alert-level {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 2px
+    }
+
+    .alert-item.critical .alert-level {
+      color: #ff6b6b
+    }
+
+    .alert-item.warning .alert-level {
+      color: #ffaa2e
+    }
+
+    .alert-item.info .alert-level {
+      color: #6aabff
+    }
+
+    .alert-text {
+      font-size: 10.5px;
+      color: var(--text);
+      line-height: 1.4
+    }
+
+    .alert-sub {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      color: var(--text2);
+      margin-top: 2px
+    }
+
+    /* INFO TAB */
+    .info-empty {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      color: var(--text2);
+      text-align: center;
+      padding: 24px 0;
+      line-height: 2.4
+    }
+
+    .info-type-badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 7.5px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      padding: 2px 7px;
+      margin-bottom: 6px
+    }
+
+    .info-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.2
+    }
+
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 3.5px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, .04);
+      font-size: 10px
+    }
+
+    .kv-row:last-child {
+      border-bottom: none
+    }
+
+    .kv-key {
+      color: var(--text2)
+    }
+
+    .kv-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      text-align: right;
+      max-width: 115px;
+      word-break: break-word
+    }
+
+    .chips-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-top: 11px;
+      margin-bottom: 5px
+    }
+
+    .chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px
+    }
+
+    .chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      border-radius: 4px;
+      padding: 2px 7px;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, .08);
+      transition: opacity .15s
+    }
+
+    .chip:hover {
+      opacity: .75
+    }
+
+    .pin-actions {
+      margin-top: 6px;
+      display: none
+    }
+
+    .release-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: #6aabff;
+      cursor: pointer;
+      float: right
+    }
+
+    .release-btn:hover {
+      text-decoration: underline
+    }
+
+    .pin-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text2)
+    }
+
+    /* GRAPH */
+    #graph-wrap {
+      position: relative;
+      overflow: hidden;
+      background: var(--bg)
+    }
+
+    #graph {
+      width: 100%;
+      height: 100%;
+      display: block
+    }
+
+    .node-g {
+      cursor: pointer
+    }
+
+    .node-circle {
+      transition: filter .2s
+    }
+
+    .node-circle:hover {
+      filter: brightness(1.5)
+    }
+
+    /* EDGE TOOLTIP */
+    #edge-tip {
+      position: fixed;
+      display: none;
+      background: rgba(5, 8, 15, .96);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      padding: 7px 11px;
+      pointer-events: none;
+      z-index: 200;
+      backdrop-filter: blur(10px)
+    }
+
+    .et-rel {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 3px
+    }
+
+    .et-nodes {
+      font-size: 10.5px;
+      color: var(--text);
+      line-height: 1.6
+    }
+
+    /* ZOOM / REL KEY */
+    .zoom-ctrls {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 10
+    }
+
+    .zoom-btn {
+      width: 30px;
+      height: 30px;
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px
+    }
+
+    .zoom-btn:hover {
+      background: var(--bg3)
+    }
+
+    .rel-key {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      background: rgba(5, 8, 15, .88);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 12px;
+      backdrop-filter: blur(8px)
+    }
+
+    .rel-key-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 7px
+    }
+
+    .rel-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 2.5px 0;
+      font-size: 10px;
+      color: var(--text2)
+    }
+
+    .rel-line {
+      width: 20px;
+      height: 1.5px;
+      border-radius: 1px;
+      flex-shrink: 0
+    }
+  </style>
+</head>
+
+<body style="display:flex;flex-direction:column;height:100vh;overflow:hidden">
+
+  <header>
+    <div class="hd-left">
+      <div class="hd-logo">
+        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="9" cy="9" r="7" stroke="#3b8eff" stroke-width="1.2" />
+          <circle cx="9" cy="9" r="3" fill="#3b8eff" opacity=".6" />
+          <line x1="9" y1="2" x2="9" y2="6" stroke="#3b8eff" stroke-width="1" />
+          <line x1="9" y1="12" x2="9" y2="16" stroke="#3b8eff" stroke-width="1" />
+          <line x1="2" y1="9" x2="6" y2="9" stroke="#3b8eff" stroke-width="1" />
+          <line x1="12" y1="9" x2="16" y2="9" stroke="#3b8eff" stroke-width="1" />
+        </svg>
+      </div>
+      <div>
+        <h1>Disaster Response Coordination System</h1>
+        <div class="hd-sub">MySQL Implementation · Entity Relationship Network · 61 Nodes · 71 Links</div>
+      </div>
+    </div>
+    <div class="hd-center">
+      <div class="search-wrap">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="6.5" cy="6.5" r="4.5" />
+          <line x1="10" y1="10" x2="14" y2="14" />
+        </svg>
+        <input type="text" id="search-input" placeholder="Search nodes…">
+        <span class="search-clear" id="search-clear" onclick="clearSearch()">×</span>
+      </div>
+    </div>
+    <div class="hd-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>MT. KANLAON ACTIVE
+      </div>
+      <div class="hd-meta">BITS Pilani Dubai<br>Data Warehousing &amp; Data Management</div>
+    </div>
+  </header>
+
+  <div class="stat-bar">
+    <div class="stat on" data-t="disaster" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-d)">5</div>
+      <div class="stat-l">Disasters</div>
+    </div>
+    <div class="stat on" data-t="region" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-r)">7</div>
+      <div class="stat-l">Regions</div>
+    </div>
+    <div class="stat on" data-t="agency" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-a)">5</div>
+      <div class="stat-l">Agencies</div>
+    </div>
+    <div class="stat on" data-t="team" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-t)">10</div>
+      <div class="stat-l">Teams</div>
+    </div>
+    <div class="stat on" data-t="volunteer" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-v)">15</div>
+      <div class="stat-l">Volunteers</div>
+    </div>
+    <div class="stat on" data-t="shelter" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-s)">9</div>
+      <div class="stat-l">Shelters</div>
+    </div>
+    <div class="stat on" data-t="supply" onclick="toggleType(this)">
+      <div class="stat-glow"></div>
+      <div class="stat-n" style="color:var(--c-sp)">10</div>
+      <div class="stat-l">Supplies</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="layers" onclick="switchTab(this)">LAYERS</button>
+        <button class="tab-btn" data-tab="alerts" onclick="switchTab(this)" id="alerts-tab-btn">ALERTS</button>
+        <button class="tab-btn" data-tab="info" onclick="switchTab(this)">INFO</button>
+      </div>
+
+      <!-- LAYERS -->
+      <div class="tab-pane active" id="tab-layers">
+        <div>
+          <div class="s-title">Entity types</div>
+          <div class="leg-item" data-t="disaster" onclick="toggleLegend('disaster',this)">
+            <div class="leg-dot" style="background:var(--c-d)"></div><span class="leg-name">Disaster</span><span
+              class="leg-ct">5</span>
+          </div>
+          <div class="leg-item" data-t="region" onclick="toggleLegend('region',this)">
+            <div class="leg-dot" style="background:var(--c-r)"></div><span class="leg-name">Region</span><span
+              class="leg-ct">7</span>
+          </div>
+          <div class="leg-item" data-t="agency" onclick="toggleLegend('agency',this)">
+            <div class="leg-dot" style="background:var(--c-a)"></div><span class="leg-name">Agency</span><span
+              class="leg-ct">5</span>
+          </div>
+          <div class="leg-item" data-t="team" onclick="toggleLegend('team',this)">
+            <div class="leg-dot" style="background:var(--c-t)"></div><span class="leg-name">Response Team</span><span
+              class="leg-ct">10</span>
+          </div>
+          <div class="leg-item" data-t="volunteer" onclick="toggleLegend('volunteer',this)">
+            <div class="leg-dot" style="background:var(--c-v)"></div><span class="leg-name">Volunteer</span><span
+              class="leg-ct">15</span>
+          </div>
+          <div class="leg-item" data-t="shelter" onclick="toggleLegend('shelter',this)">
+            <div class="leg-dot" style="background:var(--c-s)"></div><span class="leg-name">Shelter</span><span
+              class="leg-ct">9</span>
+          </div>
+          <div class="leg-item" data-t="supply" onclick="toggleLegend('supply',this)">
+            <div class="leg-dot" style="background:var(--c-sp)"></div><span class="leg-name">Supply</span><span
+              class="leg-ct">10</span>
+          </div>
+        </div>
+        <div>
+          <div class="s-title">Relationship counts</div>
+          <div class="rel-ct-row"><span>Agency → Team</span><span style="color:var(--c-a)">10</span></div>
+          <div class="rel-ct-row"><span>Disaster ↔ Region</span><span style="color:var(--c-d)">11</span></div>
+          <div class="rel-ct-row"><span>Team → Disaster</span><span style="color:var(--c-t)">12</span></div>
+          <div class="rel-ct-row"><span>Region → Shelter</span><span style="color:var(--c-s)">9</span></div>
+          <div class="rel-ct-row"><span>Volunteer → Team</span><span style="color:var(--c-v)">16</span></div>
+          <div class="rel-ct-row"><span>Supply → Region</span><span style="color:var(--c-sp)">14</span></div>
+        </div>
+        <div style="margin-top:auto">
+          <div class="s-title">Controls</div>
+          <div style="display:flex;flex-direction:column;gap:1px">
+            <div class="help-item"><span class="help-key">Click</span><span>inspect node</span></div>
+            <div class="help-item"><span class="help-key">Dbl-click</span><span>pin / unpin</span></div>
+            <div class="help-item"><span class="help-key">Hover edge</span><span>see relation</span></div>
+            <div class="help-item"><span class="help-key">Drag</span><span>reposition</span></div>
+            <div class="help-item"><span class="help-key">Scroll</span><span>zoom</span></div>
+            <div class="help-item"><span class="help-key">Esc</span><span>reset all</span></div>
+          </div>
+          <div class="pin-actions" id="pin-actions">
+            <div class="s-title" style="margin-top:10px">Pinned nodes</div>
+            <span class="pin-count" id="pin-count">0 pinned</span>
+            <span class="release-btn" onclick="releaseAllPins()">Release all</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALERTS -->
+      <div class="tab-pane" id="tab-alerts"></div>
+
+      <!-- INFO -->
+      <div class="tab-pane" id="tab-info">
+        <div class="info-empty" id="info-empty-msg">Click any node or edge<br>to inspect it here</div>
+        <div id="info-content" style="display:none"></div>
+      </div>
+    </div>
+
+    <div id="graph-wrap">
+      <svg id="graph"></svg>
+      <div class="rel-key">
+        <div class="rel-key-title">Link types</div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#3b8eff"></div>Agency → Team
+        </div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#ff3c3c"></div>Disaster affects Region
+        </div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#00e5cc"></div>Team deployed to
+        </div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#2dce68"></div>Region hosts Shelter
+        </div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#c06ef0"></div>Volunteer → Team
+        </div>
+        <div class="rel-item">
+          <div class="rel-line" style="background:#ff6a25"></div>Supply allocated to
+        </div>
+      </div>
+      <div class="zoom-ctrls">
+        <div class="zoom-btn" onclick="doZoom(1.3)" title="Zoom in">+</div>
+        <div class="zoom-btn" onclick="doZoom(0.77)" title="Zoom out">−</div>
+        <div class="zoom-btn" onclick="zoomFit()" title="Fit all nodes" style="font-size:9px;letter-spacing:.05em">FIT
+        </div>
+        <div class="zoom-btn" onclick="resetZoom()" title="Reset view" style="font-size:12px">⌂</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="edge-tip">
+    <div class="et-rel" id="et-rel"></div>
+    <div class="et-nodes" id="et-nodes"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  <script>
+    const COLORS = {
+      disaster: '#ff3c3c', region: '#ffaa2e', agency: '#3b8eff',
+      team: '#00e5cc', volunteer: '#c06ef0', shelter: '#2dce68', supply: '#ff6a25'
+    };
+    const SIZES = { disaster: 15, region: 12, agency: 13, team: 10, volunteer: 7, shelter: 8, supply: 8 };
+    const REL_COLORS = {
+      'has-team': '#3b8eff', 'affects': '#ff3c3c', 'deployed': '#00e5cc',
+      'hosts': '#2dce68', 'assigned': '#c06ef0', 'allocated': '#ff6a25'
+    };
+    const REL_LABELS = {
+      'has-team': 'Agency → Team', 'affects': 'Disaster affects Region',
+      'deployed': 'Team deployed to Disaster', 'hosts': 'Region hosts Shelter',
+      'assigned': 'Volunteer assigned to Team', 'allocated': 'Supply allocated to Region'
+    };
+
+    const ALL_NODES = [
+      { id: 'd1', label: 'Typhoon Yagi', type: 'disaster', info: { Severity: 'High', Status: 'Closed', Period: 'Sep 2–8, 2024', Type: 'Typhoon' } },
+      { id: 'd2', label: 'Luzon Earthquake', type: 'disaster', info: { Severity: 'Severe', Status: 'Closed', Period: 'Nov 15–22, 2024', Type: 'Earthquake' } },
+      { id: 'd3', label: 'Mindanao Floods', type: 'disaster', info: { Severity: 'Moderate', Status: 'Closed', Period: 'Jan 10–18, 2025', Type: 'Flood' } },
+      { id: 'd4', label: 'Mt. Kanlaon', type: 'disaster', info: { Severity: 'High', Status: '🔴 ACTIVE', Period: 'Jun 3, 2025 →', Type: 'Volcanic' } },
+      { id: 'd5', label: 'Visayas Wildfire', type: 'disaster', info: { Severity: 'Moderate', Status: 'Closed', Period: 'Apr 12–20, 2025', Type: 'Wildfire' } },
+      { id: 'r1', label: 'Metro Manila', type: 'region', info: { Population: '13,500,000', Risk: 'High', 'Times hit': '2' } },
+      { id: 'r2', label: 'Cebu', type: 'region', info: { Population: '3,200,000', Risk: 'Medium', 'Times hit': '1' } },
+      { id: 'r3', label: 'Davao', type: 'region', info: { Population: '1,800,000', Risk: 'Medium', 'Times hit': '1' } },
+      { id: 'r4', label: 'Cagayan Valley', type: 'region', info: { Population: '1,200,000', Risk: 'High', 'Times hit': '2' } },
+      { id: 'r5', label: 'Negros Occidental', type: 'region', info: { Population: '2,600,000', Risk: 'Medium', 'Times hit': '2' } },
+      { id: 'r6', label: 'Iloilo', type: 'region', info: { Population: '2,050,000', Risk: 'Low', 'Times hit': '2' } },
+      { id: 'r7', label: 'Bicol', type: 'region', info: { Population: '1,900,000', Risk: 'High', 'Times hit': '1' } },
+      { id: 'a1', label: 'Red Cross', type: 'agency', info: { Type: 'NGO', Teams: '3', 'Full name': 'Philippine Red Cross' } },
+      { id: 'a2', label: 'NDRRMC', type: 'agency', info: { Type: 'Government', Teams: '2', Contact: 'ops@ndrrmc.gov.ph' } },
+      { id: 'a3', label: 'World Vision', type: 'agency', info: { Type: 'NGO', Teams: '2', 'Full name': 'World Vision PH' } },
+      { id: 'a4', label: 'AFP Engineering', type: 'agency', info: { Type: 'Military', Teams: '2', 'Full name': 'AFP Engineering Corps' } },
+      { id: 'a5', label: 'UN OCHA', type: 'agency', info: { Type: 'International', Teams: '1', 'Full name': 'UN OCHA Philippines' } },
+      { id: 't1', label: 'Medical Triage', type: 'team', info: { Agency: 'Red Cross', Status: 'Deployed', Spec: 'Medical' } },
+      { id: 't2', label: 'Search & Rescue', type: 'team', info: { Agency: 'Red Cross', Status: 'Deployed', Spec: 'SAR' } },
+      { id: 't3', label: 'Logistics', type: 'team', info: { Agency: 'NDRRMC', Status: 'Deployed', Spec: 'Supply Chain' } },
+      { id: 't4', label: 'Dmg Assessment', type: 'team', info: { Agency: 'NDRRMC', Status: 'Standby', Spec: 'Assessment' } },
+      { id: 't5', label: 'Child Protection', type: 'team', info: { Agency: 'World Vision', Status: 'Deployed', Spec: 'Protection' } },
+      { id: 't6', label: 'Food Distrib.', type: 'team', info: { Agency: 'World Vision', Status: 'Deployed', Spec: 'Logistics' } },
+      { id: 't7', label: 'Engineering', type: 'team', info: { Agency: 'AFP Engineering', Status: 'Deployed', Spec: 'Debris Clearance' } },
+      { id: 't8', label: 'Heavy Equip.', type: 'team', info: { Agency: 'AFP Engineering', Status: 'Standby', Spec: 'Equipment Ops' } },
+      { id: 't9', label: 'Coordination', type: 'team', info: { Agency: 'UN OCHA', Status: 'Deployed', Spec: 'Operations Coord.' } },
+      { id: 't10', label: 'Mental Health', type: 'team', info: { Agency: 'Red Cross', Status: 'Standby', Spec: 'Psychosocial' } },
+      { id: 'v1', label: 'M. Santos', type: 'volunteer', info: { Skills: 'Medical, First Aid', Status: 'Available', Clearance: 'Cleared' } },
+      { id: 'v2', label: 'J. Dela Cruz', type: 'volunteer', info: { Skills: 'Logistics, Driving', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v3', label: 'A. Reyes', type: 'volunteer', info: { Skills: 'Medical, Triage', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v4', label: 'C. Lim', type: 'volunteer', info: { Skills: 'Search & Rescue', Status: 'Available', Clearance: 'Cleared' } },
+      { id: 'v5', label: 'L. Mendoza', type: 'volunteer', info: { Skills: 'Counseling', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v6', label: 'R. Tan', type: 'volunteer', info: { Skills: 'Engineering, Heavy Equip.', Status: 'Deployed', 'Hours served': '1,362' } },
+      { id: 'v7', label: 'G. Villanueva', type: 'volunteer', info: { Skills: 'Translation, Coord.', Status: 'Available', Clearance: 'Cleared' } },
+      { id: 'v8', label: 'D. Cruz', type: 'volunteer', info: { Skills: 'SAR, Diving', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v9', label: 'P. Ong', type: 'volunteer', info: { Skills: 'Medical, Surgery', Status: 'Unavailable', Clearance: 'Cleared' } },
+      { id: 'v10', label: 'M. Aquino', type: 'volunteer', info: { Skills: 'Logistics', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v11', label: 'S. Garcia', type: 'volunteer', info: { Skills: 'Counseling', Status: 'Available', Clearance: 'Cleared' } },
+      { id: 'v12', label: 'R. Bautista', type: 'volunteer', info: { Skills: 'Engineering', Status: 'Deployed', 'Hours served': '1,362' } },
+      { id: 'v13', label: 'I. Domingo', type: 'volunteer', info: { Skills: 'Medical, Pediatrics', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 'v14', label: 'N. Ramos', type: 'volunteer', info: { Skills: 'Drone Operations', Status: 'Available', Clearance: 'Cleared' } },
+      { id: 'v15', label: 'B. Cruz', type: 'volunteer', info: { Skills: 'Logistics, Inventory', Status: 'Deployed', Clearance: 'Cleared' } },
+      { id: 's1', label: 'Shelter 1', type: 'shelter', info: { Region: 'Metro Manila', Capacity: '500', Occupancy: '480', 'Load %': '96%' } },
+      { id: 's2', label: 'Shelter 2', type: 'shelter', info: { Region: 'Metro Manila', Capacity: '300', Occupancy: '295', 'Load %': '98%' } },
+      { id: 's3', label: 'Shelter 3', type: 'shelter', info: { Region: 'Cebu', Capacity: '400', Occupancy: '250', 'Load %': '63%' } },
+      { id: 's4', label: 'Shelter 4', type: 'shelter', info: { Region: 'Davao', Capacity: '200', Occupancy: '180', 'Load %': '90%' } },
+      { id: 's5', label: 'Shelter 5', type: 'shelter', info: { Region: 'Cagayan Valley', Capacity: '350', Occupancy: '280', 'Load %': '80%' } },
+      { id: 's6', label: 'Shelter 6', type: 'shelter', info: { Region: 'Negros Occidental', Capacity: '600', Occupancy: '410', 'Load %': '68%' } },
+      { id: 's7', label: 'Shelter 7', type: 'shelter', info: { Region: 'Iloilo', Capacity: '250', Occupancy: '90', 'Load %': '36%' } },
+      { id: 's8', label: 'Shelter 8', type: 'shelter', info: { Region: 'Bicol', Capacity: '450', Occupancy: '445', 'Load %': '99%' } },
+      { id: 's9', label: 'Shelter 9', type: 'shelter', info: { Region: 'Cebu', Capacity: '300', Occupancy: '120', 'Load %': '40%' } },
+      { id: 'sp1', label: 'Bottled Water', type: 'supply', info: { Category: 'Water', Unit: 'Liters', 'Total allocated': '180,000' } },
+      { id: 'sp2', label: 'Rice', type: 'supply', info: { Category: 'Food', Unit: 'Sacks (25kg)', 'Total allocated': '5,000' } },
+      { id: 'sp3', label: 'Canned Goods', type: 'supply', info: { Category: 'Food', Unit: 'Boxes', 'Total allocated': '1,700' } },
+      { id: 'sp4', label: 'First Aid Kits', type: 'supply', info: { Category: 'Medical', Unit: 'Kits', 'Total allocated': '750' } },
+      { id: 'sp5', label: 'Antibiotics', type: 'supply', info: { Category: 'Medical', Unit: 'Boxes', 'Total allocated': '200' } },
+      { id: 'sp6', label: 'Blankets', type: 'supply', info: { Category: 'Shelter', Unit: 'Pieces', 'Total allocated': '2,500' } },
+      { id: 'sp7', label: 'Tarpaulin', type: 'supply', info: { Category: 'Shelter', Unit: 'Pieces', 'Total allocated': '2,600' } },
+      { id: 'sp8', label: 'Generators', type: 'supply', info: { Category: 'Equipment', Unit: 'Units', 'Total allocated': '25' } },
+      { id: 'sp9', label: 'Flashlights', type: 'supply', info: { Category: 'Equipment', Unit: 'Units', 'Total allocated': '600' } },
+      { id: 'sp10', label: 'Hygiene Kits', type: 'supply', info: { Category: 'Medical', Unit: 'Kits', 'Total allocated': '400' } },
+    ];
+
+    const ALL_LINKS = [
+      { s: 'a1', t: 't1', rel: 'has-team' }, { s: 'a1', t: 't2', rel: 'has-team' }, { s: 'a1', t: 't10', rel: 'has-team' },
+      { s: 'a2', t: 't3', rel: 'has-team' }, { s: 'a2', t: 't4', rel: 'has-team' },
+      { s: 'a3', t: 't5', rel: 'has-team' }, { s: 'a3', t: 't6', rel: 'has-team' },
+      { s: 'a4', t: 't7', rel: 'has-team' }, { s: 'a4', t: 't8', rel: 'has-team' },
+      { s: 'a5', t: 't9', rel: 'has-team' },
+      { s: 'd1', t: 'r1', rel: 'affects' }, { s: 'd1', t: 'r4', rel: 'affects' }, { s: 'd1', t: 'r7', rel: 'affects' },
+      { s: 'd2', t: 'r1', rel: 'affects' }, { s: 'd2', t: 'r4', rel: 'affects' },
+      { s: 'd3', t: 'r3', rel: 'affects' }, { s: 'd3', t: 'r5', rel: 'affects' },
+      { s: 'd4', t: 'r5', rel: 'affects' }, { s: 'd4', t: 'r6', rel: 'affects' },
+      { s: 'd5', t: 'r2', rel: 'affects' }, { s: 'd5', t: 'r6', rel: 'affects' },
+      { s: 't1', t: 'd1', rel: 'deployed' }, { s: 't2', t: 'd1', rel: 'deployed' }, { s: 't3', t: 'd1', rel: 'deployed' },
+      { s: 't1', t: 'd2', rel: 'deployed' }, { s: 't4', t: 'd2', rel: 'deployed' }, { s: 't7', t: 'd2', rel: 'deployed' },
+      { s: 't5', t: 'd3', rel: 'deployed' }, { s: 't6', t: 'd3', rel: 'deployed' },
+      { s: 't7', t: 'd4', rel: 'deployed' }, { s: 't8', t: 'd4', rel: 'deployed' },
+      { s: 't9', t: 'd5', rel: 'deployed' }, { s: 't2', t: 'd5', rel: 'deployed' },
+      { s: 'r1', t: 's1', rel: 'hosts' }, { s: 'r1', t: 's2', rel: 'hosts' },
+      { s: 'r2', t: 's3', rel: 'hosts' }, { s: 'r3', t: 's4', rel: 'hosts' },
+      { s: 'r4', t: 's5', rel: 'hosts' }, { s: 'r5', t: 's6', rel: 'hosts' },
+      { s: 'r6', t: 's7', rel: 'hosts' }, { s: 'r7', t: 's8', rel: 'hosts' },
+      { s: 'r2', t: 's9', rel: 'hosts' },
+      { s: 'v1', t: 't1', rel: 'assigned' }, { s: 'v3', t: 't1', rel: 'assigned' }, { s: 'v13', t: 't1', rel: 'assigned' },
+      { s: 'v4', t: 't2', rel: 'assigned' }, { s: 'v8', t: 't2', rel: 'assigned' }, { s: 'v3', t: 't2', rel: 'assigned' },
+      { s: 'v2', t: 't3', rel: 'assigned' }, { s: 'v10', t: 't3', rel: 'assigned' }, { s: 'v15', t: 't3', rel: 'assigned' },
+      { s: 'v5', t: 't5', rel: 'assigned' }, { s: 'v11', t: 't5', rel: 'assigned' },
+      { s: 'v2', t: 't6', rel: 'assigned' },
+      { s: 'v6', t: 't7', rel: 'assigned' }, { s: 'v12', t: 't7', rel: 'assigned' },
+      { s: 'v14', t: 't8', rel: 'assigned' }, { s: 'v7', t: 't9', rel: 'assigned' },
+      { s: 'sp1', t: 'r1', rel: 'allocated' }, { s: 'sp1', t: 'r4', rel: 'allocated' }, { s: 'sp1', t: 'r5', rel: 'allocated' },
+      { s: 'sp2', t: 'r1', rel: 'allocated' }, { s: 'sp2', t: 'r4', rel: 'allocated' },
+      { s: 'sp3', t: 'r5', rel: 'allocated' }, { s: 'sp3', t: 'r6', rel: 'allocated' },
+      { s: 'sp4', t: 'r1', rel: 'allocated' }, { s: 'sp4', t: 'r2', rel: 'allocated' },
+      { s: 'sp5', t: 'r4', rel: 'allocated' }, { s: 'sp6', t: 'r4', rel: 'allocated' }, { s: 'sp6', t: 'r6', rel: 'allocated' },
+      { s: 'sp7', t: 'r7', rel: 'allocated' }, { s: 'sp7', t: 'r5', rel: 'allocated' },
+      { s: 'sp8', t: 'r4', rel: 'allocated' }, { s: 'sp9', t: 'r5', rel: 'allocated' }, { s: 'sp10', t: 'r3', rel: 'allocated' },
+    ];
+
+    // ---- State ----
+    let hidden = new Set();
+    let zoomBeh, simRef, linkSel, nodeSel, labelSel;
+    let pinnedNodes = new Set();
+    let searchQuery = '';
+    let selectedNodeId = null;
+
+    const nodeById = {};
+    ALL_NODES.forEach(n => nodeById[n.id] = n);
+
+    // ---- Alerts ----
+    function buildAlertsPanel() {
+      const alerts = [];
+      ALL_NODES.forEach(n => {
+        if (n.type === 'disaster' && n.info.Status && n.info.Status.includes('ACTIVE'))
+          alerts.push({ level: 'critical', title: 'Active Disaster', text: n.label, sub: `${n.info.Type} · ${n.info.Severity} severity`, nodeId: n.id });
+        if (n.type === 'shelter') {
+          const pct = parseInt((n.info['Load %'] || '0').replace('%', ''));
+          if (pct >= 95) alerts.push({ level: 'critical', title: 'Shelter Critical', text: `${n.label}  ${n.info['Load %']}`, sub: `${n.info.Occupancy}/${n.info.Capacity} · ${n.info.Region}`, nodeId: n.id });
+          else if (pct >= 80) alerts.push({ level: 'warning', title: 'Shelter Near Capacity', text: `${n.label}  ${n.info['Load %']}`, sub: `${n.info.Occupancy}/${n.info.Capacity} · ${n.info.Region}`, nodeId: n.id });
+        }
+        if (n.type === 'volunteer' && n.info.Status === 'Unavailable')
+          alerts.push({ level: 'info', title: 'Volunteer Unavailable', text: n.label, sub: n.info.Skills, nodeId: n.id });
+        if (n.type === 'team' && n.info.Status === 'Standby')
+          alerts.push({ level: 'info', title: 'Team on Standby', text: n.label, sub: `${n.info.Agency} · ${n.info.Spec}`, nodeId: n.id });
+      });
+
+      const critCount = alerts.filter(a => a.level === 'critical').length;
+      const btn = document.getElementById('alerts-tab-btn');
+      btn.innerHTML = critCount > 0
+        ? `ALERTS <span class="alert-badge">${critCount}</span>`
+        : 'ALERTS';
+
+      const panel = document.getElementById('tab-alerts');
+      if (!alerts.length) { panel.innerHTML = '<div class="info-empty">No active alerts</div>'; return; }
+
+      const order = ['critical', 'warning', 'info'];
+      panel.innerHTML = order.flatMap(level =>
+        alerts.filter(a => a.level === level).map(a =>
+          `<div class="alert-item ${level}" onclick="focusNodeById('${a.nodeId}')">
+        <div class="alert-level">${a.title}</div>
+        <div class="alert-text">${a.text}</div>
+        <div class="alert-sub">${a.sub}</div>
+      </div>`
+        )
+      ).join('');
+    }
+
+    // ---- Tabs ----
+    function switchTab(btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    }
+    function activateInfoTab() {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelector('[data-tab="info"]').classList.add('active');
+      document.getElementById('tab-info').classList.add('active');
+    }
+
+    // ---- Data filter ----
+    function visData() {
+      const nodes = ALL_NODES.filter(n => !hidden.has(n.type)).map(n => ({ ...n }));
+      const ids = new Set(nodes.map(n => n.id));
+      const links = ALL_LINKS.filter(l => ids.has(l.s) && ids.has(l.t))
+        .map(l => ({ source: l.s, target: l.t, rel: l.rel }));
+      return { nodes, links };
+    }
+
+    // ---- SVG setup ----
+    const wrap = document.getElementById('graph-wrap');
+    const svg = d3.select('#graph');
+    const gMain = svg.append('g').attr('class', 'g-main');
+    function dims() { const r = wrap.getBoundingClientRect(); return { w: r.width, h: r.height }; }
+
+    const defs = svg.append('defs');
+    defs.append('pattern').attr('id', 'grid').attr('width', 40).attr('height', 40)
+      .attr('patternUnits', 'userSpaceOnUse')
+      .append('path').attr('d', 'M 40 0 L 0 0 0 40').attr('fill', 'none')
+      .attr('stroke', 'rgba(59,142,255,0.05)').attr('stroke-width', '0.5');
+    const gridRect = svg.insert('rect', 'g').attr('width', '100%').attr('height', '100%').attr('fill', 'url(#grid)');
+
+    zoomBeh = d3.zoom().scaleExtent([0.15, 6]).on('zoom', e => gMain.attr('transform', e.transform));
+    svg.call(zoomBeh);
+
+    function doZoom(f) { svg.transition().duration(300).call(zoomBeh.scaleBy, f); }
+    function resetZoom() {
+      const { w, h } = dims();
+      svg.transition().duration(400).call(zoomBeh.transform, d3.zoomIdentity.translate(w / 2, h / 2).scale(1).translate(-w / 2, -h / 2));
+    }
+    function zoomFit() {
+      if (!simRef) return;
+      const ns = simRef.nodes();
+      if (!ns.length) return;
+      const xs = ns.map(n => n.x), ys = ns.map(n => n.y);
+      const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+      const { w, h } = dims(), pad = 70;
+      const s = Math.min((w - pad * 2) / (x1 - x0 || 1), (h - pad * 2) / (y1 - y0 || 1), 2.5);
+      const tx = w / 2 - s * (x0 + x1) / 2, ty = h / 2 - s * (y0 + y1) / 2;
+      svg.transition().duration(500).call(zoomBeh.transform, d3.zoomIdentity.translate(tx, ty).scale(s));
+    }
+
+    // ---- Curved path helper ----
+    function pathD(d) {
+      if (d.source.x == null || d.target.x == null) return '';
+      const dx = d.target.x - d.source.x, dy = d.target.y - d.source.y;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const r = SIZES[d.target.type] + 4;
+      const tx = d.target.x - (dx / dist) * r, ty = d.target.y - (dy / dist) * r;
+      const curve = Math.min(dist * 0.18, 38);
+      const mx = (d.source.x + tx) / 2 - (dy / dist) * curve;
+      const my = (d.source.y + ty) / 2 + (dx / dist) * curve;
+      return `M${d.source.x.toFixed(1)},${d.source.y.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${tx.toFixed(1)},${ty.toFixed(1)}`;
+    }
+
+    // ---- Build graph ----
+    function buildGraph() {
+      const { w, h } = dims();
+      svg.attr('width', w).attr('height', h);
+      gridRect.attr('width', w).attr('height', h);
+      const { nodes, links } = visData();
+
+      // Restore pinned positions
+      if (simRef) {
+        const prev = {};
+        simRef.nodes().forEach(n => prev[n.id] = { x: n.x, y: n.y, fx: n.fx, fy: n.fy });
+        nodes.forEach(n => { if (prev[n.id]) { n.x = prev[n.id].x; n.y = prev[n.id].y; } if (pinnedNodes.has(n.id) && prev[n.id]) { n.fx = prev[n.id].fx; n.fy = prev[n.id].fy; } });
+      }
+
+      gMain.selectAll('*').remove();
+
+      // Markers
+      defs.selectAll('.am').remove();
+      Object.entries(REL_COLORS).forEach(([rel, color]) => {
+        defs.append('marker').attr('class', 'am').attr('id', 'arr-' + rel)
+          .attr('viewBox', '0 -3 6 6').attr('refX', 2).attr('refY', 0)
+          .attr('markerWidth', 5).attr('markerHeight', 5).attr('orient', 'auto')
+          .append('path').attr('d', 'M0,-3L6,0L0,3').attr('fill', color).attr('opacity', .7);
+      });
+
+      // Links (curved paths)
+      linkSel = gMain.append('g').selectAll('path').data(links).join('path')
+        .attr('fill', 'none')
+        .attr('stroke', d => REL_COLORS[d.rel])
+        .attr('stroke-opacity', .18)
+        .attr('stroke-width', d => d.rel === 'affects' ? 1.5 : .9)
+        .attr('marker-end', d => `url(#arr-${d.rel})`)
+        .style('cursor', 'pointer')
+        .on('mouseover', onEdgeHover)
+        .on('mousemove', onEdgeMove)
+        .on('mouseout', onEdgeOut)
+        .on('click', (e, d) => { e.stopPropagation(); onEdgeClick(d); });
+
+      // Nodes
+      const nodeG = gMain.append('g').selectAll('g').data(nodes, d => d.id).join('g')
+        .attr('class', 'node-g')
+        .call(d3.drag()
+          .on('start', (e, d) => { if (!e.active) simRef.alphaTarget(.3).restart(); d.fx = d.x; d.fy = d.y; })
+          .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+          .on('end', (e, d) => { if (!e.active) simRef.alphaTarget(0); if (!pinnedNodes.has(d.id)) { d.fx = null; d.fy = null; } }))
+        .on('click', (e, d) => { e.stopPropagation(); onNodeClick(d, nodes, links); })
+        .on('dblclick', (e, d) => { e.stopPropagation(); togglePin(d); });
+
+      nodeSel = nodeG;
+
+      // Glow halo
+      nodeG.append('circle').attr('r', d => SIZES[d.type] + 6).attr('fill', 'none')
+        .attr('stroke', d => COLORS[d.type]).attr('stroke-width', .5).attr('stroke-opacity', .15);
+
+      // Active disaster pulse ring
+      nodeG.filter(d => d.id === 'd4').append('circle')
+        .attr('r', SIZES.disaster + 10).attr('fill', 'none')
+        .attr('stroke', '#ff3c3c').attr('stroke-width', 1)
+        .attr('stroke-opacity', .2).attr('stroke-dasharray', '4,4').attr('class', 'pulse-ring');
+
+      // Main circle
+      nodeG.append('circle').attr('class', 'node-circle')
+        .attr('r', d => SIZES[d.type])
+        .attr('fill', d => COLORS[d.type] + '22')
+        .attr('stroke', d => COLORS[d.type])
+        .attr('stroke-width', d => d.type === 'disaster' ? 2 : 1.5);
+
+      // Inner dot (larger nodes)
+      nodeG.filter(d => SIZES[d.type] >= 10).append('circle')
+        .attr('r', d => SIZES[d.type] * 0.38).attr('fill', d => COLORS[d.type]).attr('opacity', .42);
+
+      // Pin indicator (dashed ring, shown when pinned)
+      nodeG.append('circle').attr('class', 'pin-ring')
+        .attr('r', d => SIZES[d.type] + 3).attr('fill', 'none')
+        .attr('stroke', 'rgba(255,255,255,0.55)').attr('stroke-width', 1)
+        .attr('stroke-dasharray', '2,3')
+        .attr('opacity', d => pinnedNodes.has(d.id) ? 1 : 0);
+
+      // Labels
+      labelSel = gMain.append('g').selectAll('text').data(nodes, d => d.id).join('text')
+        .attr('fill', d => COLORS[d.type]).attr('opacity', .65)
+        .attr('font-family', 'JetBrains Mono, monospace')
+        .attr('font-size', d => d.type === 'volunteer' ? '7px' : (d.type === 'shelter' || d.type === 'supply') ? '7.5px' : '8.5px')
+        .attr('text-anchor', 'middle').attr('pointer-events', 'none')
+        .attr('dy', d => SIZES[d.type] + 11).text(d => d.label);
+
+      // Force simulation
+      simRef = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+          if (d.rel === 'has-team') return 75; if (d.rel === 'affects') return 115;
+          if (d.rel === 'deployed') return 98; if (d.rel === 'hosts') return 58;
+          if (d.rel === 'assigned') return 54; if (d.rel === 'allocated') return 70;
+          return 72;
+        }).strength(.32))
+        .force('charge', d3.forceManyBody().strength(d =>
+          ({ disaster: -320, region: -260, agency: -290, team: -160, volunteer: -95, shelter: -115, supply: -115 }[d.type] || (-160))))
+        .force('center', d3.forceCenter(w / 2, h / 2).strength(.05))
+        .force('collision', d3.forceCollide().radius(d => SIZES[d.type] + 16).strength(.85))
+        .on('tick', tick);
+
+      svg.on('click', () => {
+        clearSelection(); selectedNodeId = null;
+        document.getElementById('info-empty-msg').style.display = '';
+        document.getElementById('info-content').style.display = 'none';
+      });
+
+      // Pulse animation
+      (function pulse() {
+        gMain.selectAll('.pulse-ring')
+          .transition().duration(1200).ease(d3.easeSinInOut).attr('stroke-opacity', .45).attr('r', SIZES.disaster + 15)
+          .transition().duration(1200).ease(d3.easeSinInOut).attr('stroke-opacity', .1).attr('r', SIZES.disaster + 10)
+          .on('end', pulse);
+      })();
+
+      if (searchQuery) applySearch(searchQuery);
+    }
+
+    function tick() {
+      linkSel.attr('d', pathD);
+      nodeSel.attr('transform', d => `translate(${d.x || 0},${d.y || 0})`);
+      labelSel.attr('x', d => d.x || 0).attr('y', d => d.y || 0);
+    }
+
+    // ---- Node click ----
+    function onNodeClick(d, nodes, links) {
+      selectedNodeId = d.id;
+      const connIds = new Set([d.id]);
+      links.forEach(l => {
+        const s = l.source.id || l.source, t = l.target.id || l.target;
+        if (s === d.id || t === d.id) { connIds.add(s); connIds.add(t); }
+      });
+      nodeSel.selectAll('circle:not(.pin-ring)').attr('opacity', function () {
+        const n = d3.select(this.parentNode).datum(); return connIds.has(n.id) ? 1 : .09;
+      });
+      labelSel.attr('opacity', n => connIds.has(n.id) ? .9 : .06);
+      linkSel
+        .attr('stroke-opacity', l => { const s = l.source.id || l.source, t = l.target.id || l.target; return (s === d.id || t === d.id) ? .88 : .03; })
+        .attr('stroke-width', l => { const s = l.source.id || l.source, t = l.target.id || l.target; return (s === d.id || t === d.id) ? 2 : .9; });
+
+      const connNodes = nodes.filter(n => connIds.has(n.id) && n.id !== d.id);
+      showNodeInfo(d, connNodes);
+      activateInfoTab();
+    }
+
+    function showNodeInfo(d, connNodes) {
+      const c = COLORS[d.type];
+      const kvRows = Object.entries(d.info).map(([k, v]) => `
+    <div class="kv-row"><span class="kv-key">${k}</span><span class="kv-val" style="color:${c}">${v}</span></div>`).join('');
+      const chips = connNodes.map(n => `
+    <span class="chip" style="background:${COLORS[n.type]}18;color:${COLORS[n.type]};border-color:${COLORS[n.type]}35"
+      onclick="focusNodeById('${n.id}')">${n.label}</span>`).join('');
+
+      document.getElementById('info-empty-msg').style.display = 'none';
+      document.getElementById('info-content').style.display = 'block';
+      document.getElementById('info-content').innerHTML = `
+    <span class="info-type-badge" style="background:${c}18;color:${c};border:1px solid ${c}30">${d.type.toUpperCase()}</span>
+    <div class="info-name" style="color:${c}">${d.label}</div>
+    <div>${kvRows}</div>
+    ${connNodes.length ? `<div class="chips-label">Connected to (${connNodes.length})</div><div class="chips-wrap">${chips}</div>` : ''}`;
+    }
+
+    function focusNodeById(id) {
+      if (!simRef) return;
+      const nd = simRef.nodes().find(n => n.id === id);
+      if (!nd) return;
+      const { nodes, links } = visData();
+      // Reconstruct with live positions
+      const liveLinks = links.map(l => ({
+        source: simRef.nodes().find(n => n.id === (l.source.id || l.source)) || l.source,
+        target: simRef.nodes().find(n => n.id === (l.target.id || l.target)) || l.target,
+        rel: l.rel
+      }));
+      onNodeClick(nd, simRef.nodes(), liveLinks);
+      const { w, h } = dims();
+      const tr = d3.zoomTransform(svg.node());
+      svg.transition().duration(400).call(zoomBeh.transform,
+        d3.zoomIdentity.translate(w / 2 - tr.k * nd.x, h / 2 - tr.k * nd.y).scale(tr.k));
+    }
+
+    function clearSelection() {
+      if (!nodeSel) return;
+      nodeSel.selectAll('circle:not(.pin-ring)').attr('opacity', 1);
+      labelSel.attr('opacity', .65);
+      linkSel.attr('stroke-opacity', .18).attr('stroke-width', d => d.rel === 'affects' ? 1.5 : .9);
+    }
+
+    // ---- Pin nodes ----
+    function togglePin(d) {
+      if (pinnedNodes.has(d.id)) {
+        pinnedNodes.delete(d.id);
+        d.fx = null; d.fy = null;
+      } else {
+        pinnedNodes.add(d.id);
+        d.fx = d.x; d.fy = d.y;
+      }
+      nodeSel.selectAll('.pin-ring').attr('opacity', function () {
+        const n = d3.select(this.parentNode).datum(); return pinnedNodes.has(n.id) ? 1 : 0;
+      });
+      simRef.alphaTarget(.1).restart();
+      setTimeout(() => simRef.alphaTarget(0), 400);
+      updatePinUI();
+    }
+    function releaseAllPins() {
+      pinnedNodes.clear();
+      simRef && simRef.nodes().forEach(n => { n.fx = null; n.fy = null; });
+      nodeSel && nodeSel.selectAll('.pin-ring').attr('opacity', 0);
+      simRef && simRef.alphaTarget(.3).restart();
+      setTimeout(() => simRef && simRef.alphaTarget(0), 600);
+      updatePinUI();
+    }
+    function updatePinUI() {
+      const ct = pinnedNodes.size;
+      document.getElementById('pin-actions').style.display = ct ? 'block' : 'none';
+      document.getElementById('pin-count').textContent = ct + ' pinned';
+    }
+
+    // ---- Edge tooltip ----
+    const edgeTip = document.getElementById('edge-tip');
+    const etRel = document.getElementById('et-rel');
+    const etNodes = document.getElementById('et-nodes');
+    let tipTarget = null;
+
+    function onEdgeHover(e, d) {
+      tipTarget = this;
+      const src = nodeById[d.source.id || d.source], tgt = nodeById[d.target.id || d.target];
+      if (!src || !tgt) return;
+      etRel.textContent = REL_LABELS[d.rel] || d.rel;
+      etRel.style.color = REL_COLORS[d.rel];
+      etNodes.innerHTML = `<span style="color:${COLORS[src.type]}">${src.label}</span> <span style="color:var(--text2)">→</span> <span style="color:${COLORS[tgt.type]}">${tgt.label}</span>`;
+      edgeTip.style.display = 'block';
+      d3.select(this).attr('stroke-opacity', .75).attr('stroke-width', 2.5);
+    }
+    function onEdgeMove(e) {
+      edgeTip.style.left = (e.clientX + 14) + 'px';
+      edgeTip.style.top = (e.clientY - 22) + 'px';
+    }
+    function onEdgeOut(e, d) {
+      edgeTip.style.display = 'none';
+      const s = d.source.id || d.source, t = d.target.id || d.target;
+      if (selectedNodeId && (s === selectedNodeId || t === selectedNodeId))
+        d3.select(this).attr('stroke-opacity', .88).attr('stroke-width', 2);
+      else if (selectedNodeId)
+        d3.select(this).attr('stroke-opacity', .03).attr('stroke-width', .9);
+      else
+        d3.select(this).attr('stroke-opacity', .18).attr('stroke-width', d.rel === 'affects' ? 1.5 : .9);
+    }
+    function onEdgeClick(d) {
+      const src = nodeById[d.source.id || d.source], tgt = nodeById[d.target.id || d.target];
+      if (!src || !tgt) return;
+      const c = REL_COLORS[d.rel];
+      document.getElementById('info-empty-msg').style.display = 'none';
+      document.getElementById('info-content').style.display = 'block';
+      document.getElementById('info-content').innerHTML = `
+    <span class="info-type-badge" style="background:${c}18;color:${c};border:1px solid ${c}30">RELATIONSHIP</span>
+    <div class="info-name" style="color:${c}">${REL_LABELS[d.rel]}</div>
+    <div class="kv-row"><span class="kv-key">From</span><span class="kv-val" style="color:${COLORS[src.type]}">${src.label}</span></div>
+    <div class="kv-row"><span class="kv-key">To</span><span class="kv-val" style="color:${COLORS[tgt.type]}">${tgt.label}</span></div>
+    <div class="kv-row"><span class="kv-key">Relation type</span><span class="kv-val" style="color:${c}">${d.rel}</span></div>
+    <div class="chips-label" style="margin-top:10px">Inspect nodes</div>
+    <div class="chips-wrap">
+      <span class="chip" style="background:${COLORS[src.type]}18;color:${COLORS[src.type]};border-color:${COLORS[src.type]}35" onclick="focusNodeById('${src.id}')">${src.label}</span>
+      <span class="chip" style="background:${COLORS[tgt.type]}18;color:${COLORS[tgt.type]};border-color:${COLORS[tgt.type]}35" onclick="focusNodeById('${tgt.id}')">${tgt.label}</span>
+    </div>`;
+      activateInfoTab();
+    }
+
+    // ---- Search ----
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
+    searchInput.addEventListener('input', e => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      searchClear.style.display = searchQuery ? 'block' : 'none';
+      if (!searchQuery) { clearSelection(); selectedNodeId = null; return; }
+      applySearch(searchQuery);
+    });
+    function applySearch(q) {
+      if (!nodeSel) return;
+      const matchIds = new Set();
+      ALL_NODES.forEach(n => { if (n.label.toLowerCase().includes(q) || n.type.toLowerCase().includes(q)) matchIds.add(n.id); });
+      nodeSel.selectAll('circle:not(.pin-ring)').attr('opacity', function () {
+        const n = d3.select(this.parentNode).datum(); return matchIds.has(n.id) ? 1 : .07;
+      });
+      labelSel.attr('opacity', n => matchIds.has(n.id) ? 1 : .04);
+      linkSel.attr('stroke-opacity', l => {
+        const s = l.source.id || l.source, t = l.target.id || l.target;
+        return (matchIds.has(s) || matchIds.has(t)) ? .35 : .02;
+      });
+    }
+    function clearSearch() {
+      searchInput.value = ''; searchQuery = '';
+      searchClear.style.display = 'none';
+      clearSelection(); selectedNodeId = null;
+    }
+
+    // ---- Toggle ----
+    function toggleLegend(type, el) {
+      hidden.has(type) ? hidden.delete(type) : hidden.add(type);
+      el.classList.toggle('off');
+      buildGraph();
+    }
+    function toggleType(el) {
+      const t = el.dataset.t;
+      el.classList.toggle('on');
+      toggleLegend(t, document.querySelector(`.leg-item[data-t="${t}"]`));
+    }
+
+    // ---- Keyboard ----
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        clearSelection(); clearSearch(); selectedNodeId = null;
+        document.getElementById('info-empty-msg').style.display = '';
+        document.getElementById('info-content').style.display = 'none';
+      }
+    });
+
+    // ---- Resize ----
+    window.addEventListener('resize', () => {
+      const { w, h } = dims();
+      svg.attr('width', w).attr('height', h);
+      gridRect.attr('width', w).attr('height', h);
+      if (simRef) simRef.force('center', d3.forceCenter(w / 2, h / 2)).alpha(.3).restart();
+    });
+
+    // ---- Init ----
+    buildAlertsPanel();
+    buildGraph();
+  </script>
+</body>
+
+</html>
