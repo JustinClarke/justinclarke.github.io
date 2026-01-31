@@ -1,0 +1,19 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { RootProviders } from '@/providers';
+import App from './App';
+import '../index.css';
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter>
+      <RootProviders>
+        <App />
+      </RootProviders>
+    </BrowserRouter>
+  </StrictMode>,
+);
+
+// Notify prerenderer that the app is ready for snapshotting
+document.dispatchEvent(new Event('render-ready'));
