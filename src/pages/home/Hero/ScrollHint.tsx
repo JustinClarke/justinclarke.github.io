@@ -1,0 +1,127 @@
+import React from 'react';
+
+interface ScrollHintProps {
+  hasScrolled: boolean;
+}
+
+export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
+  return (
+    <>
+      <style>{`
+        @keyframes scrollTextIntro {
+          0%, 50% {
+            color: transparent;
+            filter: drop-shadow(0 0 0px transparent);
+          }
+          55%, 65% {
+            color: #2e3033; /* dark grey */
+            filter: drop-shadow(0 0 0px transparent);
+          }
+          75%, 85% {
+            color: var(--color-light-bg); /* white */
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.45));
+          }
+          95%, 100% {
+            color: var(--color-brand-primary); /* teal */
+            filter: drop-shadow(0 0 8px rgba(0,200,180,0.6));
+          }
+        }
+        @keyframes scrollBorderIntro {
+          0%, 50% {
+            border-color: transparent;
+            box-shadow: inset 0 0 0px transparent;
+          }
+          55%, 65% {
+            border-color: rgba(63, 63, 70, 0.35); /* dark grey */
+            box-shadow: inset 0 0 0px transparent;
+          }
+          75%, 85% {
+            border-color: rgba(255, 255, 255, 0.5); /* white */
+            box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(255,255,255,0.2);
+          }
+          95%, 100% {
+            border-color: rgba(0,200,180,0.65); /* teal */
+            box-shadow: inset 0 0 8px rgba(0,200,180,0.1), 0 0 10px rgba(0,200,180,0.15);
+          }
+        }
+        @keyframes scrollDotIntro {
+          0%, 50% {
+            background-color: transparent;
+            box-shadow: 0 0 0px transparent;
+          }
+          55%, 65% {
+            background-color: #2e3033;
+            box-shadow: 0 0 0px transparent;
+          }
+          75%, 85% {
+            background-color: var(--color-light-bg);
+            box-shadow: 0 0 8px rgba(255,255,255,0.95);
+          }
+          95%, 100% {
+            background-color: var(--color-brand-primary);
+            box-shadow: 0 0 12px rgba(0,200,180,1);
+          }
+        }
+        @keyframes scrollWheel {
+          0% { transform: translateY(0); opacity: 0.15; }
+          30% { opacity: 1; }
+          60% { transform: translateY(10px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 0.15; }
+        }
+        @keyframes scrollBlink {
+          0%, 100% { opacity: 1; }
+          50%      { opacity: 0.35; }
+        }
+        .animate-scroll-text {
+          color: transparent;
+          opacity: 1;
+          animation: scrollTextIntro 10s ease-in-out forwards;
+        }
+        .animate-scroll-border {
+          border-color: transparent;
+          animation: scrollBorderIntro 10s ease-in-out forwards;
+        }
+        .animate-scroll-dot {
+          background-color: transparent;
+          animation: scrollDotIntro 10s ease-in-out forwards,
+                     scrollWheel 2.2s cubic-bezier(0.16, 1, 0.3, 1) 5s infinite;
+        }
+        .animate-scroll-blink {
+          animation: scrollBlink 1.8s ease-in-out infinite 10s;
+        }
+        .scroll-hint-container {
+          transform: translate(-50%, 0);
+          transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .scroll-hint-container.has-scrolled {
+          opacity: 0 !important;
+          transform: translate(-50%, -16px);
+        }
+        @media (min-width: 768px) {
+          .scroll-hint-container.has-scrolled {
+            transform: translate(-50%, 16px);
+          }
+        }
+      `}</style>
+
+      {/* Scroll hint retro terminal style, starts dark grey, turns light teal, blinks if idle, disappears in other sections */}
+      <div
+        aria-hidden="true"
+        className={`scroll-hint-container ${hasScrolled ? 'has-scrolled' : ''} pointer-events-none absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+20px)] left-1/2 flex flex-col items-center z-20`}
+      >
+        <div className="animate-scroll-blink flex flex-col items-center gap-1.5">
+          <div className="animate-scroll-text flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.25em] pl-[0.25em] whitespace-nowrap">
+            <span className="opacity-45">[</span>
+            <span className="md:hidden opacity-70">↓</span>
+            <span>SCROLL TO EXPLORE</span>
+            <span className="md:hidden opacity-70">↓</span>
+            <span className="opacity-45">]</span>
+          </div>
+          <div className="animate-scroll-border relative w-[18px] h-[28px] border rounded-full flex justify-center p-[3px] hidden md:flex">
+            <div className="animate-scroll-dot w-[3px] h-[5px] rounded-full" />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
