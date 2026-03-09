@@ -1,0 +1,137 @@
+import { motion } from 'framer-motion';
+import { ShieldAlert } from 'lucide-react';
+import { cn } from '@/utils';
+import type { F1Telemetry } from '@/hooks/useF1Telemetry';
+import { StatusBar } from './StatusBar';
+
+type TrackMapProps = Pick<
+  F1Telemetry,
+  | 'activeSector' | 'airState' | 'isCliffRisk'
+  | 'getTrackViewBox' | 'getTrackPath'
+  | 'activeTrack' | 'isPlaying' | 'setActiveTrack'
+  | 'thermalSurface' | 'thermalBulk'
+>;
+
+export function TrackMap({
+  activeSector, airState, isCliffRisk,
+  getTrackViewBox, getTrackPath,
+  activeTrack, isPlaying, setActiveTrack,
+  thermalSurface, thermalBulk,
+}: TrackMapProps) {
+  return (
+    <div className="md:col-span-3 flex flex-col justify-between bg-black/40 border border-white/5 rounded-2xl p-2.5 lg:p-3 relative overflow-hidden min-h-0">
+
+      {/* Active Sector / Air State Overlay Badge */}
+      <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10 shrink-0">
+        <span className={cn(
+          "font-mono text-[9px] md:text-[10px] font-black px-2 py-0.5 rounded uppercase border",
+          activeSector === 'S1' ? "bg-blue-500/10 border-blue-500/30 text-blue-400" : activeSector === 'S2' ? "bg-purple-500/10 border-purple-500/30 text-purple-400" :
+              "bg-teal-500/10 border-teal-500/30 text-teal-400"
+        )}>
+          Sector {activeSector}
+        </span>
+
+        <span className={cn(
+          "font-mono text-[9px] md:text-[10px] font-black px-2 py-0.5 rounded uppercase border",
+          airState === 'DIRTY' ? "bg-viz-mac-red/10 border-viz-mac-red/30 text-viz-mac-red animate-pulse" : airState === 'TOW' ? "bg-amber-500/10 border-amber-500/30 text-amber-400" : airState === 'DRS' ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" :
+                "bg-white/5 border-white/10 text-neutral-400"
+        )}>
+          {airState === 'DIRTY' ? 'Dirty Air (+22% Wear)' : airState === 'TOW' ? 'Tow Zone (-0.35s)' : airState === 'DRS' ? 'DRS Train (-0.2s)' : 'Free Air'}
+        </span>
+
+        {isCliffRisk && (
+          <span className="font-mono text-[9px] md:text-[10px] font-black px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 animate-pulse flex items-center gap-1">
+            <ShieldAlert size={8} /> CLIFF RISK
+          </span>
+        )}
+      </div>
+
+      {/* Track Map SVG */}
+      <div className="relative w-full flex-grow flex items-center justify-center min-h-[220px] md:min-h-[280px] mt-3">
+        <svg className="w-full h-full max-h-[260px] md:max-h-[320px] p-1" viewBox={getTrackViewBox()}>
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.015)" strokeWidth="2" />
+            </pattern>
+            <linearGradient id="track-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="var(--color-acc-creative)" stopOpacity="0.95" /> {/* S1 Pink */}
+              <stop offset="50%" stopColor="var(--color-acc-bi)" stopOpacity="1.0" /> {/* S2 Purple */}
+              <stop offset="100%" stopColor="var(--color-viz-warning)" stopOpacity="0.95" /> {/* S3 Golden Amber */}
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+
+          {/* Static track layout */}
+          <path
+            d={getTrackPath()}
+            fill="none"
+            stroke="rgba(255,255,255,0.12)"
+            strokeWidth="16"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Dynamic telemetry path */}
+          <motion.path
+            key={activeTrack}
+            d={getTrackPath()}
+            fill="none"
+            stroke="url(#track-grad)"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ opacity: 0.4 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+          />
+
+          {/* Dynamic racing dot */}
+          {isPlaying && (
+            <circle
+              key={`dot-${activeTrack}`}
+              r="8"
+              fill={isCliffRisk ? "var(--color-amber)" : "var(--color-viz-mac-red)"}
+              filter={isCliffRisk ? "drop-shadow(0 0 10px var(--color-amber))" : "drop-shadow(0 0 10px var(--color-viz-mac-red))"}
+            >
+              <animateMotion
+                dur={`${activeTrack === 'Monaco' ? 9 : activeTrack === 'Spa' ? 12 : 8}s`}
+                repeatCount="indefinite"
+                path={getTrackPath()}
+                rotate="auto"
+              />
+            </circle>
+          )}
+        </svg>
+
+        {/* Combined Sector & Thermal Status Bar */}
+        <StatusBar activeSector={activeSector} thermalSurface={thermalSurface} thermalBulk={thermalBulk} />
+
+      </div>
+
+      {/* Circuit Selector Buttons (Bottom Row) */}
+      <div className="flex gap-2.5 pt-2.5 border-t border-white/5 shrink-0" onClick={(e) => e.stopPropagation()}>
+        {/* Track Select */}
+        <div className="flex gap-1.5 w-full">
+          {(['Monaco', 'Spa', 'Monza'] as const).map(track => (
+            <button
+              key={track}
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveTrack(track);
+              }}
+              className={cn(
+                "flex-1 font-mono text-[10px] md:text-xs py-1 rounded border tracking-wider transition-all",
+                activeTrack === track
+                  ? "bg-white/10 border-white/20 text-white font-bold"
+                  : "bg-white/5 border-white/10 text-neutral-400 hover:text-neutral-200"
+              )}
+            >
+              {track}
+            </button>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  );
+}
