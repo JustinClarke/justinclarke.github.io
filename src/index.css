@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-ibm: "IBM Plex Mono", monospace;
+  --font-noto: "Noto Sans", sans-serif;
+  --font-serif: "DM Serif Text", serif;
+
+  /* Brand Colors */
+  --color-brand-primary: #00c8b4;
+  --color-brand-bg: #050505;
+  --color-brand-card: #0a0a0a;
+
+  --animate-slideDown: slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+  --animate-slideUp: slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
+
+  @keyframes slideDown {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+
+  @keyframes slideUp {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+
+  @keyframes nodePulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.15); }
+  }
+
+  @keyframes arrowBob {
+    0%, { transform: translateY(0); }
+    50% { transform: translateY(14px); }
+    100% { transform: translateY(0); }
+  }
+
+  @keyframes growBar {
+    0% { transform: scaleY(0.3); opacity: 0.2; }
+    100% { transform: scaleY(1); opacity: 0.7; }
+  }
+
+  @keyframes growUp {
+    0% { transform: scaleY(0.1); opacity: 0.2; }
+    100% { transform: scaleY(1); opacity: 0.8; }
+  }
+
+  @keyframes growRight {
+    0% { transform: scaleX(0); opacity: 0.2; }
+    100% { transform: scaleX(1); opacity: 1; }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 0.3; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  @keyframes orbitSpin35 {
+    from { transform: rotate(0deg) translateX(35px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(35px) rotate(-360deg); }
+  }
+
+  @keyframes orbitSpin48 {
+    from { transform: rotate(0deg) translateX(48px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(48px) rotate(-360deg); }
+  }
+
+  @keyframes radarPulse {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+
+  @keyframes vinylSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+}
+
+@utility hero-node-dot {
+  animation: nodePulse 3s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@utility hero-arrow-bob {
+  animation: arrowBob 2.5s ease-in-out infinite;
+}
+
+/* ── ACCESSIBILITY UTILITIES ── */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-primary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--color-brand-bg)];
+  }
+}
+
+/* ── REDUCED MOTION PREFERENCE ── */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+    transition-delay: -1ms !important;
+  }
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--color-brand-bg);
+}
+
+body {
+  overflow-x: clip; /* Prevent layout leaks without breaking root scroll */
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: none; /* Hide default cursor for custom cursor */
+  }
+}
+
+/* Show default cursor on recruiter mode */
+.recruiter-mode body {
+  cursor: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+}
+
+
+@keyframes softGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,200,180,0.05); }
+  50% { box-shadow: 0 0 35px rgba(0,200,180,0.15); }
+}
+
+@layer utilities {
+  .smooth-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .smooth-underline::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1.5px;
+    bottom: -2px;
+    left: 0;
+    background-color: currentColor;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .smooth-underline:hover::after {
+    width: 100%;
+  }
+}

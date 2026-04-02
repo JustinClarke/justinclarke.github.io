@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/shared": ["./src/_shared"],
+      "@/shared/*": ["./src/_shared/*"],
+      "@/components": ["./src/components"],
+      "@/components/*": ["./src/components/*"],
+      "@/modals": ["./src/components/modals"],
+      "@/modals/*": ["./src/components/modals/*"],
+      "@/providers": ["./src/providers"],
+      "@/providers/*": ["./src/providers/*"],
+      "@/data": ["./src/data"],
+      "@/data/*": ["./src/data/*"],
+      "@/pages": ["./src/pages"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/*": ["./src/*"]
+    }, 
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src old"]
+}
