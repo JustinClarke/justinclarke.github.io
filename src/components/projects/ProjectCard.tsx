@@ -7,13 +7,43 @@ import { Project } from '@/shared/types';
 
 interface ProjectCardProps {
   project: Project;
+  index: number;
 }
+
+const getBadgeTooltip = (tech: string) => {
+  const tooltips: Record<string, string> = {
+    'Microsoft Fabric': "Microsoft's unified data platform. Think Azure, but it actually talks to itself.",
+    'Eventhouse': "Real-time event store. Built for streams, not regrets.",
+    'KQL': "Kusto Query Language. SQL's cooler, faster sibling.",
+    'Power BI': "Where the dashboards live. Where the stakeholders gasp.",
+    'ML Model': "Yes, there's actual machine learning here.",
+    'SSR': "Server-Side Rendering. Because waiting 3 seconds is so 2019.",
+    'Data Pipelines': "Set it up once. Let it run forever.",
+    'Next.js': "React's grown-up cousin. SSR, edge functions, the works.",
+    'Vercel': "Deploy in seconds. Scales without thinking about it.",
+    'AWS': "Lambda, S3, CloudFront. The infrastructure behind LiteStore.",
+    'Python': "Python-based tool for personalized music recommendations.",
+    'Pandas': "Data manipulation and analysis library.",
+    'Numpy': "Fundamental package for scientific computing.",
+    'Spotify API': "Integration with music metadata and user features."
+  };
+  return tooltips[tech] || "";
+};
+
+const getMetricTooltip = (label: string, val: string) => {
+  const combined = `${val} ${label}`.toUpperCase();
+  if (combined.includes('EVENTS/SEC')) return "Four thousand events per second. Ingested. Processed. Visualised.";
+  if (combined.includes('RECLAIMED')) return "That's 624 hours a year. You're welcome, VNS.";
+  if (combined.includes('LOAD TIME')) return "From 3 seconds to 0.6. No magic, just good engineering.";
+  if (combined.includes('MSC GRADE')) return "Highest grade available. Not that we're counting.";
+  return "";
+};
 
 /**
  * Premium ProjectCard with interactive spotlight and hardware-accelerated visuals.
  * Standardizes the 2x2 grid aesthetic with the "Studio" brand identity.
  */
-export const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
+export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
   const { handleMouseMove, background, borderGlow, borderMask } = useSpotlight({ 
     radius: 350, 
     color: '0, 200, 180' 
@@ -86,56 +116,77 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project }) => {
           {/* Persistent Shimmer Border */}
           <div className='absolute inset-0 rounded-[16px] border border-white/[0.03] pointer-events-none z-30' />
 
-          <div className='flex flex-col flex-1 relative z-20 items-stretch h-full'>
-            {/* Visual Header (Top-loaded for consistency) */}
-            <div className='bg-[#0b0b0b] flex items-center justify-center relative overflow-hidden h-[240px] border-b border-white/[0.08]'>
+          <div className='flex flex-col md:flex-row flex-1 relative z-20 items-stretch h-full'>
+            {/* Visual Header */}
+            <div className={`bg-[#0b0b0b] flex items-center justify-center relative overflow-hidden h-[240px] md:h-auto md:w-[320px] lg:w-[400px] border-b md:border-b-0 border-white/[0.08] ${
+              index % 2 === 0 ? 'md:border-r md:order-1' : 'md:border-l md:order-2'
+            }`}>
               <motion.div
                 className='scale-[0.85]'
                 animate={prefersReducedMotion ? {} : { y: [0, -10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
                 aria-label={`${project.title} visualization: ${project.visualDescription}`}
               >
-                {project.heroVisual}
+                <div 
+                  className='cursor-help'
+                  data-tooltip={
+                    project.id === 'ltv-analytics' ? "LTV tracking: Because knowing what a customer is worth is better than guessing. (My model is 82% accurate.)" :
+                    project.id === 'neural-music-engine' ? "Predicting your next favorite song. Calculated with pure math and a little bit of magic." :
+                    project.id === 'retail-service' ? "0.6s load time. Because life is too short to wait for a website to hydrate." :
+                    ""
+                  }
+                >
+                  {project.heroVisual}
+                </div>
               </motion.div>
               
-              {/* Overlay Badge for Desktop View */}
-              <div className='absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover/card-wrapper:opacity-100 translate-y-2 group-hover/card-wrapper:translate-y-0 transition-all duration-300'>
+              {/* Overlay Badge */}
+              <div 
+                className='absolute top-6 right-6 flex items-center gap-2 opacity-0 group-hover/card-wrapper:opacity-100 translate-y-2 group-hover/card-wrapper:translate-y-0 transition-all duration-300'
+                data-tooltip="Full breakdown inside - problem, approach, outcome."
+              >
                 <span className='font-ibm text-[11px] font-bold uppercase tracking-widest text-[#00c8b4] bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20'>
-                  View Project
+                  View Case Study
                 </span>
               </div>
             </div>
 
             {/* Content Body */}
-            <div className='p-8 md:p-9 flex flex-col flex-1'>
-              <div className='flex items-center justify-between mb-4'>
+            <div className={`p-8 md:p-12 flex flex-col flex-1 ${
+              index % 2 === 0 ? 'md:order-2' : 'md:order-1 text-right md:items-end'
+            }`}>
+              <div className={`flex items-center mb-4 ${index % 2 === 0 ? 'justify-between' : 'justify-end'}`}>
                 <span className='font-ibm text-[11px] font-medium tracking-[0.25em] uppercase text-white/30'>
                   {project.projectType}
                 </span>
               </div>
 
-              <h3 className='font-noto text-2xl md:text-3xl font-extrabold leading-tight text-white mb-4 tracking-tight'>
+              <h3 className='font-noto text-3xl md:text-4xl font-extrabold leading-tight text-white mb-6 tracking-tight'>
                 {project.title}
               </h3>
 
-              <div className='flex flex-wrap gap-2 mb-6'>
+              <div className={`flex flex-wrap gap-2 mb-8 ${index % 2 === 0 ? '' : 'justify-end'}`}>
                 {project.tech.map(t => (
-                  <Badge key={t} variant='soft-bg'>
+                  <Badge 
+                    key={t} 
+                    variant='soft-bg'
+                  >
                     {t}
                   </Badge>
                 ))}
               </div>
 
-              <p className='text-[16px] text-white/60 leading-relaxed line-clamp-2 mb-8'>
+              <p className={`text-[17px] text-white/60 leading-relaxed mb-10 max-w-xl ${index % 2 === 0 ? '' : 'ml-auto'}`}>
                 {project.copy}
               </p>
 
-              {project.pageMetrics?.[0] && (
-                <div className='mt-auto pt-6 border-t border-white/[0.08] flex items-baseline gap-3'>
-                  <span className='font-ibm text-2xl font-bold text-white'>{project.pageMetrics[0].val}</span>
-                  <span className='font-ibm text-[11px] font-medium tracking-widest uppercase text-white/30'>{project.pageMetrics[0].label}</span>
+                <div 
+                  className={`mt-auto pt-8 border-t border-white/[0.08] flex items-baseline gap-3 cursor-help ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}
+                  data-tooltip={getMetricTooltip(project.pageMetrics[0].label, project.pageMetrics[0].val)}
+                >
+                  <span className='font-ibm text-3xl font-bold text-white'>{project.pageMetrics[0].val}</span>
+                  <span className='font-ibm text-[12px] font-medium tracking-widest uppercase text-white/30'>{project.pageMetrics[0].label}</span>
                 </div>
-              )}
             </div>
           </div>
         </div>

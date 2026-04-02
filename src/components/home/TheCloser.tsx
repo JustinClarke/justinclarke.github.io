@@ -44,7 +44,7 @@ export const TheCloser = () => {
       id='contact'
       ref={containerRef}
       contentMaxWidth='max-w-6xl'
-      className='bg-[#0a0a0a] py-12 md:py-24 relative overflow-hidden flex flex-col min-h-[600px] justify-between'
+      className='bg-[#0a0a0a] py-12 md:py-24 relative overflow-hidden flex flex-col min-h-[600px] justify-between dark'
       innerClassName='flex flex-col flex-1 justify-between w-full'
     >
       <div className='flex flex-col flex-1'>
@@ -59,7 +59,10 @@ export const TheCloser = () => {
         {/* Main Grid */}
         <div className='flex flex-col lg:flex-row items-center lg:items-end justify-between gap-12 mb-20 text-center lg:text-left'>
           <div className='flex-1 max-w-2xl'>
-            <h2 className='font-noto text-[clamp(32px,5vw,64px)] font-black leading-[1.1] tracking-tighter text-white mb-0'>
+            <h2 
+              className='font-noto text-[clamp(32px,5vw,64px)] font-black leading-[1.1] tracking-tighter text-white mb-0 cursor-help'
+              data-tooltip="This is the founding principle. Everything on this page exists to prove it."
+            >
               If your data isn't<br />
               driving decisions,<br />
               <span className='text-white/20 italic'>it's just </span>
@@ -74,13 +77,17 @@ export const TheCloser = () => {
               whileTap={{ scale: 0.98 }}
               className='group flex items-center gap-3 px-10 py-5 bg-white text-black font-noto text-[14px] font-bold tracking-[0.08em] uppercase rounded-full cursor-pointer transition-all duration-300 hover:bg-brand-primary active:scale-[0.96] focus-ring overflow-hidden relative shadow-[0_10px_40px_rgba(255,255,255,0.05)]'
               aria-label='Open contact form to discuss a project'
+              data-tooltip="Serious enquiries, interesting problems, and good coffee conversations welcome."
             >
               <span className='relative z-10'>Get in Touch</span>
               <span className='relative z-10 text-base transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1' aria-hidden='true'>↗</span>
               <div className='absolute inset-0 bg-brand-primary translate-y-[101%] group-hover:translate-y-0 transition-transform duration-300 ease-out z-0' />
             </motion.button>
 
-            <a className='font-mono text-[13px] text-white/70 font-bold leading-relaxed tracking-[0.06em] hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group' href='mailto:justinsavioclarke@outlook.com'>
+            <a 
+              className='font-mono text-[13px] text-white/70 font-bold leading-relaxed tracking-[0.06em] hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group cursor-pointer' 
+              href='mailto:justinsavioclarke@outlook.com'
+            >
               <span className='smooth-underline after:h-[1px] after:bg-brand-primary'>justinsavioclarke@outlook.com</span>
             </a>
           </div>
@@ -89,13 +96,16 @@ export const TheCloser = () => {
 
       {/* Bottom Bar */}
       <div className='flex flex-col md:flex-row items-center justify-between gap-8 pt-10 border-t border-white/10 w-full text-white/90'>
-        <div className='flex items-center gap-4'>
+        <div 
+          className='flex items-center gap-4 cursor-help'
+          data-tooltip="Built without a template. Refined with an unreasonable amount of care."
+        >
           <div className='w-9 h-9 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-sm'>
             <span className='font-mono text-[12px] font-bold text-brand-primary/80 tracking-[0.04em]' aria-hidden='true'>JC</span>
           </div>
           <div className='flex flex-col'>
             <span className='font-mono text-[11px] font-bold tracking-[0.08em] uppercase'>Justin Clarke</span>
-            <span className='font-mono text-[9px] text-white/30 uppercase tracking-widest'>Full-Stack Engineer · 2026</span>
+            <span className='font-mono text-[9px] text-white/30 uppercase tracking-widest'>2026</span>
           </div>
         </div>
 
@@ -111,10 +121,11 @@ export const TheCloser = () => {
         <div className='flex flex-col items-end gap-1'>
           <span className='font-mono text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]'>Repository</span>
           <a
-            href='https://justinclarke.github.io'
+            href='https://github.com/JustinClarke/justinclarke.github.io'
             target='_blank'
             rel='noopener noreferrer'
-            className='font-mono text-[11px] font-bold tracking-[0.1em] text-white/50 hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group'
+            className='font-mono text-[11px] font-bold tracking-[0.1em] text-white/50 hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group cursor-help'
+            data-tooltip="You're already here. But feel free to bookmark it."
           >
             <span className='smooth-underline after:h-[1px] after:bg-brand-primary'>justinclarke.github.io</span>
           </a>
@@ -133,7 +144,13 @@ const SocialLink = ({ href, icon, label }: { href: string; icon: 'github' | 'lin
   };
 
   return (
-    <a href={href} target='_blank' rel='noopener noreferrer' aria-label={label} className='p-2.5 rounded-full bg-white/[0.03] border border-white/[0.05] text-white/50 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/5 transition-all duration-300 focus-ring group active:scale-90'>
+    <a 
+      href={href} 
+      target='_blank' 
+      rel='noopener noreferrer' 
+      aria-label={label} 
+      className='w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.05] text-white/50 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/5 transition-all duration-300 focus-ring group active:scale-90 flex-shrink-0 cursor-pointer'
+    >
       <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true' className='group-hover:scale-110 transition-transform duration-300'>
         {icons[icon]}
       </svg>

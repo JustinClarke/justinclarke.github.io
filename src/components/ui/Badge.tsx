@@ -5,7 +5,7 @@ import React from 'react';
  * Supports various thematic 'Studio' and 'Dark' variants.
  */
 
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   variant?: 'teal' | 'outline' | 'ghost' | 'soft-bg';
   className?: string;
@@ -16,7 +16,8 @@ export const Badge: React.FC<BadgeProps> = ({
   children, 
   variant = 'soft-bg', 
   className = '',
-  size = 'sm'
+  size = 'sm',
+  ...props
 }) => {
   const sizeClasses = size === 'xs' ? 'px-1.5 py-0.5 text-[9px]' : 'px-2.5 py-1 text-[11px]';
   
@@ -35,7 +36,9 @@ export const Badge: React.FC<BadgeProps> = ({
       ${sizeClasses}
       ${variantClasses[variant]}
       ${className}
-    `}>
+    `}
+    {...props}
+    >
       {children}
     </span>
   );

@@ -29,7 +29,7 @@ export function FeaturedProjects() {
       id="projects"
       ref={containerRef}
       contentMaxWidth="max-w-6xl"
-      className="py-16 md:py-32 bg-[#050505] font-sans"
+      className="py-16 md:py-32 bg-[#050505] font-sans dark"
     >
       {/* Section Header */}
       <div className="flex flex-col gap-4 mb-12 md:mb-20">
@@ -44,16 +44,17 @@ export function FeaturedProjects() {
 
       {/* Main Grid Wrapper */}
       <motion.div
-        className="flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-6 items-stretch"
+        className="flex flex-col md:grid md:grid-cols-1 gap-4 md:gap-8 items-stretch"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.05 }}
       >
-        {projectsData.map((project) => (
+        {projectsData.map((project, index) => (
           <ProjectCard
             key={project.id}
             project={project}
+            index={index}
           />
         ))}
       </motion.div>

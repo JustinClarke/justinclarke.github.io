@@ -16,17 +16,29 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
   return (
     <div
       className={cn(
-        "edu-item group relative border rounded-2xl p-8 flex flex-col h-full cursor-default",
+        "edu-item group relative border rounded-2xl p-8 flex flex-col h-full cursor-help",
         "transition-all duration-300 ease-out",
         "bg-white border-[#eee] hover:border-teal-500/30 hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)]",
         edu.isOngoing && "ring-1 ring-teal-500/10 border-teal-500/20 shadow-[0_8px_30px_rgba(0,180,160,0.04)]"
       )}
+      data-tooltip={
+        edu.school === 'BITS Pilani' ? "Active. Expected 2028. Because apparently one postgrad wasn't enough." :
+        edu.school === 'Queen Mary University of London' ? "Distinction. Semi-structured data analysis. The Spotify project came out of this." :
+        edu.school === 'Gandhi Institute For Technology' ? "Where it all started. Algorithms, encryption, and a lot of Java." : ""
+      }
     >
       {/* Type badge */}
       <div className="flex items-center gap-2 mb-6">
-        <Badge variant="teal">{edu.type}</Badge>
+        <Badge 
+          variant="teal"
+          className="cursor-default"
+        >
+          {edu.type}
+        </Badge>
         {edu.isOngoing && (
-          <div className="flex items-center gap-1.5 ml-1">
+          <div 
+            className="flex items-center gap-1.5 ml-1"
+          >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>

@@ -69,7 +69,9 @@ export const ExpertiseAndExperience = () => {
           <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Capabilities</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
-        <h2 className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black mb-12">Expertise Pipeline</h2>
+        <h2 
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black mb-12"
+        >Expertise Pipeline</h2>
 
         <ExpertisePipeline />
       </div>
@@ -80,7 +82,9 @@ export const ExpertiseAndExperience = () => {
           <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Career</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
-        <h2 className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black">Work Experience</h2>
+        <h2 
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black"
+        >Work Experience</h2>
 
         <div className="mt-8">
           {experiences.map((exp, i) => (
@@ -101,7 +105,9 @@ export const ExpertiseAndExperience = () => {
           <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Academic Background</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
-        <h2 className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black">Education</h2>
+        <h2 
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black"
+        >Education</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
           {education.map(edu => (

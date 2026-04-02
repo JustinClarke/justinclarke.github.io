@@ -10,7 +10,7 @@ import { PRELOADER_EXIT } from '@/config/animations';
 import { useReducedMotion } from '@/shared/hooks';
 
 /**
- * Preloader — Technical decryption rhythm + Cinematic fade exit.
+ * Preloader - Technical decryption rhythm + Cinematic fade exit.
  * 
  * Orchestrates a precisely timed sequence of multilingual greetings 
  * and terminal boot logs to create a premium "loading" experience.

@@ -17,6 +17,7 @@ export const ExpertisePipeline: React.FC = () => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.1 }}
+      data-tooltip="If it isn't here, I'm probably currently learning it (or I've already automated it)."
     >
       {expertiseColumns.map((col, colIdx) => (
         <SkillColumn 

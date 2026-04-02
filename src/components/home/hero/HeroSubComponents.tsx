@@ -13,8 +13,9 @@ export const ResumeButton = ({ className, showMobile = false }: { className?: st
     <a
       href='https://raw.githubusercontent.com/JustinClarke/justinclarke.github.io/main/resources/resume.pdf'
       download='Justin Clarke resume'
-      className='inline-flex font-noto text-[13px] font-bold tracking-[0.06em] uppercase text-black border border-black/10 rounded-full px-7 py-2.5 bg-white/40 backdrop-blur-xl hover:text-brand-primary hover:bg-white/60 hover:border-brand-primary/40 hover:shadow-[0_8px_20px_rgba(0,200,180,0.1)] active:scale-[0.96] transition-all duration-300 cursor-pointer group items-center gap-2.5 focus-ring'
+      className='inline-flex font-noto text-[13px] font-bold tracking-[0.06em] uppercase text-black border border-black/10 rounded-full px-7 py-2.5 bg-white/40 backdrop-blur-xl hover:text-brand-primary hover:bg-white/60 hover:border-brand-primary/40 hover:shadow-[0_8px_20px_rgba(0,200,180,0.1)] active:scale-[0.96] transition-all duration-300 cursor-help group items-center gap-2.5 focus-ring'
       aria-label="Download Justin Clarke's Resume (PDF)"
+      data-tooltip="Standard PDF format. No Comic Sans, I promise."
     >
       <span className='smooth-underline after:bg-black group-hover:after:bg-brand-primary'>Resume</span>
       <span className='text-black/80 group-hover:text-brand-primary transition-all duration-300 group-hover:translate-y-0.5 animate-bounce-subtle' aria-hidden="true">↓</span>
@@ -75,7 +76,10 @@ export const QuickLinksRow = ({ links }: { links: QuickLink[] }) => (
     <ul className="flex justify-between items-start gap-4">
       {links.map((link, i) => (
         <li key={link.id} className="flex gap-4 items-start">
-          <Link to={`/project/${link.id}`} className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 -m-1 rounded-sm">
+          <Link 
+            to={`/project/${link.id}`} 
+            className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 -m-1 rounded-sm cursor-pointer"
+          >
             <span className="font-ibm text-[12px] text-black/40 font-medium tracking-[0.04em]">0{i + 1}</span>
             <span className="font-noto text-[16px] font-bold text-black flex items-center gap-1.5 transition-all">
               <span className="smooth-underline group-hover:text-teal-600 transition-colors duration-300">

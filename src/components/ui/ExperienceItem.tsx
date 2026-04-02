@@ -40,7 +40,12 @@ export const ExperienceItem: React.FC<ExperienceItemProps> = ({ exp, isOpen, onC
         onClick={onClick}
         aria-expanded={isOpen}
         aria-controls={`exp-details-${exp.company.replace(/\s+/g, '-').toLowerCase()}`}
-        className='w-full text-left py-10 px-4 md:px-8 focus-ring rounded-lg outline-none cursor-pointer'
+        className='w-full text-left py-10 px-4 md:px-8 focus-ring rounded-lg outline-none cursor-help'
+        data-tooltip={
+          exp.company === 'VNS Solutions' ? "Jan 2024 – Jan 2026. Where Microsoft Fabric became a specialism." :
+          exp.company === 'LiteStore' ? "Apr 2021 – Apr 2023. Where a 3s load time became a 0.6s problem to solve." :
+          exp.company === 'Drop' ? "Jan – Apr 2021. First production React work." : ""
+        }
       >
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-4'>
           <div className='flex-1 flex flex-col gap-2'>
@@ -49,7 +54,10 @@ export const ExperienceItem: React.FC<ExperienceItemProps> = ({ exp, isOpen, onC
                 {exp.index}
               </span>
               <div className='h-px w-4 bg-black/10' aria-hidden='true' />
-              <Badge variant='teal'>
+              <Badge 
+                variant='teal'
+                className="cursor-default"
+              >
                 {exp.tag}
               </Badge>
             </div>
@@ -76,7 +84,9 @@ export const ExperienceItem: React.FC<ExperienceItemProps> = ({ exp, isOpen, onC
             <span className='hidden md:inline font-mono text-[11px] font-bold text-black/20 uppercase tracking-widest group-hover:text-black/40 transition-colors'>
               {isOpen ? 'Close details' : 'View record'}
             </span>
-            <div className={`w-10 h-10 rounded-full border border-black/5 flex items-center justify-center transition-all duration-500 ${isOpen ? 'bg-black text-white border-black rotate-180 shadow-md' : 'bg-white text-black/40 group-hover:border-black/20'}`}>
+            <div 
+              className={`w-10 h-10 rounded-full border border-black/5 flex items-center justify-center transition-all duration-500 cursor-pointer ${isOpen ? 'bg-black text-white border-black rotate-180 shadow-md' : 'bg-white text-black/40 group-hover:border-black/20'}`}
+            >
               <ChevronDown size={20} strokeWidth={2.5} />
             </div>
           </div>
