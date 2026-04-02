@@ -49,9 +49,10 @@ const getCategoryTooltip = (category: string) => {
 /**
  * Individual Skill Card with animated bar.
  */
-export const SkillCard: React.FC<{ skill: SkillType; accentColor: string; showBarTooltip?: boolean }> = ({ skill, accentColor, showBarTooltip }) => (
+export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({ skill, accentColor }) => (
   <div 
-    className="flex flex-col gap-1 md:gap-2"
+    className="flex flex-col gap-1 md:gap-2 group/skill cursor-help"
+    data-tooltip={getSkillTooltip(skill.name)}
   >
     <div className="flex items-center justify-between">
       <span className="text-[11px] md:text-[13px] font-bold text-[#0f0f0f] tracking-tight truncate">
@@ -123,7 +124,6 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
             key={skill.name} 
             skill={skill} 
             accentColor={accentColor} 
-            showBarTooltip={sIdx === 0}
           />
         ))}
       </div>

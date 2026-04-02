@@ -59,15 +59,17 @@ export const TheCloser = () => {
         {/* Main Grid */}
         <div className='flex flex-col lg:flex-row items-center lg:items-end justify-between gap-12 mb-20 text-center lg:text-left'>
           <div className='flex-1 max-w-2xl'>
-            <h2 
-              className='font-noto text-[clamp(32px,5vw,64px)] font-black leading-[1.1] tracking-tighter text-white mb-0 cursor-help'
+            <div 
+              className='cursor-help'
               data-tooltip="This is the founding principle. Everything on this page exists to prove it."
             >
-              If your data isn't<br />
-              driving decisions,<br />
-              <span className='text-white/20 italic'>it's just </span>
-              <span className='text-brand-primary'>noise.</span>
-            </h2>
+              <h2 className='font-noto text-[clamp(32px,5vw,64px)] font-black leading-[1.1] tracking-tighter text-white mb-0'>
+                If your data isn't<br />
+                driving decisions,<br />
+                <span className='text-white/20 italic'>it's just </span>
+                <span className='text-brand-primary'>noise.</span>
+              </h2>
+            </div>
           </div>
 
           <div className='flex flex-col items-center lg:items-end gap-6 flex-shrink-0'>
@@ -84,30 +86,31 @@ export const TheCloser = () => {
               <div className='absolute inset-0 bg-brand-primary translate-y-[101%] group-hover:translate-y-0 transition-transform duration-300 ease-out z-0' />
             </motion.button>
 
-            <a 
-              className='font-mono text-[13px] text-white/70 font-bold leading-relaxed tracking-[0.06em] hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group cursor-pointer' 
-              href='mailto:justinsavioclarke@outlook.com'
-            >
-              <span className='smooth-underline after:h-[1px] after:bg-brand-primary'>justinsavioclarke@outlook.com</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Bar */}
-      <div className='flex flex-col md:flex-row items-center justify-between gap-8 pt-10 border-t border-white/10 w-full text-white/90'>
-        <div 
-          className='flex items-center gap-4 cursor-help'
-          data-tooltip="Built without a template. Refined with an unreasonable amount of care."
+        <a 
+          className='font-mono text-[13px] text-white/70 font-bold leading-relaxed tracking-[0.06em] hover:text-brand-primary transition-colors duration-300 focus-ring rounded-sm group cursor-pointer' 
+          href='mailto:justinsavioclarke@outlook.com'
+          data-tooltip="Direct line to my inbox. No recruiters were harmed in the making of this button."
         >
-          <div className='w-9 h-9 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-sm'>
-            <span className='font-mono text-[12px] font-bold text-brand-primary/80 tracking-[0.04em]' aria-hidden='true'>JC</span>
-          </div>
-          <div className='flex flex-col'>
-            <span className='font-mono text-[11px] font-bold tracking-[0.08em] uppercase'>Justin Clarke</span>
-            <span className='font-mono text-[9px] text-white/30 uppercase tracking-widest'>2026</span>
-          </div>
-        </div>
+          <span className='smooth-underline after:h-[1px] after:bg-brand-primary'>justinsavioclarke@outlook.com</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  {/* Bottom Bar */}
+  <div className='flex flex-col md:flex-row items-center justify-between gap-8 pt-10 border-t border-white/10 w-full text-white/90'>
+    <div 
+      className='flex items-center gap-4 cursor-help'
+      data-tooltip="Custom design and logic, refined with an unreasonable amount of care."
+    >
+      <div className='w-9 h-9 rounded-full bg-white/[0.04] border border-white/10 flex items-center justify-center shadow-sm'>
+        <span className='font-mono text-[12px] font-bold text-brand-primary/80 tracking-[0.04em]' aria-hidden='true'>JC</span>
+      </div>
+      <div className='flex flex-col'>
+        <span className='font-mono text-[11px] font-bold tracking-[0.08em] uppercase'>Justin Clarke</span>
+        <span className='font-mono text-[9px] text-white/30 uppercase tracking-widest'>© 2026</span>
+      </div>
+    </div>
 
         <nav className='flex items-center gap-2' aria-label='Footer Social Links'>
           <ul className='flex items-center gap-2'>
@@ -149,7 +152,8 @@ const SocialLink = ({ href, icon, label }: { href: string; icon: 'github' | 'lin
       target='_blank' 
       rel='noopener noreferrer' 
       aria-label={label} 
-      className='w-10 h-10 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.05] text-white/50 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/5 transition-all duration-300 focus-ring group active:scale-90 flex-shrink-0 cursor-pointer'
+      data-tooltip={label}
+      className='w-[44px] h-[44px] flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.05] text-white/50 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/5 transition-all duration-300 focus-ring group active:scale-90 flex-shrink-0 cursor-pointer'
     >
       <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true' className='group-hover:scale-110 transition-transform duration-300'>
         {icons[icon]}

@@ -22,9 +22,10 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
         edu.isOngoing && "ring-1 ring-teal-500/10 border-teal-500/20 shadow-[0_8px_30px_rgba(0,180,160,0.04)]"
       )}
       data-tooltip={
-        edu.school === 'BITS Pilani' ? "Active. Expected 2028. Because apparently one postgrad wasn't enough." :
-        edu.school === 'Queen Mary University of London' ? "Distinction. Semi-structured data analysis. The Spotify project came out of this." :
-        edu.school === 'Gandhi Institute For Technology' ? "Where it all started. Algorithms, encryption, and a lot of Java." : ""
+        edu.school === 'Birla Institute of Technology and Science' ? "Expected 2028. Because one postgrad wasn't enough (apparently)." :
+        edu.school === 'Queen Mary University of London' ? "Distinction. Semi-structured data. The Spotify project was born here." :
+        edu.school === 'Gandhi Institute For Technology' || edu.school === 'Gandhi Institute of Technology and Management' ? "Where it all started. Algorithms, encryption, and a lot of Java." : 
+        "My foundation in research and logic."
       }
     >
       {/* Type badge */}

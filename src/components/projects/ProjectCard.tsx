@@ -10,26 +10,6 @@ interface ProjectCardProps {
   index: number;
 }
 
-const getBadgeTooltip = (tech: string) => {
-  const tooltips: Record<string, string> = {
-    'Microsoft Fabric': "Microsoft's unified data platform. Think Azure, but it actually talks to itself.",
-    'Eventhouse': "Real-time event store. Built for streams, not regrets.",
-    'KQL': "Kusto Query Language. SQL's cooler, faster sibling.",
-    'Power BI': "Where the dashboards live. Where the stakeholders gasp.",
-    'ML Model': "Yes, there's actual machine learning here.",
-    'SSR': "Server-Side Rendering. Because waiting 3 seconds is so 2019.",
-    'Data Pipelines': "Set it up once. Let it run forever.",
-    'Next.js': "React's grown-up cousin. SSR, edge functions, the works.",
-    'Vercel': "Deploy in seconds. Scales without thinking about it.",
-    'AWS': "Lambda, S3, CloudFront. The infrastructure behind LiteStore.",
-    'Python': "Python-based tool for personalized music recommendations.",
-    'Pandas': "Data manipulation and analysis library.",
-    'Numpy': "Fundamental package for scientific computing.",
-    'Spotify API': "Integration with music metadata and user features."
-  };
-  return tooltips[tech] || "";
-};
-
 const getMetricTooltip = (label: string, val: string) => {
   const combined = `${val} ${label}`.toUpperCase();
   if (combined.includes('EVENTS/SEC')) return "Four thousand events per second. Ingested. Processed. Visualised.";
@@ -131,8 +111,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
                   className='cursor-help'
                   data-tooltip={
                     project.id === 'ltv-analytics' ? "LTV tracking: Because knowing what a customer is worth is better than guessing. (My model is 82% accurate.)" :
-                    project.id === 'neural-music-engine' ? "Predicting your next favorite song. Calculated with pure math and a little bit of magic." :
-                    project.id === 'retail-service' ? "0.6s load time. Because life is too short to wait for a website to hydrate." :
+                    project.id === 'spotify-engine' ? "Predicting your next favorite song. Calculated with pure math and a little bit of magic." :
+                    project.id === 'litestore' ? "0.6s load time. Because life is too short to wait for a website to hydrate." :
                     ""
                   }
                 >
@@ -165,7 +145,16 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
                 {project.title}
               </h3>
 
-              <div className={`flex flex-wrap gap-2 mb-8 ${index % 2 === 0 ? '' : 'justify-end'}`}>
+              <div 
+                className={`flex flex-wrap gap-2 mb-8 ${index % 2 === 0 ? '' : 'justify-end'}`}
+                data-tooltip={
+                  project.id === 'ltv-analytics' ? "Microsoft Fabric stack — real-time ingestion through to BI" :
+                  project.id === 'product-telemetry' ? "Fabric Data Pipelines — automated ingestion at scale" :
+                  project.id === 'litestore' ? "Serverless stack — Next.js on Vercel with AWS backing" :
+                  project.id === 'spotify-engine' ? "Python ML stack with Spotify API integration" :
+                  ""
+                }
+              >
                 {project.tech.map(t => (
                   <Badge 
                     key={t} 

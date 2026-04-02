@@ -42,9 +42,10 @@ export const ExperienceItem: React.FC<ExperienceItemProps> = ({ exp, isOpen, onC
         aria-controls={`exp-details-${exp.company.replace(/\s+/g, '-').toLowerCase()}`}
         className='w-full text-left py-10 px-4 md:px-8 focus-ring rounded-lg outline-none cursor-help'
         data-tooltip={
-          exp.company === 'VNS Solutions' ? "Jan 2024 – Jan 2026. Where Microsoft Fabric became a specialism." :
-          exp.company === 'LiteStore' ? "Apr 2021 – Apr 2023. Where a 3s load time became a 0.6s problem to solve." :
-          exp.company === 'Drop' ? "Jan – Apr 2021. First production React work." : ""
+          exp.company === 'VNS Solutions' ? "Jan 2024 – Jan 2026. Where I went deep on Microsoft Fabric." :
+          exp.company === 'LiteStore' ? "Apr 2021 – Apr 2023. Where 3s load times became a 0.6s obsession." :
+          exp.company === 'Drop' ? "Jan – Apr 2021. My first real-world production React codebase." : 
+          "A deep dive into this professional chapter."
         }
       >
         <div className='flex flex-col md:flex-row md:items-center justify-between gap-6 md:gap-4'>

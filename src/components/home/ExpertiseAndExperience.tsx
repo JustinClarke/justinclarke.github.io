@@ -65,12 +65,13 @@ export const ExpertiseAndExperience = () => {
 
       {/* ── Expertise Pipeline ── */}
       <div ref={pipelineRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Capabilities</span>
+        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The strategic toolkit.">
+          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Capabilities</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
         <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black mb-12"
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black mb-12 cursor-help"
+          data-tooltip="If it isn't here, I'm probably currently learning it."
         >Expertise Pipeline</h2>
 
         <ExpertisePipeline />
@@ -78,12 +79,13 @@ export const ExpertiseAndExperience = () => {
 
       {/* ── Work Experience ── */}
       <div ref={expRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Career</span>
+        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The hands-on history.">
+          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Career</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
         <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black"
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black cursor-help"
+          data-tooltip="Every gig has been a step toward bigger data problems."
         >Work Experience</h2>
 
         <div className="mt-8">
@@ -101,12 +103,13 @@ export const ExpertiseAndExperience = () => {
 
       {/* ── Education ── */}
       <div ref={eduRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap">Academic Background</span>
+        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The theoretical foundation.">
+          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Academic Background</span>
           <div className="flex-1 h-px bg-black/[0.06]" />
         </div>
         <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black"
+          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black cursor-help"
+          data-tooltip="The baseline of research and logic."
         >Education</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">

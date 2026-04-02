@@ -47,7 +47,8 @@ export const SocialLinks = () => (
             target="_blank"
             rel="noopener noreferrer"
             aria-label={link.label}
-            className="flex items-center justify-center p-1.5 text-black/60 hover:text-brand-primary hover:scale-120 transition-all duration-300 cursor-pointer focus-ring rounded-md"
+            data-tooltip={link.label}
+            className="flex items-center justify-center min-w-[44px] min-h-[44px] text-black/60 hover:text-brand-primary hover:scale-120 transition-all duration-300 cursor-pointer focus-ring rounded-md"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               {link.icon === "linkedin" ? (
@@ -78,7 +79,8 @@ export const QuickLinksRow = ({ links }: { links: QuickLink[] }) => (
         <li key={link.id} className="flex gap-4 items-start">
           <Link 
             to={`/project/${link.id}`} 
-            className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 -m-1 rounded-sm cursor-pointer"
+            data-tooltip={`View Case Study: ${link.label}`}
+            className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 py-3 -m-1 rounded-sm cursor-pointer"
           >
             <span className="font-ibm text-[12px] text-black/40 font-medium tracking-[0.04em]">0{i + 1}</span>
             <span className="font-noto text-[16px] font-bold text-black flex items-center gap-1.5 transition-all">

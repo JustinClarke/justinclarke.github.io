@@ -3,20 +3,34 @@
  * Manages a single floating DOM element and uses event delegation for efficiency.
  */
 
-export const initTooltips = () => {
-  // 1. Mobile check: Disable tooltips on touch devices
-  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+interface TooltipState {
+  currentTarget: HTMLElement | null;
+  showTimer: ReturnType<typeof setTimeout> | null;
+  hideTimer: ReturnType<typeof setTimeout> | null;
+  lastX: number;
+  lastY: number;
+}
 
-  // 2. Create the singleton tooltip element
+export const initTooltips = () => {
+  if (typeof window === 'undefined') return;
+  
+  // Guard against duplicate listeners
+  if ((window as any).__TOOLTIPS_INITIALIZED__) return;
+  (window as any).__TOOLTIPS_INITIALIZED__ = true;
+
+  // 1. Mobile check: Disable tooltips only on small touch screens
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (window.innerWidth < 1024 && isTouch) return;
+
+  // 2. Create/Get the singleton tooltip element
   let tooltip = document.getElementById('tooltip-container');
   if (!tooltip) {
     tooltip = document.createElement('div');
     tooltip.id = 'tooltip-container';
-    // Style as requested: #0f0f0f bg, 1px solid #2a2a2a border
     Object.assign(tooltip.style, {
       position: 'fixed',
       pointerEvents: 'none',
-      zIndex: '9999',
+      zIndex: '100000',
       backgroundColor: '#0f0f0f',
       border: '1px solid #2a2a2a',
       borderRadius: '8px',
@@ -28,25 +42,30 @@ export const initTooltips = () => {
       lineHeight: '1.6',
       boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
       opacity: '0',
-      transition: 'opacity 100ms ease-out, transform 100ms ease-out',
-      transform: 'translateY(8px)',
+      transition: 'opacity 150ms ease-out, transform 150ms ease-out',
+      transform: 'translateY(10px)',
       visibility: 'hidden',
     });
     document.body.appendChild(tooltip);
   }
 
-  let activeElement: HTMLElement | null = null;
+  const state: TooltipState = {
+    currentTarget: null,
+    showTimer: null,
+    hideTimer: null,
+    lastX: 0,
+    lastY: 0,
+  };
 
-  const hideTooltip = () => {
+  const updatePosition = (x: number, y: number) => {
     if (!tooltip) return;
-    tooltip.style.opacity = '0';
-    tooltip.style.transform = 'translateY(8px)';
-    setTimeout(() => {
-      if (tooltip && tooltip.style.opacity === '0') {
-        tooltip.style.visibility = 'hidden';
-      }
-    }, 100);
-    activeElement = null;
+    const rect = tooltip.getBoundingClientRect();
+    const left = Math.min(Math.max(x - rect.width / 2, 10), window.innerWidth - rect.width - 10);
+    let top = y - rect.height - 20;
+    if (top < 10) top = y + 25; // Flip below if no space above
+    
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
   };
 
   const showTooltip = (target: HTMLElement) => {
@@ -54,23 +73,14 @@ export const initTooltips = () => {
     const text = target.getAttribute('data-tooltip');
     if (!text) return;
 
-    activeElement = target;
     tooltip.innerText = text;
     tooltip.style.visibility = 'visible';
     
-    // Reset accent line
-    tooltip.style.borderTopWidth = '1px';
-    tooltip.style.borderTopColor = '#2a2a2a';
+    const color = target.getAttribute('data-tooltip-color');
+    tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid #2a2a2a';
 
-    // Apply color accent if present
-    const accentColor = target.getAttribute('data-tooltip-color');
-    if (accentColor) {
-      tooltip.style.borderTop = `2px solid ${accentColor}`;
-    }
-
-    updatePosition();
+    updatePosition(state.lastX, state.lastY);
     
-    // Animate in
     requestAnimationFrame(() => {
       if (!tooltip) return;
       tooltip.style.opacity = '1';
@@ -78,42 +88,48 @@ export const initTooltips = () => {
     });
   };
 
-  const updatePosition = () => {
-    if (!tooltip || !activeElement) return;
-    const rect = activeElement.getBoundingClientRect();
-    const tooltipRect = tooltip.getBoundingClientRect();
-    
-    let top = rect.top - tooltipRect.height - 10;
-    let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-
-    // Flip to below if near top
-    if (top < 10) {
-      top = rect.bottom + 10;
-    }
-
-    // Keep within horizontal bounds
-    const padding = 10;
-    if (left < padding) left = padding;
-    if (left + tooltipRect.width > window.innerWidth - padding) {
-      left = window.innerWidth - tooltipRect.width - padding;
-    }
-
-    tooltip.style.top = `${top}px`;
-    tooltip.style.left = `${left}px`;
+  const hideTooltip = () => {
+    if (!tooltip) return;
+    tooltip.style.opacity = '0';
+    tooltip.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+      if (tooltip && tooltip.style.opacity === '0') {
+        tooltip.style.visibility = 'hidden';
+      }
+    }, 150);
   };
 
-  // 3. Event Delegation
-  document.body.addEventListener('mouseenter', (e) => {
-    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement;
-    if (target) showTooltip(target);
-  }, true);
+  document.addEventListener('mousemove', (e: MouseEvent) => {
+    state.lastX = e.clientX;
+    state.lastY = e.clientY;
 
-  document.body.addEventListener('mouseleave', (e) => {
-    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement;
-    if (target) hideTooltip();
-  }, true);
+    const target = (e.target as HTMLElement).closest('[data-tooltip]') as HTMLElement | null;
+    
+    if (target) {
+      if (state.currentTarget !== target) {
+        state.currentTarget = target;
+        if (state.hideTimer) clearTimeout(state.hideTimer);
+        if (state.showTimer) clearTimeout(state.showTimer);
+        state.showTimer = setTimeout(() => showTooltip(target), 80);
+      }
+      updatePosition(e.clientX, e.clientY);
+    } else {
+      if (state.currentTarget) {
+        state.currentTarget = null;
+        if (state.showTimer) clearTimeout(state.showTimer);
+        if (state.hideTimer) clearTimeout(state.hideTimer);
+        state.hideTimer = setTimeout(hideTooltip, 120);
+      }
+    }
+  }, { passive: true });
 
-  // 4. Scroll & Resize cleanup
-  window.addEventListener('scroll', hideTooltip, { passive: true });
-  window.addEventListener('resize', hideTooltip, { passive: true });
+  const forceHide = () => {
+    if (state.showTimer) clearTimeout(state.showTimer);
+    if (state.hideTimer) clearTimeout(state.hideTimer);
+    hideTooltip();
+    state.currentTarget = null;
+  };
+
+  window.addEventListener('scroll', forceHide, { passive: true });
+  window.addEventListener('resize', forceHide, { passive: true });
 };
