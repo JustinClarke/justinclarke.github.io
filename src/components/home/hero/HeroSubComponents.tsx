@@ -11,7 +11,7 @@ import { QuickLink } from '@/shared/types';
 export const ResumeButton = ({ className, showMobile = false }: { className?: string; showMobile?: boolean }) => (
   <div className={cn(showMobile ? 'md:hidden mb-10 hero-anim' : 'hidden md:block absolute top-10 right-10 z-20 hero-anim', className)} style={{ transitionDelay: '540ms' }}>
     <a
-      href='https://raw.githubusercontent.com/JustinClarke/justinclarke.github.io/main/resources/resume.pdf'
+      href='https://raw.githubusercontent.com/JustinClarke/justinclarke.github.io/main/resources/Justin%20Clarke%20resume.pdf'
       download='Justin Clarke resume'
       className='inline-flex font-noto text-[13px] font-bold tracking-[0.06em] uppercase text-black border border-black/10 rounded-full px-8 py-3 bg-white/40 backdrop-blur-xl hover:text-brand-primary hover:bg-white/60 hover:border-brand-primary/40 hover:shadow-[0_8px_20px_rgba(0,200,180,0.1)] active:scale-[0.96] transition-all duration-300 cursor-help group items-center gap-2.5 focus-ring'
       aria-label="Download Justin Clarke's Resume (PDF)"
