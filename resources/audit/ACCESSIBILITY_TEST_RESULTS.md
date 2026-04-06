@@ -456,32 +456,32 @@ Assessment: NEEDS SIGNIFICANT WORK
 ## 🎯 Priority Action Items
 
 ### Tier 1: Critical (Fix Immediately)
-1. **Form Labels** — Add proper label associations (Issue #1 in audit report)
+1. **Form Labels** - Add proper label associations (Issue #1 in audit report)
    - Estimated effort: 15-30 minutes
    - Impact: Enables screen reader users
 
-2. **prefers-reduced-motion** — Implement globally (Issue #17 in audit report)
+2. **prefers-reduced-motion** - Implement globally (Issue #17 in audit report)
    - Estimated effort: 1-2 hours
    - Impact: Supports motion-sensitive users
 
-3. **Line Length on Desktop** — Constrain width at 1024px+ (Issue #10 in audit report)
+3. **Line Length on Desktop** - Constrain width at 1024px+ (Issue #10 in audit report)
    - Estimated effort: 30-45 minutes
    - Impact: Vastly improves readability
 
 ### Tier 2: Major (Fix This Week)
-4. **Custom Cursor Keyboard Fix** — Show cursor for keyboard users (Issue #4)
+4. **Custom Cursor Keyboard Fix** - Show cursor for keyboard users (Issue #4)
    - Estimated effort: 45-60 minutes
    
-5. **Color Contrast** — Increase opacity values (Issue #8)
+5. **Color Contrast** - Increase opacity values (Issue #8)
    - Estimated effort: 30 minutes
    
-6. **SVG aria-hidden** — Add decorative hiding (Issue #14)
+6. **SVG aria-hidden** - Add decorative hiding (Issue #14)
    - Estimated effort: 15 minutes
 
 ### Tier 3: Minor (Polish)
-7. **Navigation Semantics** — Use `<nav>` elements (Issue #3)
-8. **Font Size Minimum** — Increase small labels to 10px (Issue #12)
-9. **Modal Focus** — Auto-focus first input (Issue #5)
+7. **Navigation Semantics** - Use `<nav>` elements (Issue #3)
+8. **Font Size Minimum** - Increase small labels to 10px (Issue #12)
+9. **Modal Focus** - Auto-focus first input (Issue #5)
 
 ---
 

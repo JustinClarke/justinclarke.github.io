@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { cn } from '@/shared/utils';
+import { cn, elevatorScroll } from '@/shared/utils';
 import { HERO_CONTENT_REVEAL } from '@/config/animations';
 import { QuickLink } from '@/shared/types';
 
@@ -9,11 +9,11 @@ import { QuickLink } from '@/shared/types';
  * Redesigned Resume pill button.
  */
 export const ResumeButton = ({ className, showMobile = false }: { className?: string; showMobile?: boolean }) => (
-  <div className={cn(showMobile ? 'md:hidden mb-10' : 'hidden md:block absolute top-10 right-10 z-20', className)}>
+  <div className={cn(showMobile ? 'md:hidden mb-10 hero-anim' : 'hidden md:block absolute top-10 right-10 z-20 hero-anim', className)} style={{ transitionDelay: '540ms' }}>
     <a
       href='https://raw.githubusercontent.com/JustinClarke/justinclarke.github.io/main/resources/resume.pdf'
       download='Justin Clarke resume'
-      className='inline-flex font-noto text-[13px] font-bold tracking-[0.06em] uppercase text-black border border-black/10 rounded-full px-7 py-2.5 bg-white/40 backdrop-blur-xl hover:text-brand-primary hover:bg-white/60 hover:border-brand-primary/40 hover:shadow-[0_8px_20px_rgba(0,200,180,0.1)] active:scale-[0.96] transition-all duration-300 cursor-help group items-center gap-2.5 focus-ring'
+      className='inline-flex font-noto text-[13px] font-bold tracking-[0.06em] uppercase text-black border border-black/10 rounded-full px-8 py-3 bg-white/40 backdrop-blur-xl hover:text-brand-primary hover:bg-white/60 hover:border-brand-primary/40 hover:shadow-[0_8px_20px_rgba(0,200,180,0.1)] active:scale-[0.96] transition-all duration-300 cursor-help group items-center gap-2.5 focus-ring'
       aria-label="Download Justin Clarke's Resume (PDF)"
       data-tooltip="Standard PDF format. No Comic Sans, I promise."
     >
@@ -27,13 +27,10 @@ export const ResumeButton = ({ className, showMobile = false }: { className?: st
  * Global Social Links group.
  */
 export const SocialLinks = () => (
-  <motion.nav
+  <nav
     aria-label="Social Media Profiles"
-    className="flex flex-col gap-2.5 mt-2"
-    variants={HERO_CONTENT_REVEAL}
-    initial="hidden"
-    animate="visible"
-    custom={1.0}
+    className="hero-anim flex flex-col gap-3 mt-2"
+    style={{ transitionDelay: '600ms' }}
   >
     <ul className="flex items-center gap-5">
       {[
@@ -62,40 +59,48 @@ export const SocialLinks = () => (
         </li>
       ))}
     </ul>
-  </motion.nav>
+  </nav>
 );
 
 /**
  * Desktop-only Quick Links row.
+ * Refactored to use custom smooth-scroll logic for the 'elevator' feel.
  */
-export const QuickLinksRow = ({ links }: { links: QuickLink[] }) => (
-  <nav className="hidden md:block w-full pt-6 pb-8 translate-y-[-10px]" aria-label="Quick Project Links">
-    <div className="flex items-center gap-3 mb-6">
-      <span className="font-mono text-[12px] font-medium tracking-[0.18em] uppercase text-black/60 whitespace-nowrap">Quick Links</span>
-      <span className="flex-1 h-px bg-black/20" aria-hidden="true" />
-    </div>
-    <ul className="flex justify-between items-start gap-4">
-      {links.map((link, i) => (
-        <li key={link.id} className="flex gap-4 items-start">
-          <Link 
-            to={`/project/${link.id}`} 
-            data-tooltip={`View Case Study: ${link.label}`}
-            className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 py-3 -m-1 rounded-sm cursor-pointer"
-          >
-            <span className="font-ibm text-[12px] text-black/40 font-medium tracking-[0.04em]">0{i + 1}</span>
-            <span className="font-noto text-[16px] font-bold text-black flex items-center gap-1.5 transition-all">
-              <span className="smooth-underline group-hover:text-teal-600 transition-colors duration-300">
-                {link.label}
+export const QuickLinksRow = ({ links }: { links: QuickLink[] }) => {
+  const handleScroll = (id: string) => {
+    // Cinematic slow scroll directly to the element boundary 
+    elevatorScroll(id, 2.2, 100); 
+  };
+
+  return (
+    <nav className="hidden md:block w-full pt-6 pb-8 translate-y-[-10px] hero-anim" style={{ transitionDelay: '720ms' }} aria-label="Quick Section Links">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="font-mono text-[12px] font-medium tracking-[0.18em] uppercase text-black/60 whitespace-nowrap">Quick Links</span>
+        <span className="flex-1 h-px bg-black/20" aria-hidden="true" />
+      </div>
+      <ul className="flex justify-between items-start gap-4">
+        {links.map((link, i) => (
+          <li key={link.id} className="flex gap-4 items-start">
+            <button 
+              onClick={() => handleScroll(link.id)} 
+              data-tooltip={`Jump to ${link.label}`}
+              className="group flex flex-col gap-[6px] transition-all duration-150 focus-ring p-1 py-3 -m-1 rounded-sm cursor-pointer text-left bg-transparent border-none outline-none appearance-none"
+            >
+              <span className="font-ibm text-[12px] text-black/40 font-medium tracking-[0.04em]">0{i + 1}</span>
+              <span className="font-noto text-[16px] font-bold text-black flex items-center gap-1.5 transition-all">
+                <span className="smooth-underline group-hover:text-teal-600 transition-colors duration-300">
+                  {link.label}
+                </span>
+                <span className="opacity-0 group-hover:opacity-100 translate-x-[-6px] group-hover:translate-x-0 transition-all duration-200 text-teal-500 scale-110" aria-hidden="true">→</span>
               </span>
-              <span className="opacity-0 group-hover:opacity-100 translate-x-[-6px] group-hover:translate-x-0 transition-all duration-200 text-teal-500 scale-110" aria-hidden="true">→</span>
-            </span>
-          </Link>
-          {i < links.length - 1 && <div className="w-px h-6 bg-black/[0.12] self-center flex-shrink-0" aria-hidden="true" />}
-        </li>
-      ))}
-    </ul>
-  </nav>
-);
+            </button>
+            {i < links.length - 1 && <div className="w-px h-6 bg-black/[0.12] self-center flex-shrink-0" aria-hidden="true" />}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
 
 /**
  * Animated decorative scroll arrow.

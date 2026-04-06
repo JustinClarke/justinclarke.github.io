@@ -15,7 +15,7 @@ export const LtvVisual = () => (
     {[38, 55, 47, 72, 65, 88, 95].map((h, i) => (
       <div
         key={i}
-        className='flex-1 rounded-t-sm bg-brand-primary opacity-70 origin-bottom animate-[growBar_0.8s_ease-in-out_infinite_alternate]'
+        className='flex-1 rounded-t-sm bg-brand-primary opacity-70 origin-bottom animate-[growBar_var(--ltv-duration)_ease-in-out_infinite_alternate]'
         style={{ height: `${h}%`, animationDelay: `${i * 0.05}s` }}
       />
     ))}

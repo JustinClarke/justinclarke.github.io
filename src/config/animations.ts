@@ -12,13 +12,14 @@ export const SPRINGS = {
 export const EASING = {
   quintic: [0.16, 1, 0.3, 1], // cinematic decel
   circOut: [0, 0.55, 0.45, 1],
+  smooth: [0.22, 1, 0.36, 1],
 } as const;
 
 export const FADE_IN = {
   hidden: { opacity: 0 },
   visible: (i: number = 0) => ({
     opacity: 1,
-    transition: { duration: 0.6, delay: i * 0.1, ease: 'easeOut' }
+    transition: { duration: 1.2, delay: i * 0.1, ease: EASING.smooth }
   }),
 };
 
@@ -28,7 +29,7 @@ export const SLIDE_UP = {
     opacity: 1,
     y: 0,
     transition: { 
-      duration: 0.8, 
+      duration: 1.4, 
       delay: i * 0.1, 
       ease: EASING.quintic 
     }
@@ -55,9 +56,22 @@ export const HERO_CONTENT_REVEAL = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.8,
+      duration: 1.4,
       delay: custom,
       ease: EASING.quintic
+    }
+  })
+};
+
+export const REVEAL_BLOCK = {
+  hidden: { opacity: 0, x: -20 },
+  visible: (i: number = 0) => ({
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 1.2,
+      delay: i * 0.05,
+      ease: EASING.smooth
     }
   })
 };
@@ -69,8 +83,17 @@ export const PRELOADER_EXIT = {
     scale: 1.05,
     filter: 'blur(20px)',
     transition: { 
-      duration: 1.2, 
-      ease: EASING.circOut
+      duration: 1.8, 
+      ease: EASING.quintic
     }
   }
 };
+
+/**
+ * Global hover interactions
+ */
+export const HOVER = {
+  scale_micro: { scale: 1.02, transition: { duration: 0.2, ease: EASING.smooth } },
+  scale_standard: { scale: 1.05, transition: { duration: 0.3, ease: EASING.smooth } },
+  tap: { scale: 0.98 },
+} as const;

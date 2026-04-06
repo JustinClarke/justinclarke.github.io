@@ -61,7 +61,7 @@ export const ContactModal = () => {
   return (
     <Dialog.Root open={isContactModalOpen} onOpenChange={setIsContactModalOpen}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 animate-in fade-in duration-300" />
+        <Dialog.Overlay className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] animate-in fade-in duration-300" />
         <Dialog.Content 
           onCloseAutoFocus={(e) => {
             // Restore context to the trigger or a reasonable default to prevent scroll jump
@@ -70,7 +70,7 @@ export const ContactModal = () => {
               window.scrollTo({ top: window.scrollY, behavior: 'instant' });
             }
           }}
-          className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-white/10 bg-[#111] p-8 shadow-2xl duration-200 animate-in zoom-in-95 sm:rounded-2xl text-white outline-none"
+          className="fixed left-[50%] top-[50%] z-[10001] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-white/10 bg-[#111] p-8 shadow-2xl duration-200 animate-in zoom-in-95 sm:rounded-2xl text-white outline-none"
         >
           
           <div className="flex flex-col space-y-1.5 mb-6">

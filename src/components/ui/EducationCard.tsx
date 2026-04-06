@@ -16,7 +16,7 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
   return (
     <div
       className={cn(
-        "edu-item group relative border rounded-2xl p-8 flex flex-col h-full cursor-help",
+        "edu-card-anim group relative border rounded-2xl p-8 flex flex-col h-full cursor-help",
         "transition-all duration-300 ease-out",
         "bg-white border-[#eee] hover:border-teal-500/30 hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)]",
         edu.isOngoing && "ring-1 ring-teal-500/10 border-teal-500/20 shadow-[0_8px_30px_rgba(0,180,160,0.04)]"
@@ -28,6 +28,7 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
         "My foundation in research and logic."
       }
     >
+      <div className="edu-card-accent absolute left-0 top-0 bottom-0 w-[4px] bg-teal-500" />
       {/* Type badge */}
       <div className="flex items-center gap-2 mb-6">
         <Badge 
@@ -44,7 +45,7 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
             </span>
-            <span className="font-mono text-[9px] font-bold text-teal-600 uppercase tracking-widest leading-none">Active Program</span>
+            <span className="font-mono text-[9px] font-bold text-teal-600 uppercase tracking-[0.25em] leading-none">Active Program</span>
           </div>
         )}
         <div className="h-px flex-1 bg-black/[0.04]" />
@@ -55,20 +56,20 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
         <h3 className="font-noto text-2xl md:text-3xl font-black text-black leading-[1.1] mb-2 tracking-tight transition-colors duration-300 group-hover:text-teal-600">
           {edu.school}
         </h3>
-        <p className="text-[17px] font-bold text-black/85 tracking-tight">
+        <p className="text-reveal text-[17px] font-bold text-black/85 tracking-tight" style={{ transitionDelay: '100ms' }}>
           {edu.degree}
         </p>
       </div>
 
       {/* Note */}
-      <p className="text-[15px] text-black/60 leading-relaxed mb-8 flex-1 font-medium text-left">
+      <p className="text-reveal text-[15px] text-black/60 leading-relaxed mb-8 flex-1 font-medium text-left" style={{ transitionDelay: '200ms' }}>
         {edu.note}
       </p>
 
       {/* Footer metadata */}
       <div className="flex items-center justify-between pt-6 border-t border-black/[0.06] mt-auto">
         <div className="flex flex-col gap-0.5">
-          <span className="font-mono text-[9px] font-bold text-black/25 uppercase tracking-widest">
+          <span className="font-mono text-[9px] font-bold text-black/25 uppercase tracking-[0.25em]">
             {edu.isOngoing ? "Expected Grad" : "Completion Record"}
           </span>
           <span className="font-mono text-[12px] text-black/60 font-bold">{edu.year}</span>

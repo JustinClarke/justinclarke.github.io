@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-animation': ['framer-motion', 'gsap', 'motion'],
+            'vendor-animation': ['framer-motion'],
             'vendor-ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-accordion'],
           }
         }

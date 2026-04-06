@@ -1,6 +1,7 @@
 /**
  * @fileoverview Reusable tooltip system for a premium, technical feel.
  * Manages a single floating DOM element and uses event delegation for efficiency.
+ * Refined for site-wide consistency and route-based stability.
  */
 
 interface TooltipState {
@@ -14,12 +15,17 @@ interface TooltipState {
 export const initTooltips = () => {
   if (typeof window === 'undefined') return;
   
+  // 1. Mobile & Touch Detection
+  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  if (isTouch) {
+    document.body.classList.add('touch-device');
+  }
+
   // Guard against duplicate listeners
   if ((window as any).__TOOLTIPS_INITIALIZED__) return;
   (window as any).__TOOLTIPS_INITIALIZED__ = true;
 
-  // 1. Mobile check: Disable tooltips only on small touch screens
-  const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // Disable tooltips only on small touch screens
   if (window.innerWidth < 1024 && isTouch) return;
 
   // 2. Create/Get the singleton tooltip element
@@ -31,19 +37,21 @@ export const initTooltips = () => {
       position: 'fixed',
       pointerEvents: 'none',
       zIndex: '100000',
-      backgroundColor: '#0f0f0f',
-      border: '1px solid #2a2a2a',
+      backgroundColor: 'rgba(5, 5, 5, 0.95)',
+      backdropFilter: 'blur(12px)',
+      border: '1px solid rgba(255, 255, 255, 0.08)',
       borderRadius: '8px',
-      padding: '10px 16px',
-      fontFamily: "'IBM Plex Mono', monospace",
-      fontSize: '13px',
-      color: '#ffffff',
-      maxWidth: '320px',
+      padding: '12px 16px',
+      fontFamily: "'JetBrains Mono', 'IBM Plex Mono', monospace",
+      fontSize: '12.5px',
+      fontWeight: '500',
+      color: 'rgba(255, 255, 255, 0.9)',
+      maxWidth: '300px',
       lineHeight: '1.6',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+      boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
       opacity: '0',
-      transition: 'opacity 150ms ease-out, transform 150ms ease-out',
-      transform: 'translateY(10px)',
+      transition: 'opacity 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 200ms cubic-bezier(0.16, 1, 0.3, 1)',
+      transform: 'translateY(8px)',
       visibility: 'hidden',
     });
     document.body.appendChild(tooltip);
@@ -60,9 +68,16 @@ export const initTooltips = () => {
   const updatePosition = (x: number, y: number) => {
     if (!tooltip) return;
     const rect = tooltip.getBoundingClientRect();
-    const left = Math.min(Math.max(x - rect.width / 2, 10), window.innerWidth - rect.width - 10);
-    let top = y - rect.height - 20;
-    if (top < 10) top = y + 25; // Flip below if no space above
+    
+    // Horizontal clamping
+    const left = Math.min(
+      Math.max(x - rect.width / 2, 16), 
+      window.innerWidth - rect.width - 16
+    );
+    
+    // Vertical placement
+    let top = y - rect.height - 24;
+    if (top < 16) top = y + 24; // Flip below if no space above
     
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -77,7 +92,7 @@ export const initTooltips = () => {
     tooltip.style.visibility = 'visible';
     
     const color = target.getAttribute('data-tooltip-color');
-    tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid #2a2a2a';
+    tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid rgba(255, 255, 255, 0.08)';
 
     updatePosition(state.lastX, state.lastY);
     
@@ -91,15 +106,17 @@ export const initTooltips = () => {
   const hideTooltip = () => {
     if (!tooltip) return;
     tooltip.style.opacity = '0';
-    tooltip.style.transform = 'translateY(10px)';
+    tooltip.style.transform = 'translateY(8px)';
+    
+    // Avoid layout thrashing: hide completely after fade
     setTimeout(() => {
       if (tooltip && tooltip.style.opacity === '0') {
         tooltip.style.visibility = 'hidden';
       }
-    }, 150);
+    }, 200);
   };
 
-  document.addEventListener('mousemove', (e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent) => {
     state.lastX = e.clientX;
     state.lastY = e.clientY;
 
@@ -110,7 +127,7 @@ export const initTooltips = () => {
         state.currentTarget = target;
         if (state.hideTimer) clearTimeout(state.hideTimer);
         if (state.showTimer) clearTimeout(state.showTimer);
-        state.showTimer = setTimeout(() => showTooltip(target), 80);
+        state.showTimer = setTimeout(() => showTooltip(target), 60); // Snappier reveal
       }
       updatePosition(e.clientX, e.clientY);
     } else {
@@ -118,10 +135,12 @@ export const initTooltips = () => {
         state.currentTarget = null;
         if (state.showTimer) clearTimeout(state.showTimer);
         if (state.hideTimer) clearTimeout(state.hideTimer);
-        state.hideTimer = setTimeout(hideTooltip, 120);
+        state.hideTimer = setTimeout(hideTooltip, 100);
       }
     }
-  }, { passive: true });
+  };
+
+  document.addEventListener('mousemove', handleMouseMove, { passive: true });
 
   const forceHide = () => {
     if (state.showTimer) clearTimeout(state.showTimer);
@@ -130,6 +149,11 @@ export const initTooltips = () => {
     state.currentTarget = null;
   };
 
+  // Global events to prevent sticking
   window.addEventListener('scroll', forceHide, { passive: true });
   window.addEventListener('resize', forceHide, { passive: true });
+  window.addEventListener('blur', forceHide);
+  
+  // Custom event for route cleaning (dispatch this on router match)
+  window.addEventListener('popstate', forceHide);
 };

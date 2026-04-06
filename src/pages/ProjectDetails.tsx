@@ -58,9 +58,9 @@ export function ProjectDetails() {
         >
           {/* Hero Narrative */}
           <motion.div 
-            initial={{ opacity: 0, x: prefersReducedMotion ? 0 : -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.0, ease: [0.25, 1, 0.5, 1] }}
             className="p-8 md:p-12 lg:p-16 flex flex-col gap-6 md:gap-8 border-b lg:border-b-0 lg:border-r border-white/5"
           >
             <div className="flex flex-col gap-4">
@@ -99,10 +99,10 @@ export function ProjectDetails() {
 
           {/* Hero Visual Block (Responsive Visual) */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="bg-[#0b0b0b] flex items-center justify-center relative overflow-hidden min-h-[350px] md:min-h-[450px] p-8 md:p-16 lg:p-24"
+            initial={{ opacity: 0, scale: 0.99, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1.2, delay: 0.1, ease: [0.25, 1, 0.5, 1] }}
+            className="bg-[#0a0a0a] flex items-center justify-center relative overflow-hidden min-h-[350px] md:min-h-[450px] p-8 md:p-16 lg:p-24"
           >
             <div className="relative z-10 w-full h-full flex items-center justify-center scale-[1.0] md:scale-[1.2] lg:scale-[1.3]">
               {project.heroVisual}
@@ -114,7 +114,7 @@ export function ProjectDetails() {
         </SectionContainer>
 
         {/* ── Case Study In-Depth ── */}
-        <div className="w-full bg-[#080808]">
+        <div className="w-full bg-[#0a0a0a]">
           {project.caseStudy && <CaseStudyGrid caseStudy={project.caseStudy} />}
         </div>
 

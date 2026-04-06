@@ -5,6 +5,7 @@
 import React, { forwardRef } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/shared/utils';
+import { HOVER } from '@/config/animations';
 
 export interface MagneticButtonProps extends HTMLMotionProps<"button"> {
   /** The content of the button */
@@ -28,8 +29,8 @@ export const MagneticButton = forwardRef<HTMLButtonElement, MagneticButtonProps>
     return (
       <motion.button
         ref={ref}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: HOVER.scale_standard.scale }}
+        whileTap={HOVER.tap}
         className={cn(
           "relative px-8 py-4 bg-white/5 backdrop-blur-md border border-white/10",
           "text-white font-medium rounded-full overflow-hidden group transition-colors",

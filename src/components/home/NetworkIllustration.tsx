@@ -7,13 +7,23 @@ import { NetworkNode } from '@/shared/types';
  * Displays a lightweight SVG node-graph with CSS-driven animations.
  * Logic and structure are now decoupled via the useNetworkAnimation hook.
  */
-export const NetworkIllustrationRect: React.FC<{ startNode: NetworkNode, endNode: NetworkNode }> = ({ startNode, endNode }) => (
-  <line
-    x1={startNode.cx} y1={startNode.cy}
-    x2={endNode.cx} y2={endNode.cy}
-    stroke="rgba(0,160,145,0.12)"
-    strokeWidth="1"
-  />
+export const NetworkIllustrationRect: React.FC<{ startNode: NetworkNode, endNode: NetworkNode, index?: number }> = ({ startNode, endNode, index = 0 }) => (
+  <g>
+    <line
+      x1={startNode.cx} y1={startNode.cy}
+      x2={endNode.cx} y2={endNode.cy}
+      stroke="rgba(0,160,145,0.12)"
+      strokeWidth="1"
+    />
+    <line
+      x1={startNode.cx} y1={startNode.cy}
+      x2={endNode.cx} y2={endNode.cy}
+      stroke="rgba(0,200,180,0.5)"
+      strokeWidth="1.5"
+      className="travel-light"
+      style={{ animationDelay: `${index * 0.8}s`, animationDuration: `${3 + (index % 3)}s` }}
+    />
+  </g>
 );
 
 export const NetworkNodeDot: React.FC<{ node: NetworkNode }> = ({ node }) => (
@@ -35,7 +45,8 @@ export const NetworkIllustration = () => {
         <NetworkIllustrationRect 
           key={i} 
           startNode={nodes[start]} 
-          endNode={nodes[end]} 
+          endNode={nodes[end]}
+          index={i}
         />
       ))}
       {nodes.map((node, i) => (

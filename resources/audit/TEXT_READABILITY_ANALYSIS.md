@@ -9,10 +9,10 @@
 Your site uses **excellent responsive typography strategies** with `clamp()` functions for fluid scaling. **Text is generally readable across all viewport sizes**, but there are **3 specific resolution ranges with minor readability concerns** and **2 breakpoint transitions that need attention**.
 
 ### Overall Assessment
-- ✅ Mobile (320px-768px): **Very Good** — Text sizes appropriate, scaling smooth
-- ✅ Tablet (768px-1024px): **Excellent** — Breakpoints well-optimized
-- ⚠️ Desktop (1024px-1440px): **Good with concerns** — Some sections exceed optimal line length
-- ⚠️ Large Desktop (1440px+): **Needs attention** — Hero title line length excessive, readability impacted
+- ✅ Mobile (320px-768px): **Very Good** - Text sizes appropriate, scaling smooth
+- ✅ Tablet (768px-1024px): **Excellent** - Breakpoints well-optimized
+- ⚠️ Desktop (1024px-1440px): **Good with concerns** - Some sections exceed optimal line length
+- ⚠️ Large Desktop (1440px+): **Needs attention** - Hero title line length excessive, readability impacted
 
 ### Key Metrics Summary
 | Viewport | Hero Title | Body Text | Line Length | Assessment |
@@ -67,7 +67,7 @@ Case study text:      leading-[1.6]   → 1.6 ✅
 **Assessment:** ✅ **GOOD** (though leading-[1.1] is tight for h1, acceptable with the 0.9 override)
 
 #### Verdict
-**Mobile readability: ✅ EXCELLENT** — text scales fluidly, line lengths optimal, line heights appropriate.
+**Mobile readability: ✅ EXCELLENT** - text scales fluidly, line lengths optimal, line heights appropriate.
 
 ---
 
@@ -100,10 +100,10 @@ Tablet @ 768px:
   - At 14px: ~54 characters ✅
 ```
 
-**Assessment:** ⚠️ **ACCEPTABLE** — body text line length at upper edge of comfortable range (75 chars), but within WCAG recommendations.
+**Assessment:** ⚠️ **ACCEPTABLE** - body text line length at upper edge of comfortable range (75 chars), but within WCAG recommendations.
 
 #### Verdict
-**Tablet readability: ✅ EXCELLENT** — good breakpoint between mobile and desktop styling.
+**Tablet readability: ✅ EXCELLENT** - good breakpoint between mobile and desktop styling.
 
 ---
 
@@ -145,7 +145,7 @@ Hero project description @ 1440px:
   - max-w-sm (384px) ✅ Capped correctly
 ```
 
-**Assessment:** ⚠️ **MODERATE CONCERN** — General body text and project descriptions exceed optimal line length at 1024px+. Users must move eyes >120 characters.
+**Assessment:** ⚠️ **MODERATE CONCERN** - General body text and project descriptions exceed optimal line length at 1024px+. Users must move eyes >120 characters.
 
 **Impact:**
 - Users with dyslexia experience reduced comprehension
@@ -153,7 +153,7 @@ Hero project description @ 1440px:
 - Poor readability for +50 age group
 
 #### Verdict
-**Desktop readability: ⚠️ NEEDS ATTENTION** — line length issue from 1024px upward.
+**Desktop readability: ⚠️ NEEDS ATTENTION** - line length issue from 1024px upward.
 
 ---
 
@@ -206,10 +206,10 @@ Content inside SectionContainer (unconstrained):
   - Up to 1152px available → ~160+ characters ❌
 ```
 
-**Assessment:** ❌ **CRITICAL** — Large desktop users face excessive line lengths for main body content.
+**Assessment:** ❌ **CRITICAL** - Large desktop users face excessive line lengths for main body content.
 
 #### Verdict
-**Large desktop readability: ❌ CRITICAL ISSUE** — line lengths far exceed recommended maximum, causing reading fatigue.
+**Large desktop readability: ❌ CRITICAL ISSUE** - line lengths far exceed recommended maximum, causing reading fatigue.
 
 ---
 
@@ -253,7 +253,7 @@ The `max-w-7xl` (80rem = 1280px) doesn't adapt to viewport. On 1440px screens, t
 // TheCloser.tsx - Properly constrained ✅
 <div className="flex-1 max-w-2xl">
   <h2 className="font-noto text-[clamp(32px,4.5vw,58px)]">
-    If your data isn't driving decisions...
+    If your data isn't \n driving decisions...
   </h2>
 </div>
 // max-w-2xl = 672px ✅ Good
@@ -554,7 +554,7 @@ Your Site:
 
 ## CONCLUSION
 
-**Your site is readable on mobile and tablet — excellent work.** The responsive design strategy with `clamp()` is sophisticated and effective for smaller screens.
+**Your site is readable on mobile and tablet - excellent work.** The responsive design strategy with `clamp()` is sophisticated and effective for smaller screens.
 
 **However, desktop users (1024px+) face excessive line lengths** due to unbounded container width on desktop breakpoints. This is the single most impactful issue for accessibility.
 

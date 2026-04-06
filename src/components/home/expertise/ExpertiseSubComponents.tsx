@@ -1,7 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/shared/utils';
-import { SLIDE_UP } from '@/config/animations';
+import { ScrollReveal } from '@/shared/components';
 import { CATEGORY_COLORS } from '@/config/constants';
 import { SkillGroup as SkillGroupType, Skill as SkillType } from '@/shared/types';
 
@@ -10,27 +9,23 @@ import { SkillGroup as SkillGroupType, Skill as SkillType } from '@/shared/types
  */
 const getSkillTooltip = (name: string) => {
   const tooltips: Record<string, string> = {
-    'Python': "Primary language. Pandas for data, everything else for everything else.",
+    'Python & R': "Core statistical and data analysis stack. From research scripts to production-ready models.",
     'SQL': "The one that never goes out of style.",
     'TypeScript': "JavaScript but it tells you when you're wrong. Immediately.",
-    'R': "Statistical computing. Mostly used for research and impressing academics.",
     'C/C++': "Close to the metal. From the B.Tech days.",
-    'Java': "Verbose. But it runs everywhere and you can't argue with that.",
-    'Flutter': "Cross-platform mobile. The 'yes I can build apps too' card.",
-    'MS Fabric': "Microsoft's all-in-one data platform. The main character of most projects here.",
-    'Azure': "Cloud infrastructure. Where pipelines are born and IAM policies are suffered.",
+    'Java': "Enterprise logic and cross-platform architecture. Experienced in scalable backend services and Flutter-based mobile UI.",
+    'Microsoft Fabric': "Microsoft's all-in-one data platform. The main character of most projects here.",
     'Git/GitHub': "Version control. Also: time machine when things go sideways.",
     'CI/CD': "Automated pipelines that deploy so you don't have to at 2am.",
     'Next.js': "React's grown-up cousin. SSR, edge functions, the works.",
     'Vercel': "Deploy in seconds. Scales without thinking about it.",
-    'AWS': "Lambda, S3, CloudFront. The infrastructure behind LiteStore.",
     'Power BI': "The dashboard tool that stakeholders actually open.",
     'KQL': "Kusto Query Language. Built for Eventhouse and real-time streams.",
     'MongoDB': "Document store. Flexible schema, powerful aggregations.",
     'Jupyter': "Where data exploration happens. And where EDA lives.",
     'ML/Stats': "Regression, clustering, recommendation. The Neural Music Engine started here.",
-    'Figma': "Where UI/UX ideas become real. Components, auto-layout, the works.",
-    'Adobe CC': "Photoshop to Premiere. The full creative stack.",
+    'Figma/Adobe XD': "Where UI/UX ideas become real. Components, auto-layout, the works.",
+    'Adobe Creative Cloud': "Photoshop to After Effects. The full creative stack.",
     'UI/UX': "Design thinking applied to interfaces. The part that makes engineers uncomfortable.",
     'Photography': "Shot on a camera, not a phone. Usually.",
     'Illustration': "Digital. Sometimes traditional. Always overthought.",
@@ -40,47 +35,61 @@ const getSkillTooltip = (name: string) => {
 
 const getCategoryTooltip = (category: string) => {
   if (category.includes('Languages')) return "The foundation. Everything else is built on top of this. (Mostly Python and SQL, let's be honest.)";
-  if (category.includes('Cloud')) return "Where the code goes to live and occasionally fail gracefully. 99.9% uptime, 100% of the time.";
+  if (category.includes('Frameworks')) return "Where the code takes shape. Infrastructure, deployment, and the tools that make scaling possible.";
   if (category.includes('Analytics')) return "The part where data stops being data and starts being insight. Dashboard gasp factor: High.";
   if (category.includes('Design')) return "Because 'it works' and 'it looks good' shouldn't be mutually exclusive. (Even for engineers.)";
   return "";
 };
 
 /**
+ * High-performance mobile title formatter.
+ */
+const CategoryTitle: React.FC<{ category: string; accentColor: string }> = ({ category, accentColor }) => {
+  const shouldBreak = category.includes(' & ') && category.length > 14;
+
+  if (!shouldBreak) return <>{category}</>;
+
+  const [first, last] = category.split(' & ');
+  return (
+    <>
+      {first}
+      <span className="block sm:inline whitespace-nowrap transition-transform duration-500 group-hover/header:translate-x-1">
+        <span className="hidden sm:inline"> </span>
+        & {last}
+      </span>
+    </>
+  );
+};
+
+/**
  * Individual Skill Card with animated bar.
  */
 export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({ skill, accentColor }) => (
-  <div 
-    className="flex flex-col gap-1 md:gap-2 group/skill cursor-help"
+  <div
+    className="flex flex-col gap-2 group/skill cursor-help"
     data-tooltip={getSkillTooltip(skill.name)}
   >
     <div className="flex items-center justify-between">
-      <span className="text-[11px] md:text-[13px] font-bold text-[#0f0f0f] tracking-tight truncate">
+      <span className="text-[13.5px] md:text-[14px] font-extrabold text-[#0f0f0f] tracking-tight truncate group-hover/skill:text-brand-primary transition-colors duration-300">
         {skill.name}
       </span>
     </div>
 
-    {/* Skill Bar Container (Desktop Only) */}
-    <div 
-      className="h-[2px] w-full bg-slate-100/80 relative rounded-full overflow-hidden hidden md:block"
+    <div
+      className="h-[1.5px] w-full bg-black/[0.04] relative rounded-full overflow-hidden hidden md:block"
     >
-      <motion.div
-        className="absolute top-0 left-0 h-full rounded-full"
-        style={{ backgroundColor: accentColor }}
-        initial={{ width: 0 }}
-        whileInView={{ width: `${skill.level}%` }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 1.5,
-          delay: 0.5,
-          ease: [0.23, 1, 0.32, 1]
+      <div
+        className="proficiency-bar-fill absolute top-0 left-0 h-full rounded-full"
+        style={{
+          backgroundColor: accentColor,
+          ['--target-width' as any]: `${skill.level}%`
         }}
       />
     </div>
 
     {/* Metadata */}
     {skill.sub && (
-      <div className="font-mono text-[8px] md:text-[9px] text-black/50 uppercase tracking-wider font-medium leading-tight mt-0.5">
+      <div className="text-reveal font-mono text-[11px] text-black/50 uppercase tracking-[0.15em] font-bold leading-tight mt-0.5 group-hover/skill:text-black/70 transition-colors duration-300" style={{ transitionDelay: '100ms' }}>
         {skill.sub}
       </div>
     )}
@@ -94,47 +103,53 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
   const accentColor = CATEGORY_COLORS[col.colorClass];
 
   return (
-    <motion.div
-      variants={SLIDE_UP}
-      custom={colIdx}
+    <ScrollReveal
+      delay={colIdx * 0.1}
       className={cn(
-        "flex flex-col p-5 md:p-8 relative border-black/20",
-        colIdx < 2 && "border-b md:border-b-0",
-        colIdx !== 3 && (colIdx % 2 === 0 ? "border-r" : "md:border-r")
+        "flex flex-col px-6 py-10 md:p-10 relative border-studio expertise-col-hover",
+        // Mobile (1-col): Every item but the last gets a bottom border
+        colIdx !== 3 ? "border-b" : "",
+        // Tablet (2-col): Top row (0,1) gets bottom border; Left items (0,2) get right border
+        colIdx < 2 ? "md:border-b" : "md:border-b-0",
+        colIdx % 2 === 0 ? "md:border-r" : "md:border-r-0",
+        // Desktop (4-col): No items get bottom border; Every item but the last gets right border
+        "lg:border-b-0",
+        colIdx !== 3 ? "lg:border-r" : "lg:border-r-0"
       )}
     >
-      {/* Header Area */}
-      <div 
-        className="flex items-center justify-between mb-6 cursor-help"
+      {/* Header Area Block */}
+      <div
+        className="cursor-help group/header mb-8 md:mb-12"
         data-tooltip={getCategoryTooltip(col.category)}
         data-tooltip-color={accentColor}
       >
-        <span className="font-mono text-[10px] text-black/25 tracking-tighter font-bold">{col.index}</span>
-        <h3 className="font-mono text-[9px] uppercase tracking-[0.2em] font-bold" style={{ color: accentColor }}>
-          {col.category}
-        </h3>
+        <div className="flex items-center justify-between gap-4 mb-4 md:mb-8">
+          <span className="font-mono text-[10px] text-black/25 tracking-tighter font-bold">{col.index}</span>
+          <h3 className="font-mono text-[12px] uppercase tracking-[0.25em] font-black text-right leading-relaxed" style={{ color: accentColor }}>
+            <CategoryTitle category={col.category} accentColor={accentColor} />
+          </h3>
+        </div>
+        <div className="h-px w-full bg-black/[0.08] transition-all duration-700 group-hover/header:bg-black/20 group-hover/header:scale-x-[1.02] origin-left" />
       </div>
 
-      <div className="h-px w-full bg-black/20 mb-8" />
-
       {/* Skills List */}
-      <div className="flex flex-col gap-3.5 md:gap-6 flex-1">
-        {col.skills.map((skill, sIdx) => (
-          <SkillCard 
-            key={skill.name} 
-            skill={skill} 
-            accentColor={accentColor} 
+      <div className="flex flex-col gap-6 md:gap-8 flex-1">
+        {col.skills.map((skill) => (
+          <SkillCard
+            key={skill.name}
+            skill={skill}
+            accentColor={accentColor}
           />
         ))}
       </div>
 
       {/* Section Footer */}
-      <div 
-        className="mt-10 pt-4 border-t border-black/20 flex items-center justify-between text-[9px] font-mono text-black/20 uppercase tracking-widest font-bold"
+      <div
+        className="mt-12 pt-8 border-t border-studio flex items-center justify-between text-[10px] font-mono text-black/20 uppercase tracking-[0.2em] font-bold"
       >
         <span>{col.footerCountLabel}</span>
-        <div className="w-1.5 h-1.5 rounded-full opacity-40" style={{ backgroundColor: accentColor }} />
+        <div className="w-2 h-2 rounded-full opacity-30 shadow-sm" style={{ backgroundColor: accentColor }} />
       </div>
-    </motion.div>
+    </ScrollReveal>
   );
 };

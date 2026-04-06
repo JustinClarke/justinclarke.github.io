@@ -21,7 +21,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
   description, 
   className = "" 
 }) => {
-  const { handleMouseMove, background, borderGlow, borderMask } = useSpotlight();
+  const { handleMouseMove, mouseX, mouseY } = useSpotlight();
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -29,13 +29,16 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative bg-[#0a0a0a] border border-white/5 rounded-2xl p-7 group/spotlight overflow-hidden flex flex-col ${className}`}
+      className={`relative bg-[#0a0a0a] border border-white/[0.08] rounded-2xl p-8 group/spotlight overflow-hidden flex flex-col ${className}`}
     >
       {/* Background Spotlight Glow */}
       <motion.div
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover/spotlight:opacity-100 z-0"
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover/spotlight:opacity-100 z-0 shadow-inner"
         style={{
-          background,
+          background: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.08), transparent 80%)`,
+          // @ts-ignore
+          "--mouse-x": mouseX, 
+          "--mouse-y": mouseY,
         }}
       />
 
@@ -43,22 +46,25 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
       <motion.div
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover/spotlight:opacity-100 z-10"
         style={{
-          background: borderGlow,
-          WebkitMaskImage: borderMask,
-          maskImage: borderMask,
+          background: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.4), transparent 80%)`,
+          WebkitMaskImage: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), black, transparent)`,
+          maskImage: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), black, transparent)`,
+          // @ts-ignore
+          "--mouse-x": mouseX, 
+          "--mouse-y": mouseY,
         }}
       />
 
       {/* Content */}
       <div className="relative z-20 flex flex-col h-full">
         {number && (
-          <div className="font-ibm text-[12px] font-bold text-white/30 tracking-[0.2em] mb-5 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-white/5">
+          <div className="font-ibm text-[12px] font-bold text-white/30 tracking-[0.25em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-white/[0.08]">
             {number}
           </div>
         )}
         
         {title && (
-          <h3 className="font-noto font-bold text-[16px] text-white uppercase tracking-[0.1em] mb-2.5">
+          <h3 className="font-noto font-bold text-[16px] text-white uppercase tracking-[0.1em] mb-3">
             {title}
           </h3>
         )}

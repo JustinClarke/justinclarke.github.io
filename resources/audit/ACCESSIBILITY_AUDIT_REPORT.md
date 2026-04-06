@@ -12,11 +12,11 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
 
 ### 🎯 Top 5 Priority Issues
 
-1. **Form Labels Missing** (🔴 Critical) — ContactModal inputs lack accessible labels
-2. **Custom Cursor Blocks Keyboard Users** (🔴 Critical) — No keyboard navigation alternative provided
-3. **Missing aria-current on Active Links** (🟠 Major) — Navigation lacks proper ARIA semantics
-4. **Focus Trap Not Explicitly Managed** (🟠 Major) — Modals don't explicitly trap/restore focus
-5. **Insufficient Color Contrast** (🟠 Major) — Several UI elements fall below WCAG AA standards
+1. **Form Labels Missing** (🔴 Critical) - ContactModal inputs lack accessible labels
+2. **Custom Cursor Blocks Keyboard Users** (🔴 Critical) - No keyboard navigation alternative provided
+3. **Missing aria-current on Active Links** (🟠 Major) - Navigation lacks proper ARIA semantics
+4. **Focus Trap Not Explicitly Managed** (🟠 Major) - Modals don't explicitly trap/restore focus
+5. **Insufficient Color Contrast** (🟠 Major) - Several UI elements fall below WCAG AA standards
 
 **Total Issues Found:** 23  
 - 🔴 Critical: 2
@@ -70,7 +70,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   }
   ```
 - **Effort**: Low
-- **Code Impact**: Minimal—adds hidden labels without affecting visual design
+- **Code Impact**: Minimal-adds hidden labels without affecting visual design
 
 ---
 
@@ -136,7 +136,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </nav>
   ```
 - **Effort**: Low
-- **Design Impact**: Zero—purely semantic restructuring
+- **Design Impact**: Zero-purely semantic restructuring
 
 ---
 
@@ -196,7 +196,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   }
   ```
 - **Effort**: Medium
-- **Design Impact**: None—respects motion preferences and maintains existing visual when appropriate
+- **Design Impact**: None-respects motion preferences and maintains existing visual when appropriate
 
 ---
 
@@ -296,7 +296,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   }
   ```
 - **Effort**: Low
-- **Design Impact**: Adds visible outline on focus—enhances usability without changing base design
+- **Design Impact**: Adds visible outline on focus-enhances usability without changing base design
 
 ---
 
@@ -319,7 +319,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   
   2. **Verify Radix Dialog behavior** by testing: open modal → press Escape → confirm it closes and focus returns to trigger button.
 - **Effort**: Low
-- **Design Impact**: Minimal—adds subtle keyboard hint
+- **Design Impact**: Minimal-adds subtle keyboard hint
 
 ---
 
@@ -366,7 +366,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </p>
   ```
 - **Effort**: Low
-- **Design Impact**: Subtle transparency adjustment—maintains aesthetic while improving readability
+- **Design Impact**: Subtle transparency adjustment-maintains aesthetic while improving readability
 
 ---
 
@@ -399,7 +399,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </div>
   ```
 - **Effort**: Low
-- **Design Impact**: Minimal—adds visual clarity without changing design
+- **Design Impact**: Minimal-adds visual clarity without changing design
 
 ---
 
@@ -428,7 +428,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   ```
   This caps the heading at ~60 characters per line on desktop while allowing fluid scaling.
 - **Effort**: Low
-- **Design Impact**: Zero—responsive behavior unchanged, just capped width
+- **Design Impact**: Zero-responsive behavior unchanged, just capped width
 
 ---
 
@@ -454,7 +454,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   <p className="body-text text-white/70">{project.copy}</p>
   ```
 - **Effort**: Low
-- **Design Impact**: Subtle spacing increase—improves legibility without aesthetic change
+- **Design Impact**: Subtle spacing increase-improves legibility without aesthetic change
 
 ---
 
@@ -508,8 +508,8 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
     Featured Projects
   </h2>
   ```
-  (This is already done well—keep as-is!)
-- **Effort**: None—already implemented correctly
+  (This is already done well-keep as-is!)
+- **Effort**: None-already implemented correctly
 - **Note**: Your implementation is exemplary for visual hierarchy
 
 ---
@@ -546,7 +546,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   
   Since the parent `<a>` already has `aria-label={link.label}`, the SVG should be hidden from the accessibility tree.
 - **Effort**: Low
-- **Design Impact**: Zero—purely semantic
+- **Design Impact**: Zero-purely semantic
 
 ---
 
@@ -618,7 +618,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </p>
   ```
 - **Effort**: Medium
-- **Design Impact**: None—purely semantic metadata
+- **Design Impact**: None-purely semantic metadata
 
 ---
 
@@ -742,7 +742,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   ```
   This maintains the visual effect while reducing motion stress.
 - **Effort**: Low
-- **Design Impact**: Subtle—parallax remains but less aggressive
+- **Design Impact**: Subtle-parallax remains but less aggressive
 
 ---
 
@@ -806,7 +806,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   };
   ```
 - **Effort**: Medium
-- **Design Impact**: None—purely accessibility layer
+- **Design Impact**: None-purely accessibility layer
 
 ---
 
@@ -843,7 +843,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </Dialog.Description>
   ```
 - **Effort**: Low
-- **Design Impact**: Minimal—adds subtle indicator
+- **Design Impact**: Minimal-adds subtle indicator
 
 ---
 
@@ -910,7 +910,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   </button>
   ```
 - **Effort**: Low
-- **Design Impact**: None—purely semantic ARIA attribute
+- **Design Impact**: None-purely semantic ARIA attribute
 
 ---
 
@@ -919,7 +919,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
 - **WCAG Criterion**: 2.4.4 Link Purpose
 - **Location**: Throughout site
 - **Problem**: 
-  Your links are generally well-labeled ("View Project", "GitHub Profile", "LinkedIn Profile"), but a full audit should ensure no links use generic text like "click here" or "read more" (which you don't—good!).
+  Your links are generally well-labeled ("View Project", "GitHub Profile", "LinkedIn Profile"), but a full audit should ensure no links use generic text like "click here" or "read more" (which you don't-good!).
 - **Affected Users**: 
   Screen reader users scanning links via `Ctrl+K` or similar
 - **Recommendation**: 
@@ -934,7 +934,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   <a href="#">Read more</a>
   ```
   Your code already follows best practices here.
-- **Effort**: None—already compliant
+- **Effort**: None-already compliant
 - **Note**: Exemplary implementation
 
 ---
@@ -977,7 +977,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   
   3. **Verify on mobile**: Test with TouchEvent or device with small fingers/gloves.
 - **Effort**: Low
-- **Design Impact**: Slightly larger touch areas on mobile—maintains desktop appearance via responsive sizing
+- **Design Impact**: Slightly larger touch areas on mobile-maintains desktop appearance via responsive sizing
 
 ---
 
@@ -989,7 +989,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
 - **Severity**: ⚪ Suggestion
 - **Location**: Throughout codebase
 - **Problem**: 
-  None—your ARIA usage is exemplary! You use:
+  None-your ARIA usage is exemplary! You use:
   - `aria-label` on social links (correct)
   - `sr-only` pattern (implied via Radix UI)
   - Dialog ARIA provided by Radix UI
@@ -1016,7 +1016,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
 - **Severity**: ⚪ Suggestion
 - **Location**: [index.html](index.html#L2)
 - **Problem**: 
-  None—`<html lang="en">` is correctly set.
+  None-`<html lang="en">` is correctly set.
 - **Recommendation**: 
   Maintain as-is.
 - **Note**: Exemplary implementation
@@ -1031,7 +1031,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
 - **Severity**: ⚪ Suggestion
 - **Location**: [index.html](index.html#L1-L35)
 - **Problem**: 
-  None—your meta tags are well-structured:
+  None-your meta tags are well-structured:
   - `<meta charset="UTF-8">`
   - `<meta name="viewport" content="width=device-width, initial-scale=1.0">`
   - `<meta name="description" content="...">`
@@ -1046,7 +1046,7 @@ Your portfolio demonstrates strong foundational accessibility practices with Rad
   <meta name="theme-color" content="#050505">
   ```
 - **Effort**: Low
-- **Design Impact**: None—improves mobile appearance
+- **Design Impact**: None-improves mobile appearance
 
 ---
 
@@ -1113,25 +1113,25 @@ className={cn(
 
 ## IMPLEMENTATION ROADMAP
 
-### Phase 1: Critical Issues (Week 1) — Blocks Accessibility
+### Phase 1: Critical Issues (Week 1) - Blocks Accessibility
 1. ✅ Add form labels to ContactModal (Issue #1)
 2. ✅ Implement keyboard cursor detection (Issue #4)
 3. ✅ Add focus rings to all buttons (Issue #6)
 
-### Phase 2: Major Issues (Week 2) — Significantly Impacts UX
+### Phase 2: Major Issues (Week 2) - Significantly Impacts UX
 4. ✅ Improve text contrast (Issue #8)
 5. ✅ Add aria-current to navigation (Issue #21)
 6. ✅ Implement prefers-reduced-motion hook (Issue #17)
 7. ✅ Add aria-hidden to SVG icons (Issue #14)
 
-### Phase 3: Minor Improvements (Week 3) — Polish & Optimization
+### Phase 3: Minor Improvements (Week 3) - Polish & Optimization
 8. ✅ Add visual project descriptions (Issue #16)
 9. ✅ Fix heading hierarchy (Issue #2)
 10. ✅ Add semantic nav elements (Issue #3)
 11. ✅ Increase tap target sizes (Issue #23)
 12. ✅ Add form error announcements (Issue #19)
 
-### Phase 4: Suggestions (Ongoing) — Enhanced Experience
+### Phase 4: Suggestions (Ongoing) - Enhanced Experience
 13. ✅ Optimize line height (Issue #11)
 14. ✅ Add motion disability detection (Issue #18)
 15. ✅ Disable parallax on sensitive motion (Issue #18)
@@ -1149,8 +1149,8 @@ className={cn(
 - [ ] Check color contrast with WebAIM Contrast Checker (all text ≥4.5:1)
 
 ### Manual Testing: Keyboard Navigation
-- [ ] Tab through entire site—focus visible on every interactive element
-- [ ] Press Escape to close modals—focus returns to trigger button
+- [ ] Tab through entire site-focus visible on every interactive element
+- [ ] Press Escape to close modals-focus returns to trigger button
 - [ ] Tab order follows visual/logical reading order
 - [ ] No keyboard traps (elements you can't Tab out of)
 - [ ] Skip link to main content works
@@ -1272,11 +1272,11 @@ pa11y https://justinclarke.github.io
 All code examples referenced in this audit are provided with context and testable snippets. When implementing fixes, refer to the specific line numbers and file paths linked throughout this report.
 
 **Key Files for Attention:**
-- [src/components/ui/ContactModal.tsx](src/components/ui/ContactModal.tsx) — Form accessibility
-- [src/components/ui/CustomCursor.tsx](src/components/ui/CustomCursor.tsx) — Keyboard support
-- [src/components/home/hero/HeroSubComponents.tsx](src/components/home/hero/HeroSubComponents.tsx) — Navigation semantics
-- [src/index.css](src/index.css) — Global styles & utilities
-- [src/App.tsx](src/App.tsx) — Root structure
+- [src/components/ui/ContactModal.tsx](src/components/ui/ContactModal.tsx) - Form accessibility
+- [src/components/ui/CustomCursor.tsx](src/components/ui/CustomCursor.tsx) - Keyboard support
+- [src/components/home/hero/HeroSubComponents.tsx](src/components/home/hero/HeroSubComponents.tsx) - Navigation semantics
+- [src/index.css](src/index.css) - Global styles & utilities
+- [src/App.tsx](src/App.tsx) - Root structure
 
 ---
 

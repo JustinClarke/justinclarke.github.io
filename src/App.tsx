@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import { Home, ProjectDetails, NotFound } from '@/pages';
 import { CustomCursor, Preloader } from '@/components/ui-global';
 import { ContactModal } from '@/modals';
-import { initTooltips } from '@/shared/utils/tooltips';
+import { initTooltips, initScrollAnimations } from '@/shared/utils';
 
 /**
  * Main application layout and routing.
@@ -11,7 +11,20 @@ import { initTooltips } from '@/shared/utils/tooltips';
  */
 export default function App() {
   useEffect(() => {
-    initTooltips();
+    const handlePreloaderComplete = () => {
+      initTooltips();
+      initScrollAnimations();
+    };
+
+    window.addEventListener('preloaderComplete', handlePreloaderComplete);
+    
+    // Fallback just in case preloader is disabled natively
+    const timeout = setTimeout(handlePreloaderComplete, 3500);
+
+    return () => {
+      window.removeEventListener('preloaderComplete', handlePreloaderComplete);
+      clearTimeout(timeout);
+    };
   }, []);
 
   return (

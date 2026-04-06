@@ -92,6 +92,7 @@ export const Preloader = () => {
     const totalDuration = prefersReducedMotion ? 0.6 : PRELOADER_TIMELINE.TOTAL_DURATION;
     const exitTimer = setTimeout(() => {
       setIsVisible(false);
+      window.dispatchEvent(new CustomEvent('preloaderComplete'));
       document.body.style.overflow = 'auto';
     }, totalDuration * 1000);
 
@@ -131,7 +132,7 @@ export const Preloader = () => {
           <div className='relative z-10 flex flex-col items-center'>
             <motion.div
               exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               className='text-5xl md:text-7xl font-serif italic text-white tracking-tight select-none'
               style={{
                 textShadow: '0 0 20px rgba(255,255,255,0.08)'
@@ -146,7 +147,7 @@ export const Preloader = () => {
           <div className='absolute bottom-0 left-0 right-0 z-10 px-6 md:px-10 pb-8'>
             <motion.div 
               exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
               className='flex items-end justify-between mb-6'
             >
               <div className='flex-1' />

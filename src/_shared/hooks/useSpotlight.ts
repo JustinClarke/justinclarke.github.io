@@ -1,10 +1,13 @@
 import React from 'react';
-import { useMotionValue, useMotionTemplate } from 'framer-motion';
+import { useMotionValue } from 'framer-motion';
 
 /**
  * Custom hook for the 'Spotlight' interactive gradient effect.
+ * Optimized to use CSS Variables instead of multiple useMotionTemplate strings.
+ * This pushes the computation of the gradient to the browser's CSS engine,
+ * which is significantly more efficient than JS-based string interpolation.
  */
-export function useSpotlight(config = { radius: 250, color: '0, 200, 180' }) {
+export function useSpotlight() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -14,25 +17,10 @@ export function useSpotlight(config = { radius: 250, color: '0, 200, 180' }) {
     mouseY.set(clientY - top);
   }
 
-  const background = useMotionTemplate`
-    radial-gradient(
-      ${config.radius}px circle at ${mouseX}px ${mouseY}px,
-      rgba(${config.color}, 0.08),
-      transparent 80%
-    )
-  `;
-
-  const borderGlow = useMotionTemplate`
-    radial-gradient(
-      ${config.radius}px circle at ${mouseX}px ${mouseY}px,
-      rgba(${config.color}, 0.4),
-      transparent 80%
-    )
-  `;
-
-  const borderMask = useMotionTemplate`
-    radial-gradient(${config.radius}px circle at ${mouseX}px ${mouseY}px, black, transparent)
-  `;
-
-  return { mouseX, mouseY, handleMouseMove, background, borderGlow, borderMask };
+  // We return the motion values to be mapped to CSS variables in the component
+  return { 
+    mouseX, 
+    mouseY, 
+    handleMouseMove 
+  };
 }

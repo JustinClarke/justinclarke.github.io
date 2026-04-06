@@ -17,8 +17,34 @@ export interface HeroMetadata {
   name: string;
   /** Short biographical hook */
   bio: string;
-  /** Calls to action text */
+  /** Primary call to action text */
   cta: string;
+  /** Personality-driven tooltip facts for hero elements */
+  tooltips: {
+    role: string;
+    name: string;
+    bio: string;
+    cta: string;
+  };
+}
+
+/**
+ * Metadata specifically for the site-closing 'The Closer' section.
+ */
+export interface CloserMetadata {
+  /** The main heading (e.g., 'Let's build something') */
+  heading: string;
+  /** Sub-heading or secondary hook */
+  subHeading: string;
+  /** Contact email */
+  email: string;
+  /** Footer copyright or brand line */
+  brandLine: string;
+  /** Personality-driven tooltip facts */
+  tooltips: {
+    email: string;
+    logo: string;
+  };
 }
 
 /**

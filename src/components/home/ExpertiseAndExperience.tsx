@@ -1,14 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
-import { SectionContainer } from '@/shared/components';
+import { SectionContainer, ScrollReveal } from '@/shared/components';
 import { ExperienceItem, EducationCard } from '@/components/ui';
 import { ExpertisePipeline } from './ExpertisePipeline';
 import { useReducedMotion } from '@/shared/hooks';
 import { experiences, education } from '@/data';
-
-gsap.registerPlugin(ScrollTrigger);
 
 /**
  * ExpertiseAndExperience highlights professional history.
@@ -23,103 +20,110 @@ export const ExpertiseAndExperience = () => {
   const eduRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Parallax Background
-      if (containerRef.current && !prefersReducedMotion) {
-        gsap.to('.parallax-bg-3', {
-          y: -400,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          }
-        });
-        gsap.to('.parallax-bg-4', {
-          y: -800,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true,
-          }
-        });
-      }
-    }, containerRef); // Scope to containerRef
+  // Framer Motion native parallax
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
 
-    return () => ctx.revert();
-  }, [prefersReducedMotion]);
+  const backgroundY3 = useTransform(scrollYProgress, [0, 1], [0, prefersReducedMotion ? 0 : -400]);
+  const backgroundY4 = useTransform(scrollYProgress, [0, 1], [0, prefersReducedMotion ? 0 : -800]);
 
   return (
     <SectionContainer
       id="expertise"
       ref={containerRef}
-      contentMaxWidth="max-w-6xl"
-      className="narrative-section min-h-screen py-24 md:py-40 bg-white text-black overflow-x-hidden"
+      contentMaxWidth="max-w-7xl"
+      className="narrative-section min-h-screen pt-12 pb-24 md:pt-20 md:pb-32 bg-white text-black overflow-x-hidden scroll-mt-[100px] border-t border-black/[0.03]"
       innerClassName="flex flex-col gap-24 md:gap-32 relative"
     >
-      <ExpertiseBackground />
+      <ExpertiseBackground y3={backgroundY3} y4={backgroundY4} />
 
       {/* ── Expertise Pipeline ── */}
-      <div ref={pipelineRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The strategic toolkit.">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Capabilities</span>
-          <div className="flex-1 h-px bg-black/[0.06]" />
-        </div>
-        <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black mb-12 cursor-help"
-          data-tooltip="If it isn't here, I'm probably currently learning it."
-        >Expertise Pipeline</h2>
+      <div ref={pipelineRef} className="flex flex-col gap-6 md:gap-8">
+        <ScrollReveal 
+          direction="right" 
+          distance={12} 
+          className="flex items-center justify-start gap-6"
+        >
+          <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-black/30 whitespace-nowrap group-hover:text-brand-primary transition-colors">Capabilities</span>
+          <div className="flex-1 h-px bg-black/[0.03] section-label-rule opacity-100 w-full" />
+        </ScrollReveal>
+        
+        <ScrollReveal delay={0.1}>
+          <h2 className="font-noto text-4xl md:text-7xl font-black tracking-tighter text-black mb-8 md:mb-12">
+            Expertise Pipeline
+          </h2>
+        </ScrollReveal>
 
         <ExpertisePipeline />
       </div>
 
       {/* ── Work Experience ── */}
-      <div ref={expRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The hands-on history.">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Career</span>
-          <div className="flex-1 h-px bg-black/[0.06]" />
-        </div>
-        <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black cursor-help"
-          data-tooltip="Every gig has been a step toward bigger data problems."
-        >Work Experience</h2>
+      <div id="experience" ref={expRef} className="flex flex-col gap-8 scroll-mt-[100px]">
+        <ScrollReveal 
+          direction="right" 
+          distance={12} 
+          className="flex items-center gap-6"
+        >
+          <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-black/30 whitespace-nowrap group-hover:text-brand-primary transition-colors">Career</span>
+          <div className="flex-1 h-px bg-black/[0.03] section-label-rule opacity-100 w-full" />
+        </ScrollReveal>
+        
+        <ScrollReveal delay={0.1}>
+          <h2 className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black">
+            Work Experience
+          </h2>
+        </ScrollReveal>
 
-        <div className="mt-8">
+        <div className="mt-12 flex flex-col">
           {experiences.map((exp, i) => (
-            <ExperienceItem
-              key={exp.company}
-              exp={exp}
-              isOpen={openExp === i}
-              onClick={() => setOpenExp(openExp === i ? -1 : i)}
-            />
+            <ScrollReveal 
+              key={exp.company} 
+              delay={i * 0.1}
+              distance={8}
+              layout
+            >
+              <ExperienceItem
+                exp={exp}
+                isOpen={openExp === i}
+                onClick={() => setOpenExp(openExp === i ? -1 : i)}
+              />
+            </ScrollReveal>
           ))}
-          <div className="border-b border-[#eee]" />
+          <ScrollReveal delay={0.4} distance={0}>
+            <div className="border-b border-black/[0.03] divider-grow opacity-100 scale-x-100" />
+          </ScrollReveal>
         </div>
       </div>
 
       {/* ── Education ── */}
-      <div ref={eduRef} className="flex flex-col gap-6">
-        <div className="flex items-center gap-4 group cursor-help" data-tooltip="The theoretical foundation.">
-          <span className="font-mono text-[12px] font-bold tracking-[0.2em] uppercase text-black/30 whitespace-nowrap group-hover:text-teal-600 transition-colors">Academic Background</span>
-          <div className="flex-1 h-px bg-black/[0.06]" />
-        </div>
-        <h2 
-          className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black cursor-help"
-          data-tooltip="The baseline of research and logic."
-        >Education</h2>
+      <div id="education" ref={eduRef} className="flex flex-col gap-8 scroll-mt-[100px]">
+        <ScrollReveal 
+          direction="right" 
+          distance={12} 
+          className="flex items-center gap-6"
+        >
+          <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-black/30 whitespace-nowrap group-hover:text-brand-primary transition-colors">Academic Background</span>
+          <div className="flex-1 h-px bg-black/[0.03] section-label-rule opacity-100 w-full" />
+        </ScrollReveal>
+        
+        <ScrollReveal delay={0.1}>
+          <h2 className="font-noto text-3xl md:text-7xl font-black tracking-tighter text-black">
+            Education
+          </h2>
+        </ScrollReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          {education.map(edu => (
-            <div
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          {education.map((edu, i) => (
+            <ScrollReveal
               key={edu.school}
+              delay={i * 0.15}
+              distance={12}
               className={edu.isOngoing ? "md:col-span-2" : "md:col-span-1"}
             >
               <EducationCard edu={edu} />
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -130,11 +134,16 @@ export const ExpertiseAndExperience = () => {
 /**
  * Decorative parallax background elements for the Expertise section.
  */
-const ExpertiseBackground = () => (
+interface ExpertiseBackgroundProps {
+  y3: MotionValue<number>;
+  y4: MotionValue<number>;
+}
+
+const ExpertiseBackground = ({ y3, y4 }: ExpertiseBackgroundProps) => (
   <div aria-hidden="true">
-    <div className="parallax-bg-4 absolute top-[60%] right-[-10%] w-[400px] h-[400px] bg-brand-primary/5 rounded-full blur-[110px] pointer-events-none" />
-    <div className="parallax-bg-3 absolute top-[10%] right-[5%] w-72 h-72 bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
-    <div className="parallax-bg-2 absolute top-[40%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
-    <div className="parallax-bg-1 absolute bottom-[10%] right-[-5%] w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <motion.div style={{ y: y4 }} className="absolute top-[60%] right-[-10%] w-[400px] h-[400px] bg-brand-primary/5 rounded-full blur-[110px] pointer-events-none" />
+    <motion.div style={{ y: y3 }} className="absolute top-[10%] right-[5%] w-72 h-72 bg-brand-primary/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="absolute top-[40%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] pointer-events-none" />
+    <div className="absolute bottom-[10%] right-[-5%] w-96 h-96 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
   </div>
 );

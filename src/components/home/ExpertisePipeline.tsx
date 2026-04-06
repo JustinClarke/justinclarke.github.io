@@ -11,13 +11,9 @@ import { SkillColumn } from './expertise/ExpertiseSubComponents';
  */
 export const ExpertisePipeline: React.FC = () => {
   return (
-    <motion.div
-      className="w-full grid grid-cols-2 md:grid-cols-4 border border-black/20 bg-white rounded-2xl overflow-hidden shadow-sm"
-      variants={STAGGER_CONTAINER}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.1 }}
-      data-tooltip="If it isn't here, I'm probably currently learning it (or I've already automated it)."
+    <div
+      className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-studio bg-white rounded-xl overflow-hidden shadow-[0_15px_45px_0_rgba(0,0,0,0.03)]"
+      data-tooltip="Technical vertical stacks. Optimized for scale and performance."
     >
       {expertiseColumns.map((col, colIdx) => (
         <SkillColumn 
@@ -26,6 +22,6 @@ export const ExpertisePipeline: React.FC = () => {
           colIdx={colIdx} 
         />
       ))}
-    </motion.div>
+    </div>
   );
 };
