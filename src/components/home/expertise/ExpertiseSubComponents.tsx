@@ -70,13 +70,13 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
     data-tooltip={getSkillTooltip(skill.name)}
   >
     <div className="flex items-center justify-between">
-      <span className="text-[13.5px] md:text-[14px] font-extrabold text-[#0f0f0f] tracking-tight truncate group-hover/skill:text-brand-primary transition-colors duration-300">
+      <span className="text-[13.5px] md:text-[14px] font-extrabold text-white/90 tracking-tight truncate group-hover/skill:text-brand-primary transition-colors duration-300">
         {skill.name}
       </span>
     </div>
 
     <div
-      className="h-[1.5px] w-full bg-black/[0.04] relative rounded-full overflow-hidden hidden md:block"
+      className="h-[1.5px] w-full bg-white/[0.05] relative rounded-full overflow-hidden hidden md:block"
     >
       <div
         className="proficiency-bar-fill absolute top-0 left-0 h-full rounded-full"
@@ -89,7 +89,7 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
 
     {/* Metadata */}
     {skill.sub && (
-      <div className="text-reveal font-mono text-[11px] text-black/50 uppercase tracking-[0.15em] font-bold leading-tight mt-0.5 group-hover/skill:text-black/70 transition-colors duration-300" style={{ transitionDelay: '100ms' }}>
+      <div className="text-reveal font-mono text-[11px] text-white/40 uppercase tracking-[0.15em] font-bold leading-tight mt-0.5 group-hover/skill:text-white/60 transition-colors duration-300" style={{ transitionDelay: '100ms' }}>
         {skill.sub}
       </div>
     )}
@@ -103,10 +103,9 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
   const accentColor = CATEGORY_COLORS[col.colorClass];
 
   return (
-    <ScrollReveal
-      delay={colIdx * 0.1}
+    <div
       className={cn(
-        "flex flex-col px-6 py-10 md:p-10 relative border-studio expertise-col-hover",
+        "flex flex-col px-6 py-10 md:p-10 relative border-white/[0.05] expertise-col-hover",
         // Mobile (1-col): Every item but the last gets a bottom border
         colIdx !== 3 ? "border-b" : "",
         // Tablet (2-col): Top row (0,1) gets bottom border; Left items (0,2) get right border
@@ -124,12 +123,12 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
         data-tooltip-color={accentColor}
       >
         <div className="flex items-center justify-between gap-4 mb-4 md:mb-8">
-          <span className="font-mono text-[10px] text-black/25 tracking-tighter font-bold">{col.index}</span>
+          <span className="font-mono text-[10px] text-white/20 tracking-tighter font-bold">{col.index}</span>
           <h3 className="font-mono text-[12px] uppercase tracking-[0.25em] font-black text-right leading-relaxed" style={{ color: accentColor }}>
             <CategoryTitle category={col.category} accentColor={accentColor} />
           </h3>
         </div>
-        <div className="h-px w-full bg-black/[0.08] transition-all duration-700 group-hover/header:bg-black/20 group-hover/header:scale-x-[1.02] origin-left" />
+        <div className="h-px w-full bg-white/[0.05] transition-all duration-700 group-hover/header:bg-white/10 group-hover/header:scale-x-[1.02] origin-left" />
       </div>
 
       {/* Skills List */}
@@ -145,11 +144,11 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
 
       {/* Section Footer */}
       <div
-        className="mt-12 pt-8 border-t border-studio flex items-center justify-between text-[10px] font-mono text-black/20 uppercase tracking-[0.2em] font-bold"
+        className="mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] font-bold"
       >
         <span>{col.footerCountLabel}</span>
-        <div className="w-2 h-2 rounded-full opacity-30 shadow-sm" style={{ backgroundColor: accentColor }} />
+        <div className="w-2 h-2 rounded-full opacity-40 shadow-sm" style={{ backgroundColor: accentColor }} />
       </div>
-    </ScrollReveal>
+    </div>
   );
 };
