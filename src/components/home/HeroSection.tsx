@@ -10,134 +10,90 @@ import './HeroSection.css';
 const COMMANDS: Record<string, { t: string; text: string }[]> = {
   whoami: [
     { t: 'g', text: 'Justin Clarke' },
-    { t: 'm', text: 'Data Analyst & Full-Stack Engineer' },
-    { t: 'b', text: 'Microsoft Fabric · Power BI · Next.js · Python' },
-    { t: 't', text: 'Based in Dubai · Open to remote & hybrid' },
-    { t: 'g', text: '→ justinclarke.github.io' },
+    { t: 'pu', text: 'Data Engineering & Analytics Lead' },
+    { t: 'b', text: 'Microsoft Fabric · Power BI · Azure · Next.js · Python' },
+    { t: 't', text: 'Specializing in high-fidelity data experiences.' },
+    { t: 'm', text: '→ Built with passion in Dubai.' },
   ],
   'ls projects': [
-    { t: 'm', text: 'total 4' },
-    { t: 'b', text: 'drwxr  customer-lifetime-value-analytics/' },
-    { t: 'pu', text: 'drwxr  neural-music-engine/' },
+    { t: 'm', text: 'Reading from /mnt/storage/core_repos...' },
+    { t: 'b', text: 'drwxr  neural-music-engine/' },
+    { t: 'pu', text: 'drwxr  data-pipeline-architectures/' },
     { t: 'g', text: 'drwxr  retail-as-a-service/' },
-    { t: 't', text: 'drwxr  product-telemetry-intelligence/' },
-    { t: 'm', text: '→ scrolling to Featured Projects...' },
+    { t: 't', text: 'drwxr  product-intelligence-v3/' },
+    { t: 'o', text: '→ scrolling to active workloads...' },
   ],
   expertise: [
-    { t: 'g', text: '[languages]   Python · SQL · TypeScript · R · C++ · Java' },
-    { t: 'b', text: '[cloud]       Microsoft Fabric · Azure · Next.js · Vercel · AWS' },
-    { t: 'pu', text: '[analytics]   Power BI · KQL · DAX · MongoDB · ML/Stats' },
-    { t: 't', text: '[design]      Figma · Adobe CC · UI/UX · Photography' },
+    { t: 'g', text: '[core]        Python · SQL · TypeScript · R' },
+    { t: 'b', text: '[data]        Microsoft Fabric · Power BI · Azure' },
+    { t: 'pu', text: '[web]         React · Next.js · Node · GSAP' },
+    { t: 't', text: '[creative]    Figma · UI/UX · Cinematic Motion' },
     { t: 'm', text: '→ scrolling to Expertise Pipeline...' },
   ],
   'ping me': [
-    { t: 'm', text: 'PING justinsavioclarke@outlook.com' },
-    { t: 'g', text: '64 bytes from justin: seq=0 ttl=64 time=0.3ms' },
-    { t: 'g', text: '64 bytes from justin: seq=1 ttl=64 time=0.2ms' },
-    { t: 't', text: '→ open to new engagements · response guaranteed' },
+    { t: 'm', text: 'Establishing handshake with outlook.com...' },
+    { t: 'g', text: '64 bytes from Justin: icmp_seq=1 ttl=255 time=0.042ms' },
+    { t: 't', text: 'Status: Fully open to collaboration.' },
     { t: 'b', text: 'justinsavioclarke@outlook.com' },
   ],
   help: [
-    { t: 'o', text: 'Available commands:' },
-    { t: 'g', text: '  whoami          → brief intro' },
-    { t: 'b', text: '  ls projects     → list core projects' },
-    { t: 'pu', text: '  expertise       → full skills manifest' },
-    { t: 't', text: '  experience      → professional timeline' },
-    { t: 'g', text: '  education       → academic background' },
-    { t: 't', text: '  ping me         → contact info' },
-    { t: 'm', text: '  clear           → clear screen' },
+    { t: 'o', text: 'System Manifest — Standard Protocols:' },
+    { t: 'g', text: '  whoami          → biometric summary' },
+    { t: 'b', text: '  ls projects     → core project registry' },
+    { t: 'pu', text: '  expertise       → technical stack manifest' },
+    { t: 't', text: '  experience      → historical timeline' },
+    { t: 't', text: '  ping me         → contact bridge' },
+    { t: 'm', text: '  clear           → purge display' },
     { t: 'm', text: '' },
-    { t: 'm', text: 'Bonus: theme toggle, play snake, git blame, sudo' },
+    { t: 'o', text: 'Advanced Modules (For the curious):' },
+    { t: 'pu', text: '  sudo, play snake, git blame, coffee, matrix, life' },
   ],
   experience: [
-    { t: 't', text: 'Loading professional timeline...' },
-    { t: 'm', text: '→ Microsoft Fabric · Power BI · Data Analytics' },
-    { t: 'g', text: '→ Scrolling to Work Experience section' },
+    { t: 't', text: 'Synchronizing timeline data...' },
+    { t: 'm', text: '→ Scrolling to professional history.' },
   ],
   education: [
-    { t: 'b', text: 'Loading academic background...' },
-    { t: 'm', text: '→ Computer Science · Data Structures · Algorithms' },
-    { t: 'g', text: '→ Scrolling to Education section' },
+    { t: 'b', text: 'Accessing academic archives...' },
+    { t: 'm', text: '→ Scrolling to university credentials.' },
   ],
   coffee: [
     { t: 'o', text: 'Brewing a fresh cup of digital caffeine... ☕' },
     { t: 'm', text: 'Status: Enjoying a medium roast while optimizing pipelines.' },
+    { t: 'g', text: 'Optimization level increased by 15%.' },
   ],
-  ping: [
-    { t: 'g', text: "Pinging Justin's brain..." },
-    { t: 'm', text: '64 bytes from neurons: icmp_seq=1 ttl=128 time=12ms' },
-    { t: 'm', text: '64 bytes from neurons: icmp_seq=2 ttl=128 time=15ms' },
-    { t: 't', text: 'Status: Fully operational and ready to build.' },
+  matrix: [
+    { t: 'g', text: 'You take the blue pill... wait, you already clicked Dark Mode.' },
+    { t: 'r', text: 'There is no spoon. Only code.' },
+  ],
+  life: [
+    { t: 'b', text: 'Analyzing existence...' },
+    { t: 'pu', text: 'Result: 42. But also, have you tried learning Microsoft Fabric?' },
   ],
   secret: [
-    { t: 'r', text: 'Nice try.' },
-    { t: 'm', text: 'Access to encrypted dreams requires a level 7 clearance.' },
+    { t: 'r', text: 'Nice try, Agent. Access to encrypted dreams requires level 10 clearance.' },
   ],
-  'git push': [
-    { t: 'b', text: "Pushing changes to Justin's legacy..." },
-    { t: 'g', text: '✓ 1,337 commits pushed to master.' },
-    { t: 'm', text: 'Everything is up to date.' },
-  ],
-  music: [
-    { t: 'pu', text: 'Currently vibing to:' },
-    { t: 'm', text: 'Deep Learning & Lo-fi Beats — Vol. IV' },
-  ],
-  weather: [
-    { t: 't', text: 'Location: Dubai, UAE' },
-    { t: 'o', text: 'Condition: 32°C / Golden Hour' },
-  ],
-  whois: [
-    { t: 'g', text: 'Justin Clarke' },
-    { t: 'm', text: 'A data-driven engineer who builds bridging systems.' },
-    { t: 'b', text: 'Follow: @justindataguy (mostly just code and coffee)' },
-  ],
-  'sudo su': [
-    { t: 'r', text: 'Error: User "Guest" is not in the sudoers file.' },
-    { t: 'm', text: 'This incident will be reported. Just kidding — try "help".' },
-  ],
-  resume: [
-    { t: 'g', text: 'Initiating secure download of Justin_Clarke_Resume.pdf...' },
-    { t: 'm', text: 'Opening file in your browser now.' },
-  ],
-  download: [
-    { t: 'g', text: 'Scanning for latest resume artifacts...' },
-    { t: 'b', text: 'File found: resume.pdf [244 KB]' },
-    { t: 'm', text: 'Transferring to your local system.' },
+  salary: [
+    { t: 'm', text: 'Redirecting to bank-of-imagination.com...' },
+    { t: 'o', text: 'Error: Balance too high to display in a terminal.' },
   ],
 };
 
 const FUNNY_ERRORS: Record<string, { cls: string; text: string }> = {
-  sudo: { cls: 'r', text: "Nice try. You don't have root access to Justin's life decisions." },
-  'rm -rf': { cls: 'r', text: 'Absolutely not. The portfolio stays. So does Justin.' },
-  rm: { cls: 'r', text: 'Nothing to delete here. Only good decisions were made.' },
-  'git blame': { cls: 'o', text: "it was Justin. It's always Justin. He owns it." },
-  'git commit': { cls: 'o', text: 'Nothing to commit. Working tree clean. Life is good.' },
-  'npm install': { cls: 'm', text: 'Already installed. Justin ships production-ready. → scroll to Projects' },
-  'npm run dev': { cls: 'g', text: 'Development server running at justinclarke.github.io 🚀' },
-  cd: { cls: 'b', text: "cd: you're already in the right place. → scroll to explore" },
+  sudo: { cls: 'r', text: "Access Denied: Root permissions are reserved for Justin's brain only." },
+  'rm -rf': { cls: 'r', text: 'CRITICAL ERROR: Attempting to delete the foundation of my career?' },
+  'git blame': { cls: 'o', text: "Analyzing commits... It's Justin. It's always been Justin." },
+  'npm run dev': { cls: 'g', text: 'Development server is already pushing to PRODUCTION 🚀' },
+  cd: { cls: 'b', text: "cd: you're already in the right place. There is nowhere else." },
+  hello: { cls: 'g', text: "Connection accepted. How can I assist your investigation?" },
   ls: { cls: 'b', text: "Try 'ls projects' for the good stuff." },
-  cat: { cls: 'b', text: "Try 'expertise' to read the full skills manifest." },
-  pwd: { cls: 't', text: "/home/justin/portfolio/hero — you're exactly where you need to be." },
-  curl: { cls: 't', text: 'curl: (200) OK · justinclarke.github.io is up · latency: 0.6s' },
-  python: { cls: 'g', text: "Python 3.11 · Scikit-learn · Pandas · PySpark. Justin uses Python for end-to-end data pipelines." },
-  python3: { cls: 'g', text: "Python 3.11 ready. Justin uses it daily for ML and automation." },
-  node: { cls: 'g', text: "Node.js v20 · React 19 · Next.js. Modern full-stack development is Justin's specialty." },
-  fabric: { cls: 'g', text: "Microsoft Fabric: Justin's primary stack for unified data analytics and OneLake governance." },
-  powerbi: { cls: 'b', text: 'Power BI: Justin builds high-impact dashboards with complex DAX and technical storytelling.' },
-  exit: { cls: 'r', text: "you can't leave without seeing the projects. Scroll down." },
-  quit: { cls: 'r', text: "quit: not yet. Check out the work first." },
-  hack: { cls: 'r', text: "Access denied. Also, this isn't that kind of portfolio." },
-  hire: { cls: 'g', text: 'Excellent choice. Navigating to contact information... → ping me' },
-  'hire justin': { cls: 'g', text: 'Starting onboarding process... Just kidding, scrolling to contact! → ping me' },
-  hello: { cls: 'g', text: "Hello! Type 'help' to see what this terminal can do." },
-  hi: { cls: 'g', text: "Hey 👋 Type 'help' to get started." },
-  test: { cls: 'm', text: 'test: all systems operational. Portfolio passing 100% of tests.' },
-  man: { cls: 'm', text: 'RTFM: the entire portfolio IS the manual. Scroll down.' },
-  vim: { cls: 'o', text: "opened. Now how do you exit? Just kidding — :q!" },
-  emacs: { cls: 'r', text: 'emacs: are you okay? Justin uses VS Code like a sane person.' },
+  cat: { cls: 'pu', text: "cat: I only have a digital coffee. No felines here. Try 'expertise'." },
+  hack: { cls: 'r', text: "hack: (403) Forbidden. Also, hacking is so 1999." },
+  dating: { cls: 'r', text: "An error occurred. Binary state not found. Try 'coffee' instead." },
+  exit: { cls: 'o', text: "exit: you cannot leave the matrix. Scroll down to escape." },
+  quit: { cls: 'o', text: "quit: Justin hasn't implemented a quit function for his passions." },
 };
 
-const BRAND_COLORS = ['#00c8b4', '#3b82f6', '#8b5cf6', '#ec4899'];
+const BRAND_COLORS = ['#10b981', '#3b82f6', '#8b5cf6', '#06b6d4'];
 
 /* ── Component ── */
 
@@ -180,12 +136,35 @@ export const HeroSection: React.FC = () => {
     outRef.current.scrollTop = outRef.current.scrollHeight;
   }, []);
 
+  const addTypedLine = useCallback((cls: string, label: string, text: string, speed = 8) => {
+    return new Promise<void>((resolve) => {
+      if (!outRef.current) return resolve();
+      const d = document.createElement('div');
+      d.className = 'lo';
+      d.innerHTML = `<span class="p">${label}</span><span class="${cls}"></span>`;
+      outRef.current.appendChild(d);
+      
+      const span = d.querySelector(`.${cls}`) as HTMLElement;
+      let i = 0;
+      const interval = setInterval(() => {
+        if (!span) { clearInterval(interval); return resolve(); }
+        span.textContent += text[i];
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          resolve();
+        }
+        if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight;
+      }, speed);
+    });
+  }, []);
+
   const addCmdLine = useCallback((cmd: string) => {
     addLine('cmd', '~$', ' ' + cmd);
   }, [addLine]);
 
   // --- Command runner ---
-  const runCmd = useCallback((raw: string) => {
+  const runCmd = useCallback(async (raw: string) => {
     const cmd = raw.trim().toLowerCase();
     addCmdLine(raw.trim());
 
@@ -207,8 +186,8 @@ export const HeroSection: React.FC = () => {
         addLine('o', '  ', '→ Use a device with a physical keyboard (1024px+ width) to play.');
         return;
       }
-      addLine('g', '\u00a0\u00a0', 'Initializing Snake_OS...');
-      setTimeout(() => setActiveGame('snake'), 1200);
+      await addTypedLine('g', '\u00a0\u00a0', 'Initializing Snake_OS...', 25);
+      setTimeout(() => setActiveGame('snake'), 800);
       return;
     } else if (cmd === 'theme' || cmd === 'theme toggle') {
       setIsDark(prev => !prev);
@@ -227,22 +206,23 @@ export const HeroSection: React.FC = () => {
     // --- Known commands ---
     const cmdLines = COMMANDS[cmd];
     if (cmdLines && cmdLines.length > 0) {
-      cmdLines.forEach((line, i) => {
-        setTimeout(() => addLine(line.t, '\u00a0\u00a0', line.text), i * 80);
-      });
+      for (let i = 0; i < cmdLines.length; i++) {
+        const line = cmdLines[i];
+        await addTypedLine(line.t, '\u00a0\u00a0', line.text, 6);
+      }
       if (cmd === 'help') {
-        setTimeout(() => setPillsVisible(true), cmdLines.length * 80 + 100);
+        setTimeout(() => setPillsVisible(true), 200);
       }
       return;
     }
-    // Silent commands (play snake, theme, clear) — already handled above
+    // Silent commands already handled above
     if (cmd in COMMANDS) return;
 
     // --- Funny errors ---
     for (const key of Object.keys(FUNNY_ERRORS)) {
       if (cmd === key || cmd.startsWith(key + ' ')) {
         const e = FUNNY_ERRORS[key];
-        setTimeout(() => addLine(e.cls, '\u00a0\u00a0', e.text), 80);
+        await addTypedLine(e.cls, '\u00a0\u00a0', e.text, 10);
         return;
       }
     }
@@ -270,13 +250,15 @@ export const HeroSection: React.FC = () => {
       guesses.push("Try 'education' → academic background");
 
     if (guesses.length > 0) {
-      setTimeout(() => addLine('r', '\u00a0\u00a0', `command not found: ${raw.trim()}`), 60);
-      guesses.forEach((g, i) => setTimeout(() => addLine('o', '\u00a0\u00a0', '→ ' + g), 120 + i * 80));
+      addLine('r', '\u00a0\u00a0', `command not found: ${raw.trim()}`);
+      for (const g of guesses) {
+        await addTypedLine('o', '\u00a0\u00a0', '→ ' + g, 5);
+      }
     } else {
-      setTimeout(() => addLine('r', '\u00a0\u00a0', `command not found: ${raw.trim()} — but honestly, same.`), 60);
+      addLine('r', '\u00a0\u00a0', `command not found: ${raw.trim()} — but honestly, same.`);
       setTimeout(() => addLine('m', '\u00a0\u00a0', "Type 'help' to see what actually works here."), 140);
     }
-  }, [addLine, addCmdLine]);
+  }, [addLine, addCmdLine, addTypedLine]);
 
   // --- Canvas neural-net animations ---
   useEffect(() => {
@@ -354,16 +336,27 @@ export const HeroSection: React.FC = () => {
     if (hasBootedRef.current) return;
     hasBootedRef.current = true;
 
-    setTimeout(() => {
+    const boot = async () => {
+      await new Promise(r => setTimeout(r, 600));
+      await addTypedLine('m', '>', ' Initializing neural_link_v4.0...', 15);
+      await addTypedLine('m', '>', ' Synchronizing biometric data... [DONE]', 10);
+      await addTypedLine('g', '>', ' Connection established via CloudLink.', 10);
+      await addTypedLine('pu', '>', ' Fetching Justin_Clarke_Full_Stack_Core...', 12);
+      await new Promise(r => setTimeout(r, 400));
+      
       addCmdLine('help');
-      setTimeout(() => {
-        const lines = COMMANDS.help;
-        lines.forEach((line, i) => setTimeout(() => addLine(line.t, '\u00a0\u00a0', line.text), i * 70));
-        setTimeout(() => setPillsVisible(true), lines.length * 70 + 200);
-        setTimeout(() => { setBooted(true); inpRef.current?.focus(); }, lines.length * 70 + 400);
-      }, 400);
-    }, 600);
-  }, [addLine, addCmdLine]);
+      const lines = COMMANDS.help;
+      for (let i = 0; i < lines.length; i++) {
+        await addTypedLine(lines[i].t, '\u00a0\u00a0', lines[i].text, 5);
+      }
+      
+      setPillsVisible(true);
+      setBooted(true);
+      setTimeout(() => inpRef.current?.focus(), 100);
+    };
+
+    boot();
+  }, [addTypedLine, addCmdLine]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
