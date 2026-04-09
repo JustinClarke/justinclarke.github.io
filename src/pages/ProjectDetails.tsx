@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useProject, useReducedMotion } from '@/shared/hooks';
 import { SectionContainer, SkeletonLoader } from '@/shared/components';
 import { DetailHeader, MetricItem, CaseStudyGrid } from '@/components/projects/ProjectDetailsComponents';
+import { TheCloser } from '@/components/home/TheCloser';
 
 /**
  * Loading skeleton for the project details page.
@@ -118,24 +119,10 @@ export function ProjectDetails() {
           {project.caseStudy && <CaseStudyGrid caseStudy={project.caseStudy} />}
         </div>
 
-        {/* ── Footer Navigation ── */}
-        <SectionContainer
-          className="w-full py-16 md:py-24 bg-[#0a0a0a]"
-          contentMaxWidth="max-w-4xl"
-          innerClassName="flex flex-col items-center text-center gap-8"
-        >
-          <div className="w-16 h-px bg-white/20" />
-          <h2 className="font-noto text-2xl md:text-3xl font-bold text-white/40 tracking-tight">
-            Interested in seeing more?
-          </h2>
-          <button 
-            onClick={() => navigate('/')}
-            className="group relative inline-flex items-center gap-3 px-10 py-5 bg-white text-black font-noto font-black text-[14px] uppercase tracking-widest rounded-full hover:bg-[#00c8b4] hover:text-white transition-all duration-300 active:scale-95 shadow-2xl shadow-black focus-ring"
-          >
-            Return to Gallery
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </button>
-        </SectionContainer>
+        {/* ── Global Footer ── */}
+        <div className="w-full mt-auto">
+          <TheCloser />
+        </div>
 
       </main>
     </div>
