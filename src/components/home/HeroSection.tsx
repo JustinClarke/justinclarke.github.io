@@ -7,7 +7,10 @@ import './HeroSection.css';
 
 /* ── Static data (outside component to avoid re-creation) ── */
 
-const COMMANDS: Record<string, any[]> = {
+type TerminalLine = { t: string; text: string };
+type CommandMap = Record<string, TerminalLine[]>;
+
+const COMMANDS: CommandMap = {
   whoami: [
     { t: 'g', text: 'Justin Clarke. Not an AI. Mostly.' },
     { t: 'b', text: 'Data Analyst · Full-Stack Engineer · Microsoft Fabric specialist' },
@@ -106,45 +109,48 @@ const COMMANDS: Record<string, any[]> = {
   ],
 };
 
-const FUNNY_ERRORS: Record<string, { cls: string; text: string }[]> = {
-  sudo: [{ cls: 'r', text: "Permission denied. Justin's life choices are root-only." }],
-  'rm -rf': [{ cls: 'r', text: "rm: cannot remove portfolio: it's too good to delete." }],
-  'git blame': [{ cls: 'o', text: "100% Justin. He commits, he ships, he takes the blame." }],
-  'git commit': [{ cls: 'm', text: "nothing to commit. working tree clean. life is shipping." }],
-  vim: [{ cls: 'r', text: "vim opened. good luck exiting. we'll be here. :q!" }],
-  emacs: [{ cls: 'r', text: "emacs: Justin uses VS Code. This isn't the 90s." }],
+type FunnyError = { t: string; text: string };
+type FunnyErrorMap = Record<string, FunnyError[]>;
+
+const FUNNY_ERRORS: FunnyErrorMap = {
+  sudo: [{ t: 'r', text: "Permission denied. Justin's life choices are root-only." }],
+  'rm -rf': [{ t: 'r', text: "rm: cannot remove portfolio: it's too good to delete." }],
+  'git blame': [{ t: 'o', text: "100% Justin. He commits, he ships, he takes the blame." }],
+  'git commit': [{ t: 'm', text: "nothing to commit. working tree clean. life is shipping." }],
+  vim: [{ t: 'r', text: "vim opened. good luck exiting. we'll be here. :q!" }],
+  emacs: [{ t: 'r', text: "emacs: Justin uses VS Code. This isn't the 90s." }],
   hire: [
-    { cls: 'g', text: "redirecting to good-decision-making.exe..." },
-    { cls: 'b', text: "→ justinsavioclarke@outlook.com · he's available" }
+    { t: 'g', text: "redirecting to good-decision-making.exe..." },
+    { t: 'b', text: "→ justinsavioclarke@outlook.com · he's available" }
   ],
   'hire justin': [
-    { cls: 'g', text: "outstanding choice. forwarding CV to your conscience..." },
-    { cls: 'b', text: "→ justinsavioclarke@outlook.com" }
+    { t: 'g', text: "outstanding choice. forwarding CV to your conscience..." },
+    { t: 'b', text: "→ justinsavioclarke@outlook.com" }
   ],
-  'play snake': [{ cls: 'g', text: "launching snake.exe · use arrow keys · don't blame us" }],
-  matrix: [{ cls: 'g', text: "wake up, Neo. your data pipeline is the real matrix." }],
-  pwd: [{ cls: 'g', text: "/home/justin/portfolio · exactly where you should be." }],
-  exit: [{ cls: 'r', text: "exit: nice try. scroll down first." }],
-  quit: [{ cls: 'r', text: "quit: not yet. you haven't seen the projects." }],
-  hello: [{ cls: 'g', text: "hello to you too. type 'help' if you're lost." }],
-  hi: [{ cls: 'g', text: "hey 👋 type 'help' · or just vibe with the neural net." }],
-  ls: [{ cls: 'b', text: "too vague. try 'ls projects' — it's the good stuff." }],
-  cat: [{ cls: 'b', text: "cat: try 'cat expertise' if you want the full manifest." }],
-  'npm install': [{ cls: 'm', text: "already installed. Justin ships production-ready, not localhost." }],
-  'npm run dev': [{ cls: 'g', text: "dev server running at justinclarke.github.io ↗" }],
+  'play snake': [{ t: 'g', text: "launching snake.exe · use arrow keys · don't blame us" }],
+  matrix: [{ t: 'g', text: "wake up, Neo. your data pipeline is the real matrix." }],
+  pwd: [{ t: 'g', text: "/home/justin/portfolio · exactly where you should be." }],
+  exit: [{ t: 'r', text: "exit: nice try. scroll down first." }],
+  quit: [{ t: 'r', text: "quit: not yet. you haven't seen the projects." }],
+  hello: [{ t: 'g', text: "hello to you too. type 'help' if you're lost." }],
+  hi: [{ t: 'g', text: "hey 👋 type 'help' · or just vibe with the neural net." }],
+  ls: [{ t: 'b', text: "too vague. try 'ls projects' — it's the good stuff." }],
+  cat: [{ t: 'b', text: "cat: try 'cat expertise' if you want the full manifest." }],
+  'npm install': [{ t: 'm', text: "already installed. Justin ships production-ready, not localhost." }],
+  'npm run dev': [{ t: 'g', text: "dev server running at justinclarke.github.io ↗" }],
   python: [
-    { cls: 'g', text: "Python 3.11 · pandas · numpy · scikit-learn all loaded." },
-    { cls: 'm', text: "see Projects → Neural Music Engine for proof." }
+    { t: 'g', text: "Python 3.11 · pandas · numpy · scikit-learn all loaded." },
+    { t: 'm', text: "see Projects → Neural Music Engine for proof." }
   ],
-  node: [{ cls: 'g', text: "Node.js v20 · TypeScript · Next.js standing by." }],
-  curl: [{ cls: 'b', text: "curl: (200) OK · 0.6s · portfolio is up and running." }],
-  fabric: [{ cls: 'g', text: "Microsoft Fabric: Justin's main character. → see Projects" }],
-  whoops: [{ cls: 'o', text: "it happens. type 'help' and we'll get you back on track." }],
-  test: [{ cls: 'm', text: "test: all systems passing. portfolio: 100% shipped." }],
-  life: [{ cls: 'pu', text: "life: undefined. but the pipelines are working fine." }],
+  node: [{ t: 'g', text: "Node.js v20 · TypeScript · Next.js standing by." }],
+  curl: [{ t: 'b', text: "curl: (200) OK · 0.6s · portfolio is up and running." }],
+  fabric: [{ t: 'g', text: "Microsoft Fabric: Justin's main character. → see Projects" }],
+  whoops: [{ t: 'o', text: "it happens. type 'help' and we'll get you back on track." }],
+  test: [{ t: 'm', text: "test: all systems passing. portfolio: 100% shipped." }],
+  life: [{ t: 'pu', text: "life: undefined. but the pipelines are working fine." }],
 };
 
-const BRAND_COLORS = ['#ffffff', '#e2e8f0', '#94a3b8', '#64748b'];
+const BRAND_COLORS = ['#00FFD1', '#00C8B4', '#38BDF8', '#6366F1', '#A855F7', '#EC4899']; // TODO: verify usage
 
 /* ── Component ── */
 
@@ -156,6 +162,7 @@ export const HeroSection: React.FC = () => {
 
   const { setIsContactModalOpen } = useModal();
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Auto-reveal terminal on larger screens
   useEffect(() => {
@@ -167,6 +174,13 @@ export const HeroSection: React.FC = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const [booted, setBooted] = useState(false);
@@ -281,7 +295,10 @@ export const HeroSection: React.FC = () => {
         return;
       }
       await addTypedLine('g', '\u00a0\u00a0', 'Initializing Snake_OS...', 25);
-      setTimeout(() => setActiveGame('snake'), 800);
+      setTimeout(() => {
+        if (outRef.current) outRef.current.innerHTML = '';
+        setActiveGame('snake');
+      }, 800);
       return;
     } else if (cmd === 'theme' || cmd === 'theme toggle') {
       setIsDark(prev => !prev);
@@ -294,15 +311,22 @@ export const HeroSection: React.FC = () => {
     } else if (cmd === 'ping me' || cmd === 'hire' || cmd === 'hire justin') {
       setTimeout(() => elevatorScroll('contact', 1.8, 100), 800);
     } else if (cmd === 'resume' || cmd === 'download') {
-      setTimeout(() => window.open('/resume.pdf', '_blank'), 1200);
+      setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = '/resources/Justin%20Clarke%20resume.pdf';
+        link.download = 'Justin_Clarke_Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }, 1200);
     }
 
     // --- Known commands ---
     const cmdLines = COMMANDS[cmd];
     if (cmdLines && cmdLines.length > 0) {
       for (const line of cmdLines) {
-        if (line.parts) {
-          await addTypedComplexLine(line.parts, '\u00a0\u00a0', 6);
+        if ((line as any).parts) {
+          await addTypedComplexLine((line as any).parts, '\u00a0\u00a0', 6);
         } else {
           await addTypedLine(line.t, '\u00a0\u00a0', line.text, 6);
         }
@@ -320,7 +344,7 @@ export const HeroSection: React.FC = () => {
       if (cmd === key || cmd.startsWith(key + ' ')) {
         const lines = FUNNY_ERRORS[key];
         for (const line of lines) {
-          await addTypedLine(line.cls, '\u00a0\u00a0', line.text, 10);
+          await addTypedLine(line.t, '\u00a0\u00a0', line.text, 10);
         }
         return;
       }
@@ -366,11 +390,11 @@ export const HeroSection: React.FC = () => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
         ctx.fillStyle = p.c;
-        ctx.globalAlpha = dark ? 0.4 : 0.25;
+        ctx.globalAlpha = 0.1;
         ctx.fill();
       });
 
-      ctx.strokeStyle = dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)';
+      ctx.strokeStyle = dark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 1;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
@@ -381,7 +405,7 @@ export const HeroSection: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.globalAlpha = (1 - dist / 100) * (dark ? 0.35 : 0.2);
+            ctx.globalAlpha = (1 - dist / 100) * (dark ? 0.8 : 0.6);
             ctx.stroke();
           }
         }
@@ -413,8 +437,8 @@ export const HeroSection: React.FC = () => {
       controllers.push({ stop: () => { running = false; } });
     };
 
-    if (nn1Ref.current) initCanvas(nn1Ref.current, 12);
-    if (nn2Ref.current) initCanvas(nn2Ref.current, 20);
+    if (nn1Ref.current) initCanvas(nn1Ref.current, 20);
+    if (nn2Ref.current) initCanvas(nn2Ref.current, 40);
 
     return () => {
       controllers.forEach(c => c.stop());
@@ -474,7 +498,7 @@ export const HeroSection: React.FC = () => {
   return (
     <section className={containerClasses}>
       {/* Background pseudo element moved to a div for Tailwind ease if needed, but keeping CSS pseudo for now */}
-      <div className={`test-hero relative flex flex-col z-10 w-[94%] max-w-[1600px] m-0 backdrop-blur-[20px] border rounded-[24px] overflow-hidden -translate-y-5 min-h-[500px] h-[clamp(520px,88vh,900px)] max-h-[94vh] font-[Syne] ${isDark ? 'bg-[#141414]/80 border-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.4)]' : 'bg-[#f7f7f5]/80 border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.02)]'}`}>
+      <div className={`test-hero relative flex flex-col z-10 w-[94%] max-w-[1600px] m-0 backdrop-blur-[20px] border rounded-[24px] overflow-hidden -translate-y-5 min-h-[500px] h-[clamp(520px,88vh,900px)] max-h-[94vh] font-mono ${isDark ? 'bg-[#141414]/80 border-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.4)]' : 'bg-[#f7f7f5]/80 border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.02)]'}`}>
 
         {/* Topbar */}
         <div className={`topbar border-b h-[48px] rounded-t-[24px] flex items-center justify-between relative transition-all duration-300 shrink-0 ${isDark ? 'bg-[#111] border-[#222]' : 'bg-white border-[#ebebeb]'}`}>
@@ -506,7 +530,12 @@ export const HeroSection: React.FC = () => {
             <div className="tic hidden sm:flex cursor-pointer" onClick={() => window.open('https://linkedin.com/in/justinclarke', '_blank')} data-tooltip="Generic connection request incoming.">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>
             </div>
-            <button className="rbtn hidden lg:inline-flex" onClick={() => window.open('/resume.pdf', '_blank')} data-tooltip="The scroll of destiny.">
+            <a 
+              href="/resources/Justin%20Clarke%20resume.pdf"
+              download="Justin_Clarke_Resume.pdf"
+              className="rbtn hidden lg:inline-flex no-underline" 
+              data-tooltip="Evidence that I actually do work."
+            >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
@@ -514,7 +543,7 @@ export const HeroSection: React.FC = () => {
                 <polyline points="9 15 12 18 15 15" />
               </svg>
               Resume
-            </button>
+            </a>
           </div>
         </div>
 
@@ -535,7 +564,7 @@ export const HeroSection: React.FC = () => {
               </div>
             </div>
             <div className="hero-actions flex flex-wrap gap-4 items-center lg:mt-6">
-              <button className="rbtn ghost" onClick={() => setIsContactModalOpen(true)} data-tooltip="Slide into my DMs (professionally)">
+              <button className="rbtn ghost" onClick={() => setIsContactModalOpen(true)} data-tooltip="Non-zero chance of a reply.">
                 Get in touch
                 <span className="rbtn-icon-wrap">
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -544,7 +573,12 @@ export const HeroSection: React.FC = () => {
                 </span>
               </button>
 
-              <button className="rbtn mobile-only-btn" onClick={() => window.open('/resume.pdf', '_blank')} data-tooltip="The scroll of destiny.">
+              <a 
+                href="/resources/Justin%20Clarke%20resume.pdf"
+                download="Justin_Clarke_Resume.pdf"
+                className="rbtn mobile-only-btn no-underline" 
+                data-tooltip="Evidence that I actually do work."
+              >
                 Resume
                 <span className="rbtn-icon-wrap">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5">
@@ -554,7 +588,7 @@ export const HeroSection: React.FC = () => {
                     <polyline points="9 15 12 18 15 15" />
                   </svg>
                 </span>
-              </button>
+              </a>
             </div>
 
             {/* Desktop Nav Hint Panel */}
@@ -562,7 +596,7 @@ export const HeroSection: React.FC = () => {
               <div
                 className="hint-row"
                 onClick={() => runCmd('ls projects')}
-                data-tooltip="View the core project registry [ls projects]"
+                data-tooltip="View the core project registry"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
@@ -573,7 +607,7 @@ export const HeroSection: React.FC = () => {
               <div
                 className="hint-row"
                 onClick={() => runCmd('expertise')}
-                data-tooltip="Inspect the technical stack [expertise]"
+                data-tooltip="Inspect the technical stack"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></svg>
@@ -584,7 +618,7 @@ export const HeroSection: React.FC = () => {
               <div
                 className="hint-row"
                 onClick={() => runCmd('experience')}
-                data-tooltip="Access professional timeline [experience]"
+                data-tooltip="Access professional timeline"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></svg>
@@ -595,7 +629,7 @@ export const HeroSection: React.FC = () => {
               <div
                 className="hint-row"
                 onClick={() => runCmd('advanced')}
-                data-tooltip="Reveal supplemental system commands [advanced]"
+                data-tooltip="Reveal supplemental system commands"
               >
                 <div className="flex items-center gap-3">
                   <svg className="w-3.5 h-3.5 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="4 17 10 11 4 5" /><line x1="12" x2="20" y1="19" y2="19" /></svg>
@@ -619,9 +653,9 @@ export const HeroSection: React.FC = () => {
             className="rcol"
             initial={false}
             animate={{
-              height: window.innerWidth < 1024 ? (isTerminalOpen ? '300px' : 0) : 'auto',
-              opacity: window.innerWidth < 1024 ? (isTerminalOpen ? 1 : 0) : 1,
-              flex: window.innerWidth < 1024 ? (isTerminalOpen ? 1 : 0) : 1
+              height: isMobile ? (isTerminalOpen ? '300px' : 0) : 'auto',
+              opacity: isMobile ? (isTerminalOpen ? 1 : 0) : 1,
+              flex: isMobile ? (isTerminalOpen ? 1 : 0) : 1
             }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           >
@@ -662,6 +696,9 @@ export const HeroSection: React.FC = () => {
                   <span className="inp-text-mirror">{terminalText}</span>
                   <div className="cur-blink" />
                 </div>
+                <span id="terminal-hint" className="sr-only">
+                  Type a command and press Enter. Type help for a list of available commands.
+                </span>
                 <input
                   ref={inpRef}
                   className="inp-hidden"
@@ -672,6 +709,8 @@ export const HeroSection: React.FC = () => {
                   autoFocus
                   spellCheck={false}
                   autoComplete="off"
+                  aria-label="Terminal command input"
+                  aria-describedby="terminal-hint"
                 />
               </div>
             </div>

@@ -109,7 +109,7 @@ export const TheCloser = () => {
           </ul>
         </nav>
 
-        <div className='flex flex-col items-end gap-1.5'>
+        <div className='flex flex-col items-center md:items-end gap-1.5'>
           <span className='font-mono text-[10px] font-bold text-white/10 uppercase tracking-[0.25em]'>Repository</span>
           <a
             href='https://github.com/JustinClarke/justinclarke.github.io'

@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { cn } from '@/shared/utils';
-import { ScrollReveal } from '@/shared/components';
 import { CATEGORY_COLORS } from '@/config/constants';
 import { SkillGroup as SkillGroupType, Skill as SkillType } from '@/shared/types';
 
@@ -35,7 +35,7 @@ const getSkillTooltip = (name: string) => {
 
 const getCategoryTooltip = (category: string) => {
   if (category.includes('Languages')) return "The foundation. Everything else is built on top of this. (Mostly Python and SQL, let's be honest.)";
-  if (category.includes('Frameworks')) return "Where the code takes shape. Infrastructure, deployment, and the tools that make scaling possible.";
+  if (category.includes('Systems')) return "Where the code takes shape. Infrastructure, deployment, and the tools that make scaling possible.";
   if (category.includes('Analytics')) return "The part where data stops being data and starts being insight. Dashboard gasp factor: High.";
   if (category.includes('Design')) return "Because 'it works' and 'it looks good' shouldn't be mutually exclusive. (Even for engineers.)";
   return "";
@@ -68,9 +68,11 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
   <div
     className="flex flex-col gap-2 group/skill cursor-help"
     data-tooltip={getSkillTooltip(skill.name)}
+    data-tooltip-pos="below"
+    style={{ '--skill-accent': accentColor } as React.CSSProperties}
   >
     <div className="flex items-center justify-between">
-      <span className="text-[13.5px] md:text-[14px] font-extrabold text-white/90 tracking-tight truncate group-hover/skill:text-brand-primary transition-colors duration-300">
+      <span className="text-[13.5px] md:text-[14px] font-extrabold text-white/90 tracking-tight truncate group-hover/skill:text-[var(--skill-accent)] transition-colors duration-300">
         {skill.name}
       </span>
     </div>
@@ -99,13 +101,19 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
 /**
  * Vertical Column representing a skill category.
  */
-export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({ col, colIdx }) => {
+export const SkillColumn: React.FC<{ 
+  col: SkillGroupType; 
+  colIdx: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+}> = ({ col, colIdx, isExpanded, onToggle }) => {
   const accentColor = CATEGORY_COLORS[col.colorClass];
 
   return (
     <div
       className={cn(
-        "flex flex-col px-6 py-10 md:p-10 relative border-white/[0.05] expertise-col-hover",
+        "flex flex-col relative border-white/[0.05] expertise-col-hover transition-colors duration-500",
+        isExpanded ? "bg-white/[0.02]" : "bg-transparent",
         // Mobile (1-col): Every item but the last gets a bottom border
         colIdx !== 3 ? "border-b" : "",
         // Tablet (2-col): Top row (0,1) gets bottom border; Left items (0,2) get right border
@@ -118,37 +126,68 @@ export const SkillColumn: React.FC<{ col: SkillGroupType; colIdx: number }> = ({
     >
       {/* Header Area Block */}
       <div
-        className="cursor-help group/header mb-8 md:mb-12"
+        className="cursor-pointer md:cursor-help group/header p-6 md:p-10"
+        onClick={onToggle}
         data-tooltip={getCategoryTooltip(col.category)}
         data-tooltip-color={accentColor}
+        data-tooltip-pos="below"
       >
-        <div className="flex items-center justify-between gap-4 mb-4 md:mb-8">
-          <span className="font-mono text-[10px] text-white/20 tracking-tighter font-bold">{col.index}</span>
-          <h3 className="font-mono text-[12px] uppercase tracking-[0.25em] font-black text-right leading-relaxed" style={{ color: accentColor }}>
-            <CategoryTitle category={col.category} accentColor={accentColor} />
-          </h3>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 flex-1">
+            <div className="flex flex-col gap-2 md:contents">
+              <span className="font-mono text-[10px] text-white/20 tracking-tighter font-bold whitespace-nowrap">{col.index}</span>
+              <h3 className="font-mono text-[14px] md:text-[12px] uppercase tracking-[0.25em] font-black leading-relaxed md:text-right" style={{ color: accentColor }}>
+                <CategoryTitle category={col.category} accentColor={accentColor} />
+              </h3>
+            </div>
+          </div>
+          
+          {/* Chevron for mobile */}
+          <motion.div 
+            className="md:hidden"
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <ChevronDown size={20} className="text-white/20" />
+          </motion.div>
         </div>
-        <div className="h-px w-full bg-white/[0.05] transition-all duration-700 group-hover/header:bg-white/10 group-hover/header:scale-x-[1.02] origin-left" />
+        
+        <div className="hidden md:block h-px w-full bg-white/[0.05] mt-6 md:mt-8 transition-all duration-700 group-hover/header:bg-white/10 group-hover/header:scale-x-[1.02] origin-left" />
       </div>
 
-      {/* Skills List */}
-      <div className="flex flex-col gap-6 md:gap-8 flex-1">
-        {col.skills.map((skill) => (
-          <SkillCard
-            key={skill.name}
-            skill={skill}
-            accentColor={accentColor}
-          />
-        ))}
-      </div>
+      {/* Collapsible Content */}
+      <AnimatePresence initial={false}>
+        {(isExpanded || (typeof window !== 'undefined' && window.innerWidth >= 768)) && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
+            className="overflow-hidden md:flex-1 md:flex md:flex-col"
+          >
+            <div className="px-6 pb-10 md:px-10 md:pb-10 pt-0 flex flex-col gap-6 md:gap-8 grow justify-between">
+              <div className="flex flex-col gap-6 md:gap-8">
+                {col.skills.map((skill) => (
+                  <SkillCard
+                    key={skill.name}
+                    skill={skill}
+                    accentColor={accentColor}
+                  />
+                ))}
+              </div>
 
-      {/* Section Footer */}
-      <div
-        className="mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] font-bold"
-      >
-        <span>{col.footerCountLabel}</span>
-        <div className="w-2 h-2 rounded-full opacity-40 shadow-sm" style={{ backgroundColor: accentColor }} />
-      </div>
+              {/* Section Footer */}
+              <div
+                className="mt-6 md:mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] font-bold"
+              >
+                <span>{col.footerCountLabel}</span>
+                <div className="w-2 h-2 rounded-full opacity-40 shadow-sm" style={{ backgroundColor: accentColor }} />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

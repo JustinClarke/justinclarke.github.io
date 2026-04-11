@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════
-   TestHero.css — Interactive Terminal Hero
+   HeroSection.css — Interactive Terminal Hero
    ═══════════════════════════════════════════════════════════ */
 
 /* ── CSS Variables (Light Mode) ── */
@@ -63,7 +63,7 @@
     0 10px 20px rgba(0, 0, 0, 0.04),
     0 20px 40px rgba(0, 0, 0, 0.06),
     0 40px 80px rgba(0, 0, 0, 0.1);
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   display: flex;
   flex-direction: column;
   min-height: clamp(580px, 85vh, 920px);
@@ -180,7 +180,7 @@
   padding: 8px 20px;
   border: 1.5px solid #1a1a1a;
   border-radius: 100px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: .04em;
@@ -301,7 +301,7 @@
 }
 
 .test-hero .n1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(2.2rem, 3.5rem + 3.5vw, 6.4rem);
   font-weight: 800;
   line-height: 0.85;
@@ -354,7 +354,7 @@
 }
 
 .test-hero .role {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(9px, 0.9vw, 11px);
   color: #1a1a1a;
   font-weight: 700;
@@ -388,7 +388,7 @@
 
 .test-hero .tg1,
 .test-hero .tg2 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: clamp(12px, 1.1vw, 14px);
   font-weight: 600;
   color: #333;
@@ -420,7 +420,7 @@
   padding: clamp(10px, 1.2vh, 14px) 28px;
   border: 1.5px solid #1a1a1a;
   border-radius: 4px;
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .06em;
@@ -903,6 +903,11 @@
   border-color: rgba(255, 255, 255, 0.1);
 }
 
+.test-hero-container.dark-mode .rbtn:not(.ghost) .rbtn-icon-wrap {
+  color: #1a1a1a;
+  background: rgba(0, 0, 0, 0.1);
+}
+
 /* Explicit override for ghost pill in dark mode */
 .test-hero-container.dark-mode .rbtn.ghost {
   background: #000 !important;
@@ -1216,7 +1221,7 @@
 }
 
 .arcade-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 28px;
   font-weight: 800;
   color: #00c8b4;
@@ -1235,7 +1240,7 @@
   padding: 12px 32px;
   background: #22c55e;
   color: #000;
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-weight: 800;
   border: none;
   border-radius: 4px;
@@ -1254,11 +1259,11 @@
   font-size: 80px;
   font-weight: 800;
   color: #fff;
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
 }
 
 .over-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'IBM Plex Mono', monospace;
   font-size: 32px;
   font-weight: 800;
   margin-bottom: 10px;
@@ -1563,7 +1568,7 @@
 .nav-hints .hint-row:hover svg {
   opacity: 1;
   transform: scale(1.1);
-  color: #00c8b4;
+  color: #000;
 }
 
 .test-hero-container.dark-mode .nav-hints .hint-row svg {
@@ -1691,5 +1696,46 @@
 @media (max-width: 1023px) {
   .nav-hints {
     display: none !important;
+  }
+}
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .test-hero .ad {
+    animation: none;
+    opacity: 1;
+  }
+
+  .test-hero .nn-r,
+  .test-hero .lc-nn {
+    display: none;
+  }
+
+  .test-hero .hint-row {
+    transition: none;
+  }
+
+  .test-hero .rbtn {
+    transition: none;
+  }
+
+  .marquee-content {
+    animation: none;
+  }
+
+  .test-hero-container.dark-mode * {
+    transition: none !important;
   }
 }

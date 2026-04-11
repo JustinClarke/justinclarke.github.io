@@ -1,7 +1,7 @@
 # Justin Clarke | Professional Portfolio
 
 > **Pipelines to dashboards. Engineering to insights.**  
-> A cinematic, high-performance portfolio exploring the intersection of Data Analysis and Full-Stack Engineering, built with a premium macOS HUD aesthetic.
+> A cinematic, high-performance portfolio exploring the intersection of Data Analysis and Full-Stack Engineering, built with a premium macOS HUD aesthetic and a strict monospace design language.
 
 [![Built with Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
@@ -15,19 +15,20 @@
 
 ### 💻 Interactive Terminal CLI
 A high-fidelity **Terminal Hero** that allows users to explore my professional background via a custom CLI.  
-*   **Commands**: `whoami`, `ls projects`, `expertise`, `experience`, `education`, `help`, and more.
+*   **Commands**: `whoami`, `ls projects`, `expertise`, `experience`, `education`, `help`, `play snake`, and more.
 *   **Aesthetics**: Glassmorphic HUD with high-contrast terminal output, custom blinking cursors, and responsive CLI feedback.
+*   **Polish**: Programmatic terminal clearing before app launches (like Snake_OS) and intelligent help suggestions.
+
+### 🧬 Expertise Pipeline 2.0
+A re-engineered technical matrix designed for high-density information display.
+*   **Card Architecture**: Refined `#222` card styling with ambient occlusion shadows and subtle borders for a premium "hardware" feel.
+*   **Mobile Accordion**: Intelligent responsive system that collapses technical stacks into interactive headers on mobile, reducing scroll fatigue by 70%.
+*   **Visual Feedback**: Category-specific hover colors that dynamically glow according to the technical vertical (Teal, Indigo, Purple, Pink).
 
 ### 🐍 Integrated Arcade Games
 Embedded interactive experiences to bridge technical skill and playful engagement.  
 *   **Vintage Snake**: A fully integrated arcade game featuring cinematic transitions and retro-inspired grid mechanics.
-*   **Gamified Discovery**: Hidden "bonus" commands that blur the lines between portfolio and game engine.
-
-### 📐 macOS HUD Design System
-A premium user interface built strictly according to **Apple’s Human Interface Guidelines (HIG)**.  
-*   **Standard Geometry**: Exact 12px traffic lights with 8px horizontal spacing and 20px toolbar padding.
-*   **Shadow Fidelity**: Multi-layered ambient occlusion shadows (4-layer stack) for realistic depth.
-*   **Motion**: Velocity-driven transitions and spring-based physics via **Framer Motion**.
+*   **Clean Boot**: Integrated terminal clearing logic ensures a focused, immersive gaming environment within the CLI.
 
 ---
 
@@ -36,11 +37,11 @@ A premium user interface built strictly according to **Apple’s Human Interface
 ### 🎬 Cinematic Preloader
 A sophisticated asynchronous entry sequence featuring technical "boot logs," multilingual greets, and a 10-panel vertical reveal transition.
 
-### 🎨 Premium Studio Aesthetic
-A refined architectural design featuring **Kinematic Underlines**, **Staggered Reveals**, and a deliberate balance between technical data and visual storytelling.
+### 📐 Pure Monospace Aesthetic
+A deliberate commitment to a technical, developer-centric aesthetic using **IBM Plex Mono** and **JetBrains Mono**. Every label, heading, and line of copy is designed to feel like part of a high-fidelity IDE.
 
 ### ⚡ Performance-First Architecture
-Built on **Vite** with specialized lazy-loading boundaries and GSAP-driven scroll triggers. Achieves near-perfect lighthouse scores through semantic HTML and optimized asset delivery.
+Built on **Vite 6** with specialized lazy-loading boundaries and GSAP-driven scroll triggers. Achieves near-perfect lighthouse scores through semantic HTML and optimized asset delivery.
 
 ---
 
@@ -56,7 +57,7 @@ Built on **Vite** with specialized lazy-loading boundaries and GSAP-driven scrol
 - **Animations**: Framer Motion 11, GSAP 3 (ScrollTrigger)
 - **Styling**: Tailwind CSS 4.0, Vanilla CSS Custom Properties
 - **UI Components**: Radix UI (Dialog, Accordion), Lucide React
-- **Icons**: Hand-crafted SVG illustrations for data pipelines.
+- **Visuals**: Dynamic Canvas-based Neural Network illustration with vibrant, high-contrast node logic.
 
 ---
 
@@ -69,9 +70,9 @@ src/
 ├── _shared/        # Layer 0: Global logic, hooks, types, and utility pipes
 │   ├── hooks/      # Shared state & animation hooks
 │   ├── types/      # Domain-driven TypeScript registry
-│   └── utils/      # Atomic utility functions (cn, etc.)
+│   └── utils/      # Atomic utility functions (cn, tooltips, position)
 ├── components/     # Layer 1: Feature-scoped UI components
-│   ├── home/       # Landing sections (Hero, Terminal, Snake)
+│   ├── home/       # Landing sections (Hero, Terminal, Snake, Expertise)
 │   ├── projects/   # Works grid & case studies
 │   ├── ui/         # Reusable atomic UI library
 │   └── ui-global/  # Preloader, CustomCursor

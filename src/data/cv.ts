@@ -75,7 +75,7 @@ export const heroMetadata: HeroMetadata = {
   cta: 'Get in touch',
   tooltips: {
     role: "I've spent approximately 4,200 hours staring at pipelines. Most of them didn't leak.",
-    name: "Fun fact: My middle name isn't actually 'Saviour', despite what my terminal thinks.",
+    name: "Fun fact: My terminal and I have a complicated relationship.",
     bio: "I specialise in moving data from place A to place B while making it look easy (it rarely is).",
     cta: "I respond faster than a Power BI refresh. Mostly.",
   }
@@ -88,6 +88,6 @@ export const closerMetadata: CloserMetadata = {
   brandLine: "built with ♥️ by Justin Clarke",
   tooltips: {
     email: "No recruiters were harmed in the making of this button",
-    logo: "My 'Saviour' moniker. It's ironic. Mostly.",
+    logo: "My core brand identity. Simple. Effective.",
   }
 };

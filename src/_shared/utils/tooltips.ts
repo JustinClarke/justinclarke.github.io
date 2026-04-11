@@ -65,7 +65,7 @@ export const initTooltips = () => {
     lastY: 0,
   };
 
-  const updatePosition = (x: number, y: number) => {
+  const updatePosition = (x: number, y: number, target?: HTMLElement | null) => {
     if (!tooltip) return;
     const rect = tooltip.getBoundingClientRect();
     
@@ -76,8 +76,22 @@ export const initTooltips = () => {
     );
     
     // Vertical placement
-    let top = y - rect.height - 24;
-    if (top < 16) top = y + 24; // Flip below if no space above
+    const posPref = target?.getAttribute('data-tooltip-pos');
+    let top: number;
+
+    if (posPref === 'below') {
+      top = y + 24;
+      // Flip above if hitting bottom
+      if (top + rect.height > window.innerHeight - 16) {
+        top = y - rect.height - 24;
+      }
+    } else {
+      top = y - rect.height - 24;
+      // Flip below if hitting top
+      if (top < 16) {
+        top = y + 24;
+      }
+    }
     
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -94,7 +108,7 @@ export const initTooltips = () => {
     const color = target.getAttribute('data-tooltip-color');
     tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid rgba(255, 255, 255, 0.08)';
 
-    updatePosition(state.lastX, state.lastY);
+    updatePosition(state.lastX, state.lastY, target);
     
     requestAnimationFrame(() => {
       if (!tooltip) return;
@@ -129,7 +143,7 @@ export const initTooltips = () => {
         if (state.showTimer) clearTimeout(state.showTimer);
         state.showTimer = setTimeout(() => showTooltip(target), 60); // Snappier reveal
       }
-      updatePosition(e.clientX, e.clientY);
+      updatePosition(e.clientX, e.clientY, target);
     } else {
       if (state.currentTarget) {
         state.currentTarget = null;
