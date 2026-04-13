@@ -1,8 +1,11 @@
 import React from 'react';
 
 /**
- * @fileoverview Standardized Badge component for professional credentials and technology tags.
- * Supports various thematic 'Studio' and 'Dark' variants.
+ * Badge Component
+ * 
+ * Standardized tag for technology and credentials.
+ * Supports various semantic variants (teal, outline, ghost, soft-bg).
+ * Migration Status: Colors moved to theme-aware tokens.
  */
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -22,10 +25,10 @@ export const Badge: React.FC<BadgeProps> = ({
   const sizeClasses = size === 'xs' ? 'px-1.5 py-0.5 text-[9px]' : 'px-2.5 py-1 text-[11px]';
   
   const variantClasses = {
-    'teal': 'bg-teal-50 text-teal-600 border-teal-100/50 dark:bg-teal-500/10 dark:text-teal-400 dark:border-teal-500/20',
-    'outline': 'bg-transparent border-black/10 text-black/60 dark:border-white/10 dark:text-white/60',
-    'ghost': 'bg-black/5 text-black/60 dark:bg-white/5 dark:text-white/60 border-transparent',
-    'soft-bg': 'bg-[#f5f5f5] text-black/45 border-black/5 uppercase dark:bg-white/5 dark:text-white/45 dark:border-white/5'
+    'teal': 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 dark:bg-brand-primary/10 dark:text-brand-primary dark:border-brand-primary/20',
+    'outline': 'bg-transparent border-light-border text-light-text-muted dark:border-white/10 dark:text-white/60',
+    'ghost': 'bg-light-border/20 text-light-text-muted dark:bg-white/5 dark:text-white/60 border-transparent',
+    'soft-bg': 'bg-light-border/20 text-light-text-muted border-transparent uppercase dark:bg-white/5 dark:text-white/45'
   };
 
   return (

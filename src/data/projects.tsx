@@ -32,7 +32,7 @@ export const projectsData: Project[] = [
     ],
     pageStatus: {
       text: 'Pipeline active',
-      color: 'bg-[#4ade80]',
+      color: 'bg-viz-success',
       blink: true,
     },
     caseStudy: {
@@ -58,7 +58,7 @@ export const projectsData: Project[] = [
     ],
     pageStatus: {
       text: 'Academic',
-      color: 'bg-[#a78bfa]',
+      color: 'bg-acc-cloud',
       blink: false,
     },
     caseStudy: {
@@ -84,7 +84,7 @@ export const projectsData: Project[] = [
     ],
     pageStatus: {
       text: 'Production',
-      color: 'bg-[#60a5fa]',
+      color: 'bg-viz-info',
       blink: true,
     },
     caseStudy: {
@@ -110,7 +110,7 @@ export const projectsData: Project[] = [
     ],
     pageStatus: {
       text: 'Pipeline active',
-      color: 'bg-[#4ade80]',
+      color: 'bg-viz-success',
       blink: true,
     },
     caseStudy: {

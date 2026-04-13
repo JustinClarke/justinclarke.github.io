@@ -4,9 +4,9 @@
 
 export const THEME = {
   colors: {
-    teal: '#00c8b4',
-    black: '#0a0a0a',
-    white: '#ffffff',
+    teal: 'var(--color-brand-primary)',
+    black: 'var(--color-brand-bg)',
+    white: 'var(--color-text-primary)',
   },
   spacing: {
     mobile: '24px',
@@ -27,8 +27,8 @@ export const BREAKPOINTS = {
 } as const;
 
 export const CATEGORY_COLORS = {
-  lang: THEME.colors.teal,
-  cloud: '#3b82f6',
-  bi: '#8b5cf6',
-  creative: '#ec4899',
+  lang: 'var(--color-acc-lang)',
+  cloud: 'var(--color-acc-cloud)',
+  bi: 'var(--color-acc-bi)',
+  creative: 'var(--color-acc-creative)',
 } as const;

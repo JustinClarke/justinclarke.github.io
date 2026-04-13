@@ -4,7 +4,7 @@ import { SkeletonLoader } from '@/shared/components';
 
 const FeaturedProjects = React.lazy(() => import('@/components/projects').then(m => ({ default: m.FeaturedProjects })));
 const ExpertiseAndExperience = React.lazy(() => import('@/components/home/ExpertiseAndExperience').then(m => ({ default: m.ExpertiseAndExperience })));
-const TheCloser = React.lazy(() => import('@/components/home/TheCloser').then(m => ({ default: m.TheCloser })));
+const TheCloser = React.lazy(() => import('@/components/ui-global/TheCloser').then(m => ({ default: m.TheCloser })));
 
 /**
  * Loading state for the home page sections.

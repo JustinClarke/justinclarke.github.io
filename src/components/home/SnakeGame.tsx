@@ -16,20 +16,33 @@ function spawnFood(snake: Pt[]): Pt {
   return p;
 }
 
+const DEATH_MESSAGES = [
+  "SEGMENTATION FAULT (core dumped)",
+  "fatal error: snake exceeded bounds",
+  "OutOfBoundsException: skill issue",
+];
+
+const PRAISE_MESSAGES = [
+  "nice", "hungry?", "optimized", "hydrated", "cached", "indexed", "processed", "delicious"
+];
+
 export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
   /* ── React state (for rendering only) ── */
   const [snake, setSnake] = useState<Pt[]>([CENTER]);
   const [food, setFood] = useState<Pt>({ x: 5, y: 5 });
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => Number(localStorage.getItem('snake-hs') || 0));
   const [phase, setPhase] = useState<State>('countdown');
   const [cd, setCd] = useState(3);
+  const [flash, setFlash] = useState<{ msg: string; id: number } | null>(null);
+  const [deathMsg, setDeathMsg] = useState("");
 
   /* ── Refs (engine truth – never stale) ── */
   const snk = useRef<Pt[]>([{ ...CENTER }]);
   const dir = useRef<Pt>({ ...UP });
-  const fd  = useRef<Pt>({ x: 5, y: 5 });
-  const sc  = useRef(0);
-  const ph  = useRef<State>('countdown');
+  const fd = useRef<Pt>({ x: 5, y: 5 });
+  const sc = useRef(0);
+  const ph = useRef<State>('countdown');
   const raf = useRef(0);
   const last = useRef(0);
 
@@ -73,7 +86,16 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
           const self = s.some(p => p.x === head.x && p.y === head.y);
 
           if (wall || self) {
+            const msg = DEATH_MESSAGES[Math.floor(Math.random() * DEATH_MESSAGES.length)];
+            setDeathMsg(msg);
             setPhase('over');
+            
+            // Check High Score
+            if (sc.current > highScore) {
+              setHighScore(sc.current);
+              localStorage.setItem('snake-hs', String(sc.current));
+            }
+            
             raf.current = requestAnimationFrame(step);
             return;
           }
@@ -86,6 +108,10 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
             const nf = spawnFood(next);
             fd.current = nf;
             setFood(nf);
+
+            // Flash Praise
+            const pMsg = PRAISE_MESSAGES[Math.floor(Math.random() * PRAISE_MESSAGES.length)];
+            setFlash({ msg: `+10 · ${pMsg}`, id: Date.now() });
           } else {
             next.pop();
           }
@@ -139,10 +165,10 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
       if (s === 'playing') {
         const d = dir.current;
         switch (e.key) {
-          case 'ArrowUp':    if (d.y === 0) dir.current = { x: 0, y: -1 }; break;
-          case 'ArrowDown':  if (d.y === 0) dir.current = { x: 0, y:  1 }; break;
-          case 'ArrowLeft':  if (d.x === 0) dir.current = { x: -1, y: 0 }; break;
-          case 'ArrowRight': if (d.x === 0) dir.current = { x:  1, y: 0 }; break;
+          case 'ArrowUp': if (d.y === 0) dir.current = { x: 0, y: -1 }; break;
+          case 'ArrowDown': if (d.y === 0) dir.current = { x: 0, y: 1 }; break;
+          case 'ArrowLeft': if (d.x === 0) dir.current = { x: -1, y: 0 }; break;
+          case 'ArrowRight': if (d.x === 0) dir.current = { x: 1, y: 0 }; break;
         }
       }
 
@@ -164,43 +190,91 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
     setPhase('playing');
   };
 
+  // Clear flash after 1s
+  useEffect(() => {
+    if (!flash) return;
+    const t = setTimeout(() => setFlash(null), 1000);
+    return () => clearTimeout(t);
+  }, [flash]);
+
   /* ── JSX ── */
   return (
-    <div className="snake-game">
-      <div className="snake-hdr">
-        <div className="s-info"><span className="o-dot" />SCORE: {score}</div>
-        <div style={{ flex: 1 }} />
-        <button onClick={onExit} className="exit-btn">EXIT (ESC)</button>
+    <div className="h-full flex flex-col">
+      <div className="flex items-center mb-3 font-ibm text-[11px] text-viz-success px-2.5 pb-2.5 border-b border-white/5">
+        <div className="flex items-center gap-2 text-[#22c55e]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e]" />
+          SCORE: {score}
+        </div>
+        <div className="flex-1" />
+        <button
+          onClick={onExit}
+          className="bg-white/10 border border-white/15 text-white/80 font-ibm text-[8px] tracking-[0.12em] font-bold px-2.5 py-1 rounded transition-all duration-200 flex items-center gap-2 hover:bg-[#ef4444] hover:text-white hover:border-[#ef4444] hover:-translate-y-px active:scale-95 cursor-pointer"
+        >
+          <span className="bg-white/10 border border-white/20 rounded px-1 text-[8px] text-brand-primary">ESC</span> EXIT
+        </button>
       </div>
 
-      <div className="snake-grid-wrapper">
-        <div className="snake-grid">
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
+        <div className="w-[min(90%,400px)] aspect-square grid grid-cols-20 grid-rows-20 gap-px bg-[#111] overflow-hidden bg-dots-terminal border border-white/10 relative shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
           {Array.from({ length: GRID * GRID }).map((_, i) => {
             const x = i % GRID, y = Math.floor(i / GRID);
-            const isSn = snake.some(s => s.x === x && s.y === y);
+            const headIdx = snake.findIndex(s => s.x === x && s.y === y);
             const isFd = food.x === x && food.y === y;
-            return <div key={i} className={`cell${isSn ? ' snake' : ''}${isFd ? ' food' : ''}`} />;
+            const isSn = headIdx !== -1;
+            const isHead = headIdx === 0;
+
+            return (
+              <div
+                key={i}
+                className={`transition-all duration-200 ${
+                  isSn 
+                    ? `bg-[#00c8b4] z-10 border-[0.5px] border-black/20 ${isHead ? 'rounded-sm scale-110 brightness-125 shadow-[0_0_12px_rgba(0,200,180,0.6)]' : ''}` 
+                    : isFd ? 'z-20' : 'bg-transparent'
+                }`}
+              >
+                 {isFd && (
+                   <div className="w-full h-full bg-[#ef4444] rounded-full animate-food-pulse-pro shadow-[0_0_12px_rgba(239,68,68,0.6)]" />
+                 )}
+              </div>
+            );
           })}
 
+          {/* Flash Console */}
+          {flash && (
+            <div 
+              key={flash.id}
+              className="absolute top-4 right-4 z-[200] font-ibm text-[10px] font-bold text-viz-success bg-black/80 px-2 py-1 rounded border border-viz-success/30 animate-in fade-in slide-in-from-top-2 duration-300"
+            >
+              {flash.msg}
+            </div>
+          )}
+
           {phase === 'countdown' && (
-            <div className="game-overlay-box">
-              <div className="big-cd">{cd > 0 ? cd : 'GO!'}</div>
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-[4px] z-[150] flex flex-col items-center justify-center p-5">
+              <div className="text-[80px] font-bold text-white font-ibm">{cd > 0 ? cd : 'GO!'}</div>
             </div>
           )}
 
           {phase === 'paused' && (
-            <div className="game-overlay-box">
-              <h2 className="arcade-title">SNAKE PAUSED</h2>
-              <p className="arcade-sub">Press "P" or click below to resume.</p>
-              <button className="start-btn" onClick={resume}>RESUME</button>
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-[4px] z-[150] flex flex-col items-center justify-center p-5">
+              <h2 className="font-ibm text-3xl font-extrabold text-brand-primary mb-1">SNAKE PAUSED</h2>
+              <p className="font-ibm text-[10px] text-white/50 mb-5">Press "P" or click below to resume.</p>
+              <button className="px-8 py-3 bg-viz-success font-extrabold rounded cursor-pointer transition-all hover:scale-105 active:scale-95 text-sm" onClick={resume}>RESUME</button>
             </div>
           )}
 
           {phase === 'over' && (
-            <div className="game-overlay-box">
-              <h2 className="over-title">SYSTEM FAILURE</h2>
-              <p className="over-score">FINAL SCORE: {score}</p>
-              <button className="start-btn" onClick={restart}>RE-SYNC</button>
+            <div className="absolute inset-0 bg-black/95 backdrop-blur-[6px] z-[150] flex flex-col items-center justify-center p-8 text-center">
+              <h2 className="font-ibm text-2xl font-black text-viz-error mb-2 tracking-tighter uppercase">{deathMsg}</h2>
+              <div className="flex flex-col gap-1 mb-6">
+                <p className="font-ibm text-xs text-white/60">Score: <span className="text-white font-bold">{score}</span></p>
+                {score >= highScore && score > 0 ? (
+                  <p className="font-ibm text-[10px] text-viz-success font-bold animate-pulse">NEW PERSONAL BEST · committing to git...</p>
+                ) : (
+                  <p className="font-ibm text-[10px] text-white/40 italic">Peak performance: {highScore}</p>
+                )}
+              </div>
+              <button className="px-10 py-3 bg-brand-primary text-black font-black rounded-sm cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs tracking-widest uppercase" onClick={restart}>RE-SYNC KERNEL</button>
             </div>
           )}
         </div>

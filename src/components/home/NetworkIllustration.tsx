@@ -12,13 +12,15 @@ export const NetworkIllustrationRect: React.FC<{ startNode: NetworkNode, endNode
     <line
       x1={startNode.cx} y1={startNode.cy}
       x2={endNode.cx} y2={endNode.cy}
-      stroke="rgba(0,160,145,0.12)"
+      stroke="var(--color-brand-primary)"
+      strokeOpacity={0.12}
       strokeWidth="1"
     />
     <line
       x1={startNode.cx} y1={startNode.cy}
       x2={endNode.cx} y2={endNode.cy}
-      stroke="rgba(0,200,180,0.5)"
+      stroke="var(--color-brand-primary)"
+      strokeOpacity={0.5}
       strokeWidth="1.5"
       className="travel-light"
       style={{ animationDelay: `${index * 0.8}s`, animationDuration: `${3 + (index % 3)}s` }}
@@ -30,7 +32,8 @@ export const NetworkNodeDot: React.FC<{ node: NetworkNode }> = ({ node }) => (
   <circle
     cx={node.cx} cy={node.cy}
     r={node.highlight ? 8 : 5}
-    fill={node.highlight ? 'rgba(0,160,145,0.85)' : 'rgba(0,160,145,0.5)'}
+    fill="var(--color-brand-primary)"
+    fillOpacity={node.highlight ? 0.85 : 0.5}
     className="hero-node-dot"
     style={{ animationDelay: node.delay }}
   />

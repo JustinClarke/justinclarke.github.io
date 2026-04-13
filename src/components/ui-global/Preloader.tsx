@@ -10,10 +10,15 @@ import { PRELOADER_EXIT } from '@/config/animations';
 import { useReducedMotion } from '@/shared/hooks';
 
 /**
- * Preloader - Technical decryption rhythm + Cinematic fade exit.
+ * Preloader Component
  * 
  * Orchestrates a precisely timed sequence of multilingual greetings 
  * and terminal boot logs to create a premium "loading" experience.
+ * 
+ * Architecture:
+ * - Decryption Rhythm: Cycles through random languages at varying speeds.
+ * - Terminal Logs: Asynchronous status reports synchronized with the progress bar.
+ * - Design: High-contrast monochrome with subtle theme-driven ambient glow.
  */
 export const Preloader = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -112,7 +117,7 @@ export const Preloader = () => {
           variants={PRELOADER_EXIT}
           initial='initial'
           exit='exit'
-          className='fixed inset-0 z-[9999] bg-[#050505] overflow-hidden flex items-center justify-center'
+          className='fixed inset-0 z-[9999] bg-brand-bg overflow-hidden flex items-center justify-center'
         >
           {/* Background Ambient Glow */}
           <div className='absolute inset-0 z-0'>
@@ -152,11 +157,10 @@ export const Preloader = () => {
             >
               <div className='flex-1' />
 
-              <div className='w-[320px] shrink-0 hidden md:block'>
-                <div className='border border-white/[0.03] rounded-lg bg-black/20 px-4 py-3 backdrop-blur-sm'>
-                  <div className='flex items-center gap-1.5 mb-2.5 pb-2 border-b border-white/[0.03]'>
-                    <div className='w-[4px] h-[4px] rounded-full bg-white/10' aria-hidden='true' />
-                    <span className='font-mono text-[12px] text-white/15 uppercase tracking-[0.25em]'>
+                <div className='hidden md:block border border-border-studio rounded-lg bg-black/20 px-4 py-3 backdrop-blur-sm'>
+                  <div className='flex items-center gap-1.5 mb-2.5 pb-2 border-b border-border-studio'>
+                    <div className='w-[4px] h-[4px] rounded-full bg-text-muted' aria-hidden='true' />
+                    <span className='font-mono text-[12px] text-text-muted uppercase tracking-[0.25em]'>
                       kern.sys.boot
                     </span>
                   </div>
@@ -170,7 +174,7 @@ export const Preloader = () => {
                           animate={{ opacity: 1, x: 0 }}
                           className='font-mono text-[13px] uppercase tracking-wider leading-tight'
                         >
-                          <span className={`transition-colors duration-700 ${TERMINAL_LOGS[logIndex].isStatus ? 'text-[#00c8b4]' : 'text-white/15'}`}>
+                          <span className={`transition-colors duration-700 ${TERMINAL_LOGS[logIndex].isStatus ? 'text-brand-primary' : 'text-text-muted'}`}>
                             {TERMINAL_LOGS[logIndex].tag}
                           </span>{' '}
                           <span className='text-white/40'>
@@ -181,7 +185,6 @@ export const Preloader = () => {
                     </AnimatePresence>
                   </div>
                 </div>
-              </div>
             </motion.div>
 
             {/* ── Progress Bar ── */}

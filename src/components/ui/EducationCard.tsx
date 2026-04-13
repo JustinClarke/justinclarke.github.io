@@ -8,9 +8,15 @@ interface EducationCardProps {
 }
 
 /**
- * 100% Static EducationCard for maximum performance.
- * Uses standard HTML elements and pure CSS transitions to ensure 
- * zero impact on the main-thread or cursor tracking.
+ * EducationCard Component
+ * 
+ * 100% Static component for maximum performance.
+ * Part of the "Light Section" systems (Experience/Education).
+ * 
+ * Architecture:
+ * - Layout: CSS grid with hardware-accelerated transitions.
+ * - Selection: Vertical brand-accent indicator.
+ * - Colors: Migrated to light-theme semantic tokens (light-border, light-text).
  */
 export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
   return (
@@ -18,9 +24,10 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
       className={cn(
         "edu-card-anim group relative border rounded-2xl p-8 flex flex-col h-full cursor-help",
         "transition-all duration-300 ease-out",
-        "bg-white border-[#eee] hover:border-teal-500/30 hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)]",
-        edu.isOngoing && "ring-1 ring-teal-500/10 border-teal-500/20 shadow-[0_8px_30px_rgba(0,180,160,0.04)]"
+        "bg-white border-light-border hover:border-brand-primary/30 hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)]",
+        edu.isOngoing && "ring-1 ring-brand-primary/10 border-brand-primary/20 shadow-[0_8px_30px_rgba(0,180,160,0.04)]"
       )}
+      data-reveal="inactive"
       data-tooltip={
         edu.school === 'Birla Institute of Technology and Science' ? "Expected 2028. Because one postgrad wasn't enough (apparently)." :
         edu.school === 'Queen Mary University of London' ? "Distinction. Semi-structured data. The Spotify project was born here." :
@@ -28,7 +35,10 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
         "My foundation in research and logic."
       }
     >
-      <div className="edu-card-accent absolute left-0 top-0 bottom-0 w-[4px] bg-teal-500" />
+      <div 
+        className="edu-card-accent absolute left-0 top-0 bottom-0 w-[4px] bg-brand-primary" 
+        data-reveal="inactive"
+      />
       {/* Type badge */}
       <div className="flex items-center gap-2 mb-6">
         <Badge 
@@ -53,16 +63,16 @@ export const EducationCard: React.FC<EducationCardProps> = ({ edu }) => {
 
       {/* School & Degree */}
       <div className="mb-6 text-left w-full">
-        <h3 className="font-noto text-2xl md:text-3xl font-black text-black leading-[1.1] mb-2 tracking-tight transition-colors duration-300 group-hover:text-teal-600">
+        <h3 className="font-noto text-2xl md:text-3xl font-black text-black leading-[1.1] mb-2 tracking-tight transition-colors duration-300 group-hover:text-brand-primary">
           {edu.school}
         </h3>
-        <p className="text-reveal text-[17px] font-bold text-black/85 tracking-tight" style={{ transitionDelay: '100ms' }}>
+        <p className="text-reveal text-[17px] font-bold text-black/85 tracking-tight" data-reveal="inactive" style={{ transitionDelay: '100ms' }}>
           {edu.degree}
         </p>
       </div>
 
       {/* Note */}
-      <p className="text-reveal text-[15px] text-black/60 leading-relaxed mb-8 flex-1 font-medium text-left" style={{ transitionDelay: '200ms' }}>
+      <p className="text-reveal text-[15px] text-black/60 leading-relaxed mb-8 flex-1 font-medium text-left" data-reveal="inactive" style={{ transitionDelay: '200ms' }}>
         {edu.note}
       </p>
 

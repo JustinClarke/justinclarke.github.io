@@ -16,7 +16,7 @@ export const TERMINAL_LOGS = [
   { tag: '[USER]', text: 'AUTHENTICATED_SESSION_JUSTIN', isStatus: true },
 ];
 
-export const PIPELINE_COLORS = ['#00c8b4', '#5eead4', '#2dd4bf'] as const;
+export const PIPELINE_COLORS = ['var(--color-brand-primary)', 'var(--color-acc-cloud)', 'var(--color-acc-bi)'] as const;
 
 export const PRELOADER_TIMELINE = {
   SLOW_PHASE_DURATION: 0.9,

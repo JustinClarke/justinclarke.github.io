@@ -3,11 +3,16 @@ import { SectionContainer, ScrollReveal } from '@/shared/components';
 import { closerMetadata } from '@/data';
 import { useModal } from '@/providers';
 import { useReducedMotion } from '@/shared/hooks';
-import { HOVER } from '@/config/animations';
 
 /**
- * TheCloser component displays the final CTA and site footer.
- * High-performance terminal aesthetic with a focus on quick engagement.
+ * TheCloser Component
+ * 
+ * Displays the final CTA and site footer with a high-performance terminal aesthetic.
+ * 
+ * Architecture:
+ * - Call to Action: Large typography with a pulse-glow "noise" accent.
+ * - Social Links: Standardized icon hover states with semantic brand accents.
+ * - Status: Live availability indicator (AvailabilityDot).
  */
 export const TheCloser = () => {
   const containerRef = useRef<HTMLElement>(null);
@@ -20,7 +25,7 @@ export const TheCloser = () => {
       id='contact'
       ref={containerRef}
       contentMaxWidth='max-w-6xl'
-      className='bg-[#050505] py-24 md:py-32 relative overflow-hidden flex flex-col min-h-[640px] justify-between dark border-t border-white/[0.03]'
+      className='bg-brand-bg py-24 md:py-32 relative overflow-hidden flex flex-col min-h-[640px] justify-between dark border-t border-studio'
       innerClassName='flex flex-col flex-1 justify-between w-full px-8 md:px-0'
     >
       <div className='flex flex-col flex-1'>
@@ -30,7 +35,7 @@ export const TheCloser = () => {
             <span className='availability-dot' aria-hidden='true' />
             Available for new engagements
           </span>
-          <div className='flex-1 h-px bg-white/[0.08]' aria-hidden='true' />
+          <div className='flex-1 h-px bg-studio' aria-hidden='true' />
         </ScrollReveal>
 
         {/* Main Grid */}
@@ -55,7 +60,7 @@ export const TheCloser = () => {
             <ScrollReveal once={false} delay={0.4}>
               <button
                 onClick={openContactModal}
-                className='group flex items-center justify-center gap-6 px-12 py-[22px] bg-[#050505] text-white font-noto text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[320px]'
+                className='group flex items-center justify-center gap-6 px-12 py-[22px] bg-brand-bg text-white font-noto text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[320px]'
                 aria-label='Open contact form to discuss a project'
                 data-tooltip="Serious enquiries, interesting problems, and good coffee conversations welcome."
               >
@@ -146,7 +151,7 @@ const SocialLink = ({ href, icon, label, delay = 0 }: { href: string; icon: 'git
         rel='noopener noreferrer'
         aria-label={label}
         data-tooltip={label}
-        className='w-[48px] h-[48px] flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] text-white/40 hover:text-brand-primary hover:border-brand-primary/40 hover:bg-brand-primary/5 transition-all duration-500 focus-ring group active:scale-90 flex-shrink-0 cursor-pointer'
+        className='w-[48px] h-[48px] flex items-center justify-center rounded-full bg-studio/40 border border-studio text-white/50 hover:text-brand-primary hover:border-brand-primary/40 hover:bg-brand-primary/5 transition-all duration-500 focus-ring group active:scale-90 flex-shrink-0 cursor-pointer'
       >
         <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='1.5' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true' className='group-hover:scale-110 transition-transform duration-500'>
           {icons[icon]}

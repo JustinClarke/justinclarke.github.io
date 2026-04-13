@@ -2,14 +2,20 @@ import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
 import { SectionContainer, ScrollReveal } from '@/shared/components';
-import { ExperienceItem, EducationCard } from '@/components/ui';
+import { ExperienceItem, EducationTimeline } from '@/components/ui';
 import { ExpertisePipeline } from './ExpertisePipeline';
 import { useReducedMotion } from '@/shared/hooks';
 import { experiences, education } from '@/data';
 
 /**
- * ExpertiseAndExperience highlights professional history.
- * Updated to use the 4-column ExpertisePipeline and modular items.
+ * ExpertiseAndExperience Component
+ * 
+ * Orchestrates the professional narrative from capabilities (dark) to career history (light).
+ * 
+ * Architecture:
+ * - Parallax Layer: Decorative radial glows (ExpertiseBackground).
+ * - Multi-Mode Layout: Seamlessly blends a dark Expertise matrix with a light Experience accordion.
+ * - Colors: Migrated to semantic tokens (brand-bg, light-bg, border-studio).
  */
 export const ExpertiseAndExperience = () => {
   const [openExp, setOpenExp] = useState<number>(0);
@@ -34,7 +40,7 @@ export const ExpertiseAndExperience = () => {
       {/* ── Expertise Pipeline (DARK MODE) ── */}
       <section 
         id="expertise"
-        className="narrative-section pt-24 pb-24 md:pt-32 md:pb-40 bg-[#0a0a0a] text-white scroll-mt-[100px]"
+        className="narrative-section py-24 md:py-32 text-white scroll-mt-[100px]"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 relative">
           <div ref={pipelineRef} className="flex flex-col gap-6 md:gap-8">
@@ -43,8 +49,8 @@ export const ExpertiseAndExperience = () => {
               distance={12} 
               className="flex items-center justify-start gap-6"
             >
-              <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-white/20 whitespace-nowrap">Capabilities</span>
-              <div className="flex-1 h-px bg-white/[0.05] section-label-rule opacity-100 w-full" />
+              <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-text-dim whitespace-nowrap">Capabilities</span>
+              <div className="flex-1 h-px bg-studio section-label-rule" data-reveal="inactive" />
             </ScrollReveal>
             
             <ScrollReveal delay={0.1}>
@@ -60,7 +66,7 @@ export const ExpertiseAndExperience = () => {
 
       {/* ── Career & Education (LIGHT MODE) ── */}
       <SectionContainer
-        className="narrative-section py-24 md:py-32 bg-white text-black scroll-mt-[100px] border-t border-black/[0.03]"
+        className="narrative-section py-24 md:py-32 bg-light-bg text-black scroll-mt-[100px] border-t border-light-border"
         contentMaxWidth="max-w-7xl"
         innerClassName="flex flex-col gap-24 md:gap-32 relative"
       >
@@ -73,8 +79,8 @@ export const ExpertiseAndExperience = () => {
             distance={12} 
             className="flex items-center gap-6"
           >
-            <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-black/30 whitespace-nowrap group-hover:text-brand-primary transition-colors">Career</span>
-            <div className="flex-1 h-px bg-black/[0.03] section-label-rule opacity-100 w-full" />
+            <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-light-text-muted whitespace-nowrap group-hover:text-brand-primary transition-colors">Career</span>
+            <div className="flex-1 h-px bg-light-border section-label-rule" data-reveal="inactive" />
           </ScrollReveal>
           
           <ScrollReveal delay={0.1}>
@@ -99,7 +105,7 @@ export const ExpertiseAndExperience = () => {
               </ScrollReveal>
             ))}
             <ScrollReveal delay={0.4} distance={0}>
-              <div className="border-b border-black/[0.03] divider-grow opacity-100 scale-x-100" />
+              <div className="border-b border-black/[0.03] divider-grow" data-reveal="inactive" />
             </ScrollReveal>
           </div>
         </div>
@@ -111,8 +117,8 @@ export const ExpertiseAndExperience = () => {
             distance={12} 
             className="flex items-center gap-6"
           >
-            <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-black/30 whitespace-nowrap group-hover:text-brand-primary transition-colors">Academic Background</span>
-            <div className="flex-1 h-px bg-black/[0.03] section-label-rule opacity-100 w-full" />
+            <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-light-text-muted whitespace-nowrap group-hover:text-brand-primary transition-colors">Academic Background</span>
+            <div className="flex-1 h-px bg-light-border section-label-rule" data-reveal="inactive" />
           </ScrollReveal>
           
           <ScrollReveal delay={0.1}>
@@ -121,17 +127,8 @@ export const ExpertiseAndExperience = () => {
             </h2>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-            {education.map((edu, i) => (
-              <ScrollReveal
-                key={edu.school}
-                delay={i * 0.15}
-                distance={12}
-                className={edu.isOngoing ? "md:col-span-2" : "md:col-span-1"}
-              >
-                <EducationCard edu={edu} />
-              </ScrollReveal>
-            ))}
+          <div className="mt-8 md:mt-12">
+            <EducationTimeline education={education} />
           </div>
         </div>
       </SectionContainer>

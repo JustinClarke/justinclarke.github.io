@@ -14,8 +14,14 @@ interface ProjectCardProps {
 
 
 /**
- * Premium ProjectCard with interactive spotlight and hardware-accelerated visuals.
- * Standardizes the 2x2 grid aesthetic with the "Studio" brand identity.
+ * ProjectCard Component
+ * 
+ * A high-fidelity card with interactive spotlight effects and parallax visuals.
+ * 
+ * Architecture:
+ * - Spotlight: Dual-layer radial gradient following the mouse.
+ * - Parallax: Smooth scale/translate effect on the hero visual.
+ * - Semantic Colors: Migrated to theme tokens (brand-bg, border-studio).
  */
 export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
   const { handleMouseMove, mouseX, mouseY } = useSpotlight();
@@ -29,17 +35,18 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
     <div
       ref={containerRef}
       className='card-anim flex h-full group/card-wrapper text-left w-full rounded-2xl overflow-hidden'
+      data-reveal="inactive"
       style={{ transitionDelay: `${index * 80}ms` }}
       onMouseMove={handleMouseMove}
     >
       <Link
         to={`/project/${project.id}`}
-        className='group relative flex flex-col flex-1 transition-all duration-500 outline-none focus-ring w-full bg-[#050505]'
+        className='group relative flex flex-col flex-1 transition-all duration-500 outline-none focus-ring w-full bg-brand-bg'
         aria-label={`View details for ${project.title}: ${project.copy}`}
       >
         {/* ── MOBILE: Compact Rich Row ── */}
         <div className='flex md:hidden items-center gap-6 p-6 min-h-[120px] rounded-2xl hover:bg-white/[0.03] transition-all duration-300'>
-          <div className='w-28 h-20 bg-[#0a0a0a] rounded-xl shadow-sm overflow-hidden flex items-center justify-center flex-shrink-0 border border-white/[0.05] relative'>
+          <div className='w-28 h-20 bg-brand-card rounded-xl shadow-sm overflow-hidden flex items-center justify-center flex-shrink-0 border border-studio relative'>
             <div className='flex items-center justify-center scale-75 transform-gpu opacity-80'>
               {project.visual}
             </div>
@@ -56,7 +63,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
         </div>
 
         {/* ── DESKTOP: Spotlight Interactive Dashboard ── */}
-        <div className='hidden md:flex flex-col border border-white/[0.08] rounded-2xl overflow-hidden group-hover/card-wrapper:border-white/[0.15] transition-all duration-700 w-full flex-1 relative project-card-tilt'>
+        <div className='hidden md:flex flex-col border border-studio rounded-2xl overflow-hidden group-hover/card-wrapper:border-studio-heavy transition-all duration-700 w-full flex-1 relative project-card-tilt'>
 
           {/* Spotlight Layers */}
           {!prefersReducedMotion && (
@@ -88,8 +95,8 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
           <div className='absolute inset-0 rounded-2xl border border-white/[0.03] pointer-events-none z-30' />
 
           <div className='flex flex-col md:flex-row flex-1 relative z-20 items-stretch h-full'>
-            {/* Visual Header */}
-            <div className={`bg-[#050505] flex items-center justify-center relative overflow-hidden h-[260px] md:h-auto md:w-[320px] lg:w-[440px] border-b md:border-b-0 border-white/[0.08] ${index % 2 === 0 ? 'md:border-r md:order-1' : 'md:border-l md:order-2'
+            {/* Visual Header: Container for the dynamic project-specific preview */}
+            <div className={`bg-brand-bg flex items-center justify-center relative overflow-hidden h-[260px] md:h-auto md:w-[320px] lg:w-[440px] border-b md:border-b-0 border-studio ${index % 2 === 0 ? 'md:border-r md:order-1' : 'md:border-l md:order-2'
               }`}>
               <motion.div
                 className='scale-90 will-change-transform'
@@ -145,6 +152,7 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
                     key={t}
                     variant='soft-bg'
                     className="border-white/5 opacity-80 badge-reveal"
+                    data-reveal="inactive"
                     style={{ transitionDelay: `${i * 60 + 200}ms` }}
                   >
                     {t}
@@ -152,12 +160,13 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
                 ))}
               </div>
 
-              <p className={`text-reveal text-[17px] text-white/50 leading-relaxed mb-12 max-w-xl font-noto ${index % 2 === 0 ? '' : 'ml-auto'}`} style={{ transitionDelay: '400ms' }}>
+              <p className={`text-reveal text-[17px] text-white/50 leading-relaxed mb-12 max-w-xl font-noto ${index % 2 === 0 ? '' : 'ml-auto'}`} data-reveal="inactive" style={{ transitionDelay: '400ms' }}>
                 {project.copy}
               </p>
 
+              {/* Performance Metric Footer: High-impact proof points */}
               <div
-                className={`mt-auto pt-10 border-t border-white/[0.08] flex items-baseline gap-4 cursor-help ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}
+                className={`mt-auto pt-10 border-t border-studio flex items-baseline gap-4 cursor-help ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}
                 data-tooltip={getMetricTooltip(project.pageMetrics[0].label, project.pageMetrics[0].val)}
               >
                 <span 

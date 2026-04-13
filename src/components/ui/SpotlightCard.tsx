@@ -11,8 +11,10 @@ interface SpotlightCardProps {
 }
 
 /**
- * SpotlightCard implements a high-performance 'Cursor Spotlight' effect.
- * Uses useSpotlight hook to avoid React re-renders.
+ * SpotlightCard Component
+ * 
+ * Implements a high-performance 'Cursor Spotlight' effect using dual radial gradients.
+ * Uses the useSpotlight hook to minimize React re-renders.
  */
 export const SpotlightCard: React.FC<SpotlightCardProps> = ({ 
   children, 
@@ -29,7 +31,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative bg-[#0a0a0a] border border-white/[0.08] rounded-2xl p-8 group/spotlight overflow-hidden flex flex-col ${className}`}
+      className={`relative bg-brand-card border border-border-studio rounded-2xl p-8 group/spotlight overflow-hidden flex flex-col ${className}`}
     >
       {/* Background Spotlight Glow */}
       <motion.div
@@ -58,7 +60,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
       {/* Content */}
       <div className="relative z-20 flex flex-col h-full">
         {number && (
-          <div className="font-ibm text-[12px] font-bold text-white/30 tracking-[0.25em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-white/[0.08]">
+          <div className="font-ibm text-[12px] font-bold text-text-muted tracking-[0.25em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-border-studio">
             {number}
           </div>
         )}

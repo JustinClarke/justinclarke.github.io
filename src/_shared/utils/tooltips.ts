@@ -12,6 +12,7 @@ interface TooltipState {
   lastY: number;
 }
 
+
 export const initTooltips = () => {
   if (typeof window === 'undefined') return;
   
@@ -37,15 +38,15 @@ export const initTooltips = () => {
       position: 'fixed',
       pointerEvents: 'none',
       zIndex: '100000',
-      backgroundColor: 'rgba(5, 5, 5, 0.95)',
+      backgroundColor: 'var(--color-brand-bg)',
       backdropFilter: 'blur(12px)',
-      border: '1px solid rgba(255, 255, 255, 0.08)',
+      border: '1px solid var(--color-border-studio)',
       borderRadius: '8px',
       padding: '12px 16px',
-      fontFamily: "'JetBrains Mono', 'IBM Plex Mono', monospace",
+      fontFamily: "var(--font-mono)",
       fontSize: '12.5px',
       fontWeight: '500',
-      color: 'rgba(255, 255, 255, 0.9)',
+      color: 'var(--color-text-primary)',
       maxWidth: '300px',
       lineHeight: '1.6',
       boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
@@ -106,7 +107,7 @@ export const initTooltips = () => {
     tooltip.style.visibility = 'visible';
     
     const color = target.getAttribute('data-tooltip-color');
-    tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid rgba(255, 255, 255, 0.08)';
+    tooltip.style.borderTop = color ? `2px solid ${color}` : '1px solid var(--color-border-studio)';
 
     updatePosition(state.lastX, state.lastY, target);
     

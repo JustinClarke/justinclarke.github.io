@@ -7,7 +7,14 @@ import { STAGGER_CHILDREN_VARIANTS } from '@/shared/constants';
 import { ProjectCard } from './ProjectCard';
 
 /**
- * FeaturedProjects implements a 'Dark Hybrid Strategy':
+ * FeaturedProjects Component
+ * 
+ * Implements a 'Dark Hybrid Strategy': A high-contrast grid designed to showcase 
+ * high-fidelity visual assets against a deep neutral background.
+ * 
+ * Architecture:
+ * - Layout: Responsive grid with staggered Framer Motion entry animations.
+ * - Theme: Deep monochrome (brand-bg) with subtle border-studio separators.
  */
 export function FeaturedProjects() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -18,7 +25,7 @@ export function FeaturedProjects() {
       id="projects"
       ref={containerRef}
       contentMaxWidth="max-w-6xl"
-      className="pt-12 pb-24 md:pt-20 md:pb-32 bg-[#050505] font-sans dark scroll-mt-[100px]"
+      className="pt-12 pb-24 md:pt-20 md:pb-32 font-sans dark scroll-mt-[100px]"
     >
       {/* Section Header */}
       <div className="flex flex-col gap-6 mb-16 md:mb-24">
@@ -27,8 +34,8 @@ export function FeaturedProjects() {
           distance={12}
           className="flex items-center gap-6"
         >
-          <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-white/40 whitespace-nowrap">Selected Work</span>
-          <div className="flex-1 h-px bg-white/[0.08] section-label-rule opacity-100 w-full" />
+          <span className="font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-text-dim whitespace-nowrap">Selected Work</span>
+          <div className="flex-1 h-px bg-studio section-label-rule" data-reveal="inactive" />
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>

@@ -5,15 +5,16 @@ import { SpotlightCard } from '@/components/ui';
 import { ProjectMetric, ProjectCaseStudy } from '@/shared/types';
 
 /**
- * High-visibility Back Navigation Header.
- * Features a bold, animated arrow and breadcrumb-style title.
+ * DetailHeader Component
+ * 
+ * High-visibility Back Navigation Header with glassmorphism and sticky positioning.
  */
 export const DetailHeader: React.FC<{ title: string }> = ({ title }) => (
-  <div className='sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 py-5 bg-[#0a0a0a]/90 backdrop-blur-xl border-b border-white/5'>
+  <div className='sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 py-5 bg-brand-card/90 backdrop-blur-xl border-b border-border-studio'>
     <div className='flex items-center gap-4 md:gap-6 overflow-hidden'>
       <Link 
         to='/'
-        className='group flex items-center gap-2 bg-white text-black hover:bg-[#00c8b4] hover:text-white px-4 md:px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-xl shadow-white/5 focus-ring whitespace-nowrap'
+        className='group flex items-center gap-2 bg-white text-black hover:bg-brand-primary hover:text-white px-4 md:px-6 py-2.5 rounded-full transition-all duration-300 active:scale-95 shadow-xl shadow-white/5 focus-ring whitespace-nowrap'
         aria-label='Back to project gallery'
       >
         <ChevronLeft className='w-5 h-5 group-hover:-translate-x-1 transition-transform' strokeWidth={3} />
@@ -21,8 +22,8 @@ export const DetailHeader: React.FC<{ title: string }> = ({ title }) => (
       </Link>
       
       <div className='hidden sm:flex items-center gap-3 overflow-hidden'>
-        <span className='font-mono text-[11px] text-white/30 font-bold tracking-[0.2em] uppercase whitespace-nowrap'>Selected Work</span>
-        <div className='w-2 h-2 rounded-full bg-white/10' aria-hidden='true' />
+        <span className='font-mono text-[11px] text-text-dim font-bold tracking-[0.2em] uppercase whitespace-nowrap'>Selected Work</span>
+        <div className='w-2 h-2 rounded-full bg-text-muted' aria-hidden='true' />
         <span className='font-mono text-[11px] text-white/60 font-bold tracking-[0.1em] uppercase truncate'>{title}</span>
       </div>
     </div>
@@ -45,11 +46,12 @@ export const MetricItem: React.FC<{ metric: ProjectMetric }> = ({ metric }) => (
 );
 
 /**
- * 3-Column Case Study Grid with Problem, Approach, Outcome.
- * Optimized for grid layout on tablets and stacking on mobile.
+ * CaseStudyGrid Component
+ * 
+ * 3-Column layout with Problem, Approach, Outcome modules.
  */
 export const CaseStudyGrid: React.FC<{ caseStudy: ProjectCaseStudy }> = ({ caseStudy }) => (
-  <div className='p-6 md:p-12 lg:p-16 bg-[#080808] border-t border-white/5'>
+  <div className='p-6 md:p-12 lg:p-16 bg-brand-bg border-t border-border-studio'>
     <div className='max-w-7xl mx-auto'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8'>
         <SpotlightCard 

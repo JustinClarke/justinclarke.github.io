@@ -5,6 +5,17 @@ import { CATEGORY_COLORS } from '@/config/constants';
 import { SkillGroup as SkillGroupType, Skill as SkillType } from '@/shared/types';
 
 /**
+ * ExpertiseSubComponents
+ * 
+ * A collection of atomic and molecular components for the Expertise Pipeline.
+ * 
+ * Architecture:
+ * - SkillCard: Displays individual technical proficiencies with animated bars.
+ * - SkillColumn: Container for a category, implementing the mobile accordion/tap logic.
+ * - Tooltip System: Integrated via data-attributes for a global floating UI.
+ */
+
+/**
  * Individual skill tooltip mapping.
  */
 const getSkillTooltip = (name: string) => {
@@ -77,11 +88,13 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
       </span>
     </div>
 
+    {/* Proficiency Track: Desktop-only indicator for skill depth */}
     <div
-      className="h-[1.5px] w-full bg-white/[0.05] relative rounded-full overflow-hidden hidden md:block"
+      className="h-[1.5px] w-full bg-studio relative rounded-full overflow-hidden hidden md:block"
     >
       <div
         className="proficiency-bar-fill absolute top-0 left-0 h-full rounded-full"
+        data-reveal="inactive"
         style={{
           backgroundColor: accentColor,
           ['--target-width' as any]: `${skill.level}%`
@@ -91,7 +104,7 @@ export const SkillCard: React.FC<{ skill: SkillType; accentColor: string }> = ({
 
     {/* Metadata */}
     {skill.sub && (
-      <div className="text-reveal font-mono text-[11px] text-white/40 uppercase tracking-[0.15em] font-bold leading-tight mt-0.5 group-hover/skill:text-white/60 transition-colors duration-300" style={{ transitionDelay: '100ms' }}>
+      <div className="text-reveal font-mono text-[11px] text-white/40 uppercase tracking-[0.15em] font-bold leading-tight mt-0.5 group-hover/skill:text-white/60 transition-colors duration-300" data-reveal="inactive" style={{ transitionDelay: '100ms' }}>
         {skill.sub}
       </div>
     )}
@@ -112,7 +125,7 @@ export const SkillColumn: React.FC<{
   return (
     <div
       className={cn(
-        "flex flex-col relative border-white/[0.05] expertise-col-hover transition-colors duration-500",
+        "flex flex-col relative border-studio expertise-col-hover transition-colors duration-500",
         isExpanded ? "bg-white/[0.02]" : "bg-transparent",
         // Mobile (1-col): Every item but the last gets a bottom border
         colIdx !== 3 ? "border-b" : "",
@@ -135,7 +148,7 @@ export const SkillColumn: React.FC<{
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 flex-1">
             <div className="flex flex-col gap-2 md:contents">
-              <span className="font-mono text-[10px] text-white/20 tracking-tighter font-bold whitespace-nowrap">{col.index}</span>
+              <span className="font-mono text-[10px] text-text-dim tracking-tighter font-bold whitespace-nowrap">{col.index}</span>
               <h3 className="font-mono text-[14px] md:text-[12px] uppercase tracking-[0.25em] font-black leading-relaxed md:text-right" style={{ color: accentColor }}>
                 <CategoryTitle category={col.category} accentColor={accentColor} />
               </h3>
@@ -152,7 +165,7 @@ export const SkillColumn: React.FC<{
           </motion.div>
         </div>
         
-        <div className="hidden md:block h-px w-full bg-white/[0.05] mt-6 md:mt-8 transition-all duration-700 group-hover/header:bg-white/10 group-hover/header:scale-x-[1.02] origin-left" />
+        <div className="hidden md:block h-px w-full bg-studio mt-6 md:mt-8 transition-all duration-700 group-hover/header:bg-white/10 group-hover/header:scale-x-[1.02] origin-left" />
       </div>
 
       {/* Collapsible Content */}
@@ -177,9 +190,9 @@ export const SkillColumn: React.FC<{
                 ))}
               </div>
 
-              {/* Section Footer */}
+              {/* Section Footer: Visual grouping and item count */}
               <div
-                className="mt-6 md:mt-12 pt-8 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-white/20 uppercase tracking-[0.2em] font-bold"
+                className="mt-6 md:mt-12 pt-8 border-t border-studio flex items-center justify-between text-[10px] font-mono text-text-dim uppercase tracking-[0.2em] font-bold"
               >
                 <span>{col.footerCountLabel}</span>
                 <div className="w-2 h-2 rounded-full opacity-40 shadow-sm" style={{ backgroundColor: accentColor }} />

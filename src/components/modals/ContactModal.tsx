@@ -4,6 +4,14 @@ import { X } from 'lucide-react';
 import { useModal } from '@/providers/ModalProvider';
 import { ContactForm } from './ContactForm';
 
+/**
+ * ContactModal Component
+ * 
+ * Secure entry point for project inquiries and networking.
+ * Uses Radix UI Dialog for accessible modal behavior.
+ * Migration Status: Colors moved to theme-aware tokens (brand-modal, brand-primary).
+ */
+
 export const ContactModal = () => {
   const { isContactModalOpen, setIsContactModalOpen } = useModal();
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -63,23 +71,16 @@ export const ContactModal = () => {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[10000] animate-in fade-in duration-300" />
         <Dialog.Content 
-          onCloseAutoFocus={(e) => {
-            // Restore context to the trigger or a reasonable default to prevent scroll jump
-            if (document.activeElement === document.body) {
-              e.preventDefault();
-              window.scrollTo({ top: window.scrollY, behavior: 'instant' });
-            }
-          }}
-          className="fixed left-[50%] top-[50%] z-[10001] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-white/10 bg-[#111] p-8 shadow-2xl duration-200 animate-in zoom-in-95 sm:rounded-2xl text-white outline-none"
+          className="fixed left-[50%] top-[50%] z-[10001] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border-studio bg-brand-modal p-8 shadow-2xl duration-200 animate-in zoom-in-95 sm:rounded-2xl text-white outline-none"
         >
           
           <div className="flex flex-col space-y-1.5 mb-6">
             <div className="flex items-center justify-between">
               <Dialog.Title className="text-2xl font-bold tracking-tight">Let's work together</Dialog.Title>
             </div>
-            <Dialog.Description className="text-[15px] text-gray-300 leading-relaxed">
+            <Dialog.Description className="text-[15px] text-text-muted leading-relaxed">
               Fill out the form below and I'll get back to you as soon as I can.
-              <span className="block text-[12px] text-gray-500 mt-2 font-medium italic">* All fields are required</span>
+              <span className="block text-[12px] text-text-dim mt-2 font-medium italic">* All fields are required</span>
             </Dialog.Description>
           </div>
 

@@ -3,12 +3,15 @@ export function initScrollAnimations() {
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // We are moving to a unified reveal system using data attributes
   const selectors = [
+    '.reveal-trigger', // New unified selector
+    '[data-reveal]',   // Any element with this attribute
+    // Legacy support during migration:
     '.card-anim',
     '.pipeline-col-anim',
     '.exp-row-anim',
     '.edu-card-anim',
-    '.footer-cta-anim',
     '.badge-reveal',
     '.footer-social-anim',
     '.footer-bar-anim',
@@ -23,6 +26,8 @@ export function initScrollAnimations() {
     entries.forEach(entry => {
       const target = entry.target as HTMLElement;
       if (entry.isIntersecting) {
+        // Toggle both the data attribute and the legacy class
+        target.setAttribute('data-reveal', 'active');
         target.classList.add('anim-in');
         
         // Counter animation trigger
@@ -34,31 +39,36 @@ export function initScrollAnimations() {
           splitAndAnimateWords(target);
         }
         
-        // Hardware acceleration cleanup after animation finishes
-        target.addEventListener('transitionend', () => {
+        // Force hardware acceleration cleanup after standard duration
+        setTimeout(() => {
           target.style.willChange = 'auto';
-        }, { once: true });
+        }, 2000);
       } else {
-        // Reset animation state when out of view
+        // Reset state for re-entry animations
+        target.setAttribute('data-reveal', 'inactive');
         target.classList.remove('anim-in');
-        // Reset sub-elements
-        const words = target.querySelectorAll('.word-anim');
-        words.forEach(w => w.classList.remove('anim-in'));
+        
+        const words = target.querySelectorAll('.word-anim, [data-word-reveal]');
+        words.forEach(w => {
+          (w as HTMLElement).setAttribute('data-reveal', 'inactive');
+          w.classList.remove('anim-in');
+        });
       }
     });
   }, { 
-    threshold: 0.05, 
-    rootMargin: '0px 0px 0px 0px' 
+    threshold: 0.1, 
+    rootMargin: '0px 0px -50px 0px' 
   });
 
   const observeNewElements = () => {
     const targets = document.querySelectorAll(selectors.join(', '));
     
-    // Quick escape for accessibility or extreme lag devices
     if (prefersReduced) {
       targets.forEach(t => {
-        t.classList.add('anim-in');
-        if (t.classList.contains('footer-quote-trigger')) splitAndAnimateWords(t as HTMLElement);
+        const el = t as HTMLElement;
+        el.setAttribute('data-reveal', 'active');
+        el.classList.add('anim-in');
+        if (el.classList.contains('footer-quote-trigger')) splitAndAnimateWords(el);
       });
       return;
     }
@@ -71,10 +81,8 @@ export function initScrollAnimations() {
     });
   };
 
-  // Initial observation
   observeNewElements();
 
-  // Robust observation for dynamic React renders
   const mutationObserver = new MutationObserver(() => {
     observeNewElements();
   });
@@ -86,9 +94,6 @@ export function initScrollAnimations() {
   });
 }
 
-/**
- * Satisfying count-up animation for numeric metrics.
- */
 function animateCounter(el: HTMLElement) {
   const targetAttr = el.getAttribute('data-count-target');
   if (!targetAttr) return;
@@ -98,12 +103,10 @@ function animateCounter(el: HTMLElement) {
   const duration = 1500;
   const start = performance.now();
 
-  function easeOutQuart(t: number) { return 1 - Math.pow(1 - t, 4); }
-
   function tick(now: number) {
     const elapsed = now - start;
     const progress = Math.min(elapsed / duration, 1);
-    const eased = easeOutQuart(progress);
+    const eased = 1 - Math.pow(1 - progress, 4); // easeOutQuart
     const current = Math.round(eased * target);
     
     el.textContent = current.toLocaleString() + suffix;
@@ -113,22 +116,17 @@ function animateCounter(el: HTMLElement) {
   requestAnimationFrame(tick);
 }
 
-/**
- * Splits footer quote text into individual spans for staggered word-by-word reveal.
- */
 function splitAndAnimateWords(el: HTMLElement) {
   if (el.classList.contains('is-split')) return;
   
-  // If it has complex HTML (like spans for colors), 
-  // we animate the direct children only instead of word-splitting.
   if (el.children.length > 0) {
     el.classList.add('is-split', 'flex', 'flex-wrap', 'items-baseline', 'gap-x-1.5');
     Array.from(el.children).forEach((child, i) => {
       const childEl = child as HTMLElement;
-      childEl.classList.add('word-anim', 'block');
-      childEl.style.transitionDelay = `${i * 120 + 200}ms`; // Slower, more delayed reveal
-      childEl.style.transitionDuration = '0.7s';
-      requestAnimationFrame(() => childEl.classList.add('anim-in'));
+      childEl.classList.add('word-anim');
+      childEl.setAttribute('data-reveal', 'inactive');
+      childEl.style.transitionDelay = `${i * 100 + 200}ms`;
+      requestAnimationFrame(() => childEl.setAttribute('data-reveal', 'active'));
     });
     return;
   }
@@ -137,21 +135,17 @@ function splitAndAnimateWords(el: HTMLElement) {
   el.textContent = '';
   el.classList.add('is-split');
   
-  // Use regex to split into words
   const words = text.trim().split(/\s+/);
   
   words.forEach((word, i) => {
     const span = document.createElement('span');
-    // Ensure display: inline-block doesn't swallow the space
     span.textContent = word + (i === words.length - 1 ? '' : ' ');
     span.className = 'word-anim';
-    span.style.whiteSpace = 'pre'; // Force preservation of the space
-    span.style.transitionDelay = `${i * 60 + 100}ms`; // Slower, more delayed reveal
-    span.style.transitionDuration = '0.6s';
+    span.setAttribute('data-reveal', 'inactive');
+    span.style.whiteSpace = 'pre';
+    span.style.transitionDelay = `${i * 50 + 100}ms`;
     el.appendChild(span);
     
-    requestAnimationFrame(() => {
-      span.classList.add('anim-in');
-    });
+    requestAnimationFrame(() => span.setAttribute('data-reveal', 'active'));
   });
 }
