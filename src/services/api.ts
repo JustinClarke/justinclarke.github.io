@@ -3,7 +3,7 @@
  */
 
 import { projectsData } from '@/data';
-import { Project } from '@/shared/types';
+import { Project } from '@/types';
 
 /**
  * Simulates a network request to an external database / CMS.

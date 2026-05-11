@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, AlertCircle, Check } from 'lucide-react';
+import { cn } from '@/utils';
 
 interface ContactFormProps {
   onSubmit: (data: { name: string; email: string; message: string }) => Promise<void>;
@@ -50,109 +51,139 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit} noValidate>
-      <div className="space-y-4">
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+      <div className="space-y-5">
         {/* Name Field */}
-        <div className="relative">
-          <label htmlFor="name" className="sr-only">Your Name (Required)</label>
+        <div className="relative group">
+          <div className="flex justify-between items-center mb-1.5 px-1">
+            <label htmlFor="name" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+              [INPUT_NAME]
+            </label>
+            {touched.name && errors.name && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_VAL</span>}
+          </div>
           <div className="relative">
             <input
               id="name"
               type="text"
-              placeholder="Your Name"
+              placeholder="YOUR NAME"
               required
               disabled={status === 'loading'}
               value={formData.name}
               onBlur={() => handleBlur('name')}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className={`flex h-12 w-full rounded-md border bg-white/5 px-4 py-2 text-[16px] placeholder:text-gray-500 focus-ring transition-all ${
-                touched.name ? (errors.name ? 'border-red-500/50' : 'border-green-500/50') : 'border-white/10'
-              }`}
+              className={cn(
+                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-[14px] tracking-wide placeholder:text-white/20 transition-all duration-300 outline-none",
+                touched.name 
+                  ? errors.name 
+                    ? 'border-red-500/30 focus:border-red-500/60' 
+                    : 'border-brand-primary/30 focus:border-brand-primary shadow-[0_0_20px_rgba(0,200,180,0.05)]' 
+                  : 'border-white/10 focus:border-white/30 focus:bg-white/[0.05]'
+              )}
             />
-            {touched.name && !errors.name && formData.name && <Check className="absolute right-3 top-3.5 h-4 w-4 text-green-500" />}
           </div>
-          {errors.name && <p className="text-xs text-red-400 mt-1 flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.name}</p>}
         </div>
 
         {/* Email Field */}
-        <div className="relative">
-          <label htmlFor="email" className="sr-only">Email Address (Required)</label>
+        <div className="relative group">
+          <div className="flex justify-between items-center mb-1.5 px-1">
+            <label htmlFor="email" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+              [INPUT_EMAIL]
+            </label>
+            {touched.email && errors.email && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_FMT</span>}
+          </div>
           <div className="relative">
             <input
               id="email"
               type="email"
-              placeholder="Email Address"
+              placeholder="EMAIL@PROTOCOL.HOST"
               required
               disabled={status === 'loading'}
               value={formData.email}
               onBlur={() => handleBlur('email')}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className={`flex h-12 w-full rounded-md border bg-white/5 px-4 py-2 text-[16px] placeholder:text-gray-500 focus-ring transition-all ${
-                touched.email ? (errors.email ? 'border-red-500/50' : 'border-green-500/50') : 'border-white/10'
-              }`}
+              className={cn(
+                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-[14px] tracking-wide placeholder:text-white/20 transition-all duration-300 outline-none",
+                touched.email 
+                  ? errors.email 
+                    ? 'border-red-500/30 focus:border-red-500/60' 
+                    : 'border-brand-primary/30 focus:border-brand-primary shadow-[0_0_20px_rgba(0,200,180,0.05)]' 
+                  : 'border-white/10 focus:border-white/30 focus:bg-white/[0.05]'
+              )}
             />
-            {touched.email && !errors.email && formData.email && <Check className="absolute right-3 top-3.5 h-4 w-4 text-green-500" />}
           </div>
-          {errors.email && <p className="text-xs text-red-400 mt-1 flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.email}</p>}
         </div>
 
         {/* Message Field */}
-        <div className="relative">
-          <label htmlFor="message" className="sr-only">Your Message (Required)</label>
+        <div className="relative group">
+          <div className="flex justify-between items-center mb-1.5 px-1">
+            <label htmlFor="message" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+              [INPUT_MESSAGE]
+            </label>
+            <span className="text-[9px] text-white/20 font-mono">{formData.message.length} / 500 CHARS</span>
+          </div>
           <div className="relative">
             <textarea
               id="message"
-              placeholder="Tell me about your project..."
+              placeholder="TELL ME ABOUT YOUR PROJECT..."
               required
               rows={4}
               disabled={status === 'loading'}
               value={formData.message}
               onBlur={() => handleBlur('message')}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-              className={`flex w-full rounded-md border bg-white/5 px-4 py-3 text-[16px] placeholder:text-gray-500 focus-ring resize-none transition-all ${
-                touched.message ? (errors.message ? 'border-red-500/50' : 'border-green-500/50') : 'border-white/10'
-              }`}
+              className={cn(
+                "flex w-full rounded-xl border bg-white/[0.03] px-5 py-4 font-mono text-[14px] tracking-wide placeholder:text-white/20 resize-none transition-all duration-300 outline-none",
+                touched.message 
+                  ? errors.message 
+                    ? 'border-red-500/30 focus:border-red-500/60' 
+                    : 'border-brand-primary/30 focus:border-brand-primary shadow-[0_0_20px_rgba(0,200,180,0.05)]' 
+                  : 'border-white/10 focus:border-white/30 focus:bg-white/[0.05]'
+              )}
             />
-          </div>
-          <div className="flex justify-between mt-1">
-            {errors.message ? (
-              <p className="text-xs text-red-400 flex items-center gap-1"><AlertCircle className="h-3 w-3" /> {errors.message}</p>
-            ) : <div />}
-            <span className="text-[10px] text-gray-500 font-mono">{formData.message.length} chars</span>
           </div>
         </div>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-10">
         {status === 'error' ? (
-          <div className="space-y-3">
-            <div role="alert" className="flex items-center justify-center gap-2 text-red-400 py-3 bg-red-950/20 border border-red-500/30 rounded-md">
+          <div className="space-y-4">
+            <div role="alert" className="flex items-center justify-center gap-3 text-red-400 py-4 bg-red-950/20 border border-red-500/30 rounded-xl font-mono text-xs uppercase tracking-widest font-bold">
               <AlertCircle className="h-4 w-4" />
-              <span className="text-sm font-semibold">Submission failed. Please try again.</span>
+              <span>Submission_Failed // Retry_Required</span>
             </div>
             <button 
               type="button" 
               onClick={resetStatus}
-              className="w-full text-xs text-gray-400 underline hover:text-white transition-colors"
+              className="w-full text-[10px] text-white/30 hover:text-white transition-colors font-mono uppercase tracking-[0.3em]"
             >
-              Try again
+              [ RE-ESTABLISH_CONNECTION ]
             </button>
           </div>
         ) : (
           <button
             type="submit"
             disabled={status === 'loading' || !isFormValid}
-            className="group relative flex w-full items-center justify-center gap-2 rounded-md bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-black transition-all hover:bg-brand-primary disabled:cursor-not-allowed disabled:opacity-50 focus-ring"
+            className={cn(
+              "group relative flex w-full items-center justify-center gap-4 rounded-xl px-8 py-5 text-[11px] font-bold uppercase tracking-[0.3em] font-mono transition-all duration-500 overflow-hidden",
+              isFormValid && status !== 'loading'
+                ? "bg-brand-primary text-black shadow-[0_0_40px_rgba(0,200,180,0.3)] hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-white/5 text-white/20 border border-white/10 cursor-not-allowed"
+            )}
           >
             {status === 'loading' ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Sending...</span>
+                <span>TRANSMITTING_DATA...</span>
               </>
             ) : (
               <>
-                <span className="smooth-underline after:bg-black group-hover:after:bg-white tracking-widest font-bold uppercase transition-all duration-300">Submit</span>
-                <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+                <span className="relative z-10">INITIALIZE_HANDSHAKE</span>
+                <span className="relative z-10 transition-transform group-hover:translate-x-2" aria-hidden="true">→</span>
+                
+                {/* Submit Glow Effect */}
+                {isFormValid && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                )}
               </>
             )}
           </button>

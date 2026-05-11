@@ -89,13 +89,13 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
             const msg = DEATH_MESSAGES[Math.floor(Math.random() * DEATH_MESSAGES.length)];
             setDeathMsg(msg);
             setPhase('over');
-            
+
             // Check High Score
             if (sc.current > highScore) {
               setHighScore(sc.current);
               localStorage.setItem('snake-hs', String(sc.current));
             }
-            
+
             raf.current = requestAnimationFrame(step);
             return;
           }
@@ -200,7 +200,7 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
   /* ── JSX ── */
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center mb-3 font-ibm text-[11px] text-viz-success px-2.5 pb-2.5 border-b border-white/5">
+      <div className="flex items-center mb-3 font-mono text-[11px] text-viz-success px-2.5 pb-2.5 border-b border-white/5">
         <div className="flex items-center gap-2 text-[#22c55e]">
           <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e]" />
           SCORE: {score}
@@ -208,14 +208,21 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
         <div className="flex-1" />
         <button
           onClick={onExit}
-          className="bg-white/10 border border-white/15 text-white/80 font-ibm text-[8px] tracking-[0.12em] font-bold px-2.5 py-1 rounded transition-all duration-200 flex items-center gap-2 hover:bg-[#ef4444] hover:text-white hover:border-[#ef4444] hover:-translate-y-px active:scale-95 cursor-pointer"
+          className="bg-white/10 border border-white/15 text-white/80 font-mono text-[8px] tracking-[0.12em] font-bold px-2.5 py-1 rounded transition-all duration-200 flex items-center gap-2 hover:bg-[#ef4444] hover:text-white hover:border-[#ef4444] hover:-translate-y-px active:scale-95 cursor-pointer"
         >
           <span className="bg-white/10 border border-white/20 rounded px-1 text-[8px] text-brand-primary">ESC</span> EXIT
         </button>
       </div>
 
-      <div className="flex-1 flex items-center justify-center overflow-hidden">
-        <div className="w-[min(90%,400px)] aspect-square grid grid-cols-20 grid-rows-20 gap-px bg-[#111] overflow-hidden bg-dots-terminal border border-white/10 relative shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+      <div className="flex-1 grid place-items-center overflow-hidden p-4 min-h-0">
+        <div style={{ 
+          width: '400px', 
+          maxWidth: '100%', 
+          maxHeight: '100%', 
+          aspectRatio: '1 / 1', 
+          position: 'relative' 
+        }}>
+          <div className="absolute inset-0 grid grid-cols-[repeat(20,1fr)] grid-rows-[repeat(20,1fr)] bg-[#111] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
           {Array.from({ length: GRID * GRID }).map((_, i) => {
             const x = i % GRID, y = Math.floor(i / GRID);
             const headIdx = snake.findIndex(s => s.x === x && s.y === y);
@@ -226,24 +233,24 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
             return (
               <div
                 key={i}
-                className={`transition-all duration-200 ${
-                  isSn 
-                    ? `bg-[#00c8b4] z-10 border-[0.5px] border-black/20 ${isHead ? 'rounded-sm scale-110 brightness-125 shadow-[0_0_12px_rgba(0,200,180,0.6)]' : ''}` 
+                className={`transition-all duration-200 ${isSn
+                    ? `bg-[#00c8b4] z-10 border-[0.5px] border-black/20 ${isHead ? 'rounded-sm scale-110 brightness-125 shadow-[0_0_12px_rgba(0,200,180,0.6)]' : ''}`
                     : isFd ? 'z-20' : 'bg-transparent'
-                }`}
+                  }`}
               >
-                 {isFd && (
-                   <div className="w-full h-full bg-[#ef4444] rounded-full animate-food-pulse-pro shadow-[0_0_12px_rgba(239,68,68,0.6)]" />
-                 )}
+                {isFd && (
+                  <div className="w-full h-full bg-[#ef4444] rounded-full animate-food-pulse-pro shadow-[0_0_12px_rgba(239,68,68,0.6)]" />
+                )}
               </div>
             );
           })}
-
+        </div>
+          
           {/* Flash Console */}
           {flash && (
-            <div 
+            <div
               key={flash.id}
-              className="absolute top-4 right-4 z-[200] font-ibm text-[10px] font-bold text-viz-success bg-black/80 px-2 py-1 rounded border border-viz-success/30 animate-in fade-in slide-in-from-top-2 duration-300"
+              className="absolute top-4 right-4 z-[200] font-mono text-[10px] font-bold text-viz-success bg-black/80 px-2 py-1 rounded border border-viz-success/30 animate-in fade-in slide-in-from-top-2 duration-300"
             >
               {flash.msg}
             </div>
@@ -251,27 +258,27 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
 
           {phase === 'countdown' && (
             <div className="absolute inset-0 bg-black/90 backdrop-blur-[4px] z-[150] flex flex-col items-center justify-center p-5">
-              <div className="text-[80px] font-bold text-white font-ibm">{cd > 0 ? cd : 'GO!'}</div>
+              <div className="text-[80px] font-bold text-white font-mono">{cd > 0 ? cd : 'GO!'}</div>
             </div>
           )}
 
           {phase === 'paused' && (
             <div className="absolute inset-0 bg-black/90 backdrop-blur-[4px] z-[150] flex flex-col items-center justify-center p-5">
-              <h2 className="font-ibm text-3xl font-extrabold text-brand-primary mb-1">SNAKE PAUSED</h2>
-              <p className="font-ibm text-[10px] text-white/50 mb-5">Press "P" or click below to resume.</p>
+              <h2 className="font-mono text-3xl font-extrabold text-brand-primary mb-1">SNAKE PAUSED</h2>
+              <p className="font-mono text-[10px] text-white/50 mb-5">Press "P" or click below to resume.</p>
               <button className="px-8 py-3 bg-viz-success font-extrabold rounded cursor-pointer transition-all hover:scale-105 active:scale-95 text-sm" onClick={resume}>RESUME</button>
             </div>
           )}
 
           {phase === 'over' && (
             <div className="absolute inset-0 bg-black/95 backdrop-blur-[6px] z-[150] flex flex-col items-center justify-center p-8 text-center">
-              <h2 className="font-ibm text-2xl font-black text-viz-error mb-2 tracking-tighter uppercase">{deathMsg}</h2>
+              <h2 className="font-mono text-2xl font-black text-viz-error mb-2 tracking-tighter uppercase">{deathMsg}</h2>
               <div className="flex flex-col gap-1 mb-6">
-                <p className="font-ibm text-xs text-white/60">Score: <span className="text-white font-bold">{score}</span></p>
+                <p className="font-mono text-xs text-white/60">Score: <span className="text-white font-bold">{score}</span></p>
                 {score >= highScore && score > 0 ? (
-                  <p className="font-ibm text-[10px] text-viz-success font-bold animate-pulse">NEW PERSONAL BEST · committing to git...</p>
+                  <p className="font-mono text-[10px] text-viz-success font-bold animate-pulse">NEW PERSONAL BEST · committing to git...</p>
                 ) : (
-                  <p className="font-ibm text-[10px] text-white/40 italic">Peak performance: {highScore}</p>
+                  <p className="font-mono text-[10px] text-white/40 italic">Peak performance: {highScore}</p>
                 )}
               </div>
               <button className="px-10 py-3 bg-brand-primary text-black font-black rounded-sm cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs tracking-widest uppercase" onClick={restart}>RE-SYNC KERNEL</button>

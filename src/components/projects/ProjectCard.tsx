@@ -1,11 +1,11 @@
 import { FC, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useSpotlight, useReducedMotion, useParallax } from '@/shared/hooks';
-import { Badge } from '@/components/ui/Badge';
-import { Project } from '@/shared/types';
-import { cn, parseMetricValue, getMetricTooltip } from '@/shared/utils';
-import { SOFT_QUARTIC_EASE } from '@/shared/constants';
+import { useSpotlight, useReducedMotion, useParallax } from '@/hooks';
+import { Badge } from '@/ui/Badge';
+import { Project } from '@/types';
+import { cn, parseMetricValue, getMetricTooltip } from '@/utils';
+import { SOFT_QUARTIC_EASE } from '@/config/animations';
 
 interface ProjectCardProps {
   project: Project;
@@ -29,155 +29,96 @@ export const ProjectCard: FC<ProjectCardProps> = ({ project, index }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const parallax = useParallax(containerRef, 8);
 
-  const { num, suffix } = useMemo(() => parseMetricValue(project.pageMetrics[0].val), [project.pageMetrics]);
+  const titleParts = useMemo(() => {
+    const parts = project.title.split(' ');
+    if (parts.length > 1) {
+      const last = parts.pop();
+      return { head: parts.join(' '), last };
+    }
+    return { head: project.title, last: '' };
+  }, [project.title]);
 
   return (
     <div
       ref={containerRef}
-      className='card-anim flex h-full group/card-wrapper text-left w-full rounded-2xl overflow-hidden'
-      data-reveal="inactive"
+      className='flex h-full group/card-wrapper text-left w-full rounded-2xl overflow-hidden'
       style={{ transitionDelay: `${index * 80}ms` }}
       onMouseMove={handleMouseMove}
     >
       <Link
         to={`/project/${project.id}`}
-        className='group relative flex flex-col flex-1 transition-all duration-500 outline-none focus-ring w-full bg-brand-bg'
+        className='group relative flex flex-col flex-1 transition-all duration-500 outline-none w-full bg-brand-bg border border-studio hover:border-studio-heavy overflow-hidden'
         aria-label={`View details for ${project.title}: ${project.copy}`}
       >
-        {/* ── MOBILE: Compact Rich Row ── */}
-        <div className='flex md:hidden items-center gap-6 p-6 min-h-[120px] rounded-2xl hover:bg-white/[0.03] transition-all duration-300'>
-          <div className='w-28 h-20 bg-brand-card rounded-xl shadow-sm overflow-hidden flex items-center justify-center flex-shrink-0 border border-studio relative'>
-            <div className='flex items-center justify-center scale-75 transform-gpu opacity-80'>
-              {project.visual}
+        {/* Spotlight Layers */}
+        {!prefersReducedMotion && (
+          <motion.div
+            className='pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-700 group-hover:opacity-100 z-10'
+            style={{ 
+              background: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.08), transparent 80%)',
+              // @ts-ignore
+              "--mouse-x": mouseX,
+              "--mouse-y": mouseY,
+            }}
+          />
+        )}
+
+        <div className='flex flex-col md:flex-row flex-1 relative z-20 items-stretch h-full'>
+          {/* Visual Header */}
+          <div className={`bg-brand-card flex items-center justify-center relative overflow-hidden h-[260px] md:h-auto md:w-[320px] lg:w-[440px] border-b md:border-b-0 border-studio ${index % 2 === 0 ? 'md:border-r md:order-1' : 'md:border-l md:order-2'} cursor-help`} data-tooltip="Pixels were harmed in the making of this." data-tooltip-pos="right">
+            <motion.div
+              className='scale-90 will-change-transform'
+              style={{
+                 transform: `translate(${parallax.x}px, ${parallax.y}px)`,
+                 transition: `transform 800ms cubic-bezier(0.16, 1, 0.3, 1)`
+              }}
+            >
+              {project.heroVisual}
+            </motion.div>
+
+            {/* Corner Brackets */}
+            <div className="absolute inset-8 pointer-events-none opacity-20">
+              <span className="absolute top-0 left-0 w-4 h-4 border-t border-l border-brand-primary" />
+              <span className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-brand-primary" />
+            </div>
+
+            <div className='absolute top-8 right-8 flex items-center gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500'>
+              <span className='font-mono text-[9px] font-bold uppercase tracking-[0.2em] text-brand-primary bg-brand-primary/10 px-3 py-1.5 rounded-full border border-brand-primary/20 backdrop-blur-md cursor-help' data-tooltip="Warning: Contains actual code and design decisions." data-tooltip-pos="left">
+                VIEW DOSSIER
+              </span>
             </div>
           </div>
-          <div className='flex flex-col flex-1 min-w-0'>
-            <h3 className='font-bold text-white text-[18px] tracking-tight leading-tight mb-2'>
-              {project.title}
+
+          {/* Content Body */}
+          <div className={`p-8 md:p-12 flex flex-col flex-1 justify-center ${index % 2 === 0 ? 'md:order-2' : 'md:order-1'}`}>
+            <div className="mb-4 font-mono text-[10px] tracking-[0.2em] uppercase text-white/20 cursor-help w-fit" data-tooltip="Yes, I categorise everything." data-tooltip-pos="right">
+               {project.projectType} // {index + 1} OF 04
+            </div>
+
+            <h3 className='font-noto text-3xl md:text-5xl font-black leading-[1.1] text-white mb-6 tracking-tighter'>
+              {titleParts.head} {titleParts.last && <em className="font-playfair italic font-normal text-brand-primary">{titleParts.last}.</em>}
             </h3>
-            <div className='font-mono text-[10px] text-brand-primary/80 uppercase tracking-[0.2em] font-bold'>
-              {project.tech.slice(0, 2).join(' • ')}
+
+            <p className='font-noto text-[16px] text-white/50 leading-relaxed mb-8 max-w-lg'>
+              {project.copy}
+            </p>
+
+            <div className='flex flex-wrap gap-2 mb-10'>
+              {project.tech.map((t) => (
+                <span key={t} className="font-mono text-[9px] tracking-[0.1em] uppercase text-white/40 px-2 py-1 border border-studio">
+                  {t}
+                </span>
+              ))}
             </div>
-          </div>
-          <span className='text-white/20 group-hover:text-brand-primary group-hover:translate-x-1 transition-all' aria-hidden="true">→</span>
-        </div>
 
-        {/* ── DESKTOP: Spotlight Interactive Dashboard ── */}
-        <div className='hidden md:flex flex-col border border-studio rounded-2xl overflow-hidden group-hover/card-wrapper:border-studio-heavy transition-all duration-700 w-full flex-1 relative project-card-tilt'>
-
-          {/* Spotlight Layers */}
-          {!prefersReducedMotion && (
-            <>
-              <motion.div
-                className='pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-700 group-hover/card-wrapper:opacity-100 z-0'
-                style={{ 
-                  background: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.08), transparent 80%)',
-                  // @ts-ignore
-                  "--mouse-x": mouseX,
-                  "--mouse-y": mouseY,
-                }}
-              />
-              <motion.div
-                className='pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-700 group-hover/card-wrapper:opacity-100 z-10'
-                style={{
-                  background: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.4), transparent 80%)',
-                  WebkitMaskImage: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), black, transparent)',
-                  maskImage: 'radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), black, transparent)',
-                  // @ts-ignore
-                  "--mouse-x": mouseX,
-                  "--mouse-y": mouseY,
-                }}
-              />
-            </>
-          )}
-
-          {/* Persistent Shimmer Border */}
-          <div className='absolute inset-0 rounded-2xl border border-white/[0.03] pointer-events-none z-30' />
-
-          <div className='flex flex-col md:flex-row flex-1 relative z-20 items-stretch h-full'>
-            {/* Visual Header: Container for the dynamic project-specific preview */}
-            <div className={`bg-brand-bg flex items-center justify-center relative overflow-hidden h-[260px] md:h-auto md:w-[320px] lg:w-[440px] border-b md:border-b-0 border-studio ${index % 2 === 0 ? 'md:border-r md:order-1' : 'md:border-l md:order-2'
-              }`}>
-              <motion.div
-                className='scale-90 will-change-transform'
-                style={{
-                   transform: `translate(${parallax.x}px, ${parallax.y}px)`,
-                   transition: `transform 800ms cubic-bezier(${SOFT_QUARTIC_EASE.join(',')})`
-                }}
-                aria-label={`${project.title} visualization: ${project.visualDescription}`}
-              >
-                <div
-                  className='cursor-help'
-                  data-tooltip={
-                    project.id === 'ltv-analytics' ? "LTV tracking: Because knowing what a customer is worth is better than guessing. (My model is 82% accurate.)" :
-                      project.id === 'spotify-engine' ? "Predicting your next favorite song. Calculated with pure math and a little bit of magic." :
-                        project.id === 'litestore' ? "0.6s load time. Because life is too short to wait for a website to hydrate." :
-                          "High-fidelity visual structure. Built for performance."
-                  }
-                >
-                  {project.heroVisual}
+            {/* Performance Metric Row */}
+            <div className="mt-auto pt-8 border-t border-white/10 flex gap-8 cursor-help" data-tooltip="100% statistically significant (source: trust me).">
+              {project.pageMetrics.slice(0, 2).map((m, i) => (
+                <div key={i} className="flex flex-col gap-0.5">
+                   <span className="font-mono text-[9px] uppercase tracking-widest text-brand-primary">{m.label}</span>
+                   <span className="font-noto text-2xl font-black text-white tracking-tighter">{m.val}</span>
                 </div>
-              </motion.div>
-
-              {/* Overlay Badge */}
-              <div
-                className='absolute top-8 right-8 flex items-center gap-2 opacity-0 group-hover/card-wrapper:opacity-100 translate-y-2 group-hover/card-wrapper:translate-y-0 transition-all duration-500'
-                data-tooltip="Full breakdown inside - problem, approach, outcome."
-              >
-                <span className='font-ibh text-[10px] font-bold uppercase tracking-[0.25em] text-brand-primary bg-brand-primary/10 px-4 py-2 rounded-full border border-brand-primary/20 backdrop-blur-md'>
-                  VIEW CASE STUDY
-                </span>
-              </div>
-            </div>
-
-            {/* Content Body */}
-            <div className={`p-10 md:p-14 flex flex-col flex-1 ${index % 2 === 0 ? 'md:order-2' : 'md:order-1 text-right md:items-end'
-              }`}>
-              <div className={`flex items-center mb-6 ${index % 2 === 0 ? 'justify-between' : 'justify-end'}`}>
-                <span className='font-mono text-[10px] font-bold tracking-[0.25em] uppercase text-white/20'>
-                  {project.projectType}
-                </span>
-              </div>
-
-              <h3 className='font-noto text-3xl md:text-5xl font-black leading-[1.1] text-white mb-8 tracking-tighter'>
-                {project.title}
-              </h3>
-
-              <div
-                className={`flex flex-wrap gap-2.5 mb-10 ${index % 2 === 0 ? '' : 'justify-end'}`}
-                data-tooltip="Standardized tech vertical for this project."
-              >
-                {project.tech.map((t, i) => (
-                  <Badge
-                    key={t}
-                    variant='soft-bg'
-                    className="border-white/5 opacity-80 badge-reveal"
-                    data-reveal="inactive"
-                    style={{ transitionDelay: `${i * 60 + 200}ms` }}
-                  >
-                    {t}
-                  </Badge>
-                ))}
-              </div>
-
-              <p className={`text-reveal text-[17px] text-white/50 leading-relaxed mb-12 max-w-xl font-noto ${index % 2 === 0 ? '' : 'ml-auto'}`} data-reveal="inactive" style={{ transitionDelay: '400ms' }}>
-                {project.copy}
-              </p>
-
-              {/* Performance Metric Footer: High-impact proof points */}
-              <div
-                className={`mt-auto pt-10 border-t border-studio flex items-baseline gap-4 cursor-help ${index % 2 === 0 ? '' : 'flex-row-reverse'}`}
-                data-tooltip={getMetricTooltip(project.pageMetrics[0].label, project.pageMetrics[0].val)}
-              >
-                <span 
-                  className='font-mono text-4xl lg:text-5xl font-bold text-white tracking-tighter'
-                  data-count-target={num > 0 ? num : null}
-                  data-count-suffix={suffix}
-                >
-                  {project.pageMetrics[0].val}
-                </span>
-                <span className='font-mono text-[11px] font-bold tracking-[0.25em] uppercase text-white/20 mb-1 lg:mb-2'>{project.pageMetrics[0].label}</span>
-              </div>
+              ))}
             </div>
           </div>
         </div>

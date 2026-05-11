@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
-        '@/shared': path.resolve(__dirname, './src/_shared'),
+        '@/shared': path.resolve(__dirname, './src/shared'),
         '@/components': path.resolve(__dirname, './src/components'),
         '@/modals': path.resolve(__dirname, './src/components/modals'),
         '@/providers': path.resolve(__dirname, './src/providers'),
@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
           manualChunks: {
             'vendor-react': ['react', 'react-dom', 'react-router-dom'],
             'vendor-animation': ['framer-motion'],
-            'vendor-ui': ['lucide-react', '@radix-ui/react-dialog', '@radix-ui/react-accordion'],
+            'vendor-ui': ['lucide-react', '@radix-ui/react-dialog'],
           }
         }
       }

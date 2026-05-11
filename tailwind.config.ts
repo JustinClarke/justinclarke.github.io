@@ -10,7 +10,6 @@ export default {
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
-        ibm: ["var(--font-ibm)", "monospace"],
         noto: ["var(--font-noto)", "sans-serif"],
         serif: ["var(--font-serif)", "serif"],
         playfair: ["var(--font-playfair)", "serif"],

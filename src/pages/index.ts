@@ -1,4 +1,3 @@
 export { Home } from './Home';
-
-export { ProjectDetails } from './ProjectDetails';
+export { ArchivePage } from './ArchivePage';
 export { NotFound } from './NotFound';

@@ -1,98 +1,171 @@
-# Justin Clarke | Professional Portfolio
+# Justin Clarke: Cinematic HUD Portfolio & System Interface
 
-> **Pipelines to dashboards. Engineering to insights.**  
-> A cinematic, high-performance portfolio exploring the intersection of Data Analysis and Full-Stack Engineering, built with a premium macOS HUD aesthetic and a strict monospace design language.
+> **System Status:** `[ VERIFIED ]` | **Core:** `React 19` | **Interface:** `Cinematic HUD v4.0`
 
-[![Built with Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+This repository houses the source code for a high-fidelity, interactive personal portfolio designed as a **"Cinematic HUD" (Heads-Up Display)**. It is a live technical dossier for Justin Clarke, an Analytics Engineer and Full-Stack Developer, architected to demonstrate advanced frontend engineering, system simulation, and high-performance rendering. 
+
+Rather than a static gallery of projects, this platform is a live demonstration of browser-based system simulation, high-performance rendering, and sophisticated UI/UX design patterns built to impress staff-level engineers and technical stakeholders.
 
 ---
 
-## ── 🚀 Feature Spotlight
+## 1. PROJECT STRUCTURE & ARCHITECTURE
 
-### 💻 Interactive Terminal CLI
-A high-fidelity **Terminal Hero** that allows users to explore my professional background via a custom CLI.  
-*   **Commands**: `whoami`, `ls projects`, `expertise`, `experience`, `education`, `help`, `play snake`, and more.
-*   **Aesthetics**: Glassmorphic HUD with high-contrast terminal output, custom blinking cursors, and responsive CLI feedback.
-*   **Polish**: Programmatic terminal clearing before app launches (like Snake_OS) and intelligent help suggestions.
-
-### 🧬 Expertise Pipeline 2.0
-A re-engineered technical matrix designed for high-density information display.
-*   **Card Architecture**: Refined `#222` card styling with ambient occlusion shadows and subtle borders for a premium "hardware" feel.
-*   **Mobile Accordion**: Intelligent responsive system that collapses technical stacks into interactive headers on mobile, reducing scroll fatigue by 70%.
-*   **Visual Feedback**: Category-specific hover colors that dynamically glow according to the technical vertical (Teal, Indigo, Purple, Pink).
-
-### 🐍 Integrated Arcade Games
-Embedded interactive experiences to bridge technical skill and playful engagement.  
-*   **Vintage Snake**: A fully integrated arcade game featuring cinematic transitions and retro-inspired grid mechanics.
-*   **Clean Boot**: Integrated terminal clearing logic ensures a focused, immersive gaming environment within the CLI.
-
----
-
-## ── 🎨 Key Technical Features
-
-### 🎬 Cinematic Preloader
-A sophisticated asynchronous entry sequence featuring technical "boot logs," multilingual greets, and a 10-panel vertical reveal transition.
-
-### 📐 Pure Monospace Aesthetic
-A deliberate commitment to a technical, developer-centric aesthetic using **IBM Plex Mono** and **JetBrains Mono**. Every label, heading, and line of copy is designed to feel like part of a high-fidelity IDE.
-
-### ⚡ Performance-First Architecture
-Built on **Vite 6** with specialized lazy-loading boundaries and GSAP-driven scroll triggers. Achieves near-perfect lighthouse scores through semantic HTML and optimized asset delivery.
-
----
-
-## ── 🛠️ Technical Stack
-
-### Core Architecture
-- **Framework**: React 18+ (TSX)
-- **Tooling**: Vite 6, TypeScript 5, NPM
-- **Routing**: React Router 6 (HashRouter)
-- **Alias System**: Robust `@/` path aliasing for clean imports.
-
-### Interaction & Styling
-- **Animations**: Framer Motion 11, GSAP 3 (ScrollTrigger)
-- **Styling**: Tailwind CSS 4.0, Vanilla CSS Custom Properties
-- **UI Components**: Radix UI (Dialog, Accordion), Lucide React
-- **Visuals**: Dynamic Canvas-based Neural Network illustration with vibrant, high-contrast node logic.
-
----
-
-## ── 🏗️ Project Structure (Modular v2)
-
-The codebase follows a specialized **Modular Multi-Layer Architecture**:
+The application is structured to decouple pure logic from React rendering, ensuring scalability and testability.
 
 ```text
-src/
-├── _shared/        # Layer 0: Global logic, hooks, types, and utility pipes
-│   ├── hooks/      # Shared state & animation hooks
-│   ├── types/      # Domain-driven TypeScript registry
-│   └── utils/      # Atomic utility functions (cn, tooltips, position)
-├── components/     # Layer 1: Feature-scoped UI components
-│   ├── home/       # Landing sections (Hero, Terminal, Snake, Expertise)
-│   ├── projects/   # Works grid & case studies
-│   ├── ui/         # Reusable atomic UI library
-│   └── ui-global/  # Preloader, CustomCursor
-├── data/           # Layer 2: Domain-driven static content store
-├── providers/      # Layer 3: Site-wide context & providers (Modal, Root)
-├── pages/          # Layer 4: High-level page orchestrators
-└── services/       # Layer 5: External API & integration logic
+.
+├── public/                 # Static assets (Resume PDF, vector graphics)
+├── src/
+│   ├── components/
+│   │   ├── home/           # Core landing page logic (TerminalUI, TerminalEngine, SnakeGame)
+│   │   ├── layout/         # High-level wrappers (Navigation, Layout, Footer)
+│   │   ├── projects/       # Project-specific detail components & Case Studies
+│   │   ├── modals/         # Contextual overlays (Contact, Resume interactions)
+│   │   └── common/         # Reusable atomic UI elements (Buttons, Badges)
+│   ├── ui/                 # "System UI" library (SpotlightCard, MagneticButton)
+│   ├── hooks/              # Custom interaction logic (useParallax, useSpotlight, useTerminal)
+│   ├── data/               # Centralized content manifest (Portfolio data, Skills, Projects)
+│   ├── providers/          # Global state (Theme context, Modal context)
+│   ├── utils/              # Pure utilities (Metrics formatting, ClassName merging, Animations)
+│   ├── services/           # External API integrations (LLM routing, etc.)
+│   ├── App.tsx             # Root routing logic (React Router 7)
+│   └── index.css           # Global design tokens and Tailwind 4 configuration
+├── tailwind.config.ts      # Legacy utility config (if applicable/migration layer)
+├── vite.config.ts          # Advanced build pipeline & alias configuration
+└── tsconfig.json           # Strict TypeScript enforcement
 ```
 
+### Data Flow & System Interaction
+The application operates on a **Uni-directional Data Flow** managed through React context and custom hooks:
+1.  **Input:** The user interacts via the `TerminalUI` (keyboard simulation) or `SpotlightCard` elements (mouse/touch).
+2.  **Processing:** Text input is filtered through the `TerminalEngine`—a pure TypeScript logic layer decoupled from React components—to resolve commands, fuzzy-match errors, or trigger side effects.
+3.  **Model:** The `Portfolio Manifest` (`src/data/`) acts as the single source of truth for all career, education, and project metadata. UI components map over this static data.
+4.  **Output:** React 19 renders the UI with optimized concurrent animations via **Framer Motion**, while **D3.js** handles high-density expertise pipeline visualizations.
+
+### Core Design Patterns
+-   **Engine-UI Separation:** The `TerminalEngine.ts` module allows for independent testing and complex command parsing without the overhead of React component lifecycles.
+-   **Pipeline/Buffer Pattern:** Used in character-by-character terminal rendering to queue and sequence typed outputs safely without race conditions.
+-   **Registry Pattern:** CLI commands and "funny errors" are registered in a central manifest, making the system easily extensible with new "Easter Eggs."
+-   **HOC/Provider Pattern:** Modal states and theme variables are handled via top-level Providers to prevent prop-drilling across the deep component tree.
+
 ---
 
-## ── 🔗 Professional Links
+## 2. THE EXPERIENCE (VISUAL WALKTHROUGH)
 
-- **Portfolio**: [justinclarke.github.io](https://justinclarke.github.io)
-- **LinkedIn**: [justinsavioclarke](https://linkedin.com/in/justinsavioclarke)
-- **GitHub**: [@JustinClarke](https://github.com/JustinClarke)
-- **Email**: [justinsavioclarke@outlook.com](mailto:justinsavioclarke@outlook.com)
+The portfolio avoids standard web patterns in favor of an immersive "Command Center" feel.
+
+### ⚡ The Boot Sequence
+The interface initializes with a character-by-character terminal sequence, simulating a vintage CRT display.
+- **Verification:** The system outputs `[ JUSTIN_CLARKE ] status: VERIFIED` in a high-contrast brand teal.
+- **Telemetry:** Real-time metadata about Justin's current focus (e.g., `MBA candidate [+PL-300] in flight`) is streamed to the console.
+- **Tactile Feedback:** Every character rendered uses a queued buffer system to maintain a "typed" rhythm, accompanied by subtle scanline overlays and backdrop blurs.
+
+### ⌨️ The System Interface (CLI)
+At the heart of the home screen is the **TerminalUI**, a fully functional command-line simulation.
+- **Fuzzy Matching:** The engine resolves commands like `record`, `projects`, or `expertise` even if misspelled, using a custom logic-resolver.
+- **Integrated Navigation:** Users can interact via traditional clicks or by typing. Typing a command like `record` triggers an "Elevator Scroll" that smoothly transports the viewport to the Career Dossier.
+- **Placeholder Engine:** A dynamic placeholder cycles through suggested commands (e.g., `try typing "snake"`) to guide non-technical users.
+
+### 🎯 Interactive HUD Elements
+The site utilizes "Spotlight Cards" and "Magnetic Buttons" to create a premium, tactile feel.
+- **Hover Micro-Animations:** Buttons subtly track the cursor's movement (magnetic effect), and cards react with a radial glow (spotlight effect) that illuminates technical metadata.
+- **Glassmorphism:** The entire UI is built on a "Dark Mode First" philosophy, using translucent layers (`bg-black/20`) and heavy backdrop blurs to simulate a sophisticated software interface.
 
 ---
 
-<div align="center">
-  <p>Refined with ❤️ by Justin Clarke</p>
-</div>
+## 3. CORE MODULES & FEATURES
+
+### 📊 Career Dossier (Interactive Timeline)
+The `CareerTimeline` component replaces traditional resumes with a high-density vertical timeline.
+- **Dossier Cards:** Each role is presented as a "Dossier," featuring a unique index (e.g., `01`, `02`) and high-contrast labels.
+- **Accordion Logic:** Clicking a role expands a detailed impact report, powered by **Framer Motion** for physics-based layout transitions.
+- **Technical Tags:** Skills are highlighted in a dedicated sidebar, allowing recruiters to quickly parse the tech stack used in each role (e.g., `Microsoft Fabric`, `SQL`, `Next.js`).
+
+### 📈 Expertise Pipeline (D3.js Visualization)
+The `ExpertisePipeline` is a data-driven visualization of technical proficiency.
+- **Dynamic Scaling:** Powered by **D3.js**, it renders a graph of competencies where bar lengths and colors are mapped directly to quantitative skill data.
+- **SVG Precision:** Unlike standard CSS bars, these are high-precision SVG elements that animate with sub-pixel accuracy, communicating data architecture expertise visually.
+
+### 🎮 Snake_OS (The Hidden System)
+Type `snake` into the terminal to trigger the **Snake_OS** module.
+- **Integrated Environment:** The terminal output clears and morphs into a 20x20 game grid.
+- **Optimized Logic:** The game runs at a 120ms tick rate, utilizing coordinate reuse to minimize garbage collection and ensure 60fps performance on all devices.
+- **System Reboot:** Upon "Game Over" or manual exit, the terminal triggers a secondary boot sequence, returning the user to the core interface seamlessly.
+
+---
+
+## 4. DEEP DIVE: FEATURED CASE STUDIES
+
+The portfolio highlights detailed case studies that demonstrate product engineering and analytics depth. These are rendered in cinematic, autoplaying HUD tabs that automatically pause on hover for readability.
+
+### Project 01: Predictive Music Engine (MSc Distinction Project)
+A high-fidelity recommendation engine utilizing vector-similarity modeling and acoustic feature analytics across a 1.2 Million track dataset.
+- **The Problem:** Traditional collaborative filtering often fails at the "cold start" problem and lacks the granular acoustic depth required for nuanced discovery in niche genres.
+- **The Approach:** Architected a hybrid model combining TF-IDF vectorized genre profiles with MinMax-scaled audio features (Energy, Valence, etc.). Implemented a weighted Cosine Similarity logic to rank 1.2M tracks against a dynamic user-profile vector.
+- **The Outcome:** Engineered a functional predictive tool achieving a Distinction grade, delivering high-accuracy recommendations validated against the Spotify Million Playlist Dataset.
+- **Stack & Metrics:** Python, Pandas, Scikit-Learn, Spotify API | 1.2M Songs Processed | 12D Feature Space.
+
+### Project 02: LiteStore (Retail as a Service Platform)
+A production serverless platform handling behavioral telemetry (GA4) and front-end optimization.
+- **The Problem:** Slow page load times and poor SEO rankings were directly damaging user conversion and organic discovery for the retail platform.
+- **The Approach:** Served as the sole engineer to build a serverless platform using Next.js, AWS, and Vercel implementing SSR and aggressive caching strategies throughout. Built event tracking and GA4 telemetry pipelines feeding conversion dashboards.
+- **The Outcome:** Reduced load times from 3.0s to 0.6s and improved conversion rates by 20% within the first two weeks post-launch, validated via A/B experiments designed off telemetry insights.
+- **Stack & Metrics:** Next.js, Tailwind, GA4, Vercel | 80% Load time reduction | 20% Conversion uplift | SSR Architecture.
+
+---
+
+## 5. TECHNICAL STACK & IMPLEMENTATION RATIONALE
+
+| Layer | Technology | Engineering Rationale |
+| :--- | :--- | :--- |
+| **Framework** | `React 19` | Native support for `useActionState` and optimized concurrent rendering. Chosen to handle complex UI state without excessive re-renders. |
+| **Styling** | `Tailwind CSS 4` | Leveraging the new CSS-first configuration and `@theme` variables for brand consistency. Prevents "Utility Soup" by centralizing brand colors (e.g., `--color-brand-primary`). |
+| **Animations** | `Framer Motion 12` | Orchestrates complex "Layout IDs" to animate elements seamlessly between different DOM nodes and screen positions, achieving physics that CSS alone cannot. |
+| **Data Viz** | `D3.js` | Industry-standard for complex, data-driven SVG rendering in the "Expertise Pipeline." Provides absolute control over paths and geometry. |
+| **Bundler** | `Vite 6` | Sub-second HMR and multi-threaded Rollup builds. Produces highly optimized manual chunks. |
+| **Icons** | `Lucide React` | High-performance, tree-shakeable SVG icons that align perfectly with the technical HUD aesthetic. |
+
+### Performance & Accessibility Optimization
+- **Manual Chunking:** Large libraries like Framer Motion and D3 are split into separate network chunks in `vite.config.ts` to ensure the initial "Boot Sequence" loads in under 1 second.
+- **Accessibility Integration:** The system automatically detects `@media (prefers-reduced-motion: reduce)` and scales back high-frequency animations to maintain usability.
+- **Responsive Geometry:** For components like the Snake game, absolute geometry and rigid `aspect-ratio: 1/1` wrappers ensure the game remains pixel-perfect and fair regardless of the viewport size, bypassing flexbox stretching.
+
+---
+
+## 6. SETUP, LOCAL DEVELOPMENT & DEPLOYMENT
+
+### Prerequisites
+- **Node.js**: v20.0.0 or higher
+- **Package Manager**: `npm` (v9+) or `pnpm`
+- **Environment**: macOS / Linux (Windows users should use WSL2 for terminal simulation parity)
+
+### Installation
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/JustinClarke/justinclarke.github.io.git
+    cd justinclarke.github.io
+    ```
+2.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Environment Variables**:
+    Create a `.env` file in the root for any external integrations:
+    ```env
+    VITE_GEMINI_API_KEY=your_api_key_here # For AI routing features
+    ```
+
+### Local Development
+-   **Start Dev Server**: `npm run dev` (Spins up Vite on port 3000 by default with sub-second HMR)
+-   **Build for Production**: `npm run build`
+-   **Preview Production Build**: `npm run preview`
+
+### Deployment Strategy
+This project is configured and optimized for **GitHub Pages**. 
+- The `vite.config.ts` includes a `base: '/'` setting specifically for root-domain deployment. 
+- The build pipeline produces a highly minified `dist/` folder with optimized manual chunks for React and Framer Motion to ensure lightning-fast Time-to-Interactive (TTI).
+
+---
+
+> Built with 🦾 by **Justin Clarke** — Analytics Engineer & Full-Stack Developer.
+> **Note:** The "Cinematic HUD" uses high-frequency animations. It automatically respects `prefers-reduced-motion` settings to ensure accessibility for all users.

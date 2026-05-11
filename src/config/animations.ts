@@ -13,7 +13,10 @@ export const EASING = {
   quintic: [0.16, 1, 0.3, 1], // cinematic decel
   circOut: [0, 0.55, 0.45, 1],
   smooth: [0.22, 1, 0.36, 1],
+  softQuartic: [0.25, 1, 0.4, 1],
 } as const;
+
+export const SOFT_QUARTIC_EASE = EASING.softQuartic;
 
 export const FADE_IN = {
   hidden: { opacity: 0 },

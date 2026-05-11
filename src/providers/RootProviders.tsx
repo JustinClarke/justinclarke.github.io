@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { ModalProvider } from './ModalProvider';
-import { ErrorBoundary } from '@/shared/components/ErrorBoundary';
+import { ErrorBoundary } from '@/ui/ErrorBoundary';
 
 interface RootProvidersProps {
   children: ReactNode;

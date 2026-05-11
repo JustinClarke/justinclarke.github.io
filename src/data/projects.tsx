@@ -1,10 +1,6 @@
 import React from 'react';
-import { Project } from '@/shared/types';
+import { Project } from '@/types';
 import {
-  LtvVisual,
-  LtvHeroVisual,
-  TelemetryVisual,
-  TelemetryHeroVisual,
   LiteStoreVisual,
   LiteStoreHeroVisual,
   SpotifyVisual,
@@ -16,64 +12,38 @@ import {
  */
 export const projectsData: Project[] = [
   {
-    id: 'ltv-analytics',
-    projectType: 'Personal Project',
-    title: 'Customer Lifetime Value Analytics',
-    tech: ['Microsoft Fabric', 'Eventhouse', 'KQL', 'Power BI', 'Python'],
-    copy: 'End-to-end LTV solution on Microsoft Fabric with real-time event processing and dynamic Power BI dashboards.',
-    fullDescription: 'Built an end-to-end LTV solution on Microsoft Fabric: Lakehouse ingestion, real-time event processing via Eventhouse and KQL, surfaced through a dynamic Power BI dashboard. Automated data generation and exception handling via Python, enabling live segmentation and risk tracking.',
-    visual: <LtvVisual />,
-    heroVisual: <LtvHeroVisual />,
-    visualDescription: "Real-time event flow diagram showing 4000+ events per second flowing through Eventhouse, KQL processing, and Power BI dashboards.",
-    pageMetrics: [
-      { val: '4K+', label: 'Events / sec' },
-      { val: '7', label: 'Months tracked' },
-      { val: 'Real-time', label: 'Processing' },
-    ],
-    pageStatus: {
-      text: 'Pipeline active',
-      color: 'bg-viz-success',
-      blink: true,
-    },
-    caseStudy: {
-      problem: 'No real-time visibility into customer lifetime value, making it impossible to segment and target high-value users dynamically.',
-      approach: 'Built a real-time ingestion pipeline using Microsoft Fabric Eventhouse and KQL, visualised in dynamic Power BI dashboards.',
-      outcome: 'Enabled live risk tracking and dynamic segmentation, improving marketing targeting efficiency across all user tiers.'
-    }
-  },
-  {
     id: "spotify-engine",
     projectType: 'MSc Project',
-    title: 'Neural Music Engine',
-    tech: ['Python', 'Pandas', 'NumPy', 'Spotify API', 'ML Model'],
-    copy: 'Python-based tool using Spotify API for personalised music recommendations via predictive analytics.',
-    fullDescription: 'Python-based tool using Spotify API to analyse energy, key signatures, and acoustic properties for personalised music recommendations.',
+    title: 'Predictive Music Engine',
+    tech: ['Python', 'Pandas', 'Scikit-Learn', 'Spotify API', 'Vector Modeling'],
+    copy: 'High-fidelity recommendation engine utilizing vector-similarity modeling and acoustic feature analytics across a 1.2M track dataset.',
+    fullDescription: 'Architected a hybrid recommendation engine utilizing vector-space modeling (Cosine Similarity) and TF-IDF genre vectorization. Analyzed 12+ audio dimensions—including danceability, energy, and valence—across the Million Song Dataset (MSD) to deliver personalized discovery through multi-domain similarity logic.',
     visual: <SpotifyVisual />,
     heroVisual: <SpotifyHeroVisual />,
-    visualDescription: "Data visualization of audio features including energy, valence, and danceability from the Spotify API, modeled for predictive recommendations.",
+    visualDescription: "Multidimensional vector visualization showing the mapping of audio features (valence, energy, tempo) across the Million Song Dataset.",
     pageMetrics: [
-      { val: 'Hybrid', label: 'Vector Logic' },
-      { val: '20+', label: 'Audio Features' },
+      { val: '1.2M', label: 'Songs Processed' },
+      { val: '12D', label: 'Feature Space' },
       { val: 'Cosine', label: 'Similarity' },
     ],
     pageStatus: {
-      text: 'Academic',
-      color: 'bg-acc-cloud',
+      text: 'Distinction Grade',
+      color: 'bg-brand-primary',
       blink: false,
     },
     caseStudy: {
-      problem: 'Standard collaborative filtering lacks depth needed a tool that analysed audio features for truly personalised discovery.',
-      approach: 'Used Python, Pandas and the Spotify API to analyse energy, key signatures, and acoustic properties across track datasets.',
-      outcome: 'Successfully built a predictive analytics model achieving Distinction grade highly personalised music recommendation output.'
+      problem: 'Traditional collaborative filtering often fails at the "cold start" problem and lacks the granular acoustic depth required for nuanced discovery in niche genres.',
+      approach: 'Developed a hybrid model combining TF-IDF vectorized genre profiles with MinMax-scaled audio features (Energy, Valence, etc.). Implemented a weighted Cosine Similarity logic to rank 1.2M tracks against a dynamic user-profile vector.',
+      outcome: 'Engineered a functional predictive tool achieving a Distinction grade, delivering high-accuracy recommendations validated against the Spotify Million Playlist Dataset.'
     }
   },
   {
     id: "litestore",
     projectType: 'LiteStore',
     title: 'Retail as a Service',
-    tech: ['Next.js', 'AWS', 'Vercel'],
-    copy: 'Led end-to-end development of a production serverless platform, improving SEO and conversion rates.',
-    fullDescription: 'Led end-to-end development of a production serverless platform. Reduced page load times (3s to 0.6s) through SSR, caching and optimisation, improving SEO rankings and conversion rates by 20%.',
+    tech: ['Next.js', 'Tailwind', 'GA4', 'Vercel'],
+    copy: 'Sole engineer on a production serverless platform — behavioral telemetry (GA4) and 20% conversion uplift.',
+    fullDescription: 'Sole engineer on a production serverless platform. Built event tracking and GA4 telemetry pipelines feeding conversion dashboards, achieving a 20% conversion uplift via A/B experiments and 0.6s page loads.',
     visual: <LiteStoreVisual />,
     heroVisual: <LiteStoreHeroVisual />,
     visualDescription: "Serverless architecture diagram showing Next.js SSR, AWS cloud infrastructure, and Vercel edge deployment for optimized retail performance.",
@@ -91,32 +61,6 @@ export const projectsData: Project[] = [
       problem: 'Slow page load times and poor SEO rankings were directly damaging user conversion and organic discovery.',
       approach: 'Built a serverless platform using Next.js, AWS, and Vercel implementing SSR and aggressive caching strategies throughout.',
       outcome: 'Reduced load times from 3.0s to 0.6s and improved conversion rates by 20% within the first two weeks post-launch.'
-    }
-  },
-  {
-    id: "product-telemetry",
-    projectType: 'VNS Solutions',
-    title: 'Product Telemetry Intelligence',
-    tech: ['Microsoft Fabric', 'Data Pipelines'],
-    copy: 'Automated product telemetry ingestion using Microsoft Fabric data pipelines.',
-    fullDescription: 'Automated product telemetry ingestion using Microsoft Fabric data pipelines, reclaiming 12 hrs/week across 2 teams and 4 stakeholders.',
-    visual: <TelemetryVisual />,
-    heroVisual: <TelemetryHeroVisual />,
-    visualDescription: "Automated data pipeline flow showing telemetry ingestion from multiple sources into a centralized Microsoft Fabric lakehouse repository.",
-    pageMetrics: [
-      { val: '12', label: 'Hrs/week reclaimed' },
-      { val: '2', label: 'Teams impacted' },
-      { val: '4', label: 'Stakeholders' },
-    ],
-    pageStatus: {
-      text: 'Pipeline active',
-      color: 'bg-viz-success',
-      blink: true,
-    },
-    caseStudy: {
-      problem: 'Manual telemetry collection across multiple teams caused delayed insights and wasted engineering hours each sprint.',
-      approach: 'Automated data ingestion and transformation using Microsoft Fabric Data Pipelines into a centralised telemetry repository.',
-      outcome: 'Reclaimed 12 hours per week across 2 teams and 4 stakeholders, accelerating product iteration cycles significantly.'
     }
   }
 ];
