@@ -8,7 +8,7 @@ The "HUD" (Heads-Up Display) aesthetic is built on high-contrast technical preci
 | :--- | :--- | :--- |
 | **Brand BG** | `#070707` | Core background, absolute black. |
 | **Brand Primary** | `#00c8b4` | Interactive elements, "Professional" accents, active states. |
-| **Brand Amber** | `#f59e0b` | "Scholastic" markers, alerts, secondary progression. |
+| **Brand Amber** | `#f59e0b` | "Academic" markers, alerts, secondary progression. |
 | **Brand Purple** | `#a855f7` | "Intelligence" and data-heavy metrics. |
 | **White/5** | `rgba(255,255,255,0.05)` | Standard border utility for panel dividers. |
 | **White/20** | `rgba(255,255,255,0.2)` | Tertiary text, muted labels. |
@@ -51,17 +51,36 @@ Interactive cards use absolute-positioned 8x8px brackets in the corners (`top-0 
 
 ---
 
-## 4. Spacing & Grid System
-The "Narrative Section" pattern is applied to all major blocks.
+## 4. Spacing & Layout Engine
+We use a semantic layout engine to enforce consistency across the HUD. Avoid using ad-hoc tailwind padding/margin classes for top-level structures.
 
-### 4.1 Section Padding
-Standardized vertical spacing ensures a predictable scroll cadence.
-- **Mobile**: `py-20` (80px).
-- **Desktop**: `py-28` (112px).
+### 4.1 Spacing Tokens
+| Token | Mobile | Desktop | Utility Equivalent |
+| :--- | :--- | :--- | :--- |
+| **Section Y** | `5rem` (80px) | `7rem` (112px) | `.section-layout` |
+| **Container X** | `1.5rem` (24px) | `3rem` (48px) | `.container-layout` |
+| **Narrative Gap** | `3rem` (48px) | `4.5rem` (72px) | `.narrative-gap` |
+| **Component Gap** | `1.5rem` (24px) | `2rem` (32px) | `.component-gap` |
 
-### 4.2 Content Widths
-- **Primary Narrative Flow**: `max-w-6xl` (1152px).
-- **Horizontal Padding**: `px-6` (Mobile) / `px-12` (Desktop).
+### 4.2 Layout Containers
+- **Site Container** (`.site-container`): `max-w-6xl` (1152px) centered with standard X-padding.
+- **Project Container** (`.project-container`): `max-w-7xl` (1280px) centered with standard X-padding.
+- **Section Wrapper** (`.section-layout`): Applies standard vertical padding.
+
+### 4.3 Narrative Structure
+Every major section should follow this hierarchy:
+```html
+<section class="section-layout border-t border-white/5">
+  <div class="site-container">
+    <!-- Header -->
+    <div class="narrative-gap border-b border-white/10 pb-12">
+      <h2 class="...">...</h2>
+    </div>
+    <!-- Content -->
+    <div class="grid ...">...</div>
+  </div>
+</section>
+```
 
 ---
 

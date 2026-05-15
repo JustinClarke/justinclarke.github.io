@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils';
 import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
-import { TheCloser } from '@/components/layout';
+import { TheCloser, SEO } from '@/components/layout';
+import { RelatedProjects } from '@/components/projects';
 
 const DATA_STREAMS = [
   'WACC_ADJUST: 11.06% (STABLE)',
@@ -36,42 +37,59 @@ export const CapitalBudgetingPage = () => {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-[#050505] text-white font-sans selection:bg-[#E6A100]/30 overflow-x-hidden">
+      <SEO 
+        title="Capital Architecture Model" 
+        description="Engineering a ₱581M feasibility engine for maritime dredging operations. A comparative study of cost-of-capital versus long-term asset yield. Full DCF model inside."
+        path="/project/capital-budgeting"
+        schemaType="SoftwareApplication"
+      />
       
       <BackToTerminal />
 
       {/* ── CINEMATIC HUD ACTIONS ─────────────────────────────── */}
-      <div className="fixed top-12 right-12 z-[100] hidden md:flex gap-4">
-         <a href="/resources/IDC_Capital_Budgeting_Model.xlsx" download className="px-5 py-2 rounded-lg bg-[#E6A100] text-white font-mono text-[10px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(230,161,0,0.3)] hover:scale-105 transition-transform">
+      <div 
+        className="fixed top-12 right-12 z-[100] hidden md:flex gap-4"
+        role="status"
+        aria-label="Document status"
+        aria-live="polite"
+      >
+         <a 
+          href="/resources/IDC_Capital_Budgeting_Model.xlsx" 
+          download 
+          className="px-6 py-2.5 rounded-full bg-[#E6A100] text-white font-mono text-[10px] font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all duration-300 border border-white/10"
+          aria-label="Download Excel financial model"
+         >
             Download Model (.XLSX)
          </a>
       </div>
 
       {/* ── HERO: QUANTITATIVE COMMAND ──────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-32 md:pb-48 px-6 overflow-hidden">
-        <div className="absolute inset-0 z-0 pointer-events-none">
+      <section className="relative h-screen flex flex-col items-center justify-between px-6 md:px-24 overflow-hidden py-12 md:py-20 gap-y-12">
+        <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1B3B5A40_0%,transparent_70%)]" />
            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative z-10 max-w-7xl w-full">
+        <div className="relative z-10 max-w-7xl w-full flex-grow flex flex-col items-center justify-center">
           <ScrollReveal direction="up">
             <div className="flex flex-col items-center text-center">
-               <div className="inline-flex items-center gap-4 mb-8 md:mb-12 px-6 py-2 rounded-full border border-[#E6A100]/20 bg-[#E6A100]/5 backdrop-blur-2xl">
+               <div className="inline-flex items-center gap-4 mb-8 md:mb-10 px-6 py-2 rounded-full border border-[#E6A100]/20 bg-[#E6A100]/5 backdrop-blur-2xl">
                  <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.5em] uppercase font-black text-[#E6A100] text-center">
                    IDC-CAP-99 // CHIQUITA ISLAND PROJECT
                  </span>
                </div>
                
-               <h1 className="font-noto text-[12vw] sm:text-7xl md:text-[13rem] font-black leading-[0.75] tracking-tighter mb-10 md:mb-16 uppercase text-center break-words">
+               <h1 className="sr-only">Capital Architecture Model — Industrial Feasibility Engine for Maritime Projects</h1>
+               <div aria-hidden="true" className="font-noto text-[12vw] sm:text-7xl md:text-[8rem] font-black leading-[0.75] tracking-tighter mb-8 md:mb-10 uppercase text-center break-words mx-auto">
                  Capital<br/>
                  <span className="text-[#E6A100] relative italic font-playfair lowercase font-normal">Architecture.</span>
-               </h1>
+               </div>
                
-               <p className="font-mono text-base md:text-3xl text-white/40 max-w-4xl leading-relaxed font-medium mb-16 md:mb-24 px-4 md:px-0 text-center mx-auto">
+               <p className="font-mono text-base md:text-2xl text-white/40 max-w-3xl leading-relaxed font-medium mb-12 md:mb-16 px-4 md:px-0 text-center mx-auto">
                   Engineering a <span className="text-white underline decoration-[#E6A100] underline-offset-[12px] decoration-2">₱581M feasibility engine</span> for maritime dredging operations. A comparative study of cost-of-capital versus long-term asset yield.
                </p>
 
-               <div className="md:hidden w-full px-4 mb-12">
+               <div className="md:hidden w-full px-4 mb-0">
                   <a href="/resources/IDC_Capital_Budgeting_Model.xlsx" download className="px-8 py-4 rounded-xl bg-[#E6A100] text-white font-mono text-[11px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(230,161,0,0.3)] block w-full text-center">
                      Download XLSX Model
                   </a>
@@ -81,8 +99,8 @@ export const CapitalBudgetingPage = () => {
         </div>
 
         {/* Operational Tape Footer */}
-        <div className="relative w-full px-6 md:px-12 z-20">
-           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t border-white/10 pt-12 md:pt-16">
+        <div className="relative w-full z-20">
+           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-12 border-t border-white/10 pt-10 md:pt-12">
               <div className="flex flex-col gap-6">
                  <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-[#E6A100]" />
@@ -290,6 +308,8 @@ export const CapitalBudgetingPage = () => {
            </div>
         </div>
       </section>
+
+      <RelatedProjects currentProjectId="capital-budgeting" />
 
       <footer className="w-full border-t border-white/5">
         <TheCloser />

@@ -8,10 +8,6 @@ export default defineConfig(({ mode }) => {
   return {
     base: '/', // Essential for justinclarke.github.io
     plugins: [react(), tailwindcss()],
-    define: {
-      // Ensure this doesn't crash the build if the key is missing
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
-    },
     resolve: {
       alias: {
         '@/shared': path.resolve(__dirname, './src/shared'),

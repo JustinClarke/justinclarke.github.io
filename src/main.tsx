@@ -14,3 +14,6 @@ createRoot(document.getElementById('root')!).render(
     </BrowserRouter>
   </StrictMode>,
 );
+
+// Notify prerenderer that the app is ready for snapshotting
+document.dispatchEvent(new Event('render-ready'));

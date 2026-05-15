@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { ModalProvider } from './ModalProvider';
 import { ErrorBoundary } from '@/ui/ErrorBoundary';
 
@@ -11,10 +12,12 @@ interface RootProvidersProps {
  */
 export function RootProviders({ children }: RootProvidersProps) {
   return (
-    <ErrorBoundary>
-      <ModalProvider>
-        {children}
-      </ModalProvider>
-    </ErrorBoundary>
+    <HelmetProvider>
+      <ErrorBoundary>
+        <ModalProvider>
+          {children}
+        </ModalProvider>
+      </ErrorBoundary>
+    </HelmetProvider>
   );
 }

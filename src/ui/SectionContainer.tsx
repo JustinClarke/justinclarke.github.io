@@ -1,4 +1,5 @@
 import React, { ReactNode, forwardRef } from 'react';
+import { cn } from '@/utils';
 
 /**
  * @fileoverview Standardized container for section layouts.
@@ -12,25 +13,31 @@ interface SectionContainerProps {
   className?: string;
   /** Custom CSS classes for the inner container */
   innerClassName?: string;
-  /** Max width for the inner content (e.g. 'max-w-4xl' for text readability) */
-  contentMaxWidth?: string;
+  /** Utility for the inner content (e.g. 'site-container' or 'project-container') */
+  containerVariant?: 'site' | 'project' | 'none';
   /** The content to be wrapped */
   children: ReactNode;
 }
 
 /**
- * SectionContainer wraps content in a max-w-7xl centered flexbox.
+ * SectionContainer wraps content with standardized HUD spacing.
  * Standardizes layout patterns across Hero, Projects, Expertise, and Footer.
  */
 export const SectionContainer = forwardRef<HTMLElement, SectionContainerProps>(
-  ({ id, className = '', innerClassName = '', contentMaxWidth = 'max-w-7xl', children }, ref) => {
+  ({ id, className = '', innerClassName = '', containerVariant = 'site', children }, ref) => {
+    const containerClass = containerVariant === 'site' 
+      ? 'site-container' 
+      : containerVariant === 'project' 
+        ? 'project-container' 
+        : 'container-layout';
+
     return (
       <section
         id={id}
         ref={ref}
-        className={`relative w-full ${className}`}
+        className={cn("section-layout relative w-full", className)}
       >
-        <div className={`${contentMaxWidth} mx-auto px-6 md:px-12 xl:px-8 w-full ${innerClassName}`}>
+        <div className={cn(containerClass, "w-full", innerClassName)}>
           {children}
         </div>
       </section>

@@ -9,9 +9,9 @@
 
   /* Brand Colors - Standardized for Tailwind Utility Access */
   --color-brand-primary: #00c8b4;
-  --color-brand-bg: #0d0d0d;
-  --color-brand-card: #1e1e1e;
-  --color-brand-modal: #2d2d2d;
+  --color-brand-bg: #050505;
+  --color-brand-card: #0c0c0c;
+  --color-brand-modal: #111111;
 
   /* Semantic UI Colors */
   --color-border-studio: rgba(255, 255, 255, 0.08);
@@ -48,6 +48,14 @@
   --color-light-text: #000000;
   --color-light-text-dim: rgba(0, 0, 0, 0.15);
   --color-light-text-muted: rgba(0, 0, 0, 0.4);
+
+  /* Production Spacing System */
+  --spacing-section-y-mobile: 5rem;    /* 80px */
+  --spacing-section-y-desktop: 7rem;   /* 112px */
+  --spacing-container-x-mobile: 1.5rem; /* 24px */
+  --spacing-container-x-desktop: 3rem;  /* 48px */
+  --max-width-site: 72rem;             /* 1152px - matches max-w-6xl */
+  --max-width-project: 80rem;          /* 1280px - matches max-w-7xl */
 }
 
 @utility border-studio {
@@ -67,6 +75,55 @@
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 1px rgba(0, 200, 180, 0.4), 0 0 0 3px var(--color-brand-bg);
+  }
+}
+
+/**
+ * 0. PRODUCTION LAYOUT ENGINE
+ * Semantic utilities to enforce design system consistency.
+ */
+@utility section-layout {
+  padding-top: var(--spacing-section-y-mobile);
+  padding-bottom: var(--spacing-section-y-mobile);
+  @media (min-width: 768px) {
+    padding-top: var(--spacing-section-y-desktop);
+    padding-bottom: var(--spacing-section-y-desktop);
+  }
+}
+
+@utility container-layout {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-container-x-mobile);
+  padding-right: var(--spacing-container-x-mobile);
+  @media (min-width: 768px) {
+    padding-left: var(--spacing-container-x-desktop);
+    padding-right: var(--spacing-container-x-desktop);
+  }
+}
+
+@utility site-container {
+  @apply container-layout;
+  max-width: var(--max-width-site);
+}
+
+@utility project-container {
+  @apply container-layout;
+  max-width: var(--max-width-project);
+}
+
+@utility narrative-gap {
+  margin-bottom: 3rem;
+  @media (min-width: 768px) {
+    margin-bottom: 4.5rem;
+  }
+}
+
+@utility component-gap {
+  gap: 1.5rem;
+  @media (min-width: 768px) {
+    gap: 2rem;
   }
 }
 
@@ -808,6 +865,38 @@ body {
   background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
   transform: translateX(-100%);
   opacity: 0;
+}
+
+@keyframes skill-pill-glow {
+  0%, 100%, 8% {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0px transparent;
+    transform: scale(1);
+  }
+  2%, 5% {
+    background-color: color-mix(in srgb, var(--pill-glow-color) 15%, transparent);
+    border-color: color-mix(in srgb, var(--pill-glow-color) 50%, transparent);
+    color: var(--pill-glow-color);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--pill-glow-color) 25%, transparent);
+    transform: scale(1.05);
+  }
+}
+
+.skill-pill-anim {
+  animation: skill-pill-glow var(--glow-duration, 60s) ease-in-out infinite;
+  animation-delay: var(--glow-delay, 0s);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-pill-anim:hover {
+  background-color: color-mix(in srgb, var(--pill-glow-color) 20%, transparent) !important;
+  border-color: color-mix(in srgb, var(--pill-glow-color) 60%, transparent) !important;
+  color: var(--pill-glow-color) !important;
+  box-shadow: 0 0 25px color-mix(in srgb, var(--pill-glow-color) 30%, transparent) !important;
+  transform: scale(1.1) !important;
+  animation-play-state: paused;
 }
 
 /* ── RESUME CTA PULSATING GLOW ── */

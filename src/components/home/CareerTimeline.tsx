@@ -8,6 +8,7 @@ import {
   ChevronDown,
   Zap,
 } from 'lucide-react';
+import { TOOLTIPS } from '@/config/tooltips';
 
 /* ── Data ──────────────────────────────────────────────── */
 
@@ -143,7 +144,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpanded, o
     <div className="relative pl-10 md:pl-16 pb-2">
       {/* Timeline spine connector */}
       <div className={cn(
-        "absolute left-[11px] md:left-[19px] top-0 bottom-0 w-px",
+        "absolute left-[11.5px] md:left-[20.5px] top-0 bottom-0 w-px",
         isWork ? "bg-brand-primary/15" : "bg-[#f59e0b]/15"
       )} />
 
@@ -193,7 +194,7 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpanded, o
         )} />
 
         {/* Header (always visible) */}
-        <div className="p-5 md:p-6">
+        <div className="p-5 md:p-6" data-tooltip={TOOLTIPS[entry.id as keyof typeof TOOLTIPS] || ''}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               {/* Period + badges row */}
@@ -253,16 +254,16 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpanded, o
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
               className={cn(
-                "flex-shrink-0 mt-1 w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 border border-white/5",
+                "flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
                 isWork
-                  ? "bg-brand-primary/5 text-brand-primary/40 group-hover:bg-brand-primary/10 group-hover:text-brand-primary group-hover:border-brand-primary/20"
-                  : "bg-[#f59e0b]/5 text-[#f59e0b]/40 group-hover:bg-[#f59e0b]/10 group-hover:text-[#f59e0b] group-hover:border-[#f59e0b]/20",
+                  ? "bg-brand-primary/5 text-brand-primary/60 group-hover:bg-brand-primary/10 group-hover:text-brand-primary group-hover:border-brand-primary/20"
+                  : "bg-[#f59e0b]/5 text-[#f59e0b]/60 group-hover:bg-[#f59e0b]/10 group-hover:text-[#f59e0b] group-hover:border-[#f59e0b]/20",
                 isExpanded && (isWork
                   ? "bg-brand-primary/15 text-brand-primary border-brand-primary/30"
                   : "bg-[#f59e0b]/15 text-[#f59e0b] border-[#f59e0b]/30")
               )}
             >
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-4 h-4" strokeWidth={2.5} />
             </motion.div>
           </div>
 
@@ -290,21 +291,29 @@ const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpanded, o
 
           {/* Tags (always visible) */}
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {entry.tags.map(tag => (
-              <span key={tag} className={cn(
-                "font-mono text-[8px] px-2 py-0.5 rounded-md font-bold tracking-widest uppercase transition-colors duration-300",
-                isWork
-                  ? "bg-brand-primary/5 border border-brand-primary/10 text-brand-primary/40 group-hover:text-brand-primary/60"
-                  : "bg-[#f59e0b]/5 border border-[#f59e0b]/10 text-[#f59e0b]/40 group-hover:text-[#f59e0b]/60"
-              )}>
-                {tag}
-              </span>
-            ))}
+            {entry.tags.map(tag => {
+              const tagKey = tag.toLowerCase().replace(/[\s\/]/g, '');
+              const tagTooltip = TOOLTIPS[tagKey as keyof typeof TOOLTIPS];
+              return (
+                <span
+                  key={tag}
+                  className={cn(
+                    "font-mono text-[8px] px-2 py-0.5 rounded-md font-bold tracking-widest uppercase transition-colors duration-300",
+                    isWork
+                      ? "bg-brand-primary/5 border border-brand-primary/10 text-brand-primary/40 group-hover:text-brand-primary/60"
+                      : "bg-[#f59e0b]/5 border border-[#f59e0b]/10 text-[#f59e0b]/40 group-hover:text-[#f59e0b]/60"
+                  )}
+                  data-tooltip={tagTooltip}
+                >
+                  {tag}
+                </span>
+              );
+            })}
           </div>
         </div>
 
         {/* Expanded content (CSS Grid Accordion for Safari) */}
-        <div 
+        <div
           className="exp-body"
           data-open={isExpanded}
         >
@@ -364,15 +373,20 @@ const YearProgressBar: React.FC = () => {
           transition={{ duration: 1.4, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
           viewport={{ once: true }}
         />
-        {/* Leading glow dot */}
+        {/* Leading glow dot with arrow head */}
         <motion.div
-          className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-brand-primary shadow-[0_0_15px_rgba(0,200,180,0.6)] z-10"
+          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 z-10"
           initial={{ left: 0, opacity: 0 }}
           whileInView={{ left: `${progressPercent}%`, opacity: 1 }}
           transition={{ duration: 1.4, ease: [0.23, 1, 0.32, 1], delay: 0.3 }}
           viewport={{ once: true }}
-          style={{ marginLeft: '-5px' }}
-        />
+          style={{ marginLeft: '-6px' }}
+        >
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div className="absolute w-2.5 h-2.5 rounded-full bg-brand-primary shadow-[0_0_15px_rgba(0,200,180,0.6)]" />
+            <div className="absolute left-[70%] w-0 h-0 border-t-[3px] border-t-transparent border-b-[3px] border-b-transparent border-l-[5px] border-l-brand-primary" />
+          </div>
+        </motion.div>
       </div>
 
       {/* Tick marks */}
@@ -415,7 +429,7 @@ const YearProgressBar: React.FC = () => {
 /* ── Main Section ──────────────────────────────────────── */
 
 export const CareerTimeline = () => {
-  const [expandedId, setExpandedId] = useState<string | null>('vns');
+  const [expandedId, setExpandedId] = useState<string | null>('mba');
 
   const workEntries = ENTRIES.filter(e => e.type === 'work');
   const eduEntries = ENTRIES.filter(e => e.type === 'edu');
@@ -425,14 +439,14 @@ export const CareerTimeline = () => {
   };
 
   return (
-    <section id="experience" className="narrative-section py-20 md:py-28 bg-[#070707] text-white scroll-mt-25 border-t border-white/5 relative overflow-hidden">
+    <section id="experience" className="section-layout text-white scroll-mt-25 border-t border-white/5 relative overflow-hidden">
       {/* Subtle background texture */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(0,200,180,0.02)_1px,transparent_1px)] bg-[length:32px_32px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+      <div className="project-container relative z-10">
 
         {/* ── Section Header ── */}
-        <div className="flex flex-col gap-4 mb-4 md:mb-6 border-b border-white/10 pb-12">
+        <div className="narrative-gap border-b border-white/10 pb-12 flex flex-col gap-4">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
             <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30 font-bold whitespace-nowrap">
               Career Record
@@ -442,10 +456,10 @@ export const CareerTimeline = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <ScrollReveal delay={0.1}>
               <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-white">
-                The full <em className="font-playfair italic font-normal text-brand-primary">Record.</em>
+                The full <em className="font-playfair italic font-normal text-brand-primary">record.</em>
               </h2>
             </ScrollReveal>
-            <ScrollReveal delay={0.2}>
+            {/* <ScrollReveal delay={0.2}>
               <div className="flex items-center gap-6 font-mono text-[9px] tracking-[0.2em] uppercase font-bold">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-[2px] bg-brand-primary rounded-full" />
@@ -453,10 +467,10 @@ export const CareerTimeline = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-[2px] bg-[#f59e0b] rounded-full" />
-                  <span className="text-[#f59e0b]/70">Scholastic</span>
+                  <span className="text-[#f59e0b]/70">Academic</span>
                 </div>
               </div>
-            </ScrollReveal>
+            </ScrollReveal> */}
           </div>
         </div>
 
@@ -499,7 +513,7 @@ export const CareerTimeline = () => {
               <div className="flex items-center gap-3 mb-6">
                 <GraduationCap className="w-4 h-4 text-[#f59e0b]/50" />
                 <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-[#f59e0b]/40 font-bold">
-                  Scholastic
+                  Academic
                 </span>
                 <div className="flex-1 h-px bg-[#f59e0b]/10" />
               </div>

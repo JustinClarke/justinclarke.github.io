@@ -13,9 +13,9 @@ export const TheCloser = () => {
     <SectionContainer
       id='contact'
       ref={containerRef}
-      contentMaxWidth='max-w-6xl'
-      className='bg-brand-bg py-20 md:py-28 relative overflow-hidden flex flex-col h-[100svh] md:h-auto md:min-h-[640px] justify-between dark border-t border-white/5'
-      innerClassName='flex flex-col flex-1 justify-between w-full px-6 md:px-12'
+      containerVariant='project'
+      className='relative overflow-hidden flex flex-col h-[100svh] md:h-auto md:min-h-[640px] justify-between dark border-t border-white/5'
+      innerClassName='flex flex-col flex-1 justify-between w-full'
     >
       <div className='flex flex-col flex-1'>
         {/* Section Header */}
@@ -48,7 +48,7 @@ export const TheCloser = () => {
               <ScrollReveal once={false} delay={0.4}>
                 <button
                   onClick={openContactModal}
-                  className='group flex items-center justify-center gap-6 px-10 md:px-12 py-[18px] md:py-[22px] bg-brand-bg text-white font-noto text-[13px] md:text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[280px] md:min-w-[320px]'
+                  className='group flex items-center justify-center gap-6 px-10 md:px-12 py-[18px] md:py-[22px] bg-transparent text-white font-noto text-[13px] md:text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[280px] md:min-w-[320px]'
                   aria-label='Open contact form'
                 >
                   <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-r from-transparent via-brand-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] ease-in-out" />

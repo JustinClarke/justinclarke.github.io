@@ -3,7 +3,7 @@ import { Routes, Route, useLocation, useNavigationType } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion';
 import { Home, NotFound, ArchivePage } from '@/pages';
 import { SpotifyEnginePage, SqlDisasterPage, LiteStorePage, CapitalBudgetingPage, HRArchetypePage } from '@/pages/projects';
-import { CustomCursor, Preloader, BackToTop } from '@/components/layout';
+import { CustomCursor, Preloader, BackToTop, SEO } from '@/components/layout';
 import { ContactModal } from '@/modals';
 import { initTooltips, initScrollAnimations } from '@/utils';
 
@@ -39,13 +39,21 @@ export default function App() {
   // Reset to top on EVERY page change, but delay it so it happens in the dark.
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 1000); // Perfectly synced with the 1s exit duration
+      // Critical Safari Fix: Only scroll if the document is actually visible.
+      // This prevents jumps when switching desktops or applications.
+      if (document.visibilityState === 'visible') {
+        window.scrollTo(0, 0);
+      }
+    }, 1000); 
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
   return (
-    <div className="bg-brand-bg min-h-screen text-white selection:bg-white/20">
+    <div className="min-h-screen text-white selection:bg-white/20">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-md focus:font-mono focus:text-xs focus:font-bold">
+        SKIP TO CONTENT
+      </a>
+      <SEO />
       <Preloader />
       <CustomCursor />
       <ContactModal />
@@ -64,16 +72,18 @@ export default function App() {
           }}
           className="min-h-screen flex flex-col"
         >
-          <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<Home />} />
-            <Route path="/project/spotify-engine" element={<SpotifyEnginePage />} />
-            <Route path="/project/sql-disaster" element={<SqlDisasterPage />} />
-            <Route path="/project/litestore" element={<LiteStorePage />} />
-            <Route path="/project/capital-budgeting" element={<CapitalBudgetingPage />} />
-            <Route path="/project/hr-archetype" element={<HRArchetypePage />} />
-            <Route path="/archive" element={<ArchivePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <main id="main-content" className="flex-grow flex flex-col">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/project/spotify-engine" element={<SpotifyEnginePage />} />
+              <Route path="/project/sql-disaster" element={<SqlDisasterPage />} />
+              <Route path="/project/litestore" element={<LiteStorePage />} />
+              <Route path="/project/capital-budgeting" element={<CapitalBudgetingPage />} />
+              <Route path="/project/hr-archetype" element={<HRArchetypePage />} />
+              <Route path="/archive" element={<ArchivePage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
         </motion.div>
       </AnimatePresence>
     </div>

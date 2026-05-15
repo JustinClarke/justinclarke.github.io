@@ -17,6 +17,7 @@ export const BackToTerminal = () => {
         <MagneticButton>
           <Link 
             to="/"
+            aria-label="Return to terminal home page"
             className="relative flex items-center gap-4 px-6 py-3 rounded-full group transition-all duration-700 border border-white/10 bg-zinc-950/80 backdrop-blur-2xl hover:bg-zinc-900 hover:border-brand-primary/50 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
           >
             <div className="relative flex items-center justify-center w-8 h-8 rounded-full border border-white/10 group-hover:bg-brand-primary group-hover:border-brand-primary group-hover:scale-110 transition-all duration-500 bg-white/5">
@@ -39,6 +40,7 @@ export const BackToTerminal = () => {
       >
         <Link 
           to="/"
+          aria-label="Return to terminal home page"
           className="flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-black/40 backdrop-blur-xl active:bg-white/10 transition-all shadow-lg"
         >
           <ArrowLeft className="w-3.5 h-3.5 text-white/60" />
