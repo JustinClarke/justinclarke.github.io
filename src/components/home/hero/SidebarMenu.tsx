@@ -13,36 +13,43 @@ interface CommandButtonProps {
 const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, onClick }) => (
   <button
     onClick={onClick}
-    data-cmd={`> exec_${cmd}()`}
     className={cn(
-      "flex items-center justify-between w-full p-3 rounded-lg border transition-all duration-300 group/btn text-left relative overflow-hidden",
+      "flex items-center justify-between w-full p-3 rounded-lg border group/btn text-left relative overflow-hidden system-control-hover glitch-text-hover transition-all duration-500",
       important
-        ? "bg-brand-primary/10 border-brand-primary text-[#f4f4f3] shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02]"
+        ? "bg-brand-primary/10 border-brand-primary text-[#f4f4f3] shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02] important-control"
         : hot
           ? "bg-brand-primary/5 border-brand-primary/30 text-[#f4f4f3]"
-          : "bg-transparent border-white/5 text-[#f4f4f3] hover:bg-white/[0.02] hover:border-white/10"
+          : "bg-transparent border-white/5 text-[#f4f4f3]"
     )}
   >
+    <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-brand-primary/0 group-hover/btn:bg-brand-primary/50 transition-colors" />
+    
     {important && (
       <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite]" />
     )}
+    
     <div className="flex items-center gap-3 relative z-10">
-      <span className={cn(
-        "font-mono text-[10px]",
-        important ? "text-brand-primary" : "text-[#5a5a57]"
-      )}>[{num}]</span>
-      <span className={cn(
-        "font-mono text-[12px] font-bold tracking-tight",
-        (hot || important) ? "text-brand-primary" : "text-[#f4f4f3]"
-      )}>
-        {cmd}
-      </span>
+      <div className="indicator-light group-hover/btn:bg-brand-primary" />
+      
+      <div className="flex items-baseline gap-2">
+        <span className={cn(
+          "font-mono text-[10px]",
+          important ? "text-brand-primary" : "text-[#5a5a57]"
+        )}>[{num}]</span>
+        <span className={cn(
+          "font-mono text-[12px] font-bold tracking-tight glitch-target",
+          (hot || important) ? "text-brand-primary" : "text-[#f4f4f3]"
+        )}>
+          {cmd}
+        </span>
+      </div>
     </div>
+
     <span className={cn(
       "font-mono text-[9px] tracking-tight group-hover/btn:translate-x-1 transition-transform opacity-60 relative z-10 hidden md:block",
       important ? "text-[#f4f4f3] font-bold" : "text-[#8a8a86]"
     )}>
-      {desc} →
+      {desc} <span className="text-brand-primary ml-1 opacity-0 group-hover/btn:opacity-100">_</span>
     </span>
   </button>
 );
@@ -63,8 +70,12 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
 
   return (
     <div className="flex flex-col gap-4 md:gap-6 pt-6 md:pt-2 shrink-0 border-t md:border-t-0 md:border-l border-white/5 md:pl-8 lg:pl-12 min-h-0">
-      <div className="font-mono text-[9px] text-[#5a5a57] uppercase tracking-[0.3em] font-black opacity-60">
-        SYSTEM CONTROLS
+      <div className="flex items-center gap-3 group/header">
+        <div className="font-mono text-[9px] text-[#5a5a57] uppercase tracking-[0.3em] font-black opacity-60 group-hover/header:opacity-100 transition-opacity">
+          SYSTEM CONTROLS
+        </div>
+        <div className="flex-1 h-[1px] bg-white/5" />
+        <div className="indicator-light bg-brand-primary/40 group-hover/header:bg-brand-primary group-hover/header:shadow-[0_0_8px_#00c8b4]" />
       </div>
       <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
         {menuItems.map((c) => (

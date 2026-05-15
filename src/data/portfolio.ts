@@ -22,7 +22,7 @@ export const experiences: Experience[] = [
     year: 'Apr 2021 – Apr 2023',
     tag: 'Next.js · AWS · Vercel',
     details: [
-      'Sole engineer on a production serverless platform — BTech final year through MSc completion at Queen Mary',
+      'Sole engineer on a production serverless platform - BTech final year through MSc completion at Queen Mary',
       'Built event tracking and behavioural telemetry pipelines (GA4) feeding conversion + funnel dashboards',
       '↑ 20% conversion via A/B experiments designed off telemetry insights',
       'CI/CD pipelines with automated testing · 3.0s → 0.6s page load via SSR + caching',

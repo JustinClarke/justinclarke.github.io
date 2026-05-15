@@ -16,7 +16,7 @@ const SITE_URL = 'https://justinclarke.github.io';
 const DEFAULT_OG = `${SITE_URL}/og-image.png`;
 
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Justin Clarke — Analytics Engineer & Data Architect',
+  title = 'Justin Clarke - Analytics Engineer & Data Architect',
   description = 'Portfolio of Justin Clarke. Case studies in analytics engineering...',
   image,
   path = '/',
@@ -53,5 +53,5 @@ export const SEO: React.FC<SEOProps> = ({
 ## ✍️ Meta Description Formulas
 **Pattern**: Outcome + Keyword + Artefact.
 
-*   **SQL Disaster**: `SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics — composite keys and live dashboard. Full ERD inside.`
+*   **SQL Disaster**: `SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics - composite keys and live dashboard. Full ERD inside.`
 *   **HR Archetype**: `AI-driven HR analytics: an 8-archetype retention engine that predicts employee attrition 90 days out using Gemini and Firestore.`

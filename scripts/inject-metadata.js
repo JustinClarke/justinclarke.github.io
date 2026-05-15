@@ -11,7 +11,7 @@ const INDEX_HTML = path.join(DIST_DIR, 'index.html');
 const ROUTES = [
   {
     path: '/',
-    title: 'Justin Clarke — Analytics Engineer & Data Architect',
+    title: 'Justin Clarke - Analytics Engineer & Data Architect',
     description: 'Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems.'
   },
   {

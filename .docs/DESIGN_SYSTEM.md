@@ -19,10 +19,10 @@ The "HUD" (Heads-Up Display) aesthetic is built on high-contrast technical preci
 We use a modular scale to ensure hierarchy in a data-dense environment.
 
 ### 2.1 Typeface Selection
-- **Heading 1/2**: `Noto Sans` (900 weight) — Aggressive, cinematic impact.
-- **Narrative**: `Inter` — High readability sans-serif for descriptions.
-- **Accents**: `Playfair Display` (Italic) — Premium contrast within technical text.
-- **Data/UI**: `IBM Plex Mono` — The "Technical" voice for coordinates, tags, and labels.
+- **Heading 1/2**: `Noto Sans` (900 weight) - Aggressive, cinematic impact.
+- **Narrative**: `Inter` - High readability sans-serif for descriptions.
+- **Accents**: `Playfair Display` (Italic) - Premium contrast within technical text.
+- **Data/UI**: `IBM Plex Mono` - The "Technical" voice for coordinates, tags, and labels.
 
 ### 2.2 Global Font Scaling (Desktop)
 - **Section Heading (H2)**: `text-7xl` (4.5rem / 72px) | Tracking: `-0.05em` | Leading: `0.9`.

@@ -458,7 +458,7 @@ export const HRArchetypeVisual = () => {
           );
         })}
 
-        {/* Scan line animation — no SVG y attr so Framer's y prop is unambiguous */}
+        {/* Scan line animation - no SVG y attr so Framer's y prop is unambiguous */}
         <motion.rect
           x="5" width="158" height="1"
           fill="rgba(168,85,247,0.25)"
@@ -562,7 +562,7 @@ export const FinanceVisual = () => {
           />
         ))}
 
-        {/* Scenario bars — use SVG coordinate flip so bars grow upward cleanly */}
+        {/* Scenario bars - use SVG coordinate flip so bars grow upward cleanly */}
         {scenarios.map((s, i) => {
           const x = startX + i * (barW + gap);
           const h = s.barFrac * barMaxH;
@@ -591,7 +591,7 @@ export const FinanceVisual = () => {
                 />
               </g>
 
-              {/* IRR — static position, fade in */}
+              {/* IRR - static position, fade in */}
               <motion.text
                 x={x + barW / 2} y={barTopY - 4}
                 fontSize="5.5" textAnchor="middle"

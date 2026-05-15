@@ -1,4 +1,4 @@
-# LiteStorePage — Elevation Plan
+# LiteStorePage - Elevation Plan
 
 **Source studied:** `LiteStore-nextjs-main/` (the actual production codebase, ~2,000 LOC across 30+ files)
 **Target:** `src/pages/projects/LiteStorePage.tsx` (currently 458 lines, marketing-tone, light on evidence)
@@ -9,7 +9,7 @@
 ## 1. What the current page does well (keep)
 
 - Strong hero treatment, HUD chrome, cinematic typography.
-- Three-phase Migration Arc (HTML → CRA → Next.js 12) — narrative spine works.
+- Three-phase Migration Arc (HTML → CRA → Next.js 12) - narrative spine works.
 - Brand grid on light theme is a clean tonal break.
 - `SEO`, `BackToTerminal`, `TheCloser`, `RelatedProjects` integration is already correct.
 - The `_document.js` GA4 snippet block is the page's strongest "show, don't tell" moment.
@@ -20,16 +20,16 @@ The source repo contains hard evidence the current page hand-waves:
 
 | Current page says | Source actually shows | What to do |
 |---|---|---|
-| "30+ static routes" | 30 distinct `.js` files in `pages/` — countable (home, contact, spaces/index, 3 mall indexes, 11 brand pages, 4 FAQ categories, 2 blog posts, 3 legal pages, 2 about, 404, success, _app, _document) | Replace claim with a real route tree visualization |
-| "Custom GA4 layer" | `pages/_document.js` lines 17-32 — exact code | Already shown, but tighten with a "What this earns you" callout (page_path tracking without a plugin) |
-| "Google Sheets pipeline" | `pages/contact.js` lines 19-26 — real `axios.post` to a real sheet.best UUID endpoint | Show the actual POST + a "why this was the right tradeoff for a 2nd-year CS student shipping solo to a paying client" |
-| "11 brand routes" | Actual brand list w/ mall scoping: Orion (6), Garuda (4), Lulu (1) | Replace flat grid with mall-grouped tree — matches the URL structure |
-| "Tailwind + MUI" | `tailwind.config.js` has 5 custom brand colors (`mensxp-orange`, `jbl-orange`, `wow-gold`, etc.) — per-brand theming was a real architectural decision | New beat: "Per-tenant theme tokens" — show the config |
+| "30+ static routes" | 30 distinct `.js` files in `pages/` - countable (home, contact, spaces/index, 3 mall indexes, 11 brand pages, 4 FAQ categories, 2 blog posts, 3 legal pages, 2 about, 404, success, _app, _document) | Replace claim with a real route tree visualization |
+| "Custom GA4 layer" | `pages/_document.js` lines 17-32 - exact code | Already shown, but tighten with a "What this earns you" callout (page_path tracking without a plugin) |
+| "Google Sheets pipeline" | `pages/contact.js` lines 19-26 - real `axios.post` to a real sheet.best UUID endpoint | Show the actual POST + a "why this was the right tradeoff for a 2nd-year CS student shipping solo to a paying client" |
+| "11 brand routes" | Actual brand list w/ mall scoping: Orion (6), Garuda (4), Lulu (1) | Replace flat grid with mall-grouped tree - matches the URL structure |
+| "Tailwind + MUI" | `tailwind.config.js` has 5 custom brand colors (`mensxp-orange`, `jbl-orange`, `wow-gold`, etc.) - per-brand theming was a real architectural decision | New beat: "Per-tenant theme tokens" - show the config |
 | "Swiper + AOS" | `home.js` uses Swiper with `Autoplay`, `EffectFade`, `Navigation`, `Pagination`, `A11y` modules; AOS init in `_app.js` | Concrete: "5 Swiper modules across 12 carousels, AOS duration 1500ms set once in `_app.js`" |
-| Not mentioned | `react-countup` for the metrics counters (₹100→0 deposit, 48hr transition, 58% cheaper, ₹2.2Cr GMV) | New section: animated business metrics — these are the *real* numbers the client used |
-| Not mentioned | FAQ pages are *each* 30-40KB (brands.js, general.js, services.js, landowners.js) — content scale was non-trivial | Add a "Content scale" sub-stat: ~140KB of FAQ copy, 4 audiences |
+| Not mentioned | `react-countup` for the metrics counters (₹100→0 deposit, 48hr transition, 58% cheaper, ₹2.2Cr GMV) | New section: animated business metrics - these are the *real* numbers the client used |
+| Not mentioned | FAQ pages are *each* 30-40KB (brands.js, general.js, services.js, landowners.js) - content scale was non-trivial | Add a "Content scale" sub-stat: ~140KB of FAQ copy, 4 audiences |
 | Not mentioned | 19KB privacy policy + 20KB ToS hand-typed into JSX | Add to "what shipping solo actually meant" beat |
-| Not mentioned | Justin appears in `pages/about/company.js` lines 87-97 as "Justin Clarke / React Developer" — direct attribution exists in the codebase | Cite this as authorship proof |
+| Not mentioned | Justin appears in `pages/about/company.js` lines 87-97 as "Justin Clarke / React Developer" - direct attribution exists in the codebase | Cite this as authorship proof |
 
 ## 3. Proposed new structure
 
@@ -52,17 +52,17 @@ Keep the seven existing sections, but reorder slightly and insert two new ones. 
 
 ## 4. Section-by-section spec
 
-### 4.1 HERO — light edits
+### 4.1 HERO - light edits
 
 **Keep:** Layout, type scale, "Solo Engineering Lead" pill, audit metrics footer.
 
 **Change:**
-- `AUDIT_METRICS` — replace `LCP 0.6s / FCP 0.4s` (these are unverified; we don't have Lighthouse runs) with countable facts from the source:
+- `AUDIT_METRICS` - replace `LCP 0.6s / FCP 0.4s` (these are unverified; we don't have Lighthouse runs) with countable facts from the source:
   - `Routes: 30` (exact count of `.js` files in `pages/`)
   - `Tenants: 11` (brand pages)
   - `Malls: 3` (Orion / Garuda / Lulu)
   - `LOC: ~2,000` (`wc -l` on `pages/`)
-- `SYSTEM_LOGS` — replace with verifiable log lines:
+- `SYSTEM_LOGS` - replace with verifiable log lines:
   - `[BUILD] next 12.2.2 · 30 routes prerendered`
   - `[POST] axios → sheet.best/api/sheets/31835dc6...`
   - `[GTAG] window.dataLayer.push · page_path: ${pathname}`
@@ -71,11 +71,11 @@ Keep the seven existing sections, but reorder slightly and insert two new ones. 
   - `[TENANT] /spaces/{orion,garuda,lulu}/{brand}`
   - `[THEME] tailwind.config.js · 5 brand color tokens`
 
-### 4.2 SECTION 01 — Migration Arc (keep)
+### 4.2 SECTION 01 - Migration Arc (keep)
 
-No structural change. Optional: add a 4th phase card titled "Today" — "Repo archived 2023. Three years later, it's the case study you're reading."
+No structural change. Optional: add a 4th phase card titled "Today" - "Repo archived 2023. Three years later, it's the case study you're reading."
 
-### 4.3 SECTION 02 — Route Tree (NEW)
+### 4.3 SECTION 02 - Route Tree (NEW)
 
 **Concept:** A literal `tree`-style print of the `pages/` directory, monospace, click-to-expand groups. This is the "30+ routes" claim, visualized.
 
@@ -121,31 +121,31 @@ pages/
 
 **Why this matters:** Converts the abstract "30+ static routes" claim into something the reader can count themselves. Anchors credibility for the rest of the page.
 
-### 4.4 SECTION 03 — The Real Stack / Form Pipeline (keep + extend)
+### 4.4 SECTION 03 - The Real Stack / Form Pipeline (keep + extend)
 
 Current pipeline diagram is good. Two additions:
 
 - **Add the literal endpoint** (truncated UUID, for the bit of "this was a real production URL" texture):
   - `POST https://sheet.best/api/sheets/31835dc6-...`
 - **Add a "Why sheet.best" callout** below the pipeline:
-  > "The client needed lead capture in a Google Sheet they already owned. A backend with auth and a DB was overkill. sheet.best as a middleware kept the form serverless and the data in the client's hands — they could revoke access without touching code."
+  > "The client needed lead capture in a Google Sheet they already owned. A backend with auth and a DB was overkill. sheet.best as a middleware kept the form serverless and the data in the client's hands - they could revoke access without touching code."
 
 This is the kind of judgment call that distinguishes "I picked tools" from "I picked the right tools for this client."
 
-### 4.5 SECTION 04 — Telemetry Layer (keep + tighten)
+### 4.5 SECTION 04 - Telemetry Layer (keep + tighten)
 
 The code block is the page's centerpiece. Two refinements:
 
 - **Add a 3-row "What this earns you" mini-table** under the code:
-  - `Page-load tracking` — `window.location.pathname` per route
-  - `Env-driven config` — `NEXT_PUBLIC_GOOGLE_ANALYTICS` swappable per deploy
-  - `Zero plugin surface` — no `@next/third-parties`, no `nextjs-google-analytics` (those packages didn't exist in 2022 anyway)
+  - `Page-load tracking` - `window.location.pathname` per route
+  - `Env-driven config` - `NEXT_PUBLIC_GOOGLE_ANALYTICS` swappable per deploy
+  - `Zero plugin surface` - no `@next/third-parties`, no `nextjs-google-analytics` (those packages didn't exist in 2022 anyway)
 - **Add a "2026 retrospective" callout** at the bottom:
-  > "Today I'd reach for `@next/third-parties/google` (released 2023). This was the right call in 2022 — `_document.js` injection was the documented pattern."
+  > "Today I'd reach for `@next/third-parties/google` (released 2023). This was the right call in 2022 - `_document.js` injection was the documented pattern."
 
 This shows technical maturity: the engineer who shipped this knows what they'd change *now*, which is more credible than pretending the code is timeless.
 
-### 4.6 SECTION 05 — Per-Tenant Theming (NEW)
+### 4.6 SECTION 05 - Per-Tenant Theming (NEW)
 
 **Concept:** Surface the `tailwind.config.js` evidence that per-brand theme tokens were a deliberate architectural decision, not just CSS.
 
@@ -166,13 +166,13 @@ colors: {
 **Layout:**
 - Two-column grid (`lg:grid-cols-2`), `gap-20`.
 - Left: a code block showing the exact `colors` map from `tailwind.config.js` (syntax-highlighted, same style as the GA4 block).
-- Right: a swatch grid — 5 brand color chips with the hex value and the brand name. On hover, the chip shows a tiny mockup of how that brand's hero used the color (e.g., `text-jbl-orange` on the JBL page heading).
+- Right: a swatch grid - 5 brand color chips with the hex value and the brand name. On hover, the chip shows a tiny mockup of how that brand's hero used the color (e.g., `text-jbl-orange` on the JBL page heading).
 
 **Section title:** "Per-Tenant Tokens." Eyebrow: "Design System · One config, 11 brands."
 
-**Why this matters:** Closes the loop on "11 brand routes" — they weren't copy-pasted; they shared a token system. Cheap to add, high credibility for the design-system claim.
+**Why this matters:** Closes the loop on "11 brand routes" - they weren't copy-pasted; they shared a token system. Cheap to add, high credibility for the design-system claim.
 
-### 4.7 SECTION 06 — Brand Routes (restructure)
+### 4.7 SECTION 06 - Brand Routes (restructure)
 
 Current implementation is a flat 11-cell grid on white. Replace with a **mall-grouped layout** to match the actual URL structure:
 
@@ -196,17 +196,17 @@ Zymrat
 
 **Why this matters:** The current flat grid loses the multi-tenant hierarchy. Showing mall→brand mirrors the route structure and makes the "templated per-tenant" claim self-evident.
 
-### 4.8 SECTION 07 — The Numbers (NEW)
+### 4.8 SECTION 07 - The Numbers (NEW)
 
-**Concept:** The current page has *engineering* metrics (LCP, routes). The source repo has *business* metrics the client cared about — the ones rendered with `react-countup` on the live site. Surfacing these connects engineering to business outcome.
+**Concept:** The current page has *engineering* metrics (LCP, routes). The source repo has *business* metrics the client cared about - the ones rendered with `react-countup` on the live site. Surfacing these connects engineering to business outcome.
 
 **Data:** From `home.js` lines 492-575:
-- `₹0` — Security Deposit (counts down from 100)
-- `0` — Lock-in months (counts down from 100)
-- `₹0` — Sunk Cost (counts down from 100)
-- `48 hrs` — Transition time between brands
-- `58%` — Cheaper than conventional retail
-- `₹2.2 Cr+` — GMV sold in Flexi-Stores
+- `₹0` - Security Deposit (counts down from 100)
+- `0` - Lock-in months (counts down from 100)
+- `₹0` - Sunk Cost (counts down from 100)
+- `48 hrs` - Transition time between brands
+- `58%` - Cheaper than conventional retail
+- `₹2.2 Cr+` - GMV sold in Flexi-Stores
 
 **Layout:**
 - Dark section (matches `bg-[#080808]` rhythm).
@@ -216,24 +216,24 @@ Zymrat
   - The label below in `font-mono text-white/40`
   - A small subline: "from `home.js:492-575`" (file-citation styling, like the GA4 code block has `pages/_document.js`)
 - Below the grid, a single line:
-  > "These were the numbers in the client's pitch deck. They're rendered with `react-countup` on the live home page — the engineering existed to surface them."
+  > "These were the numbers in the client's pitch deck. They're rendered with `react-countup` on the live home page - the engineering existed to surface them."
 
 **Why this matters:** Bridges "I built a website" to "I built a tool that communicated the client's value prop." This is the section that separates a portfolio piece from a case study.
 
-### 4.9 SECTION 08 — Shipping Solo (move + reframe)
+### 4.9 SECTION 08 - Shipping Solo (move + reframe)
 
-Current page has this content in Section 01 as "Journey Beats Grid" (logo design, workspace admin, client lead, prototype, handoff). It belongs *later* — after the technical sections — as the human closer before `TheCloser`.
+Current page has this content in Section 01 as "Journey Beats Grid" (logo design, workspace admin, client lead, prototype, handoff). It belongs *later* - after the technical sections - as the human closer before `TheCloser`.
 
 **Change:**
 - Move the existing `JOURNEY_BEATS` grid here.
 - Re-title: from "Operational Highlights / The Technical Dossier" to "Shipping Solo." with eyebrow "Beyond the Code."
 - Add one beat to the grid, from evidence in the source repo:
-  - `id: 'attribution'`, label: `Codebase Attribution`, detail: `"Listed in pages/about/company.js as 'Justin Clarke / React Developer' — the only frontend dev on the team."`
+  - `id: 'attribution'`, label: `Codebase Attribution`, detail: `"Listed in pages/about/company.js as 'Justin Clarke / React Developer' - the only frontend dev on the team."`
 - Keep the "11 brands shipped" stat tile as the visual closer of the grid.
 
 ---
 
-## 5. Data extraction — exact constants to add to the file
+## 5. Data extraction - exact constants to add to the file
 
 Add these at the top of `LiteStorePage.tsx`, after the existing constant blocks:
 
@@ -295,7 +295,7 @@ const BRAND_TOKENS = [
   { name: 'JBL',             var: 'jbl-orange',       hex: '#ff3200', usedBy: '/spaces/orion/jbl'        },
 ];
 
-// Mall-grouped brand structure — replaces the flat BRANDS array
+// Mall-grouped brand structure - replaces the flat BRANDS array
 const TENANTS_BY_MALL = [
   {
     mall: 'Orion Mall',
@@ -353,29 +353,29 @@ const AUDIT_METRICS = [
 
 Each step is independently shippable and testable. Don't bundle; verify between steps.
 
-1. **Add constants** (no UI change yet) — drop the new const blocks above the component, update `AUDIT_METRICS` and `SYSTEM_LOGS`. Confirm build still passes.
-2. **Section 02 — Route Tree** — new section between hero and current Section 01. Single-column monospace tree. Use `<ScrollReveal>` like the other sections.
-3. **Section 04 refinement** — add the "What this earns you" mini-table + 2026 retrospective callout under the existing GA4 code block.
-4. **Section 03 refinement** — add endpoint URL + "Why sheet.best" callout under the existing form pipeline.
-5. **Section 05 — Per-Tenant Theming** — new section between Telemetry and Brand Routes. Two-column: config code (left) + swatch grid (right).
-6. **Section 06 — Brand Routes restructure** — replace flat `BRANDS.map` with mall-grouped `TENANTS_BY_MALL.map`. Keep white-on-dark inversion.
-7. **Section 07 — Business Metrics** — new section after Brand Routes. Dark, 3×2 stat grid with file-citation sublines.
-8. **Section 08 — Shipping Solo move** — move existing `JOURNEY_BEATS` grid out of Section 01, place it just before `RelatedProjects`. Add the `attribution` beat. Re-title section.
-9. **Section 01 cleanup** — Section 01 now ends with the Migration Arc. Verify the "Origin Story" eyebrow + spacing still flow into the new Section 02.
+1. **Add constants** (no UI change yet) - drop the new const blocks above the component, update `AUDIT_METRICS` and `SYSTEM_LOGS`. Confirm build still passes.
+2. **Section 02 - Route Tree** - new section between hero and current Section 01. Single-column monospace tree. Use `<ScrollReveal>` like the other sections.
+3. **Section 04 refinement** - add the "What this earns you" mini-table + 2026 retrospective callout under the existing GA4 code block.
+4. **Section 03 refinement** - add endpoint URL + "Why sheet.best" callout under the existing form pipeline.
+5. **Section 05 - Per-Tenant Theming** - new section between Telemetry and Brand Routes. Two-column: config code (left) + swatch grid (right).
+6. **Section 06 - Brand Routes restructure** - replace flat `BRANDS.map` with mall-grouped `TENANTS_BY_MALL.map`. Keep white-on-dark inversion.
+7. **Section 07 - Business Metrics** - new section after Brand Routes. Dark, 3×2 stat grid with file-citation sublines.
+8. **Section 08 - Shipping Solo move** - move existing `JOURNEY_BEATS` grid out of Section 01, place it just before `RelatedProjects`. Add the `attribution` beat. Re-title section.
+9. **Section 01 cleanup** - Section 01 now ends with the Migration Arc. Verify the "Origin Story" eyebrow + spacing still flow into the new Section 02.
 
 After each step:
-- `npm run build` — must pass.
-- Visual check in dev server — every existing section still renders, no layout regressions, no broken `ScrollReveal` triggers.
+- `npm run build` - must pass.
+- Visual check in dev server - every existing section still renders, no layout regressions, no broken `ScrollReveal` triggers.
 
 ---
 
 ## 7. Out of scope (do NOT do in this pass)
 
 - **Don't fabricate Lighthouse numbers.** If we want LCP/FCP claims, run Lighthouse against `litestore.in` separately and cite the run date. The current `0.6s / 0.4s` numbers should be replaced (see §4.1), not "verified."
-- **Don't add interactive carousels.** The source uses Swiper extensively; resist replicating it. The route tree, swatches, and brand list are static — they tell the story without animation overhead.
+- **Don't add interactive carousels.** The source uses Swiper extensively; resist replicating it. The route tree, swatches, and brand list are static - they tell the story without animation overhead.
 - **Don't touch `SEO`, `BackToTerminal`, `TheCloser`, `RelatedProjects`.** These are shared and out of scope.
-- **Don't deep-link to the source repo.** `LiteStore-nextjs-main/` is committed locally but the repo is private/archived — citing files is fine, linking is not.
-- **Don't refactor existing sections that aren't called out.** Hero layout, Migration Arc cards, Form Pipeline visual — all stay as-is structurally.
+- **Don't deep-link to the source repo.** `LiteStore-nextjs-main/` is committed locally but the repo is private/archived - citing files is fine, linking is not.
+- **Don't refactor existing sections that aren't called out.** Hero layout, Migration Arc cards, Form Pipeline visual - all stay as-is structurally.
 
 ---
 
@@ -386,7 +386,7 @@ The elevated page is "done" when:
 - [ ] Every numeric claim on the page traces back to a specific file:line in `LiteStore-nextjs-main/` (or is removed).
 - [ ] The reader can count "30 routes" themselves from the visible route tree.
 - [ ] The reader can see *which* brand tokens existed and *how* the per-tenant theming was structured.
-- [ ] The page surfaces business metrics (the client's numbers) alongside engineering metrics — not just one or the other.
+- [ ] The page surfaces business metrics (the client's numbers) alongside engineering metrics - not just one or the other.
 - [ ] Section flow reads: Hook → Origin → Routes → Stack → Telemetry → Tokens → Tenants → Business Outcome → Human Story → Closer.
 - [ ] Build passes; no console errors; all existing keyboard/scroll behavior intact.
 - [ ] Page LOC growth stays under ~300 lines (target final size: 700-750 LOC, comparable to `SpotifyEnginePage.tsx`).

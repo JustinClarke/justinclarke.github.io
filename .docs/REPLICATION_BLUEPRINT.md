@@ -142,4 +142,4 @@ Use `IntersectionObserver` to trigger reveals.
 ---
 
 ## Conclusion
-If you follow these tokens, use the CSS Grid expansion, and implement the Double-Draw canvas nodes, the resulting build will be indistinguishable from the original Justin Clarke portfolio—maintaining 60FPS performance on high-end desktop and mobile Safari alike.
+If you follow these tokens, use the CSS Grid expansion, and implement the Double-Draw canvas nodes, the resulting build will be indistinguishable from the original Justin Clarke portfolio-maintaining 60FPS performance on high-end desktop and mobile Safari alike.

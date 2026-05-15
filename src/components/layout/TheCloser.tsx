@@ -48,11 +48,11 @@ export const TheCloser = () => {
               <ScrollReveal once={false} delay={0.4}>
                 <button
                   onClick={openContactModal}
-                  className='group flex items-center justify-center gap-6 px-10 md:px-12 py-[18px] md:py-[22px] bg-transparent text-white font-noto text-[13px] md:text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[280px] md:min-w-[320px]'
+                  className='group flex items-center justify-center gap-6 px-10 md:px-12 py-[18px] md:py-[22px] bg-transparent text-white font-noto text-[13px] md:text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[280px] md:min-w-[320px] glitch-text-hover'
                   aria-label='Open contact form'
                 >
                   <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-r from-transparent via-brand-primary/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] ease-in-out" />
-                  <span className='whitespace-nowrap pt-[2px] block relative z-10 transition-colors duration-500 group-hover:text-brand-primary'>GET IN TOUCH</span>
+                  <span className='whitespace-nowrap pt-[2px] block relative z-10 transition-colors duration-500 group-hover:text-brand-primary glitch-target'>GET IN TOUCH</span>
                   <div className='relative z-10 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white/[0.03] flex items-center justify-center border border-white/10 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/40 transition-all duration-500'>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white/60 group-hover:text-brand-primary transition-all duration-500 group-hover:-translate-y-[2px] group-hover:translate-x-[2px]"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
                   </div>

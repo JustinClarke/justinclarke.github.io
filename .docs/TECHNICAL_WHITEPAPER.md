@@ -1,7 +1,7 @@
 # Technical Whitepaper: Engineering a Cinematic HUD Personal Operating System
 
 ## Abstract
-This document details the architectural and design decisions behind the Justin Clarke Portfolio—a high-density, high-fidelity web application built to simulate a Cinematic Heads-Up Display (HUD). The primary engineering challenge addressed is the reconciliation of extreme visual aesthetics (large-scale blurs, luminous canvas animations, and complex transitions) with the performance constraints of modern browsers, specifically the WebKit (Safari) rendering engine.
+This document details the architectural and design decisions behind the Justin Clarke Portfolio-a high-density, high-fidelity web application built to simulate a Cinematic Heads-Up Display (HUD). The primary engineering challenge addressed is the reconciliation of extreme visual aesthetics (large-scale blurs, luminous canvas animations, and complex transitions) with the performance constraints of modern browsers, specifically the WebKit (Safari) rendering engine.
 
 ---
 

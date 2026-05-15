@@ -8,7 +8,7 @@
  */
 
 // Semantic names (preferred, maps directly to data-term attribute values)
-// Legacy shortcodes (still used in COMMANDS/FUNNY_ERRORS data — migrate gradually)
+// Legacy shortcodes (still used in COMMANDS/FUNNY_ERRORS data - migrate gradually)
 export type TerminalLineType =
   | 'muted' | 'success' | 'info' | 'brand' | 'error' | 'obscured' | 'prompt' | 'cmd' | 'edu'
   | 'viz-mac-red' | 'viz-mac-yellow' | 'viz-success'
@@ -91,35 +91,35 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
       t: 'm', text: '', parts: [
         { t: 'viz-mac-red', text: '[01] ' },
         { t: 'brand', text: 'Predictive Music Engine ' },
-        { t: 'muted', text: '— python · ml · 1.2M tracks' }
+        { t: 'muted', text: '- python · ml · 1.2M tracks' }
       ]
     },
     {
       t: 'm', text: '', parts: [
         { t: 'viz-mac-yellow', text: '[02] ' },
         { t: 'brand', text: 'LiteStore (Retail-as-a-Service) ' },
-        { t: 'muted', text: '— next.js · aws · ssr' }
+        { t: 'muted', text: '- next.js · aws · ssr' }
       ]
     },
     {
       t: 'm', text: '', parts: [
         { t: 'viz-success', text: '[03] ' },
         { t: 'brand', text: 'Disaster Response System ' },
-        { t: 'muted', text: '— mysql · relational design · philippines' }
+        { t: 'muted', text: '- mysql · relational design · philippines' }
       ]
     },
     {
       t: 'm', text: '', parts: [
         { t: 'b', text: '[04] ' },
         { t: 'brand', text: 'Behavioural Intelligence System ' },
-        { t: 'muted', text: '— gemini · firestore' }
+        { t: 'muted', text: '- gemini · firestore' }
       ]
     },
     {
       t: 'm', text: '', parts: [
         { t: 'viz-mac-yellow', text: '[05] ' },
         { t: 'brand', text: 'Off the Pace ' },
-        { t: 'viz-mac-yellow', text: '— f1 · dbt · xgboost · in development' }
+        { t: 'viz-mac-yellow', text: '- f1 · dbt · xgboost · in development' }
       ]
     },
     { t: 'm', text: ' ' },
@@ -171,60 +171,8 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
     },
   ],
 
-  music: [
-    { t: 'm', text: 'Retrieving music engine specs...' },
-    { t: 'm', text: ' ' },
-    { t: 'brand', text: 'Predictive Music Engine' },
-    { t: 'muted', text: 'High-performance audio recommendation system' },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'SCALE:   ' }, { t: 'g', text: '1.2M tracks indexed' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENGINE:  ' }, { t: 'b', text: 'Python · Scikit-Learn · Spotify API' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'CORE:    ' }, { t: 'muted', text: 'Collaborative filtering · audio feature analysis' }] },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '↓ establish view in case study archive...' }
-  ],
-
-  litestore: [
-    { t: 'm', text: 'Connecting to LiteStore infra...' },
-    { t: 'm', text: ' ' },
-    { t: 'brand', text: 'LiteStore (Retail-as-a-Service)' },
-    { t: 'muted', text: 'Enterprise e-commerce for high-growth startups' },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:   ' }, { t: 'viz-mac-yellow', text: 'Next.js · AWS (EC2/S3) · SSR' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ROLES:   ' }, { t: 'b', text: 'Tech Lead · Full-Stack Architect' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'IMPACT:  ' }, { t: 'muted', text: 'Reduced deployment time by 40% via automated pipelines' }] },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '↓ scrolling to retail telemetry...' }
-  ],
-
-  disaster: [
-    { t: 'm', text: 'Accessing relief coordination database...' },
-    { t: 'm', text: ' ' },
-    { t: 'brand', text: 'Disaster Response System' },
-    { t: 'muted', text: 'Mission-critical resource management for the Philippines' },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENGINE:  ' }, { t: 'viz-success', text: 'MySQL · Relational Database Design' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'FOCUS:   ' }, { t: 'b', text: 'Bespoke logic for resource allocation & reporting' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ORIGIN:  ' }, { t: 'muted', text: 'MSc Computer Science research project' }] },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '↓ establishment of sql dashboard...' }
-  ],
-
-  behavioural: [
-    { t: 'm', text: 'Initializing intelligence node...' },
-    { t: 'm', text: ' ' },
-    { t: 'brand', text: 'Behavioural Intelligence System' },
-    { t: 'muted', text: 'LLM-powered analysis for candidate evaluation' },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'AI:      ' }, { t: 'g', text: 'Google Gemini Pro' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'DATA:    ' }, { t: 'b', text: 'Google Cloud Firestore' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOGIC:   ' }, { t: 'muted', text: 'Archetype classification & automated profiling' }] },
-    { t: 'm', text: ' ' },
-    { t: 'm', text: '↓ parsing archetype results...' }
-  ],
-
   // ─────────────────────────────────────────────
-  // expertise — sourced from resume tech skills
+  // expertise - sourced from resume tech skills
   // ─────────────────────────────────────────────
   expertise: [
     { t: 'm', text: 'Retrieving technical skill manifest...' },
@@ -264,7 +212,7 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
   ],
 
   // ─────────────────────────────────────────────
-  // record — resume-accurate career + education
+  // record - resume-accurate career + education
   // ─────────────────────────────────────────────
   record: [
     { t: 'm', text: 'Querying career + academic record...' },
@@ -338,13 +286,13 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
   help: [
     { t: 'm', text: 'Available commands:' },
     { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'record        ' }, { t: 'muted', text: '— full career & education timeline' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ls projects   ' }, { t: 'muted', text: '— featured case studies' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'expertise     ' }, { t: 'muted', text: '— analytics + full-stack toolkit' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'whoami        ' }, { t: 'muted', text: '— identity brief' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'off the pace  ' }, { t: 'muted', text: '— f1 strategy analytics engine' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ping me       ' }, { t: 'muted', text: '— open contact channel' }] },
-    { t: 'm', text: '', parts: [{ t: 'brand', text: 'resume        ' }, { t: 'muted', text: '— download PDF' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'record        ' }, { t: 'muted', text: '- full career & education timeline' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ls projects   ' }, { t: 'muted', text: '- featured case studies' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'expertise     ' }, { t: 'muted', text: '- analytics + full-stack toolkit' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'whoami        ' }, { t: 'muted', text: '- identity brief' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'off the pace  ' }, { t: 'muted', text: '- f1 strategy analytics engine' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ping me       ' }, { t: 'muted', text: '- open contact channel' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'resume        ' }, { t: 'muted', text: '- download PDF' }] },
     { t: 'm', text: ' ' },
     { t: 'm', text: '', parts: [{ t: 'muted', text: 'easter eggs: ' }, { t: 'b', text: 'snake · matrix · coffee · sudo · advanced · dbt · fabric' }] },
     { t: 'm', text: ' ' },
@@ -356,11 +304,11 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
   advanced: [
     { t: 'm', text: 'Loading Advanced Systems Manifest...' },
     { t: 'm', text: ' ' },
-    { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '● ' }, { t: 'brand', text: 'matrix  ' }, { t: 'muted', text: '— establish telemetry' }] },
-    { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'coffee  ' }, { t: 'muted', text: '— check fuel levels' }] },
-    { t: 'm', text: '', parts: [{ t: 'viz-success', text: '● ' }, { t: 'brand', text: 'sudo    ' }, { t: 'muted', text: '— root protocols' }] },
-    { t: 'm', text: '', parts: [{ t: 'b', text: '● ' }, { t: 'brand', text: 'dbt     ' }, { t: 'muted', text: '— run transformations' }] },
-    { t: 'm', text: '', parts: [{ t: 'pu', text: '● ' }, { t: 'brand', text: 'fabric  ' }, { t: 'muted', text: '— check the lakehouse' }] },
+    { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '● ' }, { t: 'brand', text: 'matrix  ' }, { t: 'muted', text: '- establish telemetry' }] },
+    { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'coffee  ' }, { t: 'muted', text: '- check fuel levels' }] },
+    { t: 'm', text: '', parts: [{ t: 'viz-success', text: '● ' }, { t: 'brand', text: 'sudo    ' }, { t: 'muted', text: '- root protocols' }] },
+    { t: 'm', text: '', parts: [{ t: 'b', text: '● ' }, { t: 'brand', text: 'dbt     ' }, { t: 'muted', text: '- run transformations' }] },
+    { t: 'm', text: '', parts: [{ t: 'pu', text: '● ' }, { t: 'brand', text: 'fabric  ' }, { t: 'muted', text: '- check the lakehouse' }] },
     { t: 'm', text: ' ' },
     {
       t: 'm', text: '', parts: [
@@ -420,7 +368,7 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FUNNY ERRORS — triggered on known-but-invalid commands
+// FUNNY ERRORS - triggered on known-but-invalid commands
 // ─────────────────────────────────────────────────────────────────────────────
 export const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   sudo: [
@@ -469,7 +417,7 @@ export const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   ],
   hello: [{ t: 'g', text: "hello to you too. type 'help' if you're lost. type 'whoami' if you're curious." }],
   hi: [{ t: 'g', text: "hey 👋  type 'help' to get oriented. or just start exploring." }],
-  ls: [{ t: 'b', text: "too vague. try 'ls projects' — that's where the interesting stuff lives." }],
+  ls: [{ t: 'b', text: "too vague. try 'ls projects' - that's where the interesting stuff lives." }],
   cat: [{ t: 'b', text: "try 'cat about.txt' or just type 'whoami'. same energy, better output." }],
   'npm install': [
     { t: 'viz-success', text: "already installed. Justin ships production-ready, not localhost." },
@@ -513,7 +461,7 @@ export const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// resolveCommand — pure function, no side effects
+// resolveCommand - pure function, no side effects
 // ─────────────────────────────────────────────────────────────────────────────
 export function resolveCommand(raw: string): CommandResult {
   const cmd = raw.trim().toLowerCase();
@@ -555,30 +503,9 @@ export function resolveCommand(raw: string): CommandResult {
 
   if (
     cmd === 'record' || cmd === 'experience' || cmd === 'education' ||
-    cmd === 'history' || cmd === 'timeline' || cmd === 'career' || cmd === 'exec_record()'
+    cmd === 'history' || cmd === 'timeline' || cmd === 'career'
   ) {
     return { lines: COMMANDS['record'], effect: { type: 'scroll', payload: 'experience' } };
-  }
-
-  // ── Project Details ─────────────────────────────────────────────────────
-  if (cmd === 'music' || cmd === 'spotify' || cmd === 'exec_music()') {
-    return { lines: COMMANDS['music'], effect: { type: 'scroll', payload: 'spotify-engine' } };
-  }
-
-  if (cmd === 'litestore' || cmd === 'exec_litestore()') {
-    return { lines: COMMANDS['litestore'], effect: { type: 'scroll', payload: 'litestore' } };
-  }
-
-  if (cmd === 'disaster' || cmd === 'sql' || cmd === 'exec_disaster()') {
-    return { lines: COMMANDS['disaster'], effect: { type: 'scroll', payload: 'sql-disaster' } };
-  }
-
-  if (cmd === 'behavioural' || cmd === 'gemini' || cmd === 'exec_behavioural()') {
-    return { lines: COMMANDS['behavioural'], effect: { type: 'scroll', payload: 'hr-archetype' } };
-  }
-
-  if (cmd === 'off the pace' || cmd === 'f1' || cmd === 'exec_off the pace()') {
-    return { lines: COMMANDS['off the pace'], effect: { type: 'scroll', payload: 'capital-budgeting' } }; // Adjusted payload to match existing project paths
   }
 
   // ── Command map exact matches ───────────────────────────────────────────

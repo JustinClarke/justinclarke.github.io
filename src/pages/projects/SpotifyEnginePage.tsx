@@ -42,7 +42,7 @@ const MODELS = [
     name: 'Spotify Baseline',
     subtitle: 'Control',
     tag: 'Control',
-    desc: 'The official Spotify API recommendations endpoint — our external benchmark for measuring model performance.',
+    desc: 'The official Spotify API recommendations endpoint - our external benchmark for measuring model performance.',
     pipeline: ['Spotify API', 'Internal', 'Black-box'],
     accent: 'rgba(255,255,255,0.2)',
     active: false,
@@ -82,7 +82,7 @@ const NOTEBOOKS = [
 
 /* ─────────────────────────── SUB-COMPONENTS ─────────────────────────── */
 
-/** Animated equalizer bars — fills the hero background */
+/** Animated equalizer bars - fills the hero background */
 const EQVisualizer = () => {
   const BAR_COUNT = 80;
   return (
@@ -242,7 +242,7 @@ export const SpotifyEnginePage = () => {
             </motion.div>
 
             {/* Heading */}
-            <h1 className="sr-only">Predictive Music Engine — Machine Learning Research for Spotify Acoustic DNA</h1>
+            <h1 className="sr-only">Predictive Music Engine - Machine Learning Research for Spotify Acoustic DNA</h1>
             <motion.div
               aria-hidden="true"
               initial={{ opacity: 0, y: 28 }}
@@ -297,7 +297,7 @@ export const SpotifyEnginePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 01 — ACOUSTIC DNA (uses AUDIO_FEATURES!)
+          SECTION 01 - ACOUSTIC DNA (uses AUDIO_FEATURES!)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-[#050505] border-t border-white/[0.04] relative overflow-hidden">
 
@@ -375,7 +375,7 @@ export const SpotifyEnginePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 02 — 3-MODEL BENCHMARK
+          SECTION 02 - 3-MODEL BENCHMARK
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-[#020202] border-t border-white/[0.04] relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -392,7 +392,7 @@ export const SpotifyEnginePage = () => {
             </ScrollReveal>
             <ScrollReveal direction="right">
               <p className="font-mono text-sm md:text-base text-white/35 leading-relaxed max-w-xl">
-                We tested our engineered models against Spotify's internal baseline — measuring precision across three distinct input modes: Playlist, Song, and Artist. Only by competing against the source can you beat it.
+                We tested our engineered models against Spotify's internal baseline - measuring precision across three distinct input modes: Playlist, Song, and Artist. Only by competing against the source can you beat it.
               </p>
             </ScrollReveal>
           </div>
@@ -470,7 +470,7 @@ export const SpotifyEnginePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 03 — DATA ENGINEERING (dark)
+          SECTION 03 - DATA ENGINEERING (dark)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-[#050505] border-t border-white/[0.04] relative overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-20 md:gap-32 items-center">
@@ -553,7 +553,7 @@ export const SpotifyEnginePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 04 — RESEARCH ARTIFACTS (white)
+          SECTION 04 - RESEARCH ARTIFACTS (white)
       ══════════════════════════════════════════════════════════════ */}
       <section id="artifacts" className="py-24 md:py-40 px-6 md:px-12 bg-white text-black relative overflow-hidden">
 

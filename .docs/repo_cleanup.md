@@ -24,7 +24,7 @@ The following keyframes and classes appear to be legacy artifacts from early des
 
 ## 3. Asset Cleanup
 
-- `public/resources/`: Ensure only the latest `Justin_Clarke_Resume.pdf` is present.
+- `public/resources/`: Ensure only the latest `Justin_Clarke_resume.pdf` is present.
 - `public/images/`: Remove any static screenshots of projects that have been replaced by programmatic SVGs/Canvas visuals.
 
 ## 4. Proposed Execution Steps

@@ -197,7 +197,7 @@ export const HRArchetypePage = () => {
               </motion.div>
 
               {/* Display heading */}
-              <h1 className="sr-only">HR Archetype System — Behavioral Intelligence & Retention Prediction Engine</h1>
+              <h1 className="sr-only">HR Archetype System - Behavioral Intelligence & Retention Prediction Engine</h1>
               <motion.div
                 aria-hidden="true"
                 initial={{ opacity: 0, y: 24 }}
@@ -218,7 +218,7 @@ export const HRArchetypePage = () => {
               >
                 Transforming workforce sentiment into{' '}
                 <span className="text-white font-black italic">retention decisions</span>.{' '}
-                A diagnostic platform classifying employee risk across 8 behavioral archetypes — so HR leads act before attrition becomes visible.
+                A diagnostic platform classifying employee risk across 8 behavioral archetypes - so HR leads act before attrition becomes visible.
               </motion.p>
 
               {/* CTAs */}
@@ -290,7 +290,7 @@ export const HRArchetypePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 01 — 8-ARCHETYPE TAXONOMY (white)
+          SECTION 01 - 8-ARCHETYPE TAXONOMY (white)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-white text-black relative overflow-hidden">
 
@@ -312,7 +312,7 @@ export const HRArchetypePage = () => {
               <p className="font-mono text-base md:text-lg text-black/45 leading-relaxed max-w-xl">
                 A 3-axis behavioral model mapping{' '}
                 <span className="text-black font-black italic">Engagement × Retention Risk × Motivation Driver</span>.
-                We don't just segment users — we predict trajectories.
+                We don't just segment users - we predict trajectories.
               </p>
             </ScrollReveal>
           </div>
@@ -380,7 +380,7 @@ export const HRArchetypePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 02 — QUANTITATIVE ENGINE (dark)
+          SECTION 02 - QUANTITATIVE ENGINE (dark)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-[#050505] relative overflow-hidden border-t border-white/[0.05]">
 
@@ -451,7 +451,7 @@ export const HRArchetypePage = () => {
                       />
                     </div>
                     <p className="font-mono text-[9px] text-black/35 uppercase font-bold leading-tight mt-1">
-                      Window before predicted exit — designed for proactive retention.
+                      Window before predicted exit - designed for proactive retention.
                     </p>
                   </div>
                 </div>
@@ -462,7 +462,7 @@ export const HRArchetypePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 03 — THE DASHBOARD (white)
+          SECTION 03 - THE DASHBOARD (white)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-white text-black relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -507,7 +507,7 @@ export const HRArchetypePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 04 — TRUST DIMENSION (dark)
+          SECTION 04 - TRUST DIMENSION (dark)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-[#050505] relative overflow-hidden border-t border-white/[0.05]">
 
@@ -542,7 +542,7 @@ export const HRArchetypePage = () => {
               <p className="font-mono text-base md:text-lg text-white/35 leading-relaxed max-w-2xl px-4 md:px-0">
                 Most workforce tools measure performance.{' '}
                 <span className="text-white font-black">This one measures trust.</span>{' '}
-                The 13th diagnostic dimension captures how employees feel about being monitored — giving organisations an ethical guardrail that prevents surveillance-driven attrition from compounding the problem it was meant to solve.
+                The 13th diagnostic dimension captures how employees feel about being monitored - giving organisations an ethical guardrail that prevents surveillance-driven attrition from compounding the problem it was meant to solve.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/[0.06] w-full mt-8 md:mt-16 border-t border-white/[0.08] pt-16 md:pt-20">
@@ -565,7 +565,7 @@ export const HRArchetypePage = () => {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 05 — TECH STACK (white)
+          SECTION 05 - TECH STACK (white)
       ══════════════════════════════════════════════════════════════ */}
       <section className="py-24 md:py-40 px-6 md:px-12 bg-white text-black relative overflow-hidden border-t border-black/[0.05]">
         <div className="max-w-5xl mx-auto">

@@ -81,8 +81,8 @@ export const Hero: React.FC = () => {
 
     if (raw.toLowerCase() === 'resume') {
       const link = document.createElement('a');
-      link.href = '/resources/Justin_Clarke_Resume.pdf';
-      link.download = 'Justin_Clarke_Resume.pdf';
+      link.href = '/resources/Justin_Clarke_resume.pdf';
+      link.download = 'Justin_Clarke_resume.pdf';
       link.click();
       setInputValue('');
       return;
@@ -162,9 +162,9 @@ export const Hero: React.FC = () => {
           right={
             <div className="flex items-center gap-4 md:gap-6">
               <div className="hidden sm:flex gap-4">
-                <a href="mailto:justinsavioclarke@outlook.com" className="hover:text-white transition-colors">email</a>
-                <a href="https://linkedin.com/in/justinsavioclarke" target="_blank" rel="noopener" className="hover:text-white transition-colors">linkedin</a>
-                <a href="https://github.com/JustinClarke" target="_blank" rel="noopener" className="hover:text-white transition-colors">github</a>
+                <a href="mailto:justinsavioclarke@outlook.com" className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary glitch-text-hover"><span className="glitch-target">email</span></a>
+                <a href="https://linkedin.com/in/justinsavioclarke" target="_blank" rel="noopener" className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary glitch-text-hover"><span className="glitch-target">linkedin</span></a>
+                <a href="https://github.com/JustinClarke" target="_blank" rel="noopener" className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary glitch-text-hover"><span className="glitch-target">github</span></a>
               </div>
               <span className="text-brand-primary font-bold flex items-center gap-2 whitespace-nowrap text-[10px] md:text-[12px]">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_8px_#00c8b4]" />

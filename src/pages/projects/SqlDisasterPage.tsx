@@ -33,7 +33,7 @@ const ENTITY_REGISTRY = [
 
 const SCHEMA_FEATURES = [
   { t: 'M:N Modeling',    d: '4 junction tables with composite Primary Keys enforcing relational integrity across the volunteer-to-team and supply-to-region chains.' },
-  { t: 'Check Invariants',d: 'CHECK constraints enforce current_occupancy ≤ capacity across all 9 shelter nodes — prevents logical data violations at the schema level.' },
+  { t: 'Check Invariants',d: 'CHECK constraints enforce current_occupancy ≤ capacity across all 9 shelter nodes - prevents logical data violations at the schema level.' },
   { t: 'FK Integrity',    d: 'Foreign Key chains span regional dispatch zones: Agency → Team → Disaster → Region → Shelter, ensuring cascading constraint coverage.' },
   { t: 'Geographic Ops',  d: 'NDRRMC and PRC agency coordination nodes model real Philippine relief hierarchy across 7 affected regions and 5 concurrent disaster events.' },
 ];
@@ -51,7 +51,7 @@ export const SqlDisasterPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [ticker, setTicker] = useState(0);
 
-  // Ticker — cycles through entity counts for the HUD
+  // Ticker - cycles through entity counts for the HUD
   useEffect(() => {
     const id = setInterval(() => setTicker(t => (t + 1) % ENTITY_REGISTRY.length), 2200);
     return () => clearInterval(id);
@@ -64,7 +64,7 @@ export const SqlDisasterPage = () => {
     >
       <SEO
         title="SQL Disaster Response System"
-        description="SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics — composite keys, NTILE risk tiers, and a live D3 command dashboard. Full ERD inside."
+        description="SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics - composite keys, NTILE risk tiers, and a live D3 command dashboard. Full ERD inside."
         path="/project/sql-disaster"
         schemaType="CreativeWork"
       />
@@ -121,7 +121,7 @@ export const SqlDisasterPage = () => {
             </div>
 
             {/* Hero type */}
-            <h1 className="sr-only">SQL Disaster Response System — Philippine Relief Logistics Database</h1>
+            <h1 className="sr-only">SQL Disaster Response System - Philippine Relief Logistics Database</h1>
             <div
               aria-hidden="true"
               className="font-noto text-[18vw] sm:text-8xl md:text-[10rem] font-black leading-none tracking-tighter mb-6 uppercase flex flex-col items-center"
@@ -273,7 +273,7 @@ export const SqlDisasterPage = () => {
               </h2>
               <p className="font-mono text-sm md:text-base text-white/35 leading-relaxed max-w-md">
                 Designed a robust MySQL architecture to synchronize relief efforts across 7 Philippine regions.
-                Modeled multi-tier disasters — Typhoon Yagi, Luzon Earthquake, Mt. Kanlaon — and their full
+                Modeled multi-tier disasters - Typhoon Yagi, Luzon Earthquake, Mt. Kanlaon - and their full
                 resource allocation chains.
               </p>
 
@@ -320,7 +320,7 @@ export const SqlDisasterPage = () => {
       </section>
 
       {/* ════════════════════════════════════════════════════════════════
-          THE D3 ENGINE — new section
+          THE D3 ENGINE - new section
       ════════════════════════════════════════════════════════════════ */}
       <section className="py-20 md:py-28 px-6 md:px-12 bg-[#050505] relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none opacity-20">
@@ -336,7 +336,7 @@ export const SqlDisasterPage = () => {
                 <span className="text-white/15">Engine.</span>
               </h2>
               <p className="font-mono text-sm md:text-base text-white/35 max-w-xl leading-relaxed">
-                The interactive dashboard is 1,603 lines of handwritten Vanilla JS — no React, no framework.
+                The interactive dashboard is 1,603 lines of handwritten Vanilla JS - no React, no framework.
                 Built on D3 v7 force simulation with custom physics, multi-layer filtering, and a programmatic alert system.
               </p>
             </div>
@@ -362,7 +362,7 @@ export const SqlDisasterPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { icon: '◉', title: 'Force Simulation', desc: 'D3 force-directed graph with custom charge, link distance, and collision physics tuned for 61-node readability.' },
-                { icon: '◈', title: 'Programmatic Alerts', desc: 'Alert panel generated dynamically from node data — shelter load thresholds, active disaster states, standby team detection.' },
+                { icon: '◈', title: 'Programmatic Alerts', desc: 'Alert panel generated dynamically from node data - shelter load thresholds, active disaster states, standby team detection.' },
                 { icon: '◎', title: 'Multi-layer Filtering', desc: 'Entity type toggling, full-text node search, edge hover inspection, pin/unpin state, and keyboard controls.' },
               ].map(f => (
                 <div key={f.title} className="p-6 border border-white/5 rounded-2xl bg-white/[0.02] hover:border-[#3b8eff]/15 transition-all duration-300">
@@ -427,7 +427,7 @@ export const SqlDisasterPage = () => {
             <ScrollReveal direction="right">
               <div className="flex flex-col gap-8">
                 <p className="font-mono text-base md:text-lg text-white/30 leading-relaxed">
-                  11 query categories covering the full analytical spectrum —
+                  11 query categories covering the full analytical spectrum -
                   from basic retrieval to window functions, CTEs, and composite key modeling.
                   Each category applied to real Philippine disaster data.
                 </p>

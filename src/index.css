@@ -165,12 +165,6 @@ body {
   overflow-x: hidden;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  * {
-    cursor: none !important;
-  }
-}
-
 @utility smooth-underline {
   position: relative;
 
@@ -988,7 +982,7 @@ body {
   animation: ringPulse 1.2s ease-out;
 }
 
-/* ── EXPERIENCE ACCORDION (CSS grid — no JS animation) ── */
+/* ── EXPERIENCE ACCORDION (CSS grid - no JS animation) ── */
 .exp-body {
   display: grid;
   grid-template-rows: 0fr;
@@ -1015,7 +1009,7 @@ body {
   transform: none;
 }
 
-/* ── SKILL COLUMN MOBILE ACCORDION (CSS grid — desktop always visible) ── */
+/* ── SKILL COLUMN MOBILE ACCORDION (CSS grid - desktop always visible) ── */
 @media (max-width: 767px) {
   .skill-body {
     display: grid;
@@ -1172,4 +1166,105 @@ body {
   .project-card-tilt:hover {
     transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) scale(1.01);
   }
+}
+
+/* ── SYSTEM CONTROLS HOVER SYSTEM ── */
+@keyframes control-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes text-glitch {
+  0% { transform: translate(0); text-shadow: none; }
+  20% { transform: translate(-1.5px, 1px); text-shadow: 1.5px 0 var(--color-brand-primary), -1.5px 0 var(--color-viz-mac-red); }
+  40% { transform: translate(1.5px, -1px); text-shadow: -1.5px 0 var(--color-brand-primary), 1.5px 0 var(--color-viz-mac-red); }
+  60% { transform: translate(-1.5px, -1px); text-shadow: 1.5px 0 var(--color-brand-primary), -1.5px 0 var(--color-viz-mac-red); }
+  80% { transform: translate(1.5px, 1.5px); text-shadow: -1.5px 0 var(--color-brand-primary), 1.5px 0 var(--color-viz-mac-red); }
+  100% { transform: translate(0); text-shadow: none; }
+}
+
+@keyframes indicator-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+  75% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@utility system-control-hover {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--color-brand-primary), transparent);
+    opacity: 0;
+    z-index: 20;
+    pointer-events: none;
+    filter: blur(2px);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-brand-primary);
+    opacity: 0;
+    transform: scale(1.05);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 21;
+    /* Corner Brackets Clip-Path */
+    clip-path: polygon(
+      0 0, 8px 0, 8px 1px, 1px 1px, 1px 8px, 0 8px,
+      calc(100% - 8px) 0, 100% 0, 100% 8px, calc(100% - 1px) 8px, calc(100% - 1px) 1px, calc(100% - 8px) 1px,
+      0 calc(100% - 8px), 0 100%, 8px 100%, 8px calc(100% - 1px), 1px calc(100% - 1px), 1px calc(100% - 8px),
+      calc(100% - 8px) 100%, 100% 100%, 100% calc(100% - 8px), calc(100% - 1px) calc(100% - 8px), calc(100% - 1px) calc(100% - 1px), calc(100% - 8px) calc(100% - 1px)
+    );
+  }
+
+  &:hover::before {
+    opacity: 0.6;
+    animation: control-scan 1.5s linear infinite;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  &:hover {
+    background-color: rgba(0, 200, 180, 0.05) !important;
+    border-color: rgba(0, 200, 180, 0.4) !important;
+    transform: translateX(6px) !important;
+    box-shadow: -15px 0 35px -15px rgba(0, 200, 180, 0.25);
+  }
+
+  &.important-control:hover {
+    background-color: rgba(0, 200, 180, 0.15) !important;
+    border-color: var(--color-brand-primary) !important;
+    box-shadow: 0 0 35px rgba(0, 200, 180, 0.3), -15px 0 35px -15px rgba(0, 200, 180, 0.4);
+  }
+}
+
+.glitch-text-hover:hover .glitch-target {
+  animation: text-glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.indicator-light {
+  width: 4px;
+  height: 4px;
+  background: #333;
+  border-radius: 1px;
+  transition: all 0.3s ease;
+}
+
+.group\/btn:hover .indicator-light {
+  background: var(--color-brand-primary);
+  box-shadow: 0 0 10px var(--color-brand-primary), 0 0 20px var(--color-brand-primary);
+  animation: indicator-flicker 1.5s infinite;
 }

@@ -38,7 +38,7 @@ The application is structured to decouple pure logic from React rendering, ensur
 ### Data Flow & System Interaction
 The application operates on a **Uni-directional Data Flow** managed through React context and custom hooks:
 1.  **Input:** The user interacts via the `TerminalUI` (keyboard simulation) or `SpotlightCard` elements (mouse/touch).
-2.  **Processing:** Text input is filtered through the `TerminalEngine`—a pure TypeScript logic layer decoupled from React components—to resolve commands, fuzzy-match errors, or trigger side effects.
+2.  **Processing:** Text input is filtered through the `TerminalEngine`-a pure TypeScript logic layer decoupled from React components-to resolve commands, fuzzy-match errors, or trigger side effects.
 3.  **Model:** The `Portfolio Manifest` (`src/data/`) acts as the single source of truth for all career, education, and project metadata. UI components map over this static data.
 4.  **Output:** React 19 renders the UI with optimized concurrent animations via **Framer Motion**, while **D3.js** handles high-density expertise pipeline visualizations.
 
@@ -167,5 +167,5 @@ This project is configured and optimized for **GitHub Pages**.
 
 ---
 
-> Built with 🦾 by **Justin Clarke** — Analytics Engineer & Full-Stack Developer.
+> Built with 🦾 by **Justin Clarke** - Analytics Engineer & Full-Stack Developer.
 > **Note:** The "Cinematic HUD" uses high-frequency animations. It automatically respects `prefers-reduced-motion` settings to ensure accessibility for all users.

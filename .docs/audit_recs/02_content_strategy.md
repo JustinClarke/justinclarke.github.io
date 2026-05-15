@@ -13,7 +13,7 @@ Focus on role-intent and portfolio-intent queries rather than generic educationa
 Google rewards question-shaped headings. Restructure project headers to target "Featured Snippets".
 
 ### Example: `SqlDisasterPage.tsx`
-*   **H1 (SR-Only)**: `SQL Disaster Response System — Philippine Relief Logistics Database`
+*   **H1 (SR-Only)**: `SQL Disaster Response System - Philippine Relief Logistics Database`
 *   **Visual H1**: `DISASTER response.` (Aria-hidden)
 *   **H2**: `How do you model multi-tier disaster relief operations in SQL?`
     *   *Follow with a 40-60 word high-density paragraph.*
@@ -25,7 +25,7 @@ Use the `sr-only` pattern to keep the HUD design while giving Google the keyword
 
 ```tsx
 <h1 className="sr-only">
-  SQL Disaster Response System — Philippine Relief Logistics Database
+  SQL Disaster Response System - Philippine Relief Logistics Database
 </h1>
 <div aria-hidden="true" className="...">
   {/* Your styled HUD text here */}

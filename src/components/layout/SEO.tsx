@@ -16,10 +16,10 @@ interface SEOProps {
 }
 
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Justin Clarke — Analytics Engineer & Data Architect',
-  description = 'Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems — built with SQL, Python, and React.',
+  title = 'Justin Clarke - Analytics Engineer & Data Architect',
+  description = 'Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React.',
   image,
-  imageAlt = 'Justin Clarke — Analytics Engineer portfolio',
+  imageAlt = 'Justin Clarke - Analytics Engineer portfolio',
   path = '/',
   type = 'website',
   schemaType,

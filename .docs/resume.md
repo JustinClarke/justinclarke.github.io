@@ -17,7 +17,7 @@
 ### LiteStore
 **Technical Lead, Full Stack & Web Performance** | Apr 2021 – Apr 2023
 *Tech Stack: Next.js, AWS, Vercel, GA4*
-- Sole engineer on a production serverless platform — BTech final year through MSc completion at Queen Mary.
+- Sole engineer on a production serverless platform - BTech final year through MSc completion at Queen Mary.
 - Built event tracking and behavioural telemetry pipelines (GA4) feeding conversion + funnel dashboards.
 - CI/CD pipelines with automated testing · SSR + edge caching for 5× page load improvement.
 **Metrics:**
@@ -36,7 +36,7 @@
 ### Birla Institute of Technology and Science, Pilani
 **MBA in Business Analytics** | Feb 2026 – 2028
 *Focus: Analytics, Strategy, ML*
-- Intersection of data analytics and business strategy. Evening programme — fully available for full-time roles.
+- Intersection of data analytics and business strategy. Evening programme - fully available for full-time roles.
 
 ### Queen Mary, University of London
 **MSc in Computer Science** | 2022 – 2023
@@ -46,7 +46,7 @@
 ### Gandhi Institute of Technology and Management
 **BTech, Computer Science & Engineering** | 2018 – 2022
 *Focus: C/C++, Algorithms, Maths*
-- Algorithms, optimisation, and advanced mathematics. Entered the workforce in the final years — Drop and LiteStore both began before graduation.
+- Algorithms, optimisation, and advanced mathematics. Entered the workforce in the final years - Drop and LiteStore both began before graduation.
 
 ---
 
@@ -56,7 +56,7 @@
 *Tech Stack: Python, Pandas, Scikit-Learn, Spotify API, Vector Modeling*
 - High-fidelity recommendation engine utilizing vector-similarity modeling and acoustic feature analytics across a 1.2M track dataset.
 - Architected a hybrid recommendation engine utilizing vector-space modeling (Cosine Similarity) and TF-IDF genre vectorization.
-- Analyzed 12+ audio dimensions—including danceability, energy, and valence—across the Million Song Dataset (MSD) to deliver personalized discovery through multi-domain similarity logic.
+- Analyzed 12+ audio dimensions-including danceability, energy, and valence-across the Million Song Dataset (MSD) to deliver personalized discovery through multi-domain similarity logic.
 
 ---
 

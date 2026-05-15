@@ -61,7 +61,7 @@ export const projectsData: Project[] = [
     title: 'Predictive Music Engine',
     tech: ['Python', 'Scikit-Learn', 'Vector Modeling'],
     copy: 'Hybrid recommendation engine utilizing TF-IDF genre vectorization and Cosine Similarity modeling across a 1.2M track acoustic dataset.',
-    fullDescription: 'Architected a hybrid recommendation engine utilizing vector-space modeling (Cosine Similarity) and TF-IDF genre vectorization. Analyzed 12+ audio dimensions—including danceability, energy, and valence—across the Million Song Dataset (MSD) to deliver personalized discovery through multi-domain similarity logic.',
+    fullDescription: 'Architected a hybrid recommendation engine utilizing vector-space modeling (Cosine Similarity) and TF-IDF genre vectorization. Analyzed 12+ audio dimensions-including danceability, energy, and valence-across the Million Song Dataset (MSD) to deliver personalized discovery through multi-domain similarity logic.',
     visual: <SpotifyHeroVisual />,
     heroVisual: <SpotifyHeroVisual />,
     visualDescription: "Multidimensional vector visualization showing the mapping of audio features (valence, energy, tempo) across the Million Song Dataset.",

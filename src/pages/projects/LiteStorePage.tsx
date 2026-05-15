@@ -178,7 +178,7 @@ const JOURNEY_BEATS = [
   {
     id: 'logo',
     label: 'Brand Identity',
-    detail: 'Designed the LiteStore logo and visual language from scratch — the brief was a blank page.',
+    detail: 'Designed the LiteStore logo and visual language from scratch - the brief was a blank page.',
   },
   {
     id: 'workspace',
@@ -188,7 +188,7 @@ const JOURNEY_BEATS = [
   {
     id: 'client',
     label: 'Client Lead',
-    detail: 'Sole point of contact for requirements, delivery, and iteration. No PM buffer — just me and the stakeholder.',
+    detail: 'Sole point of contact for requirements, delivery, and iteration. No PM buffer - just me and the stakeholder.',
   },
   {
     id: 'prototype',
@@ -203,7 +203,7 @@ const JOURNEY_BEATS = [
   {
     id: 'attribution',
     label: 'Codebase Attribution',
-    detail: 'Listed in pages/about/company.js as "Justin Clarke / React Developer" — the only frontend dev on the team.',
+    detail: 'Listed in pages/about/company.js as "Justin Clarke / React Developer" - the only frontend dev on the team.',
   },
 ];
 
@@ -268,14 +268,14 @@ export const LiteStorePage = () => {
                 </span>
               </div>
 
-              <h1 className="sr-only">LiteStore — Production Store-as-a-Service Platform with GA4 Telemetry</h1>
+              <h1 className="sr-only">LiteStore - Production Store-as-a-Service Platform with GA4 Telemetry</h1>
               <div aria-hidden="true" className="font-noto text-[15vw] sm:text-7xl md:text-[8rem] font-black leading-[0.85] tracking-tighter mb-8 md:mb-10 uppercase break-words max-w-5xl mx-auto">
                 Retail as a<br />
                 <span className="text-[#7e7ca6] relative inline-block">Service.</span>
               </div>
 
               <p className="font-mono text-base md:text-2xl text-white/40 max-w-3xl leading-relaxed font-medium mb-12 md:mb-16 px-4 md:px-0">
-                A production Next.js platform: <span className="text-white">30+ statically prerendered routes</span>, an external Google Sheets pipeline, and a custom <span className="text-white">GA4 telemetry layer</span> — shipped solo to litestore.in.
+                A production Next.js platform: <span className="text-white">30+ statically prerendered routes</span>, an external Google Sheets pipeline, and a custom <span className="text-white">GA4 telemetry layer</span> - shipped solo to litestore.in.
               </p>
 
               <div className="mb-0">
@@ -532,7 +532,7 @@ export const LiteStorePage = () => {
                 <div className="p-6 md:p-8 rounded-2xl border border-[#7e7ca6]/20 bg-[#7e7ca6]/[0.04]">
                   <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-[#7e7ca6] font-black">Why sheet.best?</span>
                   <p className="font-mono text-sm md:text-base text-white/60 leading-relaxed mt-3">
-                    The client needed lead capture in a Google Sheet they already owned. A backend with auth and a DB was overkill. <span className="text-white">sheet.best</span> as middleware kept the form serverless and the data in the client's hands — they could revoke access without touching code.
+                    The client needed lead capture in a Google Sheet they already owned. A backend with auth and a DB was overkill. <span className="text-white">sheet.best</span> as middleware kept the form serverless and the data in the client's hands - they could revoke access without touching code.
                   </p>
                 </div>
               </div>
@@ -557,7 +557,7 @@ export const LiteStorePage = () => {
             <ScrollReveal direction="left">
               <div className="flex flex-col gap-10 md:gap-12">
                 <p className="font-mono text-lg md:text-xl text-white/40 leading-relaxed">
-                  Custom <span className="text-white">GA4</span> instrumentation injected at the document level. Page-load tracking, env-driven configuration, and <span className="text-white">dataLayer</span> initialization — wired without third-party plugins.
+                  Custom <span className="text-white">GA4</span> instrumentation injected at the document level. Page-load tracking, env-driven configuration, and <span className="text-white">dataLayer</span> initialization - wired without third-party plugins.
                 </p>
                 <div className="grid grid-cols-2 gap-6 pt-12 border-t border-white/5">
                   {TELEMETRY_FACTS.map(fact => (
@@ -612,12 +612,12 @@ export const LiteStorePage = () => {
               <div className="flex flex-col gap-2 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                 <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#7e7ca6] font-black">Earns You · 02</span>
                 <span className="font-mono text-sm text-white font-black">Env-driven config</span>
-                <span className="font-mono text-[11px] text-white/40 leading-relaxed">NEXT_PUBLIC_GOOGLE_ANALYTICS swappable per deploy — staging vs prod isolation</span>
+                <span className="font-mono text-[11px] text-white/40 leading-relaxed">NEXT_PUBLIC_GOOGLE_ANALYTICS swappable per deploy - staging vs prod isolation</span>
               </div>
               <div className="flex flex-col gap-2 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
                 <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-[#7e7ca6] font-black">Earns You · 03</span>
                 <span className="font-mono text-sm text-white font-black">Zero plugin surface</span>
-                <span className="font-mono text-[11px] text-white/40 leading-relaxed">No @next/third-parties dependency — direct gtag.js wiring, full control</span>
+                <span className="font-mono text-[11px] text-white/40 leading-relaxed">No @next/third-parties dependency - direct gtag.js wiring, full control</span>
               </div>
             </div>
           </ScrollReveal>
@@ -626,7 +626,7 @@ export const LiteStorePage = () => {
             <div className="mt-8 p-6 md:p-8 rounded-2xl border border-[#7e7ca6]/20 bg-[#7e7ca6]/[0.04]">
               <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-[#7e7ca6] font-black">2026 Retrospective</span>
               <p className="font-mono text-sm md:text-base text-white/60 leading-relaxed mt-3">
-                Today I'd reach for <code className="text-white">@next/third-parties/google</code> (released 2023). This was the right call in 2022 — <code className="text-white">_document.js</code> injection was the documented pattern, and the SDK didn't exist yet.
+                Today I'd reach for <code className="text-white">@next/third-parties/google</code> (released 2023). This was the right call in 2022 - <code className="text-white">_document.js</code> injection was the documented pattern, and the SDK didn't exist yet.
               </p>
             </div>
           </ScrollReveal>
@@ -643,7 +643,7 @@ export const LiteStorePage = () => {
                 Per-Tenant<br /><span className="text-white/20">Tokens.</span>
               </h2>
               <p className="font-mono text-base md:text-lg text-white/40 max-w-2xl leading-relaxed pt-4">
-                The 11 brand pages aren't copy-paste — they share a token system. Each tenant gets its own named color in <code className="text-white">tailwind.config.js</code>, consumed by per-brand templates.
+                The 11 brand pages aren't copy-paste - they share a token system. Each tenant gets its own named color in <code className="text-white">tailwind.config.js</code>, consumed by per-brand templates.
               </p>
             </div>
           </ScrollReveal>
@@ -765,7 +765,7 @@ export const LiteStorePage = () => {
                 What the Client<br /><span className="text-white/20">Measured.</span>
               </h2>
               <p className="font-mono text-base md:text-lg text-white/40 max-w-2xl leading-relaxed pt-4">
-                The numbers in the client's pitch deck — rendered with <code className="text-white">react-countup</code> on the live home page. The engineering existed to surface these.
+                The numbers in the client's pitch deck - rendered with <code className="text-white">react-countup</code> on the live home page. The engineering existed to surface these.
               </p>
             </div>
           </ScrollReveal>

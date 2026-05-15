@@ -63,7 +63,7 @@ const ENTRIES: Entry[] = [
       { value: '3.0s → 0.6s', label: 'Page load (SSR + caching)' },
     ],
     bullets: [
-      'Sole engineer on a production serverless platform — BTech final year through MSc completion at Queen Mary',
+      'Sole engineer on a production serverless platform - BTech final year through MSc completion at Queen Mary',
       'Built event tracking and behavioural telemetry pipelines (GA4) feeding conversion + funnel dashboards',
       'CI/CD pipelines with automated testing · SSR + edge caching for 5× page load improvement',
     ],
@@ -93,7 +93,7 @@ const ENTRIES: Entry[] = [
     ongoing: true,
     tags: ['Analytics', 'Strategy', 'ML'],
     bullets: [
-      'Intersection of data analytics and business strategy. Evening programme — fully available for full-time roles.',
+      'Intersection of data analytics and business strategy. Evening programme - fully available for full-time roles.',
     ],
   },
   {
@@ -122,7 +122,7 @@ const ENTRIES: Entry[] = [
     badge: 'Distinction',
     tags: ['C/C++', 'Algorithms', 'Maths'],
     bullets: [
-      'Algorithms, optimisation, and advanced mathematics. Entered the workforce in the final years — Drop and LiteStore both began before graduation.',
+      'Algorithms, optimisation, and advanced mathematics. Entered the workforce in the final years - Drop and LiteStore both began before graduation.',
     ],
   },
 ];

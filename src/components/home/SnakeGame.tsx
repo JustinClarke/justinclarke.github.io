@@ -64,7 +64,7 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
 
   /* ── Single game loop (runs for entire component lifetime) ── */
   useEffect(() => {
-    let alive = true;               // killed on unmount — StrictMode safe
+    let alive = true;               // killed on unmount - StrictMode safe
 
     const step = (now: number) => {
       if (!alive) return;           // unmounted → stop
