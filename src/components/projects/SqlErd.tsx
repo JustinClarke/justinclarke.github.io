@@ -144,7 +144,7 @@ export const SqlErd = () => {
               whileInView={{ opacity: 1 }}
               transition={{ delay: idx * 0.01 }}
               className={cn(
-                "rounded-xl border bg-[#12151a] overflow-hidden shadow-xl transition-all duration-300 hover:border-white/30",
+                "rounded-xl border bg-[#12151a] overflow-hidden shadow-xl hover:border-white/30",
                 entity.color,
                 entity.gridPos
               )}

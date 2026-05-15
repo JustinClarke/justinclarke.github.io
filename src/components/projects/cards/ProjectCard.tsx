@@ -113,10 +113,9 @@ const CARD_CONFIG: Record<string, CardConfig> = {
 
 interface ProjectCardProps {
   project: Project;
-  index: number;
 }
 
-export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const cfg = CARD_CONFIG[project.id];
   if (!cfg) return null;
 

@@ -155,7 +155,7 @@ export function FeaturedProjects() {
                   }}
                   className="h-full"
                 >
-                  <ProjectCard project={project} index={0} />
+                  <ProjectCard project={project} />
                 </motion.div>
               ))}
             </motion.div>
