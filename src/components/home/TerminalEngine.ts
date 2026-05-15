@@ -171,6 +171,58 @@ export const COMMANDS: Record<string, TerminalLine[]> = {
     },
   ],
 
+  music: [
+    { t: 'm', text: 'Retrieving music engine specs...' },
+    { t: 'm', text: ' ' },
+    { t: 'brand', text: 'Predictive Music Engine' },
+    { t: 'muted', text: 'High-performance audio recommendation system' },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'SCALE:   ' }, { t: 'g', text: '1.2M tracks indexed' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENGINE:  ' }, { t: 'b', text: 'Python · Scikit-Learn · Spotify API' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'CORE:    ' }, { t: 'muted', text: 'Collaborative filtering · audio feature analysis' }] },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '↓ establish view in case study archive...' }
+  ],
+
+  litestore: [
+    { t: 'm', text: 'Connecting to LiteStore infra...' },
+    { t: 'm', text: ' ' },
+    { t: 'brand', text: 'LiteStore (Retail-as-a-Service)' },
+    { t: 'muted', text: 'Enterprise e-commerce for high-growth startups' },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:   ' }, { t: 'viz-mac-yellow', text: 'Next.js · AWS (EC2/S3) · SSR' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ROLES:   ' }, { t: 'b', text: 'Tech Lead · Full-Stack Architect' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'IMPACT:  ' }, { t: 'muted', text: 'Reduced deployment time by 40% via automated pipelines' }] },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '↓ scrolling to retail telemetry...' }
+  ],
+
+  disaster: [
+    { t: 'm', text: 'Accessing relief coordination database...' },
+    { t: 'm', text: ' ' },
+    { t: 'brand', text: 'Disaster Response System' },
+    { t: 'muted', text: 'Mission-critical resource management for the Philippines' },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENGINE:  ' }, { t: 'viz-success', text: 'MySQL · Relational Database Design' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'FOCUS:   ' }, { t: 'b', text: 'Bespoke logic for resource allocation & reporting' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'ORIGIN:  ' }, { t: 'muted', text: 'MSc Computer Science research project' }] },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '↓ establishment of sql dashboard...' }
+  ],
+
+  behavioural: [
+    { t: 'm', text: 'Initializing intelligence node...' },
+    { t: 'm', text: ' ' },
+    { t: 'brand', text: 'Behavioural Intelligence System' },
+    { t: 'muted', text: 'LLM-powered analysis for candidate evaluation' },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'AI:      ' }, { t: 'g', text: 'Google Gemini Pro' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'DATA:    ' }, { t: 'b', text: 'Google Cloud Firestore' }] },
+    { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOGIC:   ' }, { t: 'muted', text: 'Archetype classification & automated profiling' }] },
+    { t: 'm', text: ' ' },
+    { t: 'm', text: '↓ parsing archetype results...' }
+  ],
+
   // ─────────────────────────────────────────────
   // expertise — sourced from resume tech skills
   // ─────────────────────────────────────────────
@@ -503,9 +555,30 @@ export function resolveCommand(raw: string): CommandResult {
 
   if (
     cmd === 'record' || cmd === 'experience' || cmd === 'education' ||
-    cmd === 'history' || cmd === 'timeline' || cmd === 'career'
+    cmd === 'history' || cmd === 'timeline' || cmd === 'career' || cmd === 'exec_record()'
   ) {
     return { lines: COMMANDS['record'], effect: { type: 'scroll', payload: 'experience' } };
+  }
+
+  // ── Project Details ─────────────────────────────────────────────────────
+  if (cmd === 'music' || cmd === 'spotify' || cmd === 'exec_music()') {
+    return { lines: COMMANDS['music'], effect: { type: 'scroll', payload: 'spotify-engine' } };
+  }
+
+  if (cmd === 'litestore' || cmd === 'exec_litestore()') {
+    return { lines: COMMANDS['litestore'], effect: { type: 'scroll', payload: 'litestore' } };
+  }
+
+  if (cmd === 'disaster' || cmd === 'sql' || cmd === 'exec_disaster()') {
+    return { lines: COMMANDS['disaster'], effect: { type: 'scroll', payload: 'sql-disaster' } };
+  }
+
+  if (cmd === 'behavioural' || cmd === 'gemini' || cmd === 'exec_behavioural()') {
+    return { lines: COMMANDS['behavioural'], effect: { type: 'scroll', payload: 'hr-archetype' } };
+  }
+
+  if (cmd === 'off the pace' || cmd === 'f1' || cmd === 'exec_off the pace()') {
+    return { lines: COMMANDS['off the pace'], effect: { type: 'scroll', payload: 'capital-budgeting' } }; // Adjusted payload to match existing project paths
   }
 
   // ── Command map exact matches ───────────────────────────────────────────

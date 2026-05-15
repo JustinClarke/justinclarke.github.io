@@ -19,13 +19,16 @@ export const ContactModal = () => {
 
   const firstInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus first input on open
+  // Auto-focus first input on open & prevent body scroll
   useEffect(() => {
     if (isContactModalOpen) {
+      document.body.style.overflow = 'hidden';
       const timer = setTimeout(() => {
         firstInputRef.current?.focus();
       }, 150);
       return () => clearTimeout(timer);
+    } else {
+      document.body.style.overflow = '';
     }
   }, [isContactModalOpen]);
 
@@ -87,11 +90,8 @@ export const ContactModal = () => {
                 animate={{ opacity: 1, scale: 1, y: 0, x: '-50%' }}
                 exit={{ opacity: 0, scale: 0.95, y: 10, x: '-50%' }}
                 transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                className="fixed left-[50%] top-[50%] z-[10001] grid w-full max-w-lg translate-y-[-50%] gap-4 border border-white/[0.08] bg-brand-modal/95 backdrop-blur-2xl p-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] sm:rounded-3xl text-white outline-none overflow-hidden"
+                className="fixed left-[50%] top-[50%] z-[10001] grid w-full max-w-lg translate-y-[-50%] gap-4 bg-brand-modal/95 backdrop-blur-2xl p-10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] text-white outline-none overflow-hidden sm:border sm:border-white/8 sm:rounded-3xl"
               >
-                {/* HUD Corner Accents */}
-                <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-brand-primary/40 rounded-tl-3xl pointer-events-none" />
-                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-brand-primary/40 rounded-br-3xl pointer-events-none" />
 
                 {/* Background Texture */}
                 <div className="absolute inset-0 pointer-events-none opacity-[0.03] z-0">
@@ -102,12 +102,12 @@ export const ContactModal = () => {
                 <div className="relative z-10 flex flex-col space-y-2 mb-8">
                   <div className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_8px_rgba(0,200,180,0.6)]" />
-                    <span className="font-mono text-[9px] tracking-[0.4em] uppercase text-brand-primary/60 font-bold">Channel_Open // Discussion</span>
+                    <span className="font-mono text-[9px] tracking-[0.4em] uppercase text-brand-primary/60 font-bold">Contact // Collaboration</span>
                   </div>
                   <Dialog.Title className="text-3xl font-black tracking-tighter font-playfair italic">Let's work together</Dialog.Title>
                   <Dialog.Description className="text-sm text-white/50 leading-relaxed font-mono mt-1">
-                    Establishing direct communication uplink.
-                    <span className="block text-[10px] text-white/30 mt-3 font-bold uppercase tracking-widest italic">// All fields required for handshake</span>
+                    Send a message and I'll get back to you soon.
+                    <span className="block text-[10px] text-white/30 mt-3 font-bold uppercase tracking-widest italic">// Please fill in all fields</span>
                   </Dialog.Description>
                 </div>
 

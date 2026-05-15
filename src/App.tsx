@@ -44,7 +44,7 @@ export default function App() {
       if (document.visibilityState === 'visible') {
         window.scrollTo(0, 0);
       }
-    }, 1000); 
+    }, 1000);
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
@@ -58,17 +58,17 @@ export default function App() {
       <CustomCursor />
       <ContactModal />
       <BackToTop />
-      
+
       <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
-          transition={{ 
-            duration: 1.0, 
+          transition={{
+            duration: 1.0,
             delay: 0.1, // Wait for the scroll reset to finish in the dark
-            ease: [0.43, 0.13, 0.23, 0.96] 
+            ease: [0.43, 0.13, 0.23, 0.96]
           }}
           className="min-h-screen flex flex-col"
         >

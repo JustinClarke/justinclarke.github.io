@@ -124,7 +124,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
 
   return (
     <div
-      className="group relative flex flex-col bg-white/[0.02] border border-white/[0.04] rounded-2xl overflow-hidden transition-[border-color,box-shadow,transform,opacity] duration-500 h-full"
+      className="group relative flex flex-col bg-white/[0.02] border border-white/[0.04] rounded-2xl overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-white/[0.03]"
       style={{
         borderColor: `color-mix(in srgb, ${accentHex}, transparent 75%)`,
         boxShadow: `0 0 60px -20px ${accentHex}20`,
@@ -136,7 +136,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         className={`h-px w-full bg-gradient-to-r from-transparent ${cfg.accentGradient} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
       />
 
-      <Link to={`/project/${project.id}`} className="flex flex-col h-full">
+      <Link to={`/project/${project.id}`} className="flex flex-col">
 
         {/* Meta row */}
         <div className="flex justify-between items-center px-6 pt-4 pb-3">
@@ -167,20 +167,21 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         </div>
 
         {/* Hero visual — full-width, tall */}
-        <div className="relative w-full h-52 border-y border-white/[0.04] overflow-hidden transition-colors duration-500" style={{ borderColor: `color-mix(in srgb, ${accentHex}, transparent 88%)` }}>
+        <div className="relative w-full h-44 border-y border-white/[0.04] overflow-hidden transition-colors duration-500" style={{ borderColor: `color-mix(in srgb, ${accentHex}, transparent 88%)` }}>
           <div
-            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10"
             style={{
-              background: `radial-gradient(ellipse at 50% 50%, ${cfg.radiusGradient} 0%, transparent 70%)`,
+              background: `radial-gradient(circle at 50% 50%, ${cfg.radiusGradient} 0%, transparent 70%)`,
             }}
           />
-          <div className="absolute inset-0">
+
+          <div className="absolute inset-0 group-hover:scale-110 group-hover:grayscale group-hover:opacity-20 transition-all duration-700">
             {project.heroVisual}
           </div>
         </div>
 
         {/* Content */}
-        <div className="px-6 pt-5 pb-6 flex flex-col flex-1">
+        <div className="px-6 pt-5 pb-6 flex flex-col flex-1 group-hover:opacity-10 group-hover:grayscale transition-all duration-500">
 
           {/* Headline metric */}
           <div className="mb-4 pb-4 border-b border-white/[0.05] flex items-baseline gap-3">
@@ -197,18 +198,18 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             </div>
           </div>
 
-          <h3 className="font-sans text-xl md:text-2xl font-black text-[#f4f4f3] tracking-tight leading-tight mb-2 group-hover:transition-colors group-hover:duration-300" style={{ color: '#f4f4f3' }}>
+          <h3 className="font-sans text-xl md:text-2xl font-black text-[#f4f4f3] tracking-tight leading-tight mb-1.5 group-hover:transition-colors group-hover:duration-300" style={{ color: '#f4f4f3' }}>
             {project.title}
           </h3>
 
-          <p className="font-sans text-[#6a6a66] text-[12px] leading-relaxed mb-5 flex-1">
+          <p className="font-sans text-[#6a6a66] text-[12px] leading-relaxed mb-3.5">
             {project.copy}
           </p>
 
           {/* Metrics grid */}
-          <div className="grid grid-cols-3 border-y border-white/[0.05] divide-x divide-white/[0.05] mb-5">
+          <div className="grid grid-cols-3 border-y border-white/[0.05] divide-x divide-white/[0.05] mb-4">
             {metrics.map((m, i) => (
-              <div key={i} className="py-3.5 px-1 flex flex-col gap-0.5 first:pl-0 last:pr-0">
+              <div key={i} className="py-2.5 px-1 flex flex-col gap-0.5 first:pl-0 last:pr-0">
                 <span className="font-mono text-base md:text-lg font-black tracking-tighter" style={{ color: accentHex }}>
                   {m.val}
                 </span>
@@ -218,6 +219,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               </div>
             ))}
           </div>
+
+
 
           {/* Bottom row */}
           <div className="flex justify-between items-center">
@@ -240,6 +243,24 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
               <span>{cfg.ctaText}</span>
               <span className="transition-transform group-hover/link:translate-x-1 duration-300">→</span>
             </div>
+          </div>
+        </div>
+
+        {/* Centered View Project Invite */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-30 pointer-events-none">
+          <div
+            className="px-8 py-3.5 rounded-full border-2 backdrop-blur-2xl font-mono text-[10px] font-black tracking-[0.4em] uppercase shadow-[0_0_80px_rgba(0,0,0,0.9)] scale-90 group-hover:scale-100 transition-all duration-500 flex items-center gap-4 translate-y-4 group-hover:translate-y-0"
+            style={{
+              borderColor: accentHex,
+              backgroundColor: `color-mix(in srgb, ${accentHex}, transparent 80%)`,
+              color: '#fff',
+              textShadow: `0 0 15px ${accentHex}`
+            }}
+          >
+            <span>View Case Study</span>
+            <svg className="w-3 h-3 transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+              <path d="M7 17L17 7M7 7h10v10" strokeLinecap="square" strokeLinejoin="miter" />
+            </svg>
           </div>
         </div>
       </Link>

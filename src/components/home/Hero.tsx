@@ -22,18 +22,21 @@ export const Hero: React.FC = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [history, setHistory] = useState<TerminalLine[]>([]);
-  const [bootStep, setBootStep] = useState(-1);
+  const [bootStep, setBootStep] = useState(() => {
+    if (typeof window !== 'undefined' && (window as any).__TERMINAL_BOOTED__) return 7;
+    return -1;
+  });
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
+    if (bootStep === 7) return;
+
     const handleStart = () => {
-      // Small 300ms pause after preloader finishes for a clean visual handoff
       setTimeout(() => setBootStep(0), 300);
     };
 
     window.addEventListener('preloaderComplete', handleStart);
 
-    // Fallback: if the preloader is skipped or takes too long, start anyway at 4.5s
     const safetyTimeout = setTimeout(() => {
       setBootStep(prev => prev === -1 ? 0 : prev);
     }, 4500);
@@ -42,7 +45,13 @@ export const Hero: React.FC = () => {
       window.removeEventListener('preloaderComplete', handleStart);
       clearTimeout(safetyTimeout);
     };
-  }, []);
+  }, [bootStep]);
+
+  useEffect(() => {
+    if (bootStep === 7 && typeof window !== 'undefined') {
+      (window as any).__TERMINAL_BOOTED__ = true;
+    }
+  }, [bootStep]);
 
   const handleCommand = useCallback(async (cmd: string) => {
     const raw = cmd.trim();
@@ -51,7 +60,7 @@ export const Hero: React.FC = () => {
     if (raw.toLowerCase() === 'snake' || raw.toLowerCase() === 'play snake') {
       if (window.innerWidth < 1024) {
         setHistory(prev => [
-          ...prev, 
+          ...prev,
           { t: 'prompt', text: `~$ ${raw}` },
           { t: 'error', text: 'SYSTEM_ERROR: snake.exe requires physical keyboard + desktop resolution.' },
           { t: 'muted', text: 'Environment check failed. Peripheral "Keyboard" not detected or width < 1024px.' }
@@ -91,7 +100,7 @@ export const Hero: React.FC = () => {
     for (const line of result.lines) {
       // Add line to history
       setHistory(prev => [...prev, line]);
-      
+
       // Calculate typing duration based on text length
       const textLen = line.text?.length || 0;
       const duration = Math.max(400, textLen * 15); // Slower line-by-line processing
@@ -133,8 +142,8 @@ export const Hero: React.FC = () => {
   return (
     <section className="relative w-full min-h-screen flex items-center justify-center p-4 md:p-[6vw] overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,200,180,0.02)_0%,transparent_70%)] pointer-events-none" />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
@@ -149,13 +158,13 @@ export const Hero: React.FC = () => {
           </div>
         )}
 
-        <WindowChrome 
+        <WindowChrome
           right={
             <div className="flex items-center gap-4 md:gap-6">
               <div className="hidden sm:flex gap-4">
                 <a href="mailto:justinsavioclarke@outlook.com" className="hover:text-white transition-colors">email</a>
-                <a href="https://github.com/JustinClarke" target="_blank" rel="noopener" className="hover:text-white transition-colors">github</a>
                 <a href="https://linkedin.com/in/justinsavioclarke" target="_blank" rel="noopener" className="hover:text-white transition-colors">linkedin</a>
+                <a href="https://github.com/JustinClarke" target="_blank" rel="noopener" className="hover:text-white transition-colors">github</a>
               </div>
               <span className="text-brand-primary font-bold flex items-center gap-2 whitespace-nowrap text-[10px] md:text-[12px]">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_8px_#00c8b4]" />
@@ -172,8 +181,8 @@ export const Hero: React.FC = () => {
             </div>
 
             <TerminalHeader bootStep={bootStep} onStepComplete={setBootStep} />
-            
-            <TerminalBody 
+
+            <TerminalBody
               history={history}
               inputValue={inputValue}
               onInputChange={setInputValue}

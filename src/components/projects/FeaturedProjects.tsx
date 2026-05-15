@@ -15,10 +15,11 @@ const TABS: { id: 'architecture' | 'intelligence'; label: string; accent: string
 export function FeaturedProjects() {
   const [activeTab, setActiveTab] = useState<'architecture' | 'intelligence'>('architecture');
   const [isAutoplay, setIsAutoplay] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!isAutoplay) return;
+    if (!isAutoplay || isHovered) return;
 
     autoplayRef.current = setInterval(() => {
       setActiveTab(current => {
@@ -26,12 +27,12 @@ export function FeaturedProjects() {
         const nextIdx = (idx + 1) % TABS.length;
         return TABS[nextIdx].id;
       });
-    }, 6000); // Longer dwell time for high-density reading
+    }, 6000);
 
     return () => {
       if (autoplayRef.current) clearInterval(autoplayRef.current);
     };
-  }, [isAutoplay]);
+  }, [isAutoplay, isHovered]);
 
   const handleTabClick = (tabId: 'architecture' | 'intelligence') => {
     setIsAutoplay(false);
@@ -118,7 +119,11 @@ export function FeaturedProjects() {
         </div>
 
         {/* Project Display Area - Smooth Fade Transition */}
-        <div className="min-h-[620px] relative grid">
+        <div 
+          className="min-h-[620px] relative grid"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
           <AnimatePresence mode="popLayout">
             <motion.div
               key={activeTab}
@@ -153,7 +158,6 @@ export function FeaturedProjects() {
                       transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
                     }
                   }}
-                  className="h-full"
                 >
                   <ProjectCard project={project} />
                 </motion.div>

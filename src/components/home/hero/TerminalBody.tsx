@@ -15,13 +15,13 @@ interface TerminalBodyProps {
 
 const PlaceholderCycler: React.FC = () => {
   const suggestions = [
-    'record', 
-    'ls projects', 
-    'expertise', 
-    'snake', 
-    'contact', 
-    'resume', 
-    'whoami', 
+    'record',
+    'ls projects',
+    'expertise',
+    'snake',
+    'contact',
+    'resume',
+    'whoami',
     'clear',
     'help',
     'stack',
@@ -41,11 +41,11 @@ const PlaceholderCycler: React.FC = () => {
   return (
     <div className="font-mono text-[12px] text-[#8a8a86] opacity-70 italic flex items-center gap-1.5 whitespace-nowrap select-none">
       try typing "
-      <Typewriter 
-        key={key} 
-        text={suggestions[index]} 
-        speed={120} 
-        className="text-[#00c8b4] not-italic font-black brightness-125" 
+      <Typewriter
+        key={key}
+        text={suggestions[index]}
+        speed={120}
+        className="text-[#00c8b4] not-italic font-black brightness-125"
       />
       "
     </div>
@@ -124,9 +124,9 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                   {line.parts ? (
                     <div className="flex flex-wrap gap-x-2">
                       {line.parts.map((p, j) => (
-                        <Typewriter 
-                          key={`${i}-${j}`} 
-                          text={p.text} 
+                        <Typewriter
+                          key={`${i}-${j}`}
+                          text={p.text}
                           speed={100}
                           className={getLineColor(p.t)}
                           skip={i < history.length - 1}
@@ -134,8 +134,8 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                       ))}
                     </div>
                   ) : (
-                    <Typewriter 
-                      text={line.text} 
+                    <Typewriter
+                      text={line.text}
                       speed={100}
                       className={getLineColor(line.t)}
                       skip={i < history.length - 1}

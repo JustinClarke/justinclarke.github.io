@@ -11,14 +11,15 @@ interface CommandButtonProps {
 }
 
 const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, onClick }) => (
-  <button 
+  <button
     onClick={onClick}
+    data-cmd={`> exec_${cmd}()`}
     className={cn(
       "flex items-center justify-between w-full p-3 rounded-lg border transition-all duration-300 group/btn text-left relative overflow-hidden",
       important
         ? "bg-brand-primary/10 border-brand-primary text-[#f4f4f3] shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02]"
-        : hot 
-          ? "bg-brand-primary/5 border-brand-primary/30 text-[#f4f4f3]" 
+        : hot
+          ? "bg-brand-primary/5 border-brand-primary/30 text-[#f4f4f3]"
           : "bg-transparent border-white/5 text-[#f4f4f3] hover:bg-white/[0.02] hover:border-white/10"
     )}
   >
@@ -53,7 +54,7 @@ interface SidebarMenuProps {
 export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
   const menuItems = [
     { n: '01', cmd: 'record', desc: 'career + education', hot: false },
-    { n: '02', cmd: 'featured work', desc: 'selected case studies', hot: false },
+    { n: '02', cmd: 'projects', desc: 'selected case studies', hot: false },
     { n: '03', cmd: 'expertise', desc: 'stack & depth', hot: false },
     // { n: '04', cmd: 'snake', desc: 'arrow keys · play', hot: false },
     { n: '05', cmd: 'contact', desc: 'get in touch', hot: false },
@@ -67,22 +68,23 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
         {menuItems.map((c) => (
-          <CommandButton 
-            key={c.cmd}
-            num={c.n}
-            cmd={c.cmd}
-            desc={c.desc}
-            hot={c.hot}
-            important={c.important}
-            onClick={() => onCommand(c.cmd)}
-          />
+          <div key={c.cmd} className={cn(c.cmd === 'resume' && "col-span-2 md:col-span-1")}>
+            <CommandButton
+              num={c.n}
+              cmd={c.cmd}
+              desc={c.desc}
+              hot={c.hot}
+              important={c.important}
+              onClick={() => onCommand(c.cmd)}
+            />
+          </div>
         ))}
       </div>
-      
+
       <div className="mt-auto pt-4 md:pt-8 border-t border-white/5 hidden md:block">
         <div className="font-mono text-[8px] text-[#5a5a57] uppercase tracking-widest leading-relaxed opacity-60">
-          [ status: operational ]<br/>
-          [ core_v2: active ]<br/>
+          [ status: operational ]<br />
+          [ core_v2: active ]<br />
           [ telemetry: encrypted ]
         </div>
       </div>

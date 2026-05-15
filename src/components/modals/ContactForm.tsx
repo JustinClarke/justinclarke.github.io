@@ -57,7 +57,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
             <label htmlFor="name" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
-              [INPUT_NAME]
+              [NAME]
             </label>
             {touched.name && errors.name && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_VAL</span>}
           </div>
@@ -87,7 +87,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
             <label htmlFor="email" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
-              [INPUT_EMAIL]
+              [EMAIL]
             </label>
             {touched.email && errors.email && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_FMT</span>}
           </div>
@@ -117,7 +117,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
             <label htmlFor="message" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
-              [INPUT_MESSAGE]
+              [MESSAGE]
             </label>
             <span className="text-[9px] text-white/20 font-mono">{formData.message.length} / 500 CHARS</span>
           </div>
@@ -156,7 +156,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
               onClick={resetStatus}
               className="w-full text-[10px] text-white/30 hover:text-white transition-colors font-mono uppercase tracking-[0.3em]"
             >
-              [ RE-ESTABLISH_CONNECTION ]
+              [ TRY AGAIN ]
             </button>
           </div>
         ) : (
@@ -173,11 +173,11 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
             {status === 'loading' ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                <span>TRANSMITTING_DATA...</span>
+                <span>SENDING...</span>
               </>
             ) : (
               <>
-                <span className="relative z-10">INITIALIZE_HANDSHAKE</span>
+                <span className="relative z-10">SEND MESSAGE</span>
                 <span className="relative z-10 transition-transform group-hover:translate-x-2" aria-hidden="true">→</span>
                 
                 {/* Submit Glow Effect */}

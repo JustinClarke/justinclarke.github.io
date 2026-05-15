@@ -62,11 +62,12 @@ export const SqlVisual = () => {
             key={`pkt-${i}`}
             r={1.8}
             fill="#ef4444"
-            style={{
-              offsetPath: `path("M${nodes[a].x},${nodes[a].y} L${nodes[b].x},${nodes[b].y}")`,
-              filter: 'url(#sql-glow)',
+            style={{ filter: 'url(#sql-glow)' }}
+            animate={{ 
+              cx: [nodes[a].x, nodes[b].x],
+              cy: [nodes[a].y, nodes[b].y],
+              opacity: [0, 1, 0] 
             }}
-            animate={{ offsetDistance: ['0%', '100%'], opacity: [0, 1, 0] }}
             transition={{
               duration: 1.5 + i * 0.1,
               repeat: Infinity,

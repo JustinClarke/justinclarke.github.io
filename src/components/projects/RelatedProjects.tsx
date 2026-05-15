@@ -11,11 +11,13 @@ interface RelatedProjectsProps {
 }
 
 export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProjectId }) => {
-  // Get all other projects and take 2
-  const related = projectsData
-    .filter(p => p.id !== currentProjectId)
-    .sort(() => 0.5 - Math.random()) // Simple shuffle
-    .slice(0, 2);
+  // Get all other projects and take 2 - memoized to prevent jerky re-renders
+  const related = React.useMemo(() => {
+    return projectsData
+      .filter(p => p.id !== currentProjectId)
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 2);
+  }, [currentProjectId]);
 
   if (related.length === 0) return null;
 
@@ -41,7 +43,17 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
           {related.map((project, idx) => (
-            <ScrollReveal key={project.id} delay={idx * 0.1} direction="up" distance={20}>
+            <motion.div
+              key={project.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ 
+                duration: 0.8, 
+                delay: idx * 0.15,
+                ease: [0.16, 1, 0.3, 1] 
+              }}
+            >
               <Link
                 to={`/project/${project.id}`}
                 className="group relative flex flex-col p-8 rounded-[32px] border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-700 hover:border-white/20 hover:-translate-y-2 overflow-hidden"
@@ -77,7 +89,7 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
                   </span>
                 </div>
               </Link>
-            </ScrollReveal>
+            </motion.div>
           ))}
         </div>
       </div>
