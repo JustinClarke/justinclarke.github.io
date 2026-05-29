@@ -1,0 +1,373 @@
+{
+  "chunk_id": "3/10",
+  "chunk_files": [
+    "src/hooks/useBentoCycle.ts",
+    "src/hooks/useF1Telemetry.ts",
+    "src/hooks/useFirstVisit.ts",
+    "src/hooks/useLastFm.ts",
+    "src/hooks/useMousePositionMotion.ts",
+    "src/hooks/useParallax.ts",
+    "src/hooks/useReducedMotion.ts",
+    "src/hooks/useSpotify.ts",
+    "src/hooks/useSpotlight.ts",
+    "src/hooks/useTerminalBoot.ts",
+    "src/hooks/useTerminalSession.ts",
+    "src/utils/animations.ts",
+    "src/utils/cn.ts",
+    "src/utils/metrics.ts",
+    "src/utils/scroll.ts",
+    "src/utils/tooltips.ts"
+  ],
+  "analysis": {
+    "scope": "Hook and utility duplication patterns in React hooks (11 files) and helper utilities (5 files)",
+    "timestamp": "2026-06-02"
+  },
+  "critical_duplication": [
+    {
+      "id": "DUP-001",
+      "category": "RAF Request/Cleanup Pattern",
+      "severity": "high",
+      "instances": [
+        {
+          "file": "src/hooks/useBentoCycle.ts",
+          "lines": "30-55",
+          "code": "const rafRef = useRef<number | null>(null); ... requestAnimationFrame() + return cleanup"
+        },
+        {
+          "file": "src/hooks/useParallax.ts",
+          "lines": "27-46",
+          "code": "const rafId = useRef<number | null>(null); ... requestAnimationFrame() + return cleanup"
+        }
+      ],
+      "pattern": "Both hooks manage requestAnimationFrame with a ref and cleanup. Could extract shared RAF handler utility.",
+      "recommendation": "Create src/utils/raf-manager.ts with reusable RAF management logic"
+    },
+    {
+      "id": "DUP-002",
+      "category": "MediaQuery Listener Pattern",
+      "severity": "high",
+      "instances": [
+        {
+          "file": "src/hooks/useReducedMotion.ts",
+          "lines": "12-16",
+          "code": "window.matchMedia('(prefers-reduced-motion: reduce)') + addEventListener/removeEventListener"
+        },
+        {
+          "file": "src/utils/scroll.ts",
+          "lines": "12",
+          "code": "window.matchMedia('(prefers-reduced-motion: reduce)').matches"
+        }
+      ],
+      "pattern": "Reduced motion media query is duplicated. useReducedMotion is a hook, but scroll.ts reimplements the check.",
+      "recommendation": "Export reduced motion check from useReducedMotion or create shared utility; scroll.ts should import from useReducedMotion hook or create helper"
+    },
+    {
+      "id": "DUP-003",
+      "category": "Window Event Listener Cleanup",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useBentoCycle.ts",
+          "lines": "47-54",
+          "code": "window.addEventListener + window.removeEventListener in cleanup"
+        },
+        {
+          "file": "src/hooks/useMousePositionMotion.ts",
+          "lines": "20-21",
+          "code": "window.addEventListener + return removeEventListener"
+        },
+        {
+          "file": "src/hooks/useParallax.ts",
+          "lines": "48-51",
+          "code": "window.addEventListener + return removeEventListener (×2 listeners)"
+        }
+      ],
+      "pattern": "All three mouse-tracking hooks manage addEventListener/removeEventListener independently. No shared pattern.",
+      "recommendation": "Create useWindowEventListener hook that handles setup/cleanup boilerplate"
+    },
+    {
+      "id": "DUP-004",
+      "category": "Storage Initialization Pattern",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useFirstVisit.ts",
+          "lines": "3-7",
+          "code": "useState initializer reads localStorage, guarded by typeof window check"
+        },
+        {
+          "file": "src/hooks/useTerminalBoot.ts",
+          "lines": "14-28",
+          "code": "useState initializer with multiple typeof window guards + storage/window checks"
+        },
+        {
+          "file": "src/hooks/useSpotify.ts",
+          "lines": "75-114",
+          "code": "localStorage.getItem/setItem for token/state management (3 instances)"
+        }
+      ],
+      "pattern": "All hooks that use storage repeat: (1) typeof window check, (2) localStorage access pattern, (3) error handling.",
+      "recommendation": "Create useLocalStorage hook that handles SSR guards and error handling automatically"
+    },
+    {
+      "id": "DUP-005",
+      "category": "API Fetch with Loading State",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useLastFm.ts",
+          "lines": "19-71",
+          "code": "fetch() + setLoading(true/false) + setError + try/catch + finally"
+        },
+        {
+          "file": "src/hooks/useSpotify.ts",
+          "lines": "116-151",
+          "code": "fetch() + setLoading(true/false) + try/catch (same pattern)"
+        }
+      ],
+      "pattern": "Both music hooks implement identical async fetch pattern: loading state, error handling, finally cleanup.",
+      "recommendation": "Extract useFetch or useAsyncData hook to consolidate (loading, error, retry logic)"
+    }
+  ],
+  "moderate_duplication": [
+    {
+      "id": "DUP-006",
+      "category": "Timestamp & Time Calculations",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useLastFm.ts",
+          "lines": "46-48",
+          "code": "const now = Math.floor(Date.now() / 1000); const minutesAgo = Math.floor((now - parseInt(timestamp)) / 60);"
+        },
+        {
+          "file": "src/hooks/useF1Telemetry.ts",
+          "lines": "44-45",
+          "code": "const time = Date.now(); ... time * 0.0035"
+        }
+      ],
+      "pattern": "Date/time operations scattered. No shared time utility.",
+      "recommendation": "Create src/utils/time-utils.ts with: formatTimestampDelta, getMinutesAgo, etc."
+    },
+    {
+      "id": "DUP-007",
+      "category": "Motion Value + Mouse Tracking",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useMousePositionMotion.ts",
+          "lines": "10-24",
+          "code": "const mouseX = useMotionValue(0); const mouseY = useMotionValue(0); ... set()"
+        },
+        {
+          "file": "src/hooks/useSpotlight.ts",
+          "lines": "10-26",
+          "code": "const mouseX = useMotionValue(0); const mouseY = useMotionValue(0); ... set()"
+        }
+      ],
+      "pattern": "Both create identical Framer Motion motion values for mouse tracking. useSpotlight is simpler (just position), useMousePositionMotion is global.",
+      "recommendation": "useSpotlight could leverage useMousePositionMotion or extract shared motion-value initialization pattern"
+    },
+    {
+      "id": "DUP-008",
+      "category": "Interval-based State Polling",
+      "severity": "medium",
+      "instances": [
+        {
+          "file": "src/hooks/useF1Telemetry.ts",
+          "lines": "40-112",
+          "code": "setInterval(() => { ... }, 400); return () => clearInterval()"
+        },
+        {
+          "file": "src/hooks/useF1Telemetry.ts",
+          "lines": "119-131",
+          "code": "setInterval(() => { ... }, 15000); return () => clearInterval()"
+        },
+        {
+          "file": "src/hooks/useSpotify.ts",
+          "lines": "62-72",
+          "code": "setInterval(() => fetchCurrentTrack(token), 5000); return () => clearInterval()"
+        }
+      ],
+      "pattern": "Multiple hooks implement setInterval polling with identical cleanup pattern.",
+      "recommendation": "Create useInterval hook that abstracts interval creation, dependencies, and cleanup"
+    },
+    {
+      "id": "DUP-009",
+      "category": "State Array Accumulation & Trimming",
+      "severity": "low",
+      "instances": [
+        {
+          "file": "src/hooks/useF1Telemetry.ts",
+          "lines": "108",
+          "code": "setPipelineLogs(prev => [...prev.slice(-4), newLog])"
+        },
+        {
+          "file": "src/hooks/useTerminalSession.ts",
+          "lines": "49-52, 105-108",
+          "code": "setHistory(prev => [...prev, line])"
+        }
+      ],
+      "pattern": "Accumulating arrays with optional trimming. F1 telemetry trims to last 4 items; terminal doesn't.",
+      "recommendation": "Create useAccumulatingState hook with optional maxLength parameter"
+    }
+  ],
+  "validation_utilities": [
+    {
+      "category": "Type Guards / Predicates",
+      "note": "Project does NOT have is-boolean.ts, is-external.ts as listed in input. These files do not exist in codebase.",
+      "actual_utilities": [
+        {
+          "file": "src/utils/cn.ts",
+          "exports": ["cn()"],
+          "purpose": "Tailwind class merging (clsx + twMerge)"
+        },
+        {
+          "file": "src/utils/metrics.ts",
+          "exports": ["parseMetricValue()", "getMetricTooltip()"],
+          "purpose": "Numeric parsing, string extraction"
+        }
+      ],
+      "missing_opportunities": [
+        "No dedicated type-guard utilities detected",
+        "No URL validation / is-external checks",
+        "No boolean coercion utilities"
+      ]
+    }
+  ],
+  "string_transformation": [
+    {
+      "file": "src/utils/metrics.ts",
+      "function": "parseMetricValue(val: string)",
+      "code": "parseFloat(val.replace(/[^0-9.]/g, '')) || 0; val.replace(/[0-9.]/g, '')",
+      "purpose": "Extract numeric value and suffix from string like '80%' → {num: 80, suffix: '%'}"
+    },
+    {
+      "file": "src/hooks/useLastFm.ts",
+      "line": "53",
+      "code": "typeof recentTrack.artist === 'string' ? recentTrack.artist : recentTrack.artist?.['#text'] || ...",
+      "purpose": "Normalize artist field (can be string or object)"
+    },
+    {
+      "note": "No dedicated string utilities. No capitalize, format-duration, get-years files found (input listed non-existent files)"
+    }
+  ],
+  "storage_persistence": [
+    {
+      "id": "PERSIST-001",
+      "category": "localStorage Pattern Duplication",
+      "instances": [
+        {
+          "file": "src/hooks/useFirstVisit.ts",
+          "pattern": "Simple boolean flag (key → 'true')"
+        },
+        {
+          "file": "src/hooks/useTerminalBoot.ts",
+          "pattern": "Multiple storage keys: terminal_booted, window.__TERMINAL_BOOTED__, sessionStorage"
+        },
+        {
+          "file": "src/hooks/useSpotify.ts",
+          "pattern": "Token, expiry, state, verifier (4 keys, complex lifecycle)"
+        }
+      ],
+      "recommendation": "Create useLocalStorage<T>(key, initialValue, options) hook with JSON serialization, SSR safety, and error handling"
+    }
+  ],
+  "hook_dependencies": [
+    {
+      "hook": "useParallax",
+      "depends_on": ["useReducedMotion"],
+      "integration_point": "line 13: const prefersReducedMotion = useReducedMotion();",
+      "pattern": "Hook composition working well"
+    },
+    {
+      "hook": "useTerminalSession",
+      "depends_on": ["useNavigate", "elevatorScroll utility"],
+      "integration_point": "lines 2, 9",
+      "pattern": "Good separation: terminal logic, routing, scroll fx"
+    },
+    {
+      "hook": "useBentoCycle",
+      "depends_on": ["CYCLING_CARDS data"],
+      "note": "Tightly coupled to data shape; could be more reusable"
+    }
+  ],
+  "summary": {
+    "total_files_analyzed": 16,
+    "hooks": 11,
+    "utilities": 5,
+    "critical_duplications_found": 5,
+    "moderate_duplications_found": 4,
+    "key_extraction_candidates": [
+      {
+        "name": "useInterval",
+        "benefit": "Consolidate 3 instances of setInterval + cleanup",
+        "complexity": "low"
+      },
+      {
+        "name": "useLocalStorage",
+        "benefit": "Consolidate 3 different storage patterns, add SSR safety, JSON serialization",
+        "complexity": "medium"
+      },
+      {
+        "name": "useFetch",
+        "benefit": "Unify useLastFm + useSpotify fetch + loading + error pattern",
+        "complexity": "medium"
+      },
+      {
+        "name": "useWindowEventListener",
+        "benefit": "Consolidate addEventListener/removeEventListener in 3 mouse hooks",
+        "complexity": "low"
+      },
+      {
+        "name": "useMotionTracker",
+        "benefit": "Share Framer Motion motion value + mousemove handler between useMousePositionMotion and useSpotlight",
+        "complexity": "low"
+      }
+    ],
+    "data_integrity_issues": [
+      {
+        "file": "src/hooks/useF1Telemetry.ts",
+        "line": 49,
+        "issue": "Ternary operator chain has syntax error: '90  -' should be '90 ?' and missing colon before last case",
+        "code": "activeTrack === 'Monaco' ? 90  - activeTrack === 'Spa' ? 120 : 80"
+      },
+      {
+        "file": "src/hooks/useF1Telemetry.ts",
+        "line": 162,
+        "issue": "Invalid switch case: 'case 'Spa' -' should be 'case 'Spa':', dashes used instead of colons",
+        "code": "case 'Spa' - return 'M167.75..."
+      },
+      {
+        "file": "src/hooks/useTerminalSession.ts",
+        "line": 32,
+        "issue": "Parameter destructuring syntax error: 'cmd - string' should be 'cmd: string'",
+        "code": "const handleCommand = useCallback(async (cmd - string, ...)"
+      },
+      {
+        "file": "src/hooks/useTerminalSession.ts",
+        "line": 99,
+        "issue": "Invalid ternary: '? { ... }  -' should be '? { ... } :'",
+        "code": "isLongVersion ? { ... }  - resolveCommand(raw)"
+      },
+      {
+        "file": "src/hooks/useTerminalBoot.ts",
+        "line": 41,
+        "issue": "Invalid ternary: 'prev === -1 ? 0  - prev' should be 'prev === -1 ? 0 : prev'",
+        "code": "setBootStep(prev => prev === -1 ? 0  - prev)"
+      },
+      {
+        "file": "src/hooks/useFirstVisit.ts",
+        "line": 3,
+        "issue": "Parameter destructuring syntax error: '(key - string)' should be '(key: string)'",
+        "code": "export function useFirstVisit(key - string) - boolean {"
+      }
+    ],
+    "code_quality_notes": [
+      "Multiple files have dash/minus signs where colons should be (likely copy-paste corruption)",
+      "useF1Telemetry is very large (240 lines) and manages ~15 state variables; candidate for refactoring into smaller sub-hooks",
+      "useTerminalSession is also large (150 lines); command resolution logic could be extracted",
+      "No shared raf-manager utility despite two hooks using identical RAF + ref + cleanup pattern"
+    ]
+  }
+}

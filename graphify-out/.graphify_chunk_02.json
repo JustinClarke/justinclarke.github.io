@@ -1,0 +1,213 @@
+{
+  "chunk": 2,
+  "total_chunks": 10,
+  "analysis_focus": "UI component patterns, styling reuse, button/link variants, modal/tooltip logic, badge styling, card wrappers, timeline components",
+  "files_analyzed": 20,
+  "key_findings": {
+    "duplicated_patterns": [
+      {
+        "pattern_id": "brand-primary-styling",
+        "severity": "high",
+        "frequency": "15+ occurrences",
+        "description": "Repeated brand-primary color and shadow combinations used across components",
+        "affected_components": [
+          "CommandButton.tsx",
+          "TerminalHeader.tsx",
+          "TimelineCard.tsx",
+          "Badge.tsx",
+          "InteractiveHint.tsx",
+          "ContactModal.tsx",
+          "MagneticButton.tsx",
+          "SpotlightCard.tsx"
+        ],
+        "recommendation": "Extract brand-primary color combinations into CSS utility classes or Tailwind theme tokens"
+      },
+      {
+        "pattern_id": "color-variant-pairs",
+        "severity": "high",
+        "frequency": "12+ occurrences",
+        "description": "Dual-color conditional styling (work vs education, isWork ? 'teal' : 'amber')",
+        "affected_components": [
+          "TimelineCard.tsx (work/amber duality)",
+          "CommandButton.tsx (brand-primary vs F1-red vs cream)",
+          "Badge.tsx (variant-based color sets)"
+        ],
+        "recommendation": "Create composite variant objects mapping work/education to complete style sets"
+      },
+      {
+        "pattern_id": "tech-badge-styling",
+        "severity": "medium",
+        "frequency": "8+ occurrences",
+        "description": "Identical tech stack badge patterns with hover scale and color transitions",
+        "affected_components": [
+          "TerminalHeader.tsx",
+          "TerminalBody.tsx"
+        ],
+        "recommendation": "Create a TechBadge component with color prop (python, dbt, xgboost, streamlit)"
+      },
+      {
+        "pattern_id": "modal-structure",
+        "severity": "medium",
+        "frequency": "2 implementations (ContactModal, EmailModal)",
+        "description": "Nearly identical modal overlay + content + close button patterns with subtle styling differences",
+        "affected_components": [
+          "ContactModal.tsx",
+          "EmailModal.tsx"
+        ],
+        "recommendation": "Create shared ModalContainer component accepting overlay opacity, content max-width, and children"
+      },
+      {
+        "pattern_id": "accent-line-spine",
+        "severity": "medium",
+        "frequency": "5+ occurrences",
+        "description": "Left-side vertical accent line that grows on hover, used for visual emphasis",
+        "affected_components": [
+          "CommandButton.tsx",
+          "TimelineCard.tsx"
+        ],
+        "recommendation": "Extract AccentSpine component (width, color, hoverColor, expandOnHover boolean)"
+      },
+      {
+        "pattern_id": "badge-variant-styles",
+        "severity": "medium",
+        "frequency": "4 variants across components",
+        "description": "Reusable badge styling with variant-based conditional logic (teal, outline, ghost, soft-bg)",
+        "affected_components": [
+          "Badge.tsx (semantic variants)",
+          "TimelineCard.tsx (inline badge definitions for work/education)",
+          "TerminalHeader.tsx (tech badges)"
+        ],
+        "recommendation": "TimelineCard should use Badge component for consistency"
+      },
+      {
+        "pattern_id": "indicator-light",
+        "severity": "low",
+        "frequency": "3+ occurrences",
+        "description": "Small circular pulsing indicator dot with glow shadow",
+        "affected_components": [
+          "CommandButton.tsx",
+          "ContactModal.tsx"
+        ],
+        "recommendation": "Create IndicatorLight component with size and color props"
+      }
+    ],
+    "component_composition_issues": [
+      {
+        "issue": "TimelineCard.tsx has syntax errors",
+        "lines": [10, 11, 130],
+        "description": "Uses dash (-) instead of colon (:) in interface prop definitions and animate prop",
+        "impact": "Component will fail to compile",
+        "fix_priority": "critical"
+      },
+      {
+        "issue": "InteractiveHint.tsx has syntax errors",
+        "lines": [6, 7, 8, 10, 12],
+        "description": "Uses dash (-) instead of colon (:) in interface prop definitions",
+        "impact": "Component will fail to compile",
+        "fix_priority": "critical"
+      },
+      {
+        "issue": "ConfirmPrompt.tsx has syntax errors",
+        "lines": [4, 7],
+        "description": "Uses dash (-) instead of colon (:) in interface prop definitions",
+        "impact": "Component will fail to compile",
+        "fix_priority": "critical"
+      }
+    ],
+    "tailwind_compliance": {
+      "violations": [
+        {
+          "file": "TerminalHeader.tsx",
+          "line": 60,
+          "issue": "Hardcoded color: text-[#f4f4f3]",
+          "should_use": "Color token from theme (e.g., text-f1-white)"
+        },
+        {
+          "file": "CommandButton.tsx",
+          "line": 33,
+          "issue": "Raw rgba in string: rgba(102,14,29,0.06)",
+          "should_use": "CSS variable or theme color"
+        },
+        {
+          "file": "TimelineCard.tsx",
+          "lines": [31, 32, 58, 59],
+          "issue": "Hardcoded hex shadow values: rgba(0,200,180,0.25)",
+          "should_use": "Should be abstracted to theme"
+        }
+      ]
+    },
+    "reusable_component_opportunities": [
+      {
+        "component_name": "TechStackBadge",
+        "purpose": "Tech badge with icon, hover scale, and color prop",
+        "duplicates_found": 2,
+        "files": [
+          "TerminalHeader.tsx (desktop)",
+          "TerminalBody.tsx (mobile)"
+        ]
+      },
+      {
+        "component_name": "ModalBase",
+        "purpose": "Shared modal overlay, content, close button logic",
+        "duplicates_found": 2,
+        "files": [
+          "ContactModal.tsx",
+          "EmailModal.tsx"
+        ]
+      },
+      {
+        "component_name": "AccentSpine",
+        "purpose": "Vertical accent line that expands on hover",
+        "duplicates_found": 3,
+        "files": [
+          "CommandButton.tsx",
+          "TimelineCard.tsx"
+        ]
+      }
+    ]
+  },
+  "metrics": {
+    "total_files_in_chunk": 20,
+    "files_with_duplicates": 12,
+    "duplicate_pattern_count": 7,
+    "critical_syntax_errors": 3,
+    "estimated_duplication_percentage": 35,
+    "components_needing_refactor": 8
+  },
+  "next_steps": [
+    {
+      "priority": "critical",
+      "action": "Fix TypeScript syntax errors (dash to colon in interface props)",
+      "files": [
+        "src/pages/home/TimelineCard.tsx",
+        "src/ui/InteractiveHint.tsx",
+        "src/ui/ConfirmPrompt.tsx"
+      ]
+    },
+    {
+      "priority": "high",
+      "action": "Extract TechStackBadge component to eliminate TerminalHeader/TerminalBody duplication",
+      "files": [
+        "src/pages/home/Hero/ui/TerminalHeader.tsx",
+        "src/pages/home/Hero/ui/TerminalBody.tsx"
+      ]
+    },
+    {
+      "priority": "high",
+      "action": "Audit Tailwind token usage per .docs/TAILWIND-MAX-PLAN.md; migrate hardcoded colors to theme variables",
+      "files": [
+        "src/index.css",
+        "src/config/constants.ts"
+      ]
+    },
+    {
+      "priority": "medium",
+      "action": "Create ModalBase wrapper to consolidate ContactModal and EmailModal",
+      "impact": "Reduce modal boilerplate by ~40 lines"
+    },
+    {
+      "priority": "medium",
+      "action": "Consolidate badge variants into unified Badge component with work/education/tech support"
+    }
+  ]
+}

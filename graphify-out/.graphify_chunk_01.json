@@ -1,0 +1,399 @@
+{
+  "nodes": [
+    {
+      "id": "hero_commandbutton_component",
+      "label": "CommandButton Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/CommandButton.tsx",
+      "source_location": "lines 18-171"
+    },
+    {
+      "id": "hero_commandbutton_styleclassification",
+      "label": "Conditional styling logic (hot, important, isLongVersion branches)",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/CommandButton.tsx",
+      "source_location": "lines 32-38"
+    },
+    {
+      "id": "hero_projectshowcase_component",
+      "label": "ProjectShowcase Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/ProjectShowcase.tsx",
+      "source_location": "lines 3-130"
+    },
+    {
+      "id": "hero_sidebarmenu_component",
+      "label": "SidebarMenu Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/SidebarMenu.tsx",
+      "source_location": "lines 18-98"
+    },
+    {
+      "id": "hero_index_component",
+      "label": "Hero Orchestrator Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/index.tsx",
+      "source_location": "lines 18-313"
+    },
+    {
+      "id": "hero_terminalheader_component",
+      "label": "TerminalHeader Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/TerminalHeader.tsx",
+      "source_location": "lines 9-167"
+    },
+    {
+      "id": "hero_terminalbody_component",
+      "label": "TerminalBody Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/TerminalBody.tsx",
+      "source_location": "lines 72-310"
+    },
+    {
+      "id": "career_timelinecard_component",
+      "label": "TimelineCard Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/CareerTimeline.tsx",
+      "source_location": "lines 139-350"
+    },
+    {
+      "id": "components_nowplaying_component",
+      "label": "NowPlaying Component",
+      "file_type": "code",
+      "source_file": "/src/components/NowPlaying.tsx",
+      "source_location": "lines 10-105"
+    },
+    {
+      "id": "config_constants_theme",
+      "label": "THEME constant object",
+      "file_type": "code",
+      "source_file": "/src/config/constants.ts",
+      "source_location": "lines 5-20"
+    },
+    {
+      "id": "hero_placeholdercycler_component",
+      "label": "PlaceholderCycler Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/ui/TerminalBody.tsx",
+      "source_location": "lines 17-70"
+    },
+    {
+      "id": "hero_getlinecolor_utility",
+      "label": "getLineColor utility function",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/index.tsx",
+      "source_location": "lines 199-217"
+    },
+    {
+      "id": "hero_getsidebarfunmessage_utility",
+      "label": "getSidebarFunMessage utility function",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/index.tsx",
+      "source_location": "lines 319-359"
+    },
+    {
+      "id": "hero_getconversationalpreamble_utility",
+      "label": "getConversationalPreamble utility function",
+      "file_type": "code",
+      "source_file": "/src/pages/home/Hero/index.tsx",
+      "source_location": "lines 361-385"
+    },
+    {
+      "id": "career_yearprogressbar_component",
+      "label": "YearProgressBar Component",
+      "file_type": "code",
+      "source_file": "/src/pages/home/CareerTimeline.tsx",
+      "source_location": "lines 357-424"
+    },
+    {
+      "id": "rationale_tailwind_dynamic_values",
+      "label": "Repeating pattern: Dynamic CSS values via style prop with CSS vars",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "CommandButton (line 94), ProjectShowcase (lines 22, 39, 81), NowPlaying (line 56)"
+    },
+    {
+      "id": "rationale_conditional_color_mapping",
+      "label": "Repeating pattern: Conditional color/styling based on type/state flags",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "CommandButton (lines 32-38), TimelineCard (lines 140-141), ProjectShowcase (lines 10-41)"
+    },
+    {
+      "id": "rationale_icon_badge_pattern",
+      "label": "Repeating pattern: Icon + text badge with hover effects",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "TerminalHeader (lines 100-145), TerminalBody (lines 164-199), TimelineCard (lines 276-290)"
+    },
+    {
+      "id": "rationale_gradient_overlay_pattern",
+      "label": "Repeating pattern: Gradient overlays for desaturation and depth",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "ProjectShowcase (lines 19-23, 35-41), CommandButton (lines 91-96), NowPlaying (line 72)"
+    },
+    {
+      "id": "rationale_status_indicator_pattern",
+      "label": "Repeating pattern: Animated pulse dot indicator with glow shadow",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "CommandButton (line 61), ProjectShowcase (lines 61, 117), NowPlaying (line 77), TimelineCard (line 216)"
+    },
+    {
+      "id": "rationale_transition_animation_pattern",
+      "label": "Repeating pattern: Group-based hover scale and color transitions",
+      "file_type": "rationale",
+      "source_file": "Multiple files",
+      "source_location": "CommandButton (lines 26-42), TerminalHeader (lines 100-145), TimelineCard (lines 176-184)"
+    }
+  ],
+  "edges": [
+    {
+      "source": "hero_sidebarmenu_component",
+      "target": "hero_commandbutton_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_sidebarmenu_component",
+      "target": "hero_projectshowcase_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_index_component",
+      "target": "hero_sidebarmenu_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_index_component",
+      "target": "hero_terminalheader_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_index_component",
+      "target": "hero_terminalbody_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_terminalbody_component",
+      "target": "hero_placeholdercycler_component",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_commandbutton_component",
+      "target": "hero_commandbutton_styleclassification",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 0.8
+    },
+    {
+      "source": "hero_sidebarmenu_component",
+      "target": "hero_getconversationalpreamble_utility",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "weight": 0.7
+    },
+    {
+      "source": "hero_commandbutton_component",
+      "target": "career_timelinecard_component",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "weight": 0.8
+    },
+    {
+      "source": "hero_projectshowcase_component",
+      "target": "rationale_gradient_overlay_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_projectshowcase_component",
+      "target": "rationale_status_indicator_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_terminalheader_component",
+      "target": "rationale_icon_badge_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_terminalbody_component",
+      "target": "rationale_icon_badge_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "career_timelinecard_component",
+      "target": "rationale_conditional_color_mapping",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "career_timelinecard_component",
+      "target": "rationale_icon_badge_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "components_nowplaying_component",
+      "target": "rationale_gradient_overlay_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "components_nowplaying_component",
+      "target": "rationale_status_indicator_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_commandbutton_component",
+      "target": "rationale_transition_animation_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "career_timelinecard_component",
+      "target": "rationale_transition_animation_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_terminalbody_component",
+      "target": "rationale_transition_animation_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    },
+    {
+      "source": "hero_placeholdercycler_component",
+      "target": "rationale_transition_animation_pattern",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "group_conditional_styling_components",
+      "label": "Components using conditional styling logic",
+      "type": "similar_pattern_group",
+      "members": [
+        "hero_commandbutton_component",
+        "career_timelinecard_component",
+        "hero_projectshowcase_component"
+      ],
+      "confidence_score": 0.88,
+      "rationale": "All three components use inline conditional className logic with cn() utility to switch between multiple visual states based on prop flags (hot/important/large, isWork/isExpanded, responsive breakpoints). Pattern is extractable to conditional class factory functions."
+    },
+    {
+      "id": "group_gradient_visual_effects",
+      "label": "Components using gradient overlays and depth effects",
+      "type": "similar_pattern_group",
+      "members": [
+        "hero_projectshowcase_component",
+        "hero_commandbutton_component",
+        "components_nowplaying_component",
+        "hero_terminalbody_component"
+      ],
+      "confidence_score": 0.85,
+      "rationale": "Repeated use of inline style gradient backgrounds for desaturation, depth layering, and vignette effects. Could be extracted as reusable style factory with customizable stop points."
+    },
+    {
+      "id": "group_animated_indicators",
+      "label": "Components with pulsing status indicators",
+      "type": "similar_pattern_group",
+      "members": [
+        "hero_commandbutton_component",
+        "hero_projectshowcase_component",
+        "career_timelinecard_component",
+        "components_nowplaying_component"
+      ],
+      "confidence_score": 0.90,
+      "rationale": "Consistent pattern: w-1/1.5 h-1/1.5 rounded-full bg-[color] animate-pulse with matching box-shadow glow effect. Candidate for `<StatusDot>` component or utility hook."
+    },
+    {
+      "id": "group_text_metric_displays",
+      "label": "Components displaying metrics in structured format",
+      "type": "similar_pattern_group",
+      "members": [
+        "hero_projectshowcase_component",
+        "career_timelinecard_component"
+      ],
+      "confidence_score": 0.79,
+      "rationale": "Both display value + label pairs with optional icon/indicator prefix. ProjectShowcase lines 59-64, 115-120; TimelineCard lines 276-290. Could extract as `<MetricBadge>` component."
+    },
+    {
+      "id": "group_icon_badge_styling",
+      "label": "Icon+text badge elements with hover color transitions",
+      "type": "similar_pattern_group",
+      "members": [
+        "hero_terminalheader_component",
+        "hero_terminalbody_component",
+        "career_timelinecard_component"
+      ],
+      "confidence_score": 0.87,
+      "rationale": "Repeating pattern of inline-flex badge with small px/py, rounded border, conditional color props, and group-hover color transitions. TerminalHeader lines 100-145; TerminalBody lines 164-199; TimelineCard lines 168-186."
+    }
+  ],
+  "metadata": {
+    "analysis_date": "2026-06-02",
+    "chunk_number": 1,
+    "total_chunks": 10,
+    "files_analyzed": 20,
+    "pattern_extraction_focus": [
+      "Conditional styling based on component state flags",
+      "Gradient and overlay visual patterns",
+      "Animated status indicators (pulsing dots)",
+      "Icon+text badge combinations",
+      "Dynamic CSS values via style props and CSS variables",
+      "Group-based hover and transition effects"
+    ],
+    "notes": "CommandButton.tsx and TimelineCard.tsx are semantically similar - both implement expandable control cards with conditional styling. Strong candidates for shared base component or pattern abstraction. ProjectShowcase and NowPlaying both use full-bleed backgrounds with gradient overlays. Icon badge pattern (tech skills, metrics, status) appears 3+ times. Placeholder cycling in TerminalBody mirrors similar animation logic in other components."
+  }
+}
