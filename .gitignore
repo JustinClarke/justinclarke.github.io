@@ -34,4 +34,4 @@ yarn-error.log*
 *.sw?
 
 .github
-.graphify-out
+graphify-out/
