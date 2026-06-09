@@ -123,11 +123,11 @@ export function SplitHero() {
         }
         @keyframes pulseGlow {
           0%, 100% { 
-            box-shadow: 0 0 20px color-mix(in srgb, var(--color-f1-red, #ef4444) 40%, transparent);
+            box-shadow: 0 0 20px color-mix(in srgb, var(--color-f1-red) 40%, transparent);
             transform: scale(1);
           }
           50% { 
-            box-shadow: 0 0 40px color-mix(in srgb, var(--color-f1-red, #ef4444) 80%, transparent), 0 0 60px color-mix(in srgb, var(--color-f1-red, #ef4444) 40%, transparent);
+            box-shadow: 0 0 40px color-mix(in srgb, var(--color-f1-red) 80%, transparent), 0 0 60px color-mix(in srgb, var(--color-f1-red) 40%, transparent);
             transform: scale(1.02);
           }
         }
@@ -232,7 +232,7 @@ export function SplitHero() {
                 rel="noreferrer"
                 onMouseEnter={(e) => {
                   setHoverCta(true);
-                  e.currentTarget.style.boxShadow = '0 0 40px color-mix(in srgb, var(--color-f1-red, #ef4444) 100%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red, #ef4444) 60%, transparent)';
+                  e.currentTarget.style.boxShadow = '0 0 40px color-mix(in srgb, var(--color-f1-red) 100%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red) 60%, transparent)';
                   e.currentTarget.style.opacity = '1';
                   e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
                 }}
@@ -243,7 +243,7 @@ export function SplitHero() {
                   e.currentTarget.style.transform = '';
                 }}
                 className="app-launch-btn cta-button order-1 col-span-2 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-black whitespace-nowrap transition-all duration-300"
-                style={{ backgroundColor: 'var(--color-f1-red, #ef4444)', borderColor: 'var(--color-f1-red, #ef4444)', borderWidth: '1px', zIndex: 50 }}
+                style={{ backgroundColor: 'var(--color-f1-red)', borderColor: 'var(--color-f1-red)', borderWidth: '1px', zIndex: 50 }}
               >
                 <span className="mr-3 flex h-2.5 w-2.5 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>

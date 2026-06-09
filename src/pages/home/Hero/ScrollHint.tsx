@@ -1,10 +1,38 @@
+/**
+ * ScrollHint the little "SCROLL TO EXPLORE" cue with the animated mouse-wheel,
+ * pinned under the hero terminal.
+ *
+ * Fits in: rendered by the Hero (src/pages/home/Hero/index.tsx). Purely visual —
+ *          it has no behaviour of its own, it just reacts to one prop.
+ * Note:    all of the motion lives in the <style> block below as CSS keyframes.
+ *          The component's only job is to switch a class on/off so the hint
+ *          fades away once the visitor starts scrolling.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This is a "presentational" component: data comes in through props, HTML goes
+ * out, and that is the whole story. The big `<style>` tag is ordinary CSS the
+ * same @keyframes you would put in a .css file written inline so this one cue
+ * carries its own animations. Nothing here talks to the rest of the app.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 
+// LEARN: An `interface` is TypeScript's way of describing the SHAPE of an object.
+//    Here it says: "anything calling <ScrollHint> must pass a `hasScrolled`
+//    that is a true/false value." It is a compile-time contract, not real code —
+//    it disappears entirely once the app is built.
 interface ScrollHintProps {
   hasScrolled: boolean;
 }
 
+// LEARN: `React.FC<ScrollHintProps>` types this as a Function Component whose
+//    props match the interface above. `({ hasScrolled })` pulls that one prop
+//    straight out of the props object ("destructuring") so we can use it by name.
 export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
+  // LEARN: `<>...</>` is a "fragment" an invisible wrapper that lets a component
+  //    return two siblings (the <style> block and the <div>) without adding an
+  //    extra element to the page. JSX components must return one root, and a
+  //    fragment satisfies that rule while rendering nothing of its own.
   return (
     <>
       <style>{`
@@ -105,6 +133,13 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
       `}</style>
 
       {/* Scroll hint retro terminal style, starts dark grey, turns light teal, blinks if idle, disappears in other sections */}
+      {/* LEARN: `aria-hidden="true"` hides this purely-decorative cue from screen
+            readers, so assistive tech does not announce "scroll to explore".
+          LEARN: the className is built with a template string (backticks). The
+            `${hasScrolled ? 'has-scrolled' : ''}` part adds the `has-scrolled`
+            class only when the prop is true that single class is what triggers
+            the CSS fade-out defined above. This is how a boolean in JS becomes a
+            visible change on screen. */}
       <div
         aria-hidden="true"
         className={`scroll-hint-container ${hasScrolled ? 'has-scrolled' : ''} pointer-events-none absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+20px)] left-1/2 flex flex-col items-center z-20`}

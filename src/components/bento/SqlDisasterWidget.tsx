@@ -1,16 +1,33 @@
+/**
+ * SqlDisasterWidget the "Disaster Response" bento card (a relational-database
+ * coursework project). A self-running demo that rotates schema entities, schema
+ * features, and a query latency log. The values are illustrative, not a live DB.
+ *
+ * Fits in: one card in the homepage featured-projects bento grid.
+ * Note:    three timers tick three counters (highlighted entity, active query,
+ *          active schema feature); a Schema/Queries toggle swaps which panel shows.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Same shape as the other bento cards: useState holds the counters, useEffect
+ * runs the timers, Framer Motion's <AnimatePresence key={...}> cross-fades a
+ * panel when its key changes, and cn(...) chooses classes from what's active.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Database, Zap, ShieldCheck } from 'lucide-react';
 import { cn } from '@/utils';
 
+// LEARN: the card's content as plain data arrays; the JSX below loops over these
+//    with `.map`, so the markup stays short and the data is easy to edit.
 const ENTITIES = [
-  { id: 'disaster', label: 'DISASTER', count: 5, color: '#ff3c3c' },
-  { id: 'region', label: 'REGION', count: 7, color: '#ffaa2e' },
-  { id: 'agency', label: 'AGENCY', count: 5, color: '#3b8eff' },
-  { id: 'team', label: 'RESP_TEAM', count: 10, color: '#00e5cc' },
-  { id: 'volunteer', label: 'VOLUNTEER', count: 15, color: '#c06ef0' },
-  { id: 'shelter', label: 'SHELTER', count: 9, color: '#2dce68' },
-  { id: 'supply', label: 'SUPPLY', count: 10, color: '#ff6a25' },
+  { id: 'disaster', label: 'DISASTER', count: 5, color: 'var(--color-sql-disaster)' },
+  { id: 'region', label: 'REGION', count: 7, color: 'var(--color-sql-region)' },
+  { id: 'agency', label: 'AGENCY', count: 5, color: 'var(--color-sql-agency)' },
+  { id: 'team', label: 'RESP_TEAM', count: 10, color: 'var(--color-sql-team)' },
+  { id: 'volunteer', label: 'VOLUNTEER', count: 15, color: 'var(--color-sql-volunteer)' },
+  { id: 'shelter', label: 'SHELTER', count: 9, color: 'var(--color-sql-shelter)' },
+  { id: 'supply', label: 'SUPPLY', count: 10, color: 'var(--color-sql-supply)' },
 ];
 
 const QUERY_LOG = [
@@ -29,11 +46,15 @@ const SCHEMA_FEATURES = [
 ];
 
 export function SqlDisasterWidget() {
+  // LEARN: `uiMode` is which panel shows; the other three are counters the timers
+  //    advance. Each useState returns [value, setter]; a setter call re-renders.
   const [uiMode, setUiMode] = useState<'schema' | 'queries'>('schema');
   const [activeQueryIndex, setActiveQueryIndex] = useState(0);
   const [entityTicker, setEntityTicker] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
 
+  // LEARN: three near-identical timers, one per counter. `% length` loops the
+  //    index; the returned cleanup clears the timer on unmount. (Same all three.)
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveQueryIndex(prev => (prev + 1) % QUERY_LOG.length);
@@ -65,10 +86,10 @@ export function SqlDisasterWidget() {
       <div className="flex flex-col gap-1 w-full border-b border-white/5 pb-2 shrink-0">
         <div className="flex flex-wrap items-center gap-2 pt-0.5">
           <span className="flex h-2 w-2 relative shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-[#ef4444]" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ef4444]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-viz-red" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-viz-red" />
           </span>
-          <span className="font-mono text-[8px] sm:text-[9px] font-bold border border-[#ef4444]/40 text-[#ef4444] px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 bg-[#ef4444]/5">
+          <span className="font-mono text-[8px] sm:text-[9px] font-bold border border-viz-red/40 text-viz-red px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 bg-viz-red/5">
             RELATIONAL DATABASE
           </span>
           <h3 className="font-noto text-sm xs:text-base sm:text-lg font-black tracking-tight text-white uppercase leading-none">
@@ -98,9 +119,11 @@ export function SqlDisasterWidget() {
       {/* Mode Toggle */}
       <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-white/[0.02] border border-white/5 rounded-xl shrink-0 gap-3">
         <div className="flex items-center gap-2">
-          <Zap size={11} className="text-[#ef4444] animate-pulse" />
+          <Zap size={11} className="text-viz-red animate-pulse" />
           <span className="font-mono text-[9px] md:text-[10px] font-bold text-neutral-400 tracking-wider uppercase">DIS-REL-PH · Module</span>
         </div>
+        {/* LEARN: e.stopPropagation() keeps the click from bubbling to the whole
+            card's handler, so a toggle switches the panel without navigating. */}
         <div className="bg-neutral-950 border border-white/5 p-0.5 rounded-lg flex shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); setUiMode('schema'); }}
@@ -115,7 +138,7 @@ export function SqlDisasterWidget() {
             onClick={(e) => { e.stopPropagation(); setUiMode('queries'); }}
             className={cn(
               "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'queries' ? "bg-[#ef4444]/15 border border-[#ef4444]/30 text-[#ef4444]" : "text-neutral-500 hover:text-neutral-300"
+              uiMode === 'queries' ? "bg-viz-red/15 border border-viz-red/30 text-viz-red" : "text-neutral-500 hover:text-neutral-300"
             )}
           >
             Queries
@@ -124,6 +147,8 @@ export function SqlDisasterWidget() {
       </div>
 
       {/* Main Panel */}
+      {/* LEARN: the two panels carry different keys, so AnimatePresence slides one
+          out and the other in whenever uiMode flips. */}
       <div className="hidden lg:flex flex-grow min-h-0 flex-col gap-2.5">
         <AnimatePresence mode="wait">
 
@@ -137,6 +162,8 @@ export function SqlDisasterWidget() {
               className="flex flex-col gap-2 flex-grow min-h-0"
             >
               {/* Entity rail */}
+              {/* LEARN: one cell per entity. cn() scales/dims the cell matching the
+                  current entityTicker, so the highlight walks the rail on a timer. */}
               <div className="grid grid-cols-7 gap-1 bg-black/40 border border-white/5 rounded-xl p-2 shrink-0">
                 {ENTITIES.map((e, i) => (
                   <div key={e.id} className="flex flex-col items-center gap-0.5">
@@ -182,7 +209,7 @@ export function SqlDisasterWidget() {
                       key={i}
                       className={cn(
                         "h-0.5 flex-1 rounded-full transition-all duration-300",
-                        activeFeature === i ? "bg-[#ef4444]" : "bg-white/10"
+                        activeFeature === i ? "bg-viz-red" : "bg-white/10"
                       )}
                     />
                   ))}
@@ -199,7 +226,7 @@ export function SqlDisasterWidget() {
               className="flex flex-col gap-2 flex-grow min-h-0"
             >
               {/* Active query card */}
-              <div className="bg-[#09090b] border border-white/10 rounded-xl p-2.5 md:p-3 shrink-0">
+              <div className="bg-bento-panel border border-white/10 rounded-xl p-2.5 md:p-3 shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest">Active Query</span>
                   <AnimatePresence mode="wait">
@@ -208,7 +235,7 @@ export function SqlDisasterWidget() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="font-mono text-[9px] px-1.5 py-0.5 rounded border border-[#ef4444]/30 bg-[#ef4444]/10 text-[#ef4444] font-bold uppercase"
+                      className="font-mono text-[9px] px-1.5 py-0.5 rounded border border-viz-red/30 bg-viz-red/10 text-viz-red font-bold uppercase"
                     >
                       {activeQuery.tag}
                     </motion.span>
@@ -226,7 +253,7 @@ export function SqlDisasterWidget() {
                       {activeQuery.label}
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm md:text-base font-black text-[#ef4444]">{activeQuery.latency}</span>
+                      <span className="font-mono text-sm md:text-base font-black text-viz-red">{activeQuery.latency}</span>
                       <span className="font-mono text-[9px] text-neutral-500 uppercase">{activeQuery.type}</span>
                     </div>
                   </motion.div>
@@ -241,7 +268,7 @@ export function SqlDisasterWidget() {
                     key={q.label}
                     className={cn(
                       "flex items-center justify-between gap-2 px-2 py-1 rounded-lg transition-all duration-300",
-                      activeQueryIndex === i ? "bg-[#ef4444]/10 border border-[#ef4444]/20" : "border border-transparent"
+                      activeQueryIndex === i ? "bg-viz-red/10 border border-viz-red/20" : "border border-transparent"
                     )}
                   >
                     <span className={cn(
@@ -252,7 +279,7 @@ export function SqlDisasterWidget() {
                     </span>
                     <span className={cn(
                       "font-mono text-[9px] font-black shrink-0",
-                      activeQueryIndex === i ? "text-[#ef4444]" : "text-neutral-600"
+                      activeQueryIndex === i ? "text-viz-red" : "text-neutral-600"
                     )}>
                       {q.latency}
                     </span>
@@ -271,7 +298,7 @@ export function SqlDisasterWidget() {
           <Database size={9} className="shrink-0" />
           <span>11 Entities · 47 Queries</span>
         </div>
-        <div className="flex items-center gap-1.5 text-[#ef4444]">
+        <div className="flex items-center gap-1.5 text-viz-red">
           <ShieldCheck size={9} className="shrink-0" />
           <span>P95 &lt; 200ms · FK Integrity</span>
         </div>
@@ -280,7 +307,7 @@ export function SqlDisasterWidget() {
       {/* Mobile-only Tech Stack */}
       <div className="lg:hidden flex flex-wrap gap-1 mt-1 shrink-0">
         {['MySQL', 'OLAP', 'Data Model'].map(tech => (
-          <span key={tech} className="font-mono text-[8px] sm:text-[9px] px-2 py-0.5 bg-[#ef4444]/10 border border-[#ef4444]/30 rounded text-[#ef4444] font-bold uppercase tracking-wider">
+          <span key={tech} className="font-mono text-[8px] sm:text-[9px] px-2 py-0.5 bg-viz-red/10 border border-viz-red/30 rounded text-viz-red font-bold uppercase tracking-wider">
             {tech}
           </span>
         ))}

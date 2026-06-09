@@ -1,3 +1,20 @@
+/**
+ * WindowChrome the fake macOS title bar at the top of any "window" on the site:
+ * the red/yellow/green traffic lights, the centred URL, and the right-hand actions
+ * (email/linkedin/github links, NowPlaying, "shipping" badge).
+ *
+ * Fits in: wraps the hero terminal and the project "windows". Reused, so almost
+ *          everything is configurable through props.
+ * Note:    the traffic lights are real buttons red reloads (or asks the parent
+ *          to confirm a close), yellow minimises. The green one is decorative.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Note how many props end in `?` and have `= default` values: that's how one
+ * component flexes to many situations without the caller wiring up everything.
+ * `React.ReactNode` means "anything renderable" text, an element, or nothing —
+ * which lets a parent inject custom content into the `right` slot.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NowPlaying } from '@/components/NowPlaying';
@@ -20,8 +37,13 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
   isMinimized = false,
   onCloseConfirm
 }) => {
+  // LEARN: A tiny piece of local state for the "EMAIL COPIED" toast true while it
+  //    shows, flipped back to false by a timer after a couple of seconds.
   const [copiedToast, setCopiedToast] = useState(false);
 
+  // LEARN: `onMinimize?.()` calls the handler only if the parent supplied one.
+  //    Red either asks the parent to confirm a close (if given) or, as a fallback,
+  //    reloads the page after a short delay so the click feels deliberate.
   const handleYellowClick = () => { onMinimize?.(); };
   const handleRedClick = () => {
     if (onCloseConfirm) {

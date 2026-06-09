@@ -18,9 +18,9 @@ type CardId = typeof CARDS[number];
 
 const CARD_META: Record<CardId, { accent: string }> = {
   f1: { accent: 'var(--color-viz-mac-red)' },
-  litestore: { accent: '#7e7ca6' },
+  litestore: { accent: 'var(--color-litestore)' },
   spotify: { accent: 'var(--color-viz-spotify)' },
-  sql: { accent: '#ef4444' },
+  sql: { accent: 'var(--color-viz-red)' },
   hr: { accent: 'var(--color-acc-bi)' },
 };
 

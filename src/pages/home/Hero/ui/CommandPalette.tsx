@@ -1,3 +1,19 @@
+/**
+ * CommandPalette the ⌘K pop-up: type to fuzzy-search every command, arrow-key
+ * through the results, Enter to run.
+ *
+ * Fits in: a modal overlay opened from the Hero terminal. Closing or picking a
+ *          command calls back to the parent via `onClose` / `onCommand`.
+ * Note:    the keyboard model is the fiddly part `activeIndex` tracks the
+ *          highlighted row, and arrow keys move it within the filtered list.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The search box is a "controlled input": React state (`query`) IS the value, and
+ * every keystroke calls `setQuery` to update it the DOM never holds its own copy.
+ * `useRef` here points at real DOM nodes (the <input>, the list) so we can focus
+ * the box or scroll a row into view imperatively, which CSS alone can't do.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { COMMAND_MANIFEST } from '../engine';
 import { cn } from '@/utils';
@@ -8,8 +24,14 @@ interface CommandPaletteProps {
   onCommand: (cmd: string) => void;
 }
 
+// LEARN: Computed once at module load (not per render): the commands we'll show,
+//    minus the hidden easter eggs.
 const VISIBLE_SPECS = COMMAND_MANIFEST.filter(s => !s.hidden);
 
+// LEARN: "Fuzzy" matching the query characters must appear in `target` IN ORDER
+//    but not necessarily next to each other, so "exp" matches "expertise". We walk
+//    target, advancing `qi` each time the next query char lines up; a full match is
+//    when we consumed the whole query.
 function fuzzyMatch(query: string, target: string): boolean {
   if (!query) return true;
   let qi = 0;
@@ -25,12 +47,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
+  // LEARN: Recomputed every render from the current `query`: keep a command if its
+  //    id, any alias, or (for longer queries) its summary matches. This drives the list.
   const filtered = VISIBLE_SPECS.filter(s =>
     fuzzyMatch(query, s.id) ||
     s.aliases.some(a => fuzzyMatch(query, a)) ||
     (query.length > 1 && s.summary.toLowerCase().includes(query.toLowerCase()))
   );
 
+  // LEARN: When the palette opens, reset it and focus the input. The tiny setTimeout
+  //    waits for the element to actually be on screen before `.focus()` is called.
   useEffect(() => {
     if (isOpen) {
       setQuery('');
@@ -39,6 +65,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     }
   }, [isOpen]);
 
+  // LEARN: Whenever the search text changes, jump the highlight back to the top.
   useEffect(() => { setActiveIndex(0); }, [query]);
 
   const run = useCallback((cmd: string) => {
@@ -46,6 +73,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     onCommand(cmd);
   }, [onCommand]);
 
+  // LEARN: Keyboard navigation. `Math.min/Math.max` clamp the index so arrows can't
+  //    run off either end of the list. `setActiveIndex(prev => ...)` uses the updater
+  //    form, which is the safe way to compute new state from the previous value.
+  //    `e.preventDefault()` stops the arrows from also scrolling the page.
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -61,6 +92,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   };
 
   // Scroll active item into view
+  // LEARN: Reaches into the real DOM (via the list ref) to keep the highlighted row
+  //    visible as you arrow past the edge of the scroll area re-runs on every move.
   useEffect(() => {
     const el = listRef.current?.children[activeIndex] as HTMLElement | undefined;
     el?.scrollIntoView({ block: 'nearest' });
@@ -71,6 +104,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   const categoryLabel = (cat: string) =>
     cat === 'core' ? 'CORE' : cat === 'system' ? 'SYSTEM' : 'EGG';
 
+  // LEARN: The classic "click outside to close" trick. The full-screen wrapper closes
+  //    the palette on click, but the inner box calls `e.stopPropagation()` so clicks
+  //    INSIDE it don't bubble up to that wrapper and accidentally close it.
   return (
     <div
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh] px-4"
@@ -87,6 +123,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-studio">
           <span className="font-mono text-term-faint text-[10px] shrink-0">⌘K</span>
+          {/* LEARN: A controlled input `value` comes from state and `onChange` writes
+                it back, so React is the single source of truth for what's typed. */}
           <input
             ref={inputRef}
             type="text"

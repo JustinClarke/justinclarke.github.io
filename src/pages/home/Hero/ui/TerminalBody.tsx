@@ -1,3 +1,22 @@
+/**
+ * TerminalBody the scrolling output area and the live input line of the hero
+ * terminal: it prints past commands/results and handles everything you type.
+ *
+ * Fits in: the centrepiece of the Hero. The engine decides WHAT to show; this file
+ *          decides how it LOOKS and how the keyboard behaves (history, Tab-complete,
+ *          the konami code). It reports typed commands up via `onCommand`.
+ * Note:    three components live here a `PlaceholderCycler` (the rotating "try
+ *          typing…" hint), an `InputCursor` (a fake caret that also shows the ghost
+ *          autocomplete), and the main `TerminalBody`. The keyboard handler is the
+ *          dense part; read it as a list of "if this key, do this".
+ *
+ * For beginners ----------------------------------------------------------------
+ * Most of this is React-specific machinery. `useRef` is used two ways here: to grab
+ * real DOM nodes (to auto-scroll, to focus the input) AND as a no-re-render store
+ * (the konami progress, the set of already-run commands). State (`useState`) is for
+ * values that should repaint the screen; refs are for values that shouldn't.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { TerminalLine, getCompletion } from '../engine';
@@ -16,6 +35,8 @@ interface TerminalBodyProps {
   lastExitCode?: number | null;
 }
 
+// LEARN: The famous "konami code" key sequence. We watch for it being typed in order
+//    (see the handler below) and trigger the `matrix` easter egg when it completes.
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 // ---------------------------------------------------------------------------
@@ -34,6 +55,8 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
     { prefix: 'try typing ', cmd: 'clear', suffix: ' to make this pristine again' },
     { prefix: 'try typing ', cmd: 'about me', suffix: ' to read my autobiography (short version)' },
   ];
+  // LEARN: `ran` is a Set of commands already used; we drop those from the hints so
+  //    the cycler suggests fresh things. If everything's been tried, fall back to all.
   const pool = allSuggestions.filter(s => !ran.has(s.cmd));
   const suggestions = pool.length > 0 ? pool : allSuggestions;
 
@@ -41,6 +64,9 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   const [key, setKey] = useState(0);
   const [charsDone, setCharsDone] = useState(0);
 
+  // LEARN: `setInterval` runs every 5s to advance to the next hint. `(prev + 1) %
+  //    length` is the wrap-around trick: it counts 0,1,2,… then back to 0. Bumping
+  //    `key` forces the Typewriters to remount and re-type. clearInterval on cleanup.
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % suggestions.length);
@@ -92,6 +118,9 @@ const InputCursor: React.FC<{ text: string; ghost?: string }> = ({ text, ghost }
   const measureRef = useRef<HTMLSpanElement>(null);
   const [left, setLeft] = useState(0);
 
+  // LEARN: A neat trick to place a fake caret. We render the typed text into a HIDDEN
+  //    span, then measure its pixel width (`offsetWidth`) and position the cursor that
+  //    many pixels from the left. Re-measures whenever the text changes.
   useEffect(() => {
     if (measureRef.current) setLeft(measureRef.current.offsetWidth);
   }, [text]);
@@ -139,6 +168,9 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
   const outRef = useRef<HTMLDivElement>(null);
   const inpRef = useRef<HTMLInputElement>(null);
 
+  // LEARN: Lazy initializer (the `() => …` form) runs once to load prior commands from
+  //    sessionStorage. The try/catch guards against malformed saved JSON if parsing
+  //    fails we just start with an empty history rather than crashing.
   const [cmdHistory, setCmdHistory] = useState<string[]>(() => {
     try { return JSON.parse(sessionStorage.getItem('term_cmd_history') || '[]'); } catch { return []; }
   });
@@ -150,12 +182,16 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
   const konamiProgress = useRef(0);
   const ranCommands = useRef<Set<string>>(new Set());
 
+  // LEARN: Listen for window resizes to track mobile vs desktop, and REMOVE the
+  //    listener on cleanup. The `[]` deps mean this wiring happens once on mount.
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // LEARN: Auto-scroll to the bottom whenever new output arrives, so the latest line
+  //    is always visible. Runs every time `history` changes (a new command ran).
   useEffect(() => {
     if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight;
   }, [history]);
@@ -177,8 +213,14 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
     setCompletionCandidates(candidates.slice(0, 3));
   }, [inputValue]);
 
+  // LEARN: The keyboard brain of the terminal, wrapped in useCallback so it isn't
+  //    rebuilt every render. It handles, in order: konami tracking, Tab/→ to accept
+  //    the ghost autocomplete, Enter to run + save to history, and ↑/↓ to walk back
+  //    and forth through previous commands (`historyIndex` is the cursor into them).
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     // Konami code tracker
+    // LEARN: If the pressed key matches the next expected konami key, advance; once the
+    //    whole sequence lands, fire `matrix`. Any wrong key resets progress to 0.
     if (e.key === KONAMI[konamiProgress.current]) {
       konamiProgress.current++;
       if (konamiProgress.current === KONAMI.length) {
@@ -262,6 +304,11 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
         )}
 
         {/* Command History */}
+        {/* LEARN: We `.map` over the history array, rendering each line. A line's `t`
+              (type) decides its shape: a `prompt` shows the "~$ command" you typed;
+              everything else is output, which may be plain text, coloured `parts`,
+              clickable `chips`, or a link. `aria-live="polite"` lets screen readers
+              announce new output as it appears. */}
         <div className="space-y-1" aria-live="polite" aria-atomic="false">
           {history.map((line, i) => (
             <div key={i} className="font-mono text-[11px] md:text-[12px] leading-tight">

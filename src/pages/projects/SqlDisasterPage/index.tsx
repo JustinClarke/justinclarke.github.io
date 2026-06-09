@@ -22,13 +22,13 @@ const QUERY_CATEGORIES = [
 ];
 
 const ENTITY_REGISTRY = [
-  { id: 'disaster', label: 'DISASTER', count: 5, color: '#ff3c3c' },
-  { id: 'region', label: 'REGION', count: 7, color: '#ffaa2e' },
-  { id: 'agency', label: 'AGENCY', count: 5, color: '#3b8eff' },
-  { id: 'team', label: 'RESPONSE_TEAM', count: 10, color: '#00e5cc' },
-  { id: 'volunteer', label: 'VOLUNTEER', count: 15, color: '#c06ef0' },
-  { id: 'shelter', label: 'SHELTER', count: 9, color: '#2dce68' },
-  { id: 'supply', label: 'SUPPLY', count: 10, color: '#ff6a25' },
+  { id: 'disaster', label: 'DISASTER', count: 5, color: 'var(--color-sql-disaster)' },
+  { id: 'region', label: 'REGION', count: 7, color: 'var(--color-sql-region)' },
+  { id: 'agency', label: 'AGENCY', count: 5, color: 'var(--color-sql-agency)' },
+  { id: 'team', label: 'RESPONSE_TEAM', count: 10, color: 'var(--color-sql-team)' },
+  { id: 'volunteer', label: 'VOLUNTEER', count: 15, color: 'var(--color-sql-volunteer)' },
+  { id: 'shelter', label: 'SHELTER', count: 9, color: 'var(--color-sql-shelter)' },
+  { id: 'supply', label: 'SUPPLY', count: 10, color: 'var(--color-sql-supply)' },
 ];
 
 const SCHEMA_FEATURES = [
@@ -334,7 +334,7 @@ export const SqlDisasterPage = () => {
         <div className="max-w-7xl mx-auto">
           <ScrollReveal direction="up">
             <div className="flex flex-col items-center text-center gap-5 mb-16">
-              <span className="font-mono text-[#3b8eff] text-[11px] tracking-[0.5em] uppercase font-black">Visualization Engine</span>
+              <span className="font-mono text-sql-agency text-[11px] tracking-[0.5em] uppercase font-black">Visualization Engine</span>
               <h2 className="font-noto text-4xl md:text-7xl font-black tracking-tighter uppercase leading-none">
                 The D3<br />
                 <span className="text-white/15">Engine.</span>
@@ -350,8 +350,8 @@ export const SqlDisasterPage = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {ENGINE_STATS.map((stat, i) => (
               <ScrollReveal key={stat.label} direction="up">
-                <div className="p-6 md:p-8 border border-white/5 rounded-2xl bg-white/[0.02] flex flex-col gap-2 hover:border-[#3b8eff]/20 hover:bg-[#3b8eff]/5 transition-all duration-300 group">
-                  <span className="font-mono text-3xl md:text-4xl font-black text-[#3b8eff] group-hover:text-[#6aabff] transition-colors">
+                <div className="p-6 md:p-8 border border-white/5 rounded-2xl bg-white/[0.02] flex flex-col gap-2 hover:border-sql-agency/20 hover:bg-sql-agency/5 transition-all duration-300 group">
+                  <span className="font-mono text-3xl md:text-4xl font-black text-sql-agency group-hover:text-[#6aabff] transition-colors">
                     {stat.value}
                   </span>
                   <span className="font-mono text-[10px] tracking-widest uppercase text-white/40">{stat.label}</span>
@@ -369,8 +369,8 @@ export const SqlDisasterPage = () => {
                 { icon: '◈', title: 'Programmatic Alerts', desc: 'Alert panel generated dynamically from node data - shelter load thresholds, active disaster states, standby team detection.' },
                 { icon: '◎', title: 'Multi-layer Filtering', desc: 'Entity type toggling, full-text node search, edge hover inspection, pin/unpin state, and keyboard controls.' },
               ].map(f => (
-                <div key={f.title} className="p-6 border border-white/5 rounded-2xl bg-white/[0.02] hover:border-[#3b8eff]/15 transition-all duration-300">
-                  <div className="font-mono text-xl text-[#3b8eff] mb-3">{f.icon}</div>
+                <div key={f.title} className="p-6 border border-white/5 rounded-2xl bg-white/[0.02] hover:border-sql-agency/15 transition-all duration-300">
+                  <div className="font-mono text-xl text-sql-agency mb-3">{f.icon}</div>
                   <div className="font-mono text-[11px] tracking-widest uppercase font-black text-white mb-2">{f.title}</div>
                   <div className="font-mono text-[10px] text-white/35 leading-relaxed">{f.desc}</div>
                 </div>

@@ -41,7 +41,7 @@ function TyreCliffGraphic() {
         <circle cx="140" cy="34" r="3.5" fill="var(--color-f1-red)" className="animate-pulse" />
         
         {/* Labels */}
-        <text x="145" y="23" fill="#ef4444" fontSize="6.5" fontFamily="monospace" fontWeight="bold">CLIFF ZONE</text>
+        <text x="145" y="23" fill="var(--color-viz-red)" fontSize="6.5" fontFamily="monospace" fontWeight="bold">CLIFF ZONE</text>
         <text x="25" y="20" fill="rgba(255,255,255,0.4)" fontSize="5.5" fontFamily="monospace">GRIP</text>
         <text x="175" y="47" fill="rgba(255,255,255,0.4)" fontSize="5.5" fontFamily="monospace">LAPS</text>
       </svg>
@@ -68,11 +68,11 @@ function PitStrategyGraphic() {
         <path d="M125 19 Q 110 16 95 19 T 65 19" stroke="rgba(239,68,68,0.15)" strokeWidth="5" strokeLinecap="round" strokeDasharray="3 2" className="sb-flow-dash-rev" />
         
         {/* Car 2 (Trailing in Dirty Air) */}
-        <circle cx="85" cy="19" r="2.5" fill="#ef4444" />
-        <text x="85" y="11" fill="#ef4444" fontSize="5.5" fontFamily="monospace" textAnchor="middle">CAR 2</text>
+        <circle cx="85" cy="19" r="2.5" fill="var(--color-viz-red)" />
+        <text x="85" y="11" fill="var(--color-viz-red)" fontSize="5.5" fontFamily="monospace" textAnchor="middle">CAR 2</text>
         
         <rect x="30" y="28" width="80" height="9" rx="1.5" fill="rgba(239,68,68,0.05)" stroke="rgba(239,68,68,0.15)" strokeWidth="0.5" />
-        <text x="70" y="34" fill="#ef4444" fontSize="5.5" fontFamily="monospace" textAnchor="middle" fontWeight="bold">DIRTY WAKE TAX: +0.318s/lap</text>
+        <text x="70" y="34" fill="var(--color-viz-red)" fontSize="5.5" fontFamily="monospace" textAnchor="middle" fontWeight="bold">DIRTY WAKE TAX: +0.318s/lap</text>
       </svg>
     </div>
   );

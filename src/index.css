@@ -113,6 +113,33 @@
   --color-graphite-850: #131519;
   --color-graphite-800: #191C22;
 
+  /* Generic bright red (red-500) Snake food, SQL accent, SVG fills */
+  --color-viz-red: #ef4444;
+
+  /* Bento widget panel surface (near-black, below brand-card) */
+  --color-bento-panel: #09090b;
+
+  /* LiteStore project palette (purple-grey perf ramp; -2..-5 are Web-Vital tints) */
+  --color-litestore: #7e7ca6;
+  --color-litestore-2: #9b99be;
+  --color-litestore-3: #636185;
+  --color-litestore-4: #b8b6d6;
+  --color-litestore-5: #8c8ab2;
+
+  /* Spotify audio-feature ramp (extends viz-spotify with brighter greens) */
+  --color-viz-spotify-2: #22d3a7;
+  --color-viz-spotify-3: #65f0a3;
+  --color-viz-spotify-4: #3aed8d;
+
+  /* SQL Disaster-Response entity palette (one colour per relational entity) */
+  --color-sql-disaster: #ff3c3c;
+  --color-sql-region: #ffaa2e;
+  --color-sql-agency: #3b8eff;
+  --color-sql-team: #00e5cc;
+  --color-sql-volunteer: #c06ef0;
+  --color-sql-shelter: #2dce68;
+  --color-sql-supply: #ff6a25;
+
   /* Semantic surface / text / border tokens (light-adaptive, dark defaults).
      Override blocks below swap them for the light theme. */
   --surface-primary: #050505;

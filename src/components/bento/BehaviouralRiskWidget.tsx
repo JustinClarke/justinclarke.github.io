@@ -1,12 +1,31 @@
+/**
+ * BehaviouralRiskWidget the "HR Analysis" bento card: a self-running mini
+ * dashboard that walks a 4-stage data pipeline and rotates through a few
+ * AI-style insight lines. The numbers are fixed; the movement is decorative.
+ *
+ * Fits in: one card in the homepage featured-projects bento grid.
+ * Note:    two independent timers drive it one advances the pipeline stage,
+ *          one rotates the insight. Neither touches real data.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `useState` is this card's memory and `useEffect` runs the timers that change it.
+ * Framer Motion's <AnimatePresence> animates an element as it appears or leaves;
+ * giving it a changing `key` makes it cross-fade from the old value to the new.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Flame, TrendingDown, AlertTriangle, Users } from 'lucide-react';
 import { cn } from '@/utils';
 
 export function BehaviouralRiskWidget() {
+  // LEARN: two counters held in state. Each timer below nudges one of them, and
+  //    every change re-renders the card so the highlighted step / insight moves.
   const [animationPhase, setAnimationPhase] = useState(0);
   const [pipelineStep, setPipelineStep] = useState(0);
 
+  // LEARN: plain data objects/arrays. Keeping the content here (not buried in the
+  //    markup) means the JSX below can just loop over it see the `.map` calls.
   const codebaseStats = {
     totalResponses: 127,
     avgEngagement: 5.4,
@@ -31,6 +50,9 @@ export function BehaviouralRiskWidget() {
     `${codebaseStats.burnoutPercent}% of active responses show burnout signals.`
   ];
 
+  // LEARN: useEffect with `[]` runs once on mount. setInterval ticks forever, so
+  //    we MUST return a cleanup that clears it otherwise the timer keeps firing
+  //    after the card is gone. `% 4` wraps 0→1→2→3→0… in a loop.
   useEffect(() => {
     const interval = setInterval(() => {
       setPipelineStep((prev) => (prev + 1) % 4);
@@ -77,9 +99,16 @@ export function BehaviouralRiskWidget() {
         {/* Data Pipeline Flow */}
         <div className="bg-black/40 border border-white/5 rounded-xl p-3 md:p-2.5 lg:p-3 shrink-0">
           <div className="flex items-center justify-between gap-1.5 md:gap-1">
+            {/* LEARN: `.map` turns the data array into one element per item the
+                React way to render a list. Each needs a unique `key` so React can
+                track items across re-renders; here the index `i` is fine because
+                the list never reorders. */}
             {pipelineStages.map((stage, i) => (
               <div key={i} className="relative flex flex-col items-center gap-1 flex-1 min-w-0">
                 {/* Stage dot + arrow */}
+                {/* LEARN: cn(...) joins class names and drops any that are false.
+                    Here it picks a different look depending on whether this stage
+                    is the current one, already passed, or still upcoming. */}
                 <motion.div
                   className={cn(
                     "w-5 h-5 md:w-6 md:h-6 rounded-full border flex items-center justify-center text-[9px] md:text-[10px] font-bold shrink-0",
@@ -139,6 +168,9 @@ export function BehaviouralRiskWidget() {
 
         {/* Live Insight from Gemini */}
         <div className="bg-black/40 border border-white/5 rounded-lg p-2.5 md:p-3 grow min-h-15 md:min-h-0 flex flex-col justify-center">
+          {/* LEARN: because the inner key={animationPhase} changes each tick,
+              AnimatePresence treats it as "old one left, new one arrived" and
+              cross-fades between insights. mode="wait" finishes the exit first. */}
           <AnimatePresence mode="wait">
             <motion.div
               key={animationPhase}

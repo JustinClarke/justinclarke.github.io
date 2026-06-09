@@ -1,12 +1,34 @@
+/**
+ * NowPlaying the little "now playing / last played" music badge. Hovering it
+ * opens a card with the album art and a link to open the track on Spotify.
+ *
+ * Fits in: a small pill placed in the page chrome; data comes from useLastFm.
+ * Note:    while loading or with no track, it renders nothing (returns null), so
+ *          it simply isn't there until there's something to show.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Two pieces of React used here: `useState` remembers whether the hover card is
+ * open, and `useRef` holds a timer handle for the small delay before it closes
+ * (so moving the mouse through the tiny gap doesn't snap it shut). The exported
+ * `formatTimeAgo` is a plain pure function it has its own unit tests.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useRef } from 'react';
 import { useLastFm } from '@/hooks';
 
+// LEARN: a tiny component defined right here because it's only used in this file.
+//    It takes one optional `className` prop (with a default) and returns the
+//    Spotify logo as inline SVG, so it can be recoloured/resized via classes.
 const SpotifyLogo = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: { className?: string }) => (
   <svg className={`${className} shrink-0`} viewBox="0 0 24 24" fill="currentColor" preserveAspectRatio="xMidYMid meet">
     <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-12.008-1.5-.479.122-1.023-.179-1.141-.62-.12-.48.179-1.023.621-1.141C9.6 9.9 15.079 10.561 18.679 12.84c.361.22.599.659.3 1.099zm.12-3.36C15.12 8.1 8.077 7.797 4.915 9.773c-.539.3-1.159.077-1.439-.461-.281-.537-.054-1.21.471-1.49C9.057 6.009 17.039 6.362 20.199 11.558c.3.441.077 1.141-.419 1.441-.46.3-1.141.077-1.441-.42z" />
   </svg>
 );
 
+// LEARN: a pure helper same input always gives the same output, no React, no
+//    side effects. That's exactly what makes it easy to unit-test (see
+//    NowPlaying.test.ts). It turns a minutes count into "just now" / "5m ago" /
+//    "2h ago" / "3d ago", choosing the unit by size.
 export const formatTimeAgo = (minutes: number | undefined): string => {
   if (minutes === undefined) return '';
   if (minutes === 0) return 'just now';
@@ -19,20 +41,28 @@ export const formatTimeAgo = (minutes: number | undefined): string => {
 
 export const NowPlaying: React.FC = () => {
   const { track, loading } = useLastFm();
+  // LEARN: `isOpen` is the hover card's open/closed memory. `closeTimer` is a ref
+  //    holding the pending "close after a delay" timeout, so we can cancel it.
   const [isOpen, setIsOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // LEARN: an early return. Until there's a track to show, this component renders
+  //    nothing at all cleaner than wrapping the whole body in a condition.
   if (loading || !track) return null;
 
   const statusText = track.isNowPlaying
     ? 'now playing'
     : formatTimeAgo(track.lastPlayedMinutesAgo);
 
+  // LEARN: entering cancels any scheduled close and opens immediately...
   const handleMouseEnter = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setIsOpen(true);
   };
 
+  // LEARN: ...leaving doesn't close at once it waits 120ms. That grace period
+  //    lets the cursor cross the small gap between pill and card without it
+  //    flickering shut. A re-enter (above) cancels this pending close.
   const handleMouseLeave = () => {
     closeTimer.current = setTimeout(() => setIsOpen(false), 120);
   };
@@ -54,6 +84,8 @@ export const NowPlaying: React.FC = () => {
       </div>
 
       {/* Invisible bridge to prevent gap mouseout */}
+      {/* LEARN: `{isOpen && <div .../>}` renders the element only when isOpen is
+          true. This invisible strip covers the gap so the mouse stays "inside". */}
       {isOpen && <div className="absolute top-full left-0 right-0 h-3" />}
 
       {/* Card */}
@@ -102,6 +134,9 @@ export const NowPlaying: React.FC = () => {
         </div>
       )}
 
+      {/* LEARN: a one-off CSS keyframes animation, scoped here because nothing
+          else uses it (reusable animations live as --animate-* tokens instead).
+          The card's `style={{ animation: 'nowPlayingIn ...' }}` above plays it. */}
       <style>{`
         @keyframes nowPlayingIn {
           from { opacity: 0; transform: translateY(-6px) scale(0.97); }

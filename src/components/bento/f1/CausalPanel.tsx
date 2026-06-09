@@ -1,3 +1,19 @@
+/**
+ * CausalPanel "Panel B" of the F1 card: the causal lap-time breakdown, listing
+ * each modelled penalty (tyres, fuel, air, thermal) and the isolated driver
+ * coefficient that the whole project is really about.
+ *
+ * Fits in: the alternative to TelemetryPanel; F1TelemetryWidget swaps between the
+ *          two inside <AnimatePresence>. Reads the `decomp` object from the hook.
+ * Note:    presentational only the numbers are computed in useF1Telemetry; this
+ *          file just formats and colours them.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `decomp` arrives already calculated. `.toFixed(3)` formats a number to three
+ * decimals for display, and cn() colours a value red or green depending on its
+ * sign so a gain shows differently from a loss without any extra logic.
+ * -----------------------------------------------------------------------------
+ */
 import { motion } from 'framer-motion';
 import { Award } from 'lucide-react';
 import { cn } from '@/utils';
@@ -5,9 +21,10 @@ import type { F1Telemetry } from '@/hooks/useF1Telemetry';
 
 type CausalPanelProps = Pick<F1Telemetry, 'decomp' | 'fuelWeight'>;
 
-/** PANEL B: Causal physical decomposition bar chart. Keyed child of AnimatePresence. */
 export function CausalPanel({ decomp, fuelWeight }: CausalPanelProps) {
   return (
+    // LEARN: this panel enters from the left (x: -20 → 0), mirroring TelemetryPanel
+    //    so the two appear to slide past each other when you toggle.
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -34,6 +51,9 @@ export function CausalPanel({ decomp, fuelWeight }: CausalPanelProps) {
         </div>
 
         {/* Air state */}
+        {/* LEARN: a positive penalty (slower) shows red; a negative one (a gain
+            from a tow/DRS) shows green. The `>= 0 ? '+' : ''` just adds a plus
+            sign so positive numbers read like "+0.650s". */}
         <div className="flex justify-between items-center gap-2 whitespace-nowrap">
           <span className="text-neutral-400 shrink-0">Air Penalty:</span>
           <span className={cn(decomp.airPenalty > 0 ? "text-viz-mac-red shrink-0" : "text-emerald-400 shrink-0")}>

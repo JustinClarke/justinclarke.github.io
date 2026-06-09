@@ -1,6 +1,23 @@
+/**
+ * ProjectShowcase the rich "featured project" card (the F1 photo, title, and
+ * telemetry-style stats) shown inside the sidebar's big button.
+ *
+ * Fits in: rendered as the `badge` of the featured CommandButton in SidebarMenu.
+ * Note:    purely presentational. It renders TWO layouts a compact mobile one
+ *          and a richer desktop one and CSS (`hidden md:flex`) decides which is
+ *          visible, rather than JavaScript measuring the screen.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `import type { Project }` pulls in only a TYPE (the shape of a project object),
+ * not real code it vanishes at build time and just lets TypeScript check that
+ * `project.title`, `project.pageMetrics`, etc. exist.
+ * -----------------------------------------------------------------------------
+ */
 import type { Project } from '@/types';
 
 export const ProjectShowcase = ({ project }: { project: Project }) => {
+  // LEARN: `?? []` is the "nullish coalescing" fallback: if `pageMetrics` is missing
+  //    (null/undefined) use an empty array, so the `.map` below is always safe.
   const metrics = project.pageMetrics ?? [];
 
   return (
@@ -34,6 +51,9 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
         }}
       />
 
+      {/* LEARN: `{project.id === 'off-the-pace' && (...)}` is conditional rendering:
+            JSX shows the element on the right of `&&` only when the left is true.
+            It's how you say "render this bit only for the F1 project". */}
       {/* ── MOBILE ── */}
       <div className="flex md:hidden items-center w-full">
         <div className="flex flex-col gap-1 min-w-0 flex-1">

@@ -1,18 +1,27 @@
-// ─────────────────────────────────────────────────────────────────
-// visuals.tsx
-// Paste-ready replacement for the hero-section illustrations.
-// Updated to match the full widget vocabulary (F1TelemetryWidget,
-// LiteStoreWidget, SqlDisasterWidget, SpotifyWidget,
-// BehaviouralRiskWidget).
-//
-// Each illustration uses the same 160×100 viewBox as before, so the
-// existing layout/sizing inside <getProjectIllustration> works
-// unchanged. Drop this in and re-import.
-// ─────────────────────────────────────────────────────────────────
-
+/**
+ * visuals.tsx the little hand-drawn SVG "charts" used as project thumbnails (the
+ * fake dashboards behind each case study: telemetry, schema, audio-space, etc.).
+ *
+ * Fits in: `getProjectIllustration(id)` at the very bottom is the public entry —
+ *          given a project id it returns the matching illustration element.
+ * Note:    this is a long file but a SHALLOW one. It's almost all SVG markup, and
+ *          every illustration follows the same recipe: define some data, then
+ *          `.map` that data into SVG shapes. Once you've read one, you've read all.
+ *
+ * For beginners ----------------------------------------------------------------
+ * SVG is "HTML for vector graphics" tags like <rect>, <circle>, <line>, <text>
+ * drawn on a coordinate grid (here a 160×100 `viewBox`). React renders SVG tags
+ * just like HTML ones. Two patterns recur: colour-helper functions that return an
+ * `rgba(...)` string at a chosen opacity, and turning an array of numbers into a
+ * row of bars/dots with `.map`. No app logic, no state just drawing.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 
 // ── Color helpers (same vocabulary as before) ──────────────────────
+// LEARN: Each of these is a function that takes an alpha (0–1 opacity) and returns
+//    a CSS colour string. So `T(0.5)` is the brand teal at 50% opacity. Defining
+//    colours this way lets the SVGs below reuse one palette at many opacities.
 export const T = (a: number) => `rgba(0,200,180,${a})`;
 export const AMBER = (a: number) => `rgba(251,191,36,${a})`;
 export const RED = (a: number) => `rgba(248,113,113,${a})`;
@@ -35,9 +44,17 @@ export const DISASTER_ORANGE = (a: number) => `rgba(255,106,37,${a})`;
 export const HR_PURPLE = (a: number) => `rgba(168,85,247,${a})`;
 export const CAPITAL_AMBER = (a: number) => `rgba(245,158,11,${a})`;
 
+// LEARN: SVG `<defs>` (gradients, filters, patterns) are referenced by id, and ids
+//    must be UNIQUE across the whole page. Since several illustrations can render at
+//    once, each prefixes its ids with `ns('sql')` → "ill-sql" so two charts' "grid"
+//    patterns can't collide. This is the SVG equivalent of namespacing.
 export const ns = (k: string) => `ill-${k}`;
 const MONO = 'ui-monospace, "JetBrains Mono", monospace';
 
+// LEARN: A reusable SVG filter, written as a React component. Drop <SoftGlow id="x"/>
+//    into a <defs>, then any shape with `filter="url(#x)"` gets a soft blur-glow.
+//    GridPattern (below) is the same idea for a repeating background grid. Wrapping
+//    SVG snippets as components keeps the illustrations from repeating boilerplate.
 export const SoftGlow: React.FC<{ id: string; std?: number }> = ({ id, std = 1.2 }) => (
   <filter id={id} x="-20%" y="-20%" width="140%" height="140%">
     <feGaussianBlur stdDeviation={std} result="b" />
@@ -66,6 +83,10 @@ export const DefaultIllustration: React.FC = () => {
       </defs>
       <rect x="10" y="10" width="140" height="80" fill={`url(#${k}-grid)`} stroke={T(0.18)} strokeWidth="0.4" />
       <text x="20" y="24" fill={T(0.5)} fontSize="3" fontFamily={MONO} letterSpacing="1">ANALYSIS</text>
+      {/* LEARN: The core pattern of this whole file: an array of heights becomes a row
+            of bars. `.map` draws one <rect> per number, and the index `i` spaces them
+            out horizontally (`20 + i * 17`). Every chart below is a richer version of
+            exactly this data in, SVG shapes out. */}
       {[18, 28, 38, 30, 42, 36, 50].map((h, i) => (
         <rect key={i} x={20 + i * 17} y={80 - h} width="10" height={h} rx="0.6"
           fill={T(0.18)} stroke={T(0.45)} strokeWidth="0.4" />
@@ -182,13 +203,13 @@ export const DisasterIllustration: React.FC = () => {
   const k = ns('sql');
 
   const entities = [
-    { label: 'DISASTER', count: 5, c: '#ff3c3c' },
-    { label: 'REGION', count: 7, c: '#ffaa2e' },
-    { label: 'AGENCY', count: 5, c: '#3b8eff' },
-    { label: 'TEAM', count: 10, c: '#00e5cc' },
-    { label: 'VOLUNTEER', count: 15, c: '#c06ef0' },
-    { label: 'SHELTER', count: 9, c: '#2dce68' },
-    { label: 'SUPPLY', count: 10, c: '#ff6a25' },
+    { label: 'DISASTER', count: 5, c: 'var(--color-sql-disaster)' },
+    { label: 'REGION', count: 7, c: 'var(--color-sql-region)' },
+    { label: 'AGENCY', count: 5, c: 'var(--color-sql-agency)' },
+    { label: 'TEAM', count: 10, c: 'var(--color-sql-team)' },
+    { label: 'VOLUNTEER', count: 15, c: 'var(--color-sql-volunteer)' },
+    { label: 'SHELTER', count: 9, c: 'var(--color-sql-shelter)' },
+    { label: 'SUPPLY', count: 10, c: 'var(--color-sql-supply)' },
   ];
 
   return (
@@ -678,6 +699,10 @@ export const CapitalIllustration: React.FC = () => {
 };
 
 // ── [8] Dispatcher ─────────────────────────────────────────────────
+// LEARN: The one public function. Given a project id it returns the matching
+//    illustration as a React element (`React.ReactElement`). The `default` branch
+//    is the safety net an unknown id falls back to the generic illustration.
+//    Callers just write `getProjectIllustration(project.id)` and render the result.
 export const getProjectIllustration = (projectId: string): React.ReactElement => {
   switch (projectId) {
     case 'litestore':      return <LiteStoreIllustration />;

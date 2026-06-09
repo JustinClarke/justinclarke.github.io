@@ -1,21 +1,43 @@
 /**
- * TerminalEngine.ts
+ * engine.ts the "brain" of the hero terminal: every command, its output, and
+ * the logic that turns what you type into a result.
  *
- * Pure logic and data for the portfolio terminal.
- * No React, no DOM, fully testable.
+ * Fits in: used by useTerminalSession (src/hooks/useTerminalSession.ts), which
+ *          feeds keystrokes in and renders the lines that come back. This file
+ *          is pure data + functions no React, no DOM which is exactly why it
+ *          can be unit-tested on its own (see engine.test.ts).
+ * Note:    one list, COMMAND_MANIFEST, is the single source of truth. Autocomplete,
+ *          `help`, `man`, and command resolution all read from it, so adding a
+ *          command in one place wires it into everything. Behaviour here is under
+ *          test change wording freely, but keep the shapes and ids identical.
  *
- * Updated: single CommandSpec manifest drives autocomplete, man, help, and resolution.
+ * For beginners ----------------------------------------------------------------
+ * "Pure" means each function depends only on its inputs and just returns a value;
+ * it never reaches out to the screen or the network. That makes it predictable
+ * and easy to test. The big idea is a "manifest": instead of a giant switch
+ * statement, every command is an object in one array (id, aliases, what to print).
+ * resolveCommand() near the bottom walks that array to find a match. Think of it
+ * like a lookup table of recipes rather than a long list of if/else branches.
+ * -----------------------------------------------------------------------------
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: A string "union" type a value of this type must be EXACTLY one of these
+//    strings. Each one names a colour/style the renderer knows how to paint (the
+//    short ones like 'g', 'b', 'm' are colour shorthands). TypeScript rejects any
+//    other string, so a typo in a command's line can't slip through.
 export type TerminalLineType =
   | 'muted' | 'success' | 'info' | 'brand' | 'error' | 'obscured' | 'prompt' | 'cmd' | 'edu'
   | 'viz-mac-red' | 'viz-mac-yellow' | 'viz-success'
   | 'p' | 'g' | 'b' | 'pu' | 'm' | 'o' | 'r' | 't';
 
+// LEARN: `interface` describes the shape of one printed line. The `?` marks an
+//    OPTIONAL field a plain line only needs `t` (its style) and `text`, but a
+//    richer line can add `parts` (coloured segments), a link `href`, `chips`
+//    (clickable suggestions), or a `streaming` flag for the typewriter effect.
 export interface TerminalLine {
   t: TerminalLineType;
   text: string;
@@ -59,6 +81,11 @@ export interface GitHubEvent {
 // Command manifest
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: This is the recipe card for ONE command. `id` is its canonical name,
+//    `aliases` are other words that trigger it, `category` groups it in `help`,
+//    `hidden` keeps easter eggs out of listings, and `run` is a FUNCTION that,
+//    given the current context, returns what to print. Storing behaviour (`run`)
+//    inside data like this is what lets one loop handle every command.
 export interface CommandSpec {
   id: string;
   aliases: string[];
@@ -69,11 +96,18 @@ export interface CommandSpec {
 }
 
 // helpers
+// LEARN: Tiny factory functions so the manifest below stays readable. `line` builds
+//    a basic styled line, `sp` is a blank spacer line, and `parts` assembles a line
+//    out of several differently-coloured segments. Defining them once keeps the
+//    hundreds of lines that follow short and consistent.
 const line = (t: TerminalLineType, text: string): TerminalLine => ({ t, text });
 const parts = (t: TerminalLineType, text: string, ...rest: TerminalLine['parts']): TerminalLine =>
   ({ t: 'm' as TerminalLineType, text: '', parts: [{ t, text }, ...(rest ?? [])] });
 const sp = (): TerminalLine => line('m', ' ');
 
+// LEARN: Whole-days between today and a date. We zero out the time-of-day on both
+//    (`setHours(0,0,0,0)`) so partial days don't skew the result, then divide the
+//    millisecond gap by 86,400,000 (the ms in a day; `_` is just a digit separator).
 function daysUntil(isoDate: string): number {
   const target = new Date(isoDate);
   const now = new Date();
@@ -90,6 +124,10 @@ function fmtUptime(ms: number): string {
   return `${h}:${m}:${sec}`;
 }
 
+// LEARN: The single source of truth. Every command the terminal understands lives
+//    here as one object. To add a command you add an entry; `help`, `man`, Tab
+//    completion and resolveCommand all read this same array, so nothing else needs
+//    touching. Each `run` returns the lines (and any side-effect) to display.
 export const COMMAND_MANIFEST: CommandSpec[] = [
   // ── whoami ─────────────────────────────────────────────────────────────────
   {
@@ -218,6 +256,10 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: 'List available commands.',
     category: 'system',
     run: () => {
+      // LEARN: `help` builds itself from the manifest rather than a hand-typed list,
+      //    so it can never fall out of date. `.filter(...)` keeps only the entries
+      //    matching a condition (e.g. visible "core" commands); `.map(...)` further
+      //    down turns each surviving command into a printable line.
       const coreCommands = COMMAND_MANIFEST.filter(c => c.category === 'core' && !c.hidden);
       const systemCommands = COMMAND_MANIFEST.filter(c => c.category === 'system' && !c.hidden && c.id !== 'help');
       const lines: TerminalLine[] = [
@@ -552,6 +594,9 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
 // "funny error" commands (canonical errors that aren't real commands)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: `Record<string, TerminalLine[]>` is an object used as a dictionary: any
+//    string key maps to an array of lines. These are joke "commands" not real
+//    features, just canned responses resolveCommand looks up by name below.
 const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   sudo: [
     line('r', "sudo: permission denied."),
@@ -642,6 +687,9 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
 // Completion (Phase 1.1)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: Tab-completion support. Given what you've typed so far (`prefix`), collect
+//    every visible command name or alias that STARTS WITH it. `new Set(...)` removes
+//    duplicates and the spread `[...]` turns it back into a sortable array.
 function getCompletionCandidates(prefix: string): string[] {
   if (!prefix) return [];
   const p = prefix.toLowerCase();
@@ -656,6 +704,10 @@ function getCompletionCandidates(prefix: string): string[] {
   return [...new Set(candidates)].sort();
 }
 
+// LEARN: Decides what pressing Tab should actually insert. One match → complete the
+//    rest of that word. Several matches → only fill in the part they ALL share (the
+//    "longest common prefix"), exactly like a real shell. `.slice(prefix.length)`
+//    returns just the missing tail so the caller appends it to what's already typed.
 export function getCompletion(prefix: string): { completion: string; candidates: string[] } {
   const candidates = getCompletionCandidates(prefix);
   if (candidates.length === 0) return { completion: '', candidates: [] };
@@ -675,6 +727,10 @@ export function getCompletion(prefix: string): { completion: string; candidates:
 // Levenshtein fuzzy match (Phase 1.2)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: "Edit distance" the minimum number of single-character insert/delete/
+//    swap operations to turn string `a` into `b`. It's how we power "did you mean…?":
+//    a small distance means a likely typo. The `dp` grid is the classic dynamic-
+//    programming solution; you don't need to follow the maths to use the result.
 export function levenshtein(a: string, b: string): number {
   const m = a.length, n = b.length;
   const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
@@ -690,6 +746,10 @@ export function levenshtein(a: string, b: string): number {
   return dp[m][n];
 }
 
+// LEARN: Walks every visible command/alias and keeps the one with the smallest edit
+//    distance to what the user typed but only if it's within 2 edits (`bestDist`
+//    starts at 3, the first cutoff). Returns `null` (TypeScript's "nothing here")
+//    when nothing is close enough, so the caller can fall back to a generic error.
 function findClosestCommand(input: string): string | null {
   let best: string | null = null;
   let bestDist = 3; // threshold: ≤2 edits
@@ -707,7 +767,14 @@ function findClosestCommand(input: string): string | null {
 // resolveCommand
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: The front door. Given the RAW text the user typed, decide what to show.
+//    It tries each possibility in priority order and returns the first that fits:
+//    special cases (clear/man/sudo/hire) → exact manifest match → joke errors →
+//    keyword hints → "did you mean?" → generic not-found. `ctx = {}` is a default,
+//    so callers can omit the context. The early `return`s mean order matters here.
 export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandResult {
+  // LEARN: Normalise first so matching is forgiving: `.trim()` drops stray spaces,
+  //    `.toLowerCase()` makes "HELP" and "help" the same.
   const cmd = raw.trim().toLowerCase();
 
   if (cmd === 'clear') return { lines: [] };
@@ -755,6 +822,9 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   }
 
   // ── Manifest lookup (canonical id + aliases) ───────────────────────────────
+  // LEARN: The main path. Scan the manifest; if the typed word equals a command's
+  //    id or any of its aliases, run that command and return its result. `.some(...)`
+  //    is true as soon as ONE name matches, so it stops early.
   for (const spec of COMMAND_MANIFEST) {
     const names = [spec.id, ...spec.aliases];
     if (names.some(n => cmd === n || cmd === n.toLowerCase())) {
@@ -768,6 +838,9 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   }
 
   // ── Keyword guesses ────────────────────────────────────────────────────────
+  // LEARN: Not an exact command, but maybe we can tell what they MEANT. If the text
+  //    merely CONTAINS a telltale word ("project", "skill"…) we nudge them toward
+  //    the right command. `.includes(...)` checks for a substring anywhere in `cmd`.
   const guesses: TerminalLine[] = [];
   if (cmd.includes('project') || cmd.includes('work') || cmd.includes('case') || cmd.includes('portfolio') || cmd.includes('app') || cmd.includes('showcase')) guesses.push(line('o', "→ try 'ls projects'"));
   if (cmd.includes('about') || cmd.includes('justin') || cmd.includes('learn') || cmd.includes('who') || cmd.includes('bio') || cmd.includes('profile')) guesses.push(line('o', "→ try 'about me'"));
@@ -806,6 +879,10 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
 // Sidebar + conversational helpers (unchanged API)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// LEARN: Flavour text. These two pick a friendly "loading…" line to show while a
+//    command runs, so the terminal feels alive. Each command maps to a few options
+//    and `Math.random()` chooses one; the `?? [...]` supplies a default list for
+//    any command not explicitly listed. Pure cosmetics no logic depends on them.
 export function getSidebarFunMessage(cmd: string): string {
   const normalized = cmd.trim().toLowerCase();
   const messages: Record<string, string[]> = {

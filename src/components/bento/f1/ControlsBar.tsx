@@ -1,7 +1,26 @@
+/**
+ * ControlsBar the interactive deck for the F1 telemetry card: Telemetry/Causal
+ * panel toggle, a play/pause button, and a reset button that restores a fresh run.
+ *
+ * Fits in: rendered by F1TelemetryWidget. It owns no state it just calls the
+ *          setter functions handed down from the useF1Telemetry hook.
+ * Note:    every button calls e.stopPropagation() so a control press never also
+ *          triggers the bento card's own click (which would navigate away).
+ *
+ * For beginners ----------------------------------------------------------------
+ * State lives in the hook; this component receives both the values (like
+ * isPlaying) AND the functions that change them (like setIsPlaying) as props.
+ * Clicking a button calls one of those setters, which updates the hook's state
+ * and re-renders the card. This is "lifting state up": children ask the parent
+ * to change shared data rather than holding their own copy.
+ * -----------------------------------------------------------------------------
+ */
 import { Zap, Play, Pause, RefreshCw } from 'lucide-react';
 import { cn } from '@/utils';
 import type { F1Telemetry } from '@/hooks/useF1Telemetry';
 
+// LEARN: Pick<> narrows the giant hook type down to just the values + setters this
+//    bar needs, so its props stay in lock-step with the hook automatically.
 type ControlsBarProps = Pick<
   F1Telemetry,
   | 'isPlaying' | 'setIsPlaying'
@@ -52,6 +71,8 @@ export function ControlsBar({
         </div>
 
 
+        {/* LEARN: play/pause. `!isPlaying` flips the boolean; the icon shown also
+            depends on isPlaying one piece of state driving two visuals. */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -62,6 +83,8 @@ export function ControlsBar({
           {isPlaying ? <Pause size={10} /> : <Play size={10} />}
         </button>
 
+        {/* LEARN: reset calls several setters at once to put the simulation back
+            to a clean opening state (soft tyres, lap 1, full fuel). */}
         <button
           onClick={(e) => {
             e.stopPropagation();

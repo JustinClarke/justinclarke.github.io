@@ -1,9 +1,30 @@
+/**
+ * Hero the first thing visitors see: a fake terminal that IS the hero banner.
+ *
+ * Fits in: rendered at the top of the Home page. This file is the "orchestrator"
+ *          it owns the on-screen layout and wires together the hooks that hold
+ *          the real logic (boot animation, command session) and the small UI
+ *          pieces in ./ui/*.
+ * Note:    almost no business logic lives here. Commands are decided in
+ *          engine.ts, run by useTerminalSession, and the boot animation is in
+ *          useTerminalBoot. This component is mostly glue + visual state.
+ *
+ * For beginners ----------------------------------------------------------------
+ * A "component" is a function that returns markup (JSX, which looks like HTML).
+ * React calls it to draw a piece of the page, and re-calls it whenever its state
+ * changes, redrawing only what differs. Below, `useState(...)` lines are this
+ * component's memory; the `<section>...</section>` at the bottom is what it
+ * draws. The pieces like <WindowChrome/> and <TerminalBody/> are smaller
+ * components imported from ./ui composing small pieces is the whole idea.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { SnakeGame } from './SnakeGame';
 import { useTerminalSession } from '@/hooks/useTerminalSession';
 import { useTerminalBoot } from '@/hooks/useTerminalBoot';
 import { useFirstVisit } from '@/hooks/useFirstVisit';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { debug } from '@/utils';
 
 import { WindowChrome } from './ui/WindowChrome';
 import { SidebarMenu } from './ui/SidebarMenu';
@@ -12,15 +33,27 @@ import { TerminalBody } from './ui/TerminalBody';
 import { CommandPalette } from './ui/CommandPalette';
 import { ScrollHint } from './ScrollHint';
 
+const log = debug('hero');
+
+// Justin is based in Dubai, so the fake "session clock" shows Dubai time in
+// 24-hour format regardless of the visitor's own timezone.
 const DUBAI_LOCALE = 'en-US';
 const DUBAI_TZ = 'Asia/Dubai';
 
+/**
+ * A tiny live clock printed above the terminal ("auth_success: 14:03:22").
+ * It ticks once per second. Defined here as its own mini-component so its
+ * 1-second timer re-renders ONLY the clock, not the whole heavy Hero.
+ */
 const SessionClock: React.FC = () => {
   const [time, setTime] = useState(() =>
     new Date().toLocaleTimeString(DUBAI_LOCALE, { timeZone: DUBAI_TZ, hour12: false })
   );
 
   useEffect(() => {
+    // LEARN: setInterval runs the callback repeatedly forever (here every 1000ms
+    //    = 1 second). It returns an id we MUST pass to clearInterval in the
+    //    cleanup, or the timer keeps firing after the clock is gone (a "leak").
     const id = setInterval(() => {
       setTime(new Date().toLocaleTimeString(DUBAI_LOCALE, { timeZone: DUBAI_TZ, hour12: false }));
     }, 1000);
@@ -41,18 +74,28 @@ const SessionClock: React.FC = () => {
  * into the layout. All command logic lives in the hooks/engine.
  */
 export const Hero: React.FC = () => {
-  const [activeGame, setActiveGame] = useState<string | null>(null);
-  const [isMinimized, setIsMinimized] = useState(false);
+  // ── Visual state (the component's "memory") ────────────────────────────────
+  const [activeGame, setActiveGame] = useState<string | null>(null); // 'snake' or null
+  const [isMinimized, setIsMinimized] = useState(false);             // window minimised?
+  // The fake CRT power cycle: normal → shutting-down → static (TV snow) →
+  // starting-up → normal. Driven by the close button (handleShutdownAndReboot).
   const [terminalState, setTerminalState] = useState<'normal' | 'shutting-down' | 'static' | 'starting-up'>('normal');
-  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);             // Cmd-K menu open?
 
+  // ── Logic borrowed from hooks (the real work lives there) ──────────────────
   const { bootStep, setBootStep } = useTerminalBoot();
   const { inputValue, setInputValue, history, setHistory, isTyping, lastExitCode, handleCommand } = useTerminalSession({ onLaunchGame: setActiveGame });
-  const isFirstVisit = useFirstVisit('terminal_visited');
-  const prefersReducedMotion = useReducedMotion();
+  const isFirstVisit = useFirstVisit('terminal_visited'); // true only the first time ever
+  const prefersReducedMotion = useReducedMotion();        // respect OS "reduce motion"
+
+  // LEARN: these refs are bookkeeping for the first-visit auto-demo. Refs (not
+  //    state) because changing them should NOT trigger a re-render they're
+  //    just flags/handles we read inside effects and timers.
   const autoDemoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoDemoCancelled = useRef(false);
   const autoDemoStarted = useRef(false);
+  // LEARN: a ref pointed at a DOM node. After render, `staticCanvasRef.current`
+  //    is the actual <canvas> element, which we draw TV-static onto by hand.
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -71,7 +114,14 @@ export const Hero: React.FC = () => {
     };
   }, []);
 
+  // Clicking the window's "close" button plays a retro CRT power-off/on sequence
+  // and resets the terminal. The nested setTimeouts are the timeline:
+  //   0ms     start "shutting-down" animation
+  //   1000ms  cut to TV static
+  //   3500ms  wipe history + restart the boot, begin "starting-up"
+  //   4100ms  back to "normal"
   const handleShutdownAndReboot = useCallback(() => {
+    log('reboot sequence start');
     setTerminalState('shutting-down');
     setTimeout(() => {
       setTerminalState('static');
@@ -86,8 +136,12 @@ export const Hero: React.FC = () => {
     }, 1000);
   }, [setHistory, setInputValue, setBootStep]);
 
-  // First-visit auto-demo: after 6s of idle on boot, run whoami then ls projects
+  // First-visit auto-demo: if a brand-new visitor just sits there after boot, we
+  // gently demo the terminal for them type `whoami`, pause, then `ls projects`
+  // so they realise it's interactive. Any interaction cancels it (next effect).
   useEffect(() => {
+    // Guard clauses: bail unless this is genuinely an idle first-time visitor on
+    // a fully-booted terminal who hasn't typed anything and wants motion.
     if (autoDemoStarted.current || autoDemoCancelled.current) return;
     if (!isFirstVisit || prefersReducedMotion || bootStep < 7 || isTyping || history.length > 0) return;
 
@@ -109,7 +163,8 @@ export const Hero: React.FC = () => {
     };
   }, [isFirstVisit, prefersReducedMotion, bootStep, isTyping, history.length, handleCommand]);
 
-  // Cancel auto-demo on any keypress, input, click, or scroll
+  // The moment the visitor does ANYTHING (type, click, scroll), cancel the
+  // auto-demo they clearly don't need the hand-holding.
   useEffect(() => {
     const cancelDemo = () => {
       autoDemoCancelled.current = true;
@@ -134,43 +189,58 @@ export const Hero: React.FC = () => {
     };
   }, [inputValue, history.length, isTyping]);
 
-  // Static noise canvas rendering
+  // TV-static effect: paint random black-and-white noise on the <canvas> every
+  // animation frame, but ONLY while terminalState === 'static'.
+  // This is hand-drawn graphics a glimpse of how games/visualisations work
+  // under the hood, below the level of HTML elements.
   useEffect(() => {
-    if (terminalState !== 'static') return;
+    if (terminalState !== 'static') return;       // only run during the static phase
     const canvas = staticCanvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');          // the 2D drawing toolkit for the canvas
     if (!ctx) return;
 
+    // Render at 1/4 resolution (scale = 4) for speed; the CSS stretches it back
+    // up, and the blockiness actually looks MORE like real TV snow.
     const scale = 4;
     const w = Math.ceil(window.innerWidth / scale);
     const h = Math.ceil(window.innerHeight / scale);
     canvas.width = w;
     canvas.height = h;
 
+    // LEARN: a canvas is really just a grid of pixels. `imageData.data` is one
+    //    long list of bytes, 4 per pixel (red, green, blue, alpha). Viewing it
+    //    as a Uint32Array lets us set a whole pixel with ONE number instead of
+    //    four much faster when we're redrawing the whole screen 60×/second.
     const imageData = ctx.createImageData(w, h);
     const buf = new Uint32Array(imageData.data.buffer);
     let animId: number;
 
     const draw = () => {
       for (let i = 0; i < buf.length; i++) {
+        // Random grey value 0–255. `| 0` chops off the decimals (fast floor).
         const v = (Math.random() * 255) | 0;
+        // Pack alpha(255) + r + g + b into one 32-bit number. Equal r=g=b = grey.
         buf[i] = 0xff000000 | (v << 16) | (v << 8) | v;
       }
-      ctx.putImageData(imageData, 0, 0);
+      ctx.putImageData(imageData, 0, 0);  // blit our pixel buffer onto the canvas
+      // LEARN: requestAnimationFrame schedules `draw` to run again right before
+      //    the next screen repaint (~60×/sec). It's the standard way to animate
+      //    smoothly. We save the id so the cleanup can cancel the loop.
       animId = requestAnimationFrame(draw);
     };
     draw();
 
-    return () => cancelAnimationFrame(animId);
+    return () => cancelAnimationFrame(animId); // stop the loop when static ends
   }, [terminalState]);
 
-  // Cmd-K / Ctrl-K opens command palette
+  // Keyboard shortcut: Cmd-K (Mac) / Ctrl-K (Windows) toggles the command
+  // palette; Escape closes it. A global listener so it works from anywhere.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setPaletteOpen(prev => !prev);
+        e.preventDefault();                  // stop the browser's own Ctrl-K
+        setPaletteOpen(prev => !prev);       // flip open ↔ closed
       }
       if (e.key === 'Escape') setPaletteOpen(false);
     };
@@ -178,6 +248,8 @@ export const Hero: React.FC = () => {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  // Maps a line's "type" tag (set by the engine) to Tailwind text-colour classes,
+  // so e.g. errors show red and successes show green in the output.
   const getLineColor = (type: string) => {
     switch (type) {
       case 'brand': return 'text-brand-primary font-bold';

@@ -1,3 +1,20 @@
+/**
+ * TerminalHeader the "~$ whoami → justin clarke." block at the top of the hero
+ * terminal: the name, role, and tech-stack badges that fade in on boot.
+ *
+ * Fits in: the first thing the Hero's boot sequence reveals. It reports back to
+ *          the Hero via `onStepComplete` once its intro has played.
+ * Note:    the staggered fade-ins are pure CSS (the `fadeIn` helper just sets an
+ *          animation-delay); the only real logic is one timer that advances the
+ *          boot sequence after the header has finished animating.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `memo(...)` wraps the component so React skips re-rendering it when its props
+ * haven't changed a small speed-up for a header that rarely updates. The
+ * component "talks back" to its parent by calling the `onStepComplete` function
+ * it was handed, the same way an HTML button calls an onclick.
+ * -----------------------------------------------------------------------------
+ */
 import React, { memo, useEffect } from 'react';
 import { TechStack } from '@/ui';
 
@@ -6,17 +23,26 @@ interface TerminalHeaderProps {
   onStepComplete: (step: number) => void;
 }
 
+// LEARN: A helper that returns an inline-style object. `React.CSSProperties` is the
+//    type for "a bag of CSS properties". Each element calls fadeIn(<ms>) to start
+//    its entrance animation a little later, producing the staggered reveal.
 const fadeIn = (delay: number): React.CSSProperties => ({
   animation: `terminal-fade-in 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) ${delay}ms both`,
 });
 
 export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, onStepComplete }) => {
+  // LEARN: When this is the first boot step (0), wait 1.7s for the animation to play,
+  //    then tell the parent to advance to step 7. The cleanup `clearTimeout` cancels
+  //    the timer if the component unmounts or `bootStep` changes before it fires —
+  //    otherwise we could call onStepComplete on a component that's already gone.
   useEffect(() => {
     if (bootStep !== 0) return;
     const timer = setTimeout(() => onStepComplete(7), 1700);
     return () => clearTimeout(timer);
   }, [bootStep, onStepComplete]);
 
+  // LEARN: Returning `null` from a component renders nothing. Here a negative bootStep
+  //    means "not ready yet", so the header stays hidden until the boot reaches it.
   if (bootStep < 0) return null;
 
   return (

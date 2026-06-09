@@ -1,3 +1,21 @@
+/**
+ * CommandButton one styled button in the sidebar's CONTROLS menu (the numbered
+ * "01 resumé", "02 connect" rows, plus the big featured-project tile).
+ *
+ * Fits in: rendered by SidebarMenu, once per menu item.
+ * Note:    this file is almost entirely STYLING. The same component renders three
+ *          looks a `large` tile, the special `the long version` row, and the
+ *          plain default chosen by the boolean props. There's barely any logic;
+ *          the length comes from the three className/markup branches.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `cn(...)` is a helper that stitches class names together and quietly drops any
+ * that are false. So `important && "highlight"` adds "highlight" ONLY when
+ * `important` is true that's how a prop toggles a look. Reading these blocks,
+ * focus on which branch runs (`large` ? … : `isLongVersion` ? … : default); the
+ * Tailwind strings inside are just CSS.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { cn } from '@/utils';
 
@@ -8,7 +26,7 @@ export interface CommandButtonProps {
   hot?: boolean;
   important?: boolean;
   large?: boolean;
-  badge?: React.ReactNode;
+  badge?: React.ReactNode;  // LEARN: ReactNode = any renderable content; here, ProjectShowcase
   alignTop?: boolean;
   tooltip?: string;
   onClick?: () => void;
@@ -16,6 +34,8 @@ export interface CommandButtonProps {
 }
 
 export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, large, badge, alignTop, tooltip, onClick, className }) => {
+  // LEARN: One flag computed up front; the markup below picks its variant from this
+  //    plus the `large` prop. Naming it once keeps the JSX conditions readable.
   const isLongVersion = cmd === 'the long version';
 
   return (
@@ -52,6 +72,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
         <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite]" />
       )}
 
+      {/* LEARN: The three-way variant switch. `large ? (…) : isLongVersion ? (…) : (…)`
+            renders exactly ONE of the three layouts. This nested-ternary-in-JSX is a
+            common React idiom for "pick one of N templates". */}
       {large ? (
         <div className="flex flex-col md:h-full w-full relative z-10 gap-0 md:gap-3">
           {/* Header row consistent with other items, floating elegantly on the top vignette */}

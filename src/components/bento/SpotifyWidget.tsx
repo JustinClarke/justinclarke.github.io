@@ -1,15 +1,34 @@
+/**
+ * SpotifyWidget the "Spotify Engine" bento card (an MSc research project). A
+ * self-running demo of a music recommender that rotates through audio-feature
+ * "vectors" and nearest-neighbour song recommendations. The values are
+ * illustrative, not a live model.
+ *
+ * Fits in: one card in the homepage featured-projects bento grid.
+ * Note:    three timers tick three independent counters (highlighted dimension,
+ *          active recommendation, active model feature); a Vectors/Recommend
+ *          toggle swaps which panel shows.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Same shape as the other bento cards: useState holds the counters, useEffect
+ * runs the timers, Framer Motion's <AnimatePresence key={...}> cross-fades a
+ * panel when its key changes, and cn(...) chooses classes from what's active.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Disc3, Zap, Sparkles } from 'lucide-react';
 import { cn } from '@/utils';
 
+// LEARN: the card's content as plain data arrays. The JSX further down loops over
+//    these with `.map`, so adding/removing an entry changes the UI automatically.
 const DIMENSIONS = [
   { id: 'valence', label: 'VALENCE', value: 0.91, color: 'var(--color-viz-spotify)' },
   { id: 'tempo', label: 'TEMPO', value: 0.65, color: 'var(--color-viz-success)' },
-  { id: 'energy', label: 'ENERGY', value: 0.74, color: '#22d3a7' },
+  { id: 'energy', label: 'ENERGY', value: 0.74, color: 'var(--color-viz-spotify-2)' },
   { id: 'dance', label: 'DANCEABILITY', value: 0.82, color: 'var(--color-viz-spotify)' },
-  { id: 'acoustic', label: 'ACOUSTICNESS', value: 0.12, color: '#65f0a3' },
-  { id: 'live', label: 'LIVENESS', value: 0.18, color: '#3aed8d' },
+  { id: 'acoustic', label: 'ACOUSTICNESS', value: 0.12, color: 'var(--color-viz-spotify-3)' },
+  { id: 'live', label: 'LIVENESS', value: 0.18, color: 'var(--color-viz-spotify-4)' },
 ];
 
 const RECOMMENDATIONS = [
@@ -28,11 +47,17 @@ const MODEL_FEATURES = [
 ];
 
 export function SpotifyWidget() {
+  // LEARN: `uiMode` is which panel is shown; the other three are counters the
+  //    timers advance. Each useState returns [value, setter]; calling a setter
+  //    re-renders the card with the new value.
   const [uiMode, setUiMode] = useState<'vectors' | 'recommend'>('vectors');
   const [activeRec, setActiveRec] = useState(0);
   const [dimensionTicker, setDimensionTicker] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
 
+  // LEARN: three near-identical timers, one per counter, each on its own cadence.
+  //    `% length` loops the index back to 0; the returned cleanup clears the timer
+  //    when the card unmounts so it can't keep firing. (Same pattern all three.)
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveRec(prev => (prev + 1) % RECOMMENDATIONS.length);
@@ -100,6 +125,9 @@ export function SpotifyWidget() {
           <Zap size={11} className="text-viz-spotify animate-pulse" />
           <span className="font-mono text-[9px] md:text-[10px] font-bold text-neutral-400 tracking-wider uppercase">MSD-MSC · 12D Space</span>
         </div>
+        {/* LEARN: e.stopPropagation() stops the click from bubbling up to the
+            whole-card click handler (the bento card is itself a link/button), so
+            tapping a toggle switches the panel WITHOUT navigating away. */}
         <div className="bg-neutral-950 border border-white/5 p-0.5 rounded-lg flex shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); setUiMode('vectors'); }}
@@ -123,6 +151,9 @@ export function SpotifyWidget() {
       </div>
 
       {/* Main Panel */}
+      {/* LEARN: the two panels have different keys ("vectors-panel" /
+          "recommend-panel"), so AnimatePresence slides the old one out and the
+          new one in whenever uiMode flips. */}
       <div className="hidden lg:flex flex-grow min-h-0 flex flex-col gap-2.5">
         <AnimatePresence mode="wait">
 
@@ -136,6 +167,9 @@ export function SpotifyWidget() {
               className="flex flex-col gap-2 flex-grow min-h-0"
             >
               {/* Dimension rail */}
+              {/* LEARN: one cell per data entry. cn() scales/dims the cell that
+                  matches the current dimensionTicker, so the highlight walks the
+                  rail as the timer ticks. */}
               <div className="grid grid-cols-6 gap-1 bg-black/40 border border-white/5 rounded-xl p-2 shrink-0">
                 {DIMENSIONS.map((d, i) => (
                   <div key={d.id} className="flex flex-col items-center gap-0.5">
@@ -198,7 +232,7 @@ export function SpotifyWidget() {
               className="flex flex-col gap-2 flex-grow min-h-0"
             >
               {/* Active recommendation card */}
-              <div className="bg-[#09090b] border border-white/10 rounded-xl p-2.5 md:p-3 shrink-0">
+              <div className="bg-bento-panel border border-white/10 rounded-xl p-2.5 md:p-3 shrink-0">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest">Nearest Neighbour</span>
                   <AnimatePresence mode="wait">

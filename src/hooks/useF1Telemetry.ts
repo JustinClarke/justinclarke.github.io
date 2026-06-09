@@ -1,13 +1,35 @@
+/**
+ * useF1Telemetry the whole fake "live F1 data feed" behind the telemetry bento
+ * card: speed, throttle, sectors, tyre wear, fuel burn, a causal lap-time model,
+ * and a scrolling dbt pipeline log. None of it is real data; it's all simulated
+ * on timers so the card looks alive.
+ *
+ * Fits in: called once by F1TelemetryWidget, which becomes a pure renderer that
+ *          just reads the big object returned here. Child panels Pick their slice.
+ * Note:    two interval loops drive everything a fast 400ms physics tick and a
+ *          slow 15s lap tick. Both pause when isPlaying is false or a dbt test run
+ *          is in progress. The log auto-scroll stays in the widget (it needs a DOM
+ *          ref this hook can't hold).
+ *
+ * For beginners ----------------------------------------------------------------
+ * This file is almost all useState + useEffect. useState is the card's memory
+ * (each value, like liveSpeed, has a matching setter); useEffect runs the timers
+ * that keep changing those values. Every setter call re-renders the card with the
+ * new numbers that's why the dials appear to move on their own.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect } from 'react';
 import { INITIAL_PIPELINE_LOGS } from '@/data/f1';
+import { debug } from '@/utils';
 
-/**
- * All simulation state + interval loops + derived logic for the F1 telemetry
- * bento widget. The widget itself becomes a pure renderer that reads this object.
- *
- * The DOM-bound log-scroll effect stays in the widget (it needs the container ref).
- */
+// LEARN: A logger labelled "f1". Silent unless you enable it in the console with
+//    localStorage.debug = 'f1'  then refresh (see src/utils/debug.ts).
+const log = debug('f1');
+
 export function useF1Telemetry() {
+  // LEARN: a wall of useState. Each line is one remembered value plus the only
+  //    function allowed to change it. The `<'Monza' | 'Spa' | 'Monaco'>` is a
+  //    "union type": TypeScript will only allow those three exact strings.
   const [isPlaying, setIsPlaying] = useState(true);
   const [activeTrack, setActiveTrack] = useState<'Monza' | 'Spa' | 'Monaco'>('Monaco');
 
@@ -36,11 +58,18 @@ export function useF1Telemetry() {
   const [isTesting, setIsTesting] = useState(false);
   const [pipelineLogs, setPipelineLogs] = useState<string[]>(INITIAL_PIPELINE_LOGS);
 
-  // Speed and physical simulation loop
+  // ── Fast physics loop: recompute the live dials ~2.5×/second ────────────────
+  // LEARN: this effect re-runs whenever isPlaying / activeTrack / isTesting change
+  //    (see the dependency array at the bottom). If we're paused or running tests
+  //    it bails out early, so no timer is created. Otherwise it starts a 400ms
+  //    interval and returns a cleanup that stops it.
   useEffect(() => {
     if (!isPlaying || isTesting) return;
+    log('physics loop running', { activeTrack });
 
     const interval = setInterval(() => {
+      // LEARN: a sine wave gives a smooth, repeating up-and-down value over time,
+      //    which we use to wobble the speed naturally instead of randomly.
       const time = Date.now();
       const wave = Math.sin(time * 0.0035);
 
@@ -81,6 +110,9 @@ export function useF1Telemetry() {
       setLiveThrottle(calculatedThrottle);
       setLiveBrake(calculatedBrake);
 
+      // LEARN: `prev => ...` reads the latest fuel value and returns the next one.
+      //    Math.max keeps it from dropping below 5kg; toFixed(2) avoids ugly
+      //    floating-point tails like 99.40000001.
       // Fuel burn simulation (~0.05kg per step)
       setFuelWeight(prev => Math.max(5.0, Number((prev - 0.03).toFixed(2))));
 
@@ -112,18 +144,21 @@ export function useF1Telemetry() {
     return () => clearInterval(interval);
   }, [isPlaying, activeTrack, isTesting]);
 
-  // Lap and tyre age simulation
+  // ── Slow lap loop: advance the lap counter and age the tyres every 15s ──────
   useEffect(() => {
     if (!isPlaying || isTesting) return;
 
     const lapInterval = setInterval(() => {
       setCurrentLap(prev => {
+        // LEARN: after lap 57 we roll back to 1 and a roll-back means a fresh
+        //    set of tyres (age 0). Any other lap just ages the current set by 1.
         const nextLap = prev === 57 ? 1 : prev + 1;
         if (nextLap === 1) {
           setTyreAge(0);
         } else {
           setTyreAge(t => t + 1);
         }
+        log('new lap', nextLap);
         return nextLap;
       });
     }, 15000); // New lap every 15s
@@ -131,9 +166,13 @@ export function useF1Telemetry() {
     return () => clearInterval(lapInterval);
   }, [isPlaying, isTesting]);
 
-  // Run dbt interactive test suite
+  // ── The "Run tests" button: play a scripted dbt test sequence over time ─────
+  // LEARN: this isn't a loop it's a one-shot animation built from staggered
+  //    setTimeout calls. Each test's line appears a bit later than the last, so
+  //    the console looks like it's working through them live.
   const runDbtTests = () => {
     if (isTesting) return;
+    log('dbt tests: start');
     setIsTesting(true);
     setPipelineLogs([`[${new Date().toLocaleTimeString()}] [dbt] Initiating Physical Verification Suite...`]);
 
@@ -146,18 +185,27 @@ export function useF1Telemetry() {
     ];
 
     tests.forEach((t, index) => {
+      // LEARN: scheduling each line at (index+1)*1200ms staggers them: test 1 at
+      //    1.2s, test 2 at 2.4s, and so on. `[...prev, a, b]` appends without
+      //    mutating the old array React needs a brand-new array to re-render.
       setTimeout(() => {
         setPipelineLogs(prev => [...prev, t.msg, `[dbt]  └─ SUCCESS: ${t.status}`]);
         if (index === tests.length - 1) {
+          // After the last test, a final summary line, then hand control back.
           setTimeout(() => {
             setPipelineLogs(prev => [...prev, `[dbt] ✅ ALL PIPELINE TESTS PASSING. Causal integrity verified.`]);
             setIsTesting(false);
+            log('dbt tests: complete');
           }, 800);
         }
       }, (index + 1) * 1200);
     });
   };
 
+  // LEARN: each track is just a long SVG path string (the "d" attribute of an
+  //    <path>). This returns the right one for the selected circuit; the widget
+  //    draws it and animates a dot along it. The numbers are pre-drawn shapes —
+  //    nothing to read here, just data.
   const getTrackPath = () => {
     switch (activeTrack) {
       case 'Spa': return 'M167.75 20.858c-3.075-5.364-.283-7.034 3.387-5.065 3.669 1.97 49.393 30.95 55.603 35.171 6.21 4.22 10.613 8.816 14.395 13.224 6.116 7.128 29.072 34.701 33.87 40.235 2.327 2.682 4.765 5.265 8.892 6.504.742.223 1.542.375 2.398.53 3.105.563 9.733 2.517 14.112 9.848 4.987 8.348 5.552 11.818 4.705 22.04-.49 5.916.164 11.615 2.258 14.631 5.08 7.316 15.721 22.54 22.956 32.545 8.75 12.099 16.935 28.98 20.322 40.235s41.49 144.622 43.467 152.5c1.975 7.878 4.009 9.705-5.504 15.334-4.516 2.673-8.435 6.431-6.774 13.787 1.27 5.628 9.744 26.446.846 32.639-2.08 1.447-48.41 32.702-57.014 38.265-5.222 3.377-12.385.885-15.242-4.08-2.856-4.964-3.503-11.631 4.093-15.897 5.927-3.329 9.314-5.205 25.685-14.96 3.995-2.38 6.181-7.751 3.198-14.442-2.634-5.909-7.55-20.755-9.972-27.574-5.645-15.897-10.43-48.422-14.254-69.216-1.552-8.44-7.338-16.882-19.193-18.007-2.61-.248-11.29-.844-18.77-.563-7.303.275-20.816 4.787-27.66 22.79-5.08 13.366-15.524 40.095-23.992 62.464-6.59 17.407-22.297 12.661-24.696 10.832-5.53-4.215-19.68-14.49-31.19 1.688-5.503 7.738-16.934 26.59-23.567 36.86-7.403 11.462-15.806 3.657-38.81-13.506-9.759-7.282-7.215-21.806-5.786-27.293 6.586-25.285 18.77-40.094 31.189-50.786s29.919-23.353 50.805-30.669c20.887-7.315 27.2-13.496 33.023-24.197 16.23-29.825 24.133-42.908 22.44-57.54-1.694-14.63-19.053-43.752-22.722-56.413-2.69-9.285-4.774-32.872-5.249-52.615-.083-3.47-.676-7.138 6.096-6.19 10.725 1.5 7.765-7.127 6.21-9.379-7.904-11.442-11.323-16.99-17.782-28.324-7.057-12.38-39.515-71.467-41.773-75.406z';
@@ -174,7 +222,10 @@ export function useF1Telemetry() {
     }
   };
 
-  // Causal Decomposition Values
+  // LEARN: the "causal model" the showpiece of this card. It breaks a lap time
+  //    into named causes (fuel, tyres, dirty air, tyre temperature) and adds them
+  //    to a base pace, so the UI can show WHY the lap was the time it was. Each
+  //    line is a small physics-flavoured estimate; together they sum to totalLapTime.
   const getCausalDecomp = () => {
     const basePace = 76.500;
     const fuelLoadPenalty = Number((fuelWeight * 0.038).toFixed(3)); // 0.038s per kg
@@ -196,6 +247,9 @@ export function useF1Telemetry() {
     };
   };
 
+  // LEARN: derived values recomputed every render from the current state above.
+  //    `decomp` is the model's output; the cliff values flag when soft/medium/hard
+  //    tyres have aged past the point where grip falls off a "cliff".
   const decomp = getCausalDecomp();
 
   // Check tyre cliff thresholds
@@ -207,6 +261,8 @@ export function useF1Telemetry() {
   const cliffOnset = getCliffThreshold();
   const isCliffRisk = tyreAge >= cliffOnset;
 
+  // LEARN: the hook hands back ONE big object: state values, their setters, and
+  //    the derived results. The widget destructures whatever slice it needs.
   return {
     // playback + track
     isPlaying, setIsPlaying,
@@ -236,5 +292,9 @@ export function useF1Telemetry() {
   };
 }
 
+// LEARN: `ReturnType<typeof useF1Telemetry>` asks TypeScript "what type does this
+//    function return?" and names it F1Telemetry. Child panels then write
+//    `Pick<F1Telemetry, 'liveSpeed' | ...>` to type just the props they accept —
+//    so the prop types stay in sync with this hook automatically, no hand-copying.
 /** The full object returned by {@link useF1Telemetry}. Child panels Pick their slice. */
 export type F1Telemetry = ReturnType<typeof useF1Telemetry>;

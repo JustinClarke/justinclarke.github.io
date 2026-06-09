@@ -3,6 +3,13 @@
  * Fits in: outermost provider in RootProviders, wraps all children.
  * Note: stores the user's choice in localStorage so it persists
  *   across page reloads; falls back to the OS preference via matchMedia.
+ *
+ * For beginners ----------------------------------------------------------------
+ * "Dark mode" here works by toggling a single CSS class (`dark`) on the <html>
+ * element. The CSS does the rest. This file's whole job is deciding WHEN that
+ * class is on: remember the user's last choice, otherwise follow their operating
+ * system setting. Same Context pattern as ModalProvider read it via useTheme().
+ * -----------------------------------------------------------------------------
  */
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
@@ -17,12 +24,18 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = 'theme';
+const STORAGE_KEY = 'theme'; // the key we save the choice under in localStorage
 
+// LEARN: matchMedia lets JavaScript read a CSS media query. This one asks the OS:
+//    "is the user's system set to dark mode?" true/false.
 function getSystemTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+// LEARN: The actual "make the page dark" step: add/remove the `dark` class on the
+//    root <html> element. `classList.toggle('dark', condition)` adds the class
+//    when condition is true and removes it when false. `colorScheme` tells the
+//    browser to theme its own bits (scrollbars, form controls) to match.
 function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.toggle('dark', theme === 'dark');

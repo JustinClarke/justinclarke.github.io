@@ -36,7 +36,7 @@ export const projectsData: Project[] = [
     ],
     pageStatus: {
       text: 'Production',
-      color: 'bg-[#7e7ca6]',
+      color: 'bg-litestore',
       blink: true,
     }
   },

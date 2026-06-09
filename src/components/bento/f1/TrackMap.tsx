@@ -1,3 +1,20 @@
+/**
+ * TrackMap the left, larger half of the F1 card: the circuit drawn as an SVG,
+ * a glowing dot that laps it, sector/air-state badges, the StatusBar overlay, and
+ * the Monaco/Spa/Monza selector buttons.
+ *
+ * Fits in: rendered by F1TelemetryWidget; gets the track shape + live state it
+ *          needs as props. It owns no state picking a track calls setActiveTrack.
+ * Note:    the moving dot is pure SVG (<animateMotion>), not React the browser
+ *          animates it along the path string, which is cheaper than re-rendering.
+ *
+ * For beginners ----------------------------------------------------------------
+ * SVG is "drawing with markup": a <path d="..."> is a shape described by a string
+ * of coordinates. Here the same path is drawn twice (a faint base + a bright
+ * gradient), and <animateMotion> slides a <circle> along it forever. cn() picks
+ * badge colours from the live sector/air state.
+ * -----------------------------------------------------------------------------
+ */
 import { motion } from 'framer-motion';
 import { ShieldAlert } from 'lucide-react';
 import { cn } from '@/utils';
@@ -72,6 +89,9 @@ export function TrackMap({
           />
 
           {/* Dynamic telemetry path */}
+          {/* LEARN: keyed on activeTrack, so switching circuits remounts this path
+              and replays its fade-in. It's the bright gradient stroke on top of
+              the faint base path above. */}
           <motion.path
             key={activeTrack}
             d={getTrackPath()}
@@ -86,6 +106,10 @@ export function TrackMap({
           />
 
           {/* Dynamic racing dot */}
+          {/* LEARN: shown only while playing (`isPlaying && ...`). The <circle> is
+              the car; <animateMotion> below moves it along the track path on a
+              loop. `dur` sets the lap time per circuit; the browser does the
+              animating, so React isn't involved frame-by-frame. */}
           {isPlaying && (
             <circle
               key={`dot-${activeTrack}`}
@@ -111,6 +135,9 @@ export function TrackMap({
       {/* Circuit Selector Buttons (Bottom Row) */}
       <div className="flex gap-2.5 pt-2.5 border-t border-white/5 shrink-0" onClick={(e) => e.stopPropagation()}>
         {/* Track Select */}
+        {/* LEARN: `as const` makes this a fixed tuple of those exact strings, which
+            is why setActiveTrack accepts each one. .map renders a button per track;
+            stopPropagation keeps the tap from also clicking the whole card. */}
         <div className="flex gap-1.5 w-full">
           {(['Monaco', 'Spa', 'Monza'] as const).map(track => (
             <button

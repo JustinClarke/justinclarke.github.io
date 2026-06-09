@@ -4,7 +4,7 @@ import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
-const BRAND_COLOR = '#7e7ca6';
+const BRAND_COLOR = 'var(--color-litestore)';
 
 const STACK_PILLS = [
   'Next.js 12', 'Tailwind CSS', 'MUI', 'Swiper', 'AOS',
@@ -54,7 +54,7 @@ const METRICS = [
 ];
 
 const BRAND_TOKENS = [
-  { name: 'LiteStore', hex: '#7e7ca6' },
+  { name: 'LiteStore', hex: '#7e7ca6' }, // tw-allow-hex — displayed as a literal swatch label
   { name: 'MensXP', hex: '#ff5e03' },
   { name: 'Vitro', hex: '#2c4b35' },
   { name: 'WOW', hex: '#bc9850' },
@@ -80,7 +80,7 @@ export const LiteStorePage = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-[#7e7ca6]/30 overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-litestore/30 overflow-x-hidden">
       <SEO
         title="LiteStore ⋅ Retail-as-a-Service"
         description="Production Next.js platform: 30+ statically prerendered routes, multi-tenant brand theming, GA4 telemetry, and a Google Sheets pipeline. Shipped solo to litestore.in."
@@ -93,14 +93,14 @@ export const LiteStorePage = () => {
       {/* ── LIVE STATUS PILL ── */}
       <div className="fixed top-12 right-6 md:right-12 z-[100] flex items-center gap-3">
         <div className="hidden md:flex px-4 py-1.5 rounded-full border border-white/10 bg-black/60 backdrop-blur-md items-center gap-3">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#7e7ca6] animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-litestore animate-pulse" />
           <span className="font-mono text-[9px] tracking-[0.4em] uppercase text-white/50">Production Live</span>
         </div>
         <a
           href="https://litestore.in/"
           target="_blank"
           rel="noopener noreferrer"
-          className="px-5 py-2 rounded-full bg-[#7e7ca6] text-white font-mono text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all duration-200"
+          className="px-5 py-2 rounded-full bg-litestore text-white font-mono text-[10px] font-black uppercase tracking-widest shadow-xl hover:scale-105 transition-all duration-200"
         >
           Visit Site
         </a>
@@ -112,7 +112,7 @@ export const LiteStorePage = () => {
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-16 py-24 md:py-28 overflow-hidden bg-brand-bg text-white">
         {/* Grid bg */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.12]" aria-hidden>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,#7e7ca630_0%,transparent_65%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,color-mix(in_srgb,var(--color-litestore)_19%,transparent)_0%,transparent_65%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.025)_1px,transparent_1px)] bg-[size:40px_40px]" />
         </div>
 
@@ -120,7 +120,7 @@ export const LiteStorePage = () => {
         <ScrollReveal direction="up">
           <div className="relative z-10 max-w-6xl mx-auto w-full">
             <div className="inline-flex items-center gap-3 mb-8 px-5 py-2 rounded-full border border-white/8 bg-white/[0.03]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7e7ca6] animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-litestore animate-ping" />
               <span className="font-mono text-[9px] md:text-[10px] tracking-[0.5em] uppercase font-bold text-white/50">
                 Solo Engineering Lead · litestore.in
               </span>
@@ -158,7 +158,7 @@ export const LiteStorePage = () => {
               <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
               <span className="font-mono text-[9px] tracking-widest uppercase text-white/20 font-black">Build Output</span>
             </div>
-            <div className="font-mono text-[10px] md:text-xs text-[#7e7ca6]/70 h-5">
+            <div className="font-mono text-[10px] md:text-xs text-litestore/70 h-5">
               <AnimatePresence mode="wait">
                 <motion.span key={activeLog} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>
                   {LOGS[activeLog]}
@@ -192,14 +192,14 @@ export const LiteStorePage = () => {
           <ScrollReveal direction="left">
             <div className="flex flex-col gap-8">
               <div>
-                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-[#7e7ca6] font-black">Architecture</span>
+                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-litestore font-black">Architecture</span>
                 <h2 className="font-noto text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">How It's Built.</h2>
               </div>
 
               <p className="font-mono text-sm md:text-base text-white/40 leading-relaxed">
                 Pages Router with <span className="text-white">getStaticProps</span> for every route,
                 edge-cacheable, SEO-ready. Multi-tenant brand pages live at{' '}
-                <code className="text-[#7e7ca6]">/spaces/&lt;mall&gt;/&lt;brand&gt;</code>, each pulling per-tenant
+                <code className="text-litestore">/spaces/&lt;mall&gt;/&lt;brand&gt;</code>, each pulling per-tenant
                 Tailwind color tokens from a single config. Forms POST via <span className="text-white">axios → sheet.best</span> into
                 the client's own Google Sheet   serverless, zero backend, revocable without touching code.
                 GA4 wired directly in <code className="text-white">_document.js</code> with{' '}
@@ -223,7 +223,7 @@ export const LiteStorePage = () => {
                 <span className="font-mono text-[9px] uppercase tracking-widest text-white/20 font-black">Form Pipeline</span>
                 <div className="flex items-center gap-3 flex-wrap">
                   {[
-                    { label: 'Next.js Form', sub: 'client-side', color: 'border-[#7e7ca6]/30 text-[#7e7ca6]' },
+                    { label: 'Next.js Form', sub: 'client-side', color: 'border-litestore/30 text-litestore' },
                     { label: '→', sub: '', color: 'text-white/20 border-transparent' },
                     { label: 'axios POST', sub: 'sheet.best API', color: 'border-white/10 text-white' },
                     { label: '→', sub: '', color: 'text-white/20 border-transparent' },
@@ -247,7 +247,7 @@ export const LiteStorePage = () => {
           <ScrollReveal direction="right">
             <div className="flex flex-col gap-8">
               <div>
-                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-[#7e7ca6] font-black">Design System</span>
+                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-litestore font-black">Design System</span>
                 <h2 className="font-noto text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Per-Tenant<br />Tokens.</h2>
               </div>
               <p className="font-mono text-sm text-white/40 leading-relaxed">
@@ -255,7 +255,7 @@ export const LiteStorePage = () => {
                 consumed by a shared template   no copy-paste, no forked stylesheets.
               </p>
 
-              <div className="relative p-1 bg-gradient-to-br from-[#7e7ca6]/20 to-transparent rounded-[28px]">
+              <div className="relative p-1 bg-gradient-to-br from-litestore/20 to-transparent rounded-[28px]">
                 <div className="bg-[#0d0d0d] rounded-[27px] p-6 border border-white/5">
                   <div className="flex items-center gap-2 mb-5 opacity-40">
                     <div className="w-2 h-2 rounded-full bg-red-500/60" />
@@ -292,20 +292,20 @@ export const LiteStorePage = () => {
         <div className="max-w-6xl mx-auto">
           <ScrollReveal direction="up">
             <div className="mb-12">
-              <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-[#7e7ca6] font-black">Production Metrics</span>
+              <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-litestore font-black">Production Metrics</span>
               <h2 className="font-noto text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2">Numbers.</h2>
             </div>
           </ScrollReveal>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {METRICS.map((m, i) => (
               <ScrollReveal key={m.label} delay={i * 0.06} direction="up" className="h-full">
-                <div className="group relative p-6 h-full rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent flex flex-col gap-4 hover:border-[#7e7ca6]/30 hover:bg-white/[0.03] hover:-translate-y-1 transition-all duration-300">
+                <div className="group relative p-6 h-full rounded-2xl border border-white/5 bg-gradient-to-b from-white/[0.02] to-transparent flex flex-col gap-4 hover:border-litestore/30 hover:bg-white/[0.03] hover:-translate-y-1 transition-all duration-300">
                   <div className="flex justify-between items-center">
                     <span className="font-mono text-[9px] text-white/10 font-bold uppercase tracking-widest">[METRIC_0{i + 1}]</span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#7e7ca6]/20 group-hover:bg-[#7e7ca6]/80 group-hover:scale-125 transition-all duration-300" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-litestore/20 group-hover:bg-litestore/80 group-hover:scale-125 transition-all duration-300" />
                   </div>
                   <div className="flex flex-col gap-1.5 mt-auto">
-                    <span className="font-noto text-2xl sm:text-3xl font-black text-[#7e7ca6] tracking-tight whitespace-nowrap leading-none">{m.value}</span>
+                    <span className="font-noto text-2xl sm:text-3xl font-black text-litestore tracking-tight whitespace-nowrap leading-none">{m.value}</span>
                     <span className="font-mono text-[9px] text-white/40 leading-relaxed uppercase tracking-wider group-hover:text-white/60 transition-colors duration-300">{m.label}</span>
                   </div>
                   <div className="absolute inset-0 -z-10 rounded-2xl opacity-0 group-hover:opacity-100 bg-[radial-gradient(circle_at_center,rgba(126,124,166,0.08)_0%,transparent_70%)] transition-opacity duration-300 pointer-events-none" />
@@ -324,7 +324,7 @@ export const LiteStorePage = () => {
           <ScrollReveal direction="up">
             <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div>
-                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-[#7e7ca6] font-black">What I Actually Did</span>
+                <span className="font-mono text-[10px] tracking-[0.5em] uppercase text-litestore font-black">What I Actually Did</span>
                 <h2 className="font-noto text-4xl md:text-6xl font-black uppercase tracking-tighter mt-2 text-black">My<br />Contributions.</h2>
               </div>
               <p className="font-mono text-sm text-black/40 max-w-sm leading-relaxed">
@@ -338,11 +338,11 @@ export const LiteStorePage = () => {
               <ScrollReveal key={c.label} delay={i * 0.07} direction="up">
                 <div className={`p-7 rounded-[20px] flex flex-col gap-4 h-full border transition-all duration-500
                   ${c.accent
-                    ? 'bg-[#7e7ca6] text-white border-transparent'
-                    : 'bg-white border-black/8 hover:border-[#7e7ca6]/30'
+                    ? 'bg-litestore text-white border-transparent'
+                    : 'bg-white border-black/8 hover:border-litestore/30'
                   }`}
                 >
-                  <div className={`w-6 h-px ${c.accent ? 'bg-white/60' : 'bg-[#7e7ca6]/60'}`} />
+                  <div className={`w-6 h-px ${c.accent ? 'bg-white/60' : 'bg-litestore/60'}`} />
                   <h3 className={`font-mono text-xs font-black tracking-[0.25em] uppercase ${c.accent ? 'text-white' : 'text-black'}`}>
                     {c.label}
                   </h3>
