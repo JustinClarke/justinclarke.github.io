@@ -1,3 +1,19 @@
+/**
+ * IngestionSection section "02 / Ingestion": the Bronze-layer story - which
+ * datasets are pulled per race, the FastF1->Parquet pipeline chips, and a 4-up
+ * scale-stat grid.
+ *
+ * Fits in: rendered by SourceView inside the Capabilities & Ingestion block.
+ * Note:    Numbers come from STATS so they stay consistent with the rest of
+ *          the site; the inline literals (40, 8Hz) are descriptive prose.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Same data-driven shape as the other sections: DATASETS and SCALE_METRICS are
+ * arrays mapped into cards. `color-mix(in srgb, var(--color-viz-info) 15%,
+ * transparent)` is CSS that tints a design-token colour down to 15% opacity for
+ * the pill backgrounds, so the colour still comes from the token, not a raw rgba.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { STATS } from '../../data/projectStats';
 

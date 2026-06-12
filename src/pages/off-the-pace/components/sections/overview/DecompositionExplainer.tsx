@@ -1,3 +1,18 @@
+/**
+ * DecompositionExplainer the "same lap, seven causes" chart: two drivers, each
+ * shown as a single horizontal bar split into coloured segments that sum to 100%.
+ *
+ * Fits in: the overview, as the visual centrepiece of the thesis.
+ * Note:    Segment widths and colours are data (`drivers[].segments`); the bar is
+ *          a flex row where each segment's `width: pct%` does the proportioning.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Each coloured block uses `style={{ width: ... , backgroundColor: ... }}`
+ * inline because the value comes from data and changes per segment (the project
+ * rule: static styling uses Tailwind classes, JS-computed values use inline
+ * `style`). `title={seg.title}` gives the native browser tooltip on hover.
+ * -----------------------------------------------------------------------------
+ */
 import { LINKS } from '../../../data/projectStats';
 
 const drivers = [

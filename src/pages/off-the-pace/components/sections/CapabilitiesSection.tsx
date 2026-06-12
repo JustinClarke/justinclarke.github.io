@@ -1,3 +1,21 @@
+/**
+ * CapabilitiesSection section "01 / Capabilities & Problems Solved": a "hard
+ * problems" zone (three causal-identification challenges) above a feature-
+ * capabilities grid (ghost car, overtake graph, etc.).
+ *
+ * Fits in: the opening technical section on the Source page.
+ * Note:    Each card carries its own `accent` colour in its data object, fed
+ *          into inline gradients/borders so one block of JSX serves every card.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `problems` and `capabilities` are data arrays driving the two grids. The
+ * `style={{ '--glow': ... } as React.CSSProperties}` line sets a CSS custom
+ * property (a `--variable`) inline; the cast is only needed because TypeScript
+ * does not know about arbitrary `--names`. The class then reads it with
+ * `group-hover:shadow-[0_0_16px_var(--glow)]` - the project's preferred way to
+ * pass a dynamic colour into Tailwind rather than hard-coding the shadow.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { Ghost, Radio, TrendingDown, Gauge, Crosshair, Flag } from 'lucide-react';
 
@@ -43,7 +61,7 @@ const capabilities: {
   {
     Icon: Ghost,
     title: 'Ghost Car',
-    desc: 'Counterfactual lap reconstruction recombines driver skill residuals with any constructor baseline. dbt models built; React visualisation planned.',
+    desc: 'Counterfactual lap reconstruction recombines driver skill residuals with any constructor baseline. dbt models built; React visualisation built.',
     tags: ['fct_ghost_car_pace', 'fct_ghost_race_finish'],
     accent: 'var(--color-f1-red)',
     status: 'built',
@@ -269,7 +287,7 @@ export const CapabilitiesSection: React.FC<CapabilitiesSectionProps> = ({ id }) 
                       <span
                         className="inline-block mt-1 font-mono text-[7px] font-bold uppercase tracking-[0.15em] px-1.5 py-0.5 rounded border"
                         style={{
-                          color: cap.status === 'planned' ? '#f59e0b' : 'var(--color-viz-success)',
+                          color: cap.status === 'planned' ? 'var(--color-amber)' : 'var(--color-viz-success)',
                           borderColor: cap.status === 'planned' ? 'rgba(245,158,11,0.2)' : 'rgba(74,222,128,0.15)',
                           backgroundColor: cap.status === 'planned' ? 'rgba(245,158,11,0.06)' : 'rgba(74,222,128,0.04)',
                         }}

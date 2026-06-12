@@ -1,3 +1,16 @@
+/**
+ * InteractiveHint a glowing "scroll / try me" pill with an icon and label.
+ *
+ * Fits in: nudges the visitor toward an interaction (e.g. "scroll to explore").
+ * Note:    shows different text on mobile vs desktop via two spans toggled by
+ *          Tailwind's `hidden md:inline` / `inline md:hidden` responsive classes.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `icon: Icon` renames the `icon` prop to `Icon` (capital I) so JSX will treat
+ * it as a component you can render as <Icon />. Lowercase names are read as
+ * plain HTML tags, so the capital letter matters.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { ScrollReveal } from './ScrollReveal';
 import { LucideIcon } from 'lucide-react';

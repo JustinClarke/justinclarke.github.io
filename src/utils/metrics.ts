@@ -1,4 +1,18 @@
 /**
+ * metrics.ts two small helpers for the headline stat numbers.
+ *
+ * Fits in: used by stat/metric displays across project pages.
+ *
+ * For beginners ----------------------------------------------------------------
+ * parseMetricValue splits a label like "4K+" into its number (4) and its text
+ * suffix ("K+") via regular expressions: `/[^0-9.]/g` strips everything that
+ * ISN'T a digit or dot to get the number, and `/[0-9.]/g` strips the digits to
+ * leave the suffix. getMetricTooltip is just a lookup that returns a friendly
+ * sentence for known metrics.
+ * -----------------------------------------------------------------------------
+ */
+
+/**
  * Parses a metric value (e.g., "80%", "4K+") into its numeric and suffix components.
  * Used for animating counts and applying localized formatting.
  */

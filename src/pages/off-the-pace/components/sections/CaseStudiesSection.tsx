@@ -1,4 +1,19 @@
-import { ArrowRight, Calendar, ExternalLink } from 'lucide-react';
+/**
+ * CaseStudiesSection the "Attributed Findings" band: one card per case study,
+ * with a hand-built CSS decomposition chart shown only for the São Paulo entry.
+ *
+ * Fits in: rendered on both the Overview and Source pages.
+ * Note:    The teaser chart is gated on `study.id === 'sao-paulo-2021'`, so new
+ *          case studies render as plain cards until they get their own visual.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `{condition && <JSX/>}` is conditional rendering: if the condition is false,
+ * React draws nothing; if true, it draws the JSX. That is how the decomposition
+ * chart appears for one study and is skipped for the rest. The bars themselves
+ * are just divs whose `w-[95%]` widths encode the numbers visually.
+ * -----------------------------------------------------------------------------
+ */
+import { ArrowRight, Calendar } from 'lucide-react';
 import { CASE_STUDIES } from '../../data/caseStudies';
 
 export function CaseStudiesSection({ id }: { id?: string }) {

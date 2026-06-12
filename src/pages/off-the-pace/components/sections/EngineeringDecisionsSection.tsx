@@ -1,3 +1,17 @@
+/**
+ * EngineeringDecisionsSection the "Zero Cloud Compute" pitch beside a faux
+ * terminal showing the CI invariant SQL and its passing test output.
+ *
+ * Fits in: rendered inside SourceView's Pipeline section.
+ * Note:    The "terminal" is pure markup - coloured <span>s fake SQL syntax
+ *          highlighting; there is no real code execution here.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The `{'\n'}` and `{'  '}` strings are literal newlines and spaces. In JSX,
+ * whitespace in your source is collapsed, so to render a pre-formatted code
+ * block you insert the line breaks and indentation explicitly as expressions.
+ * -----------------------------------------------------------------------------
+ */
 import { forwardRef } from 'react';
 import { STATS } from '../../data/projectStats';
 

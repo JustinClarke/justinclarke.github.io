@@ -1,13 +1,23 @@
+/**
+ * CustomCursor replaces the OS cursor with a custom white dot that grows over
+ * interactive elements (links, buttons).
+ *
+ * Fits in: rendered once globally; floats above everything.
+ * Note:    it bows out politely returns null on touch devices, when the visitor
+ *          is navigating by keyboard (Tab), or if they prefer reduced motion.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Updating React state on every mousemove would re-render constantly and feel
+ * laggy. Instead the position comes from "motion values" (useMousePositionMotion
+ * + useSpring), which Framer Motion writes straight to the DOM, skipping React's
+ * render loop. `useSpring` adds the smooth, slightly-trailing follow.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useEffect, useState } from 'react';
 import { motion, useSpring } from 'framer-motion';
 import { useReducedMotion, useMousePositionMotion } from '@/hooks';
 import { cn } from '@/utils';
 
-/**
- * CustomCursor implements a high-performance cursor replacement.
- * Refactored to use useMotionValue (via useMousePositionMotion) to bypass 
- * the React render loop on every single mousemove event.
- */
 export const CustomCursor = () => {
   const { mouseX, mouseY } = useMousePositionMotion();
   const prefersReduced = useReducedMotion();
@@ -49,6 +59,9 @@ export const CustomCursor = () => {
     const handleMouseOver = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       if (!target) return;
+      // LEARN: closest() walks UP from the hovered element looking for any
+      //    ancestor matching this selector list. `!!` turns the result (an
+      //    element or null) into a plain true/false.
       const isInteractive = !!target.closest('button, a, input, [role="button"], .interactive, .edu-item, .exp-item');
       setIsHovering(isInteractive);
     };

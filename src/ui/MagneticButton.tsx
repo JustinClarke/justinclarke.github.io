@@ -1,7 +1,16 @@
 /**
- * @fileoverview Generic button wrapper to apply hover scale effects.
+ * MagneticButton a button that gently scales up on hover and down on tap.
+ *
+ * Fits in: a reusable call-to-action button used across the site.
+ * Note:    `as` lets the SAME effect wrap a <button>, <div>, or <span> useful
+ *          when the thing you want to animate isn't semantically a button.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `forwardRef` lets a parent reach the real DOM node inside this component
+ * (needed for focus/measure). `whileHover`/`whileTap` are Framer Motion props:
+ * you describe the END state ({ scale: 1.05 }) and it animates there for you.
+ * -----------------------------------------------------------------------------
  */
-
 import React, { forwardRef } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/utils';
@@ -24,6 +33,8 @@ export interface MagneticButtonProps extends HTMLMotionProps<"button"> {
  */
 export const MagneticButton = forwardRef<HTMLButtonElement, MagneticButtonProps>(
   ({ children, className = '', as = 'button', onClick, ...props }, ref) => {
+    // LEARN: pick which animated element to render based on the `as` prop. A
+    //    capitalised variable (Component) can be used as a JSX tag: <Component />.
     const Component = (as === 'div' ? motion.div : as === 'span' ? motion.span : motion.button) as any;
     
     return (

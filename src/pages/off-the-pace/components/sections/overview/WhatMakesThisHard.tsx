@@ -1,3 +1,17 @@
+/**
+ * WhatMakesThisHard three "problem to solution" cards framing the hard parts
+ * of the project as error codes with system resolutions.
+ *
+ * Fits in: the overview, after the pipeline explainer.
+ * Note:    Purely presentational. All three cards share one block of JSX driven
+ *          by the `problems` array edit the data, not the markup.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `problems.map((item) => ...)` renders one card per object in the array. The
+ * styling is identical for every card; only the text differs, which is why the
+ * content lives in data above and the layout is written once below.
+ * -----------------------------------------------------------------------------
+ */
 const problems = [
   {
     number: '01',

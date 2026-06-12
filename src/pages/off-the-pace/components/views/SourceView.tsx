@@ -1,4 +1,23 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+/**
+ * SourceView assembles the engineering deep-dive page body: the numbered
+ * technical sections (Capabilities through Docs/Governance), a closing CTA, the
+ * footer, and a FloatingNav pill that tracks which section you are reading.
+ *
+ * Fits in: lazy-loaded by OffThePaceSource inside a <Suspense> boundary.
+ * Note:    FloatingNav is rendered through a React portal into document.body so
+ *          its fixed positioning is never trapped by a parent's transform.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Two ideas worth knowing here. (1) createPortal renders JSX into a different
+ * DOM node (here document.body) while keeping it part of this component in
+ * React - useful for things that must float above everything. (2) A
+ * "scroll-spy": an IntersectionObserver watches each section and, as one passes
+ * the middle of the screen, stores its id in state so the nav can highlight it.
+ * The scroll handler is throttled with requestAnimationFrame so it runs at most
+ * once per repaint instead of firing hundreds of times a second.
+ * -----------------------------------------------------------------------------
+ */
+import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { ExpandableTabs } from '../ui/ExpandableTabs';
 import { STATS, LINKS } from '../../data/projectStats';
@@ -14,6 +33,8 @@ import { MLImpactSection } from '../sections/MLImpactSection';
 import { ValidationSection } from '../sections/ValidationSection';
 import { DocsGovernanceSection } from '../sections/DocsGovernanceSection';
 import { CaseStudiesSection } from '../sections/CaseStudiesSection';
+import { DecompositionExplainer } from '../sections/overview/DecompositionExplainer';
+import { ClosingCTA } from '../sections/overview/ClosingCTA';
 
 const NAV_ITEMS: TabItem[] = [
   { id: 'capabilities', label: 'Capabilities', icon: 'Gauge', color: 'text-f1-red', iconClassName: '-translate-y-[1.5px]' },
@@ -28,6 +49,12 @@ function FloatingNav() {
   const [activeSection, setActiveSection] = useState<string>('');
   const [navVisible, setNavVisible] = useState(true);
 
+  // LEARN: This effect decides when to show the nav and the "at the top"
+  //    state. `ticking` is the rAF throttle guard: while a frame is already
+  //    queued we ignore further scroll events, so the expensive maths runs at
+  //    most once per repaint. The ResizeObserver keeps docHeight fresh when the
+  //    page grows (e.g. lazy sections expanding) so the "near the bottom" check
+  //    that hides the nav stays accurate.
   useEffect(() => {
     let ticking = false;
     let innerHeight = window.innerHeight;
@@ -80,6 +107,11 @@ function FloatingNav() {
     };
   }, []);
 
+  // LEARN: This is the scroll-spy. The rootMargin shrinks the "viewport" the
+  //    observer cares about to a thin band across the middle of the screen
+  //    (40% chopped off top and bottom), so a section counts as "active" only
+  //    once it reaches centre-screen. Whichever section is there sets
+  //    activeSection, which the nav pill reads to highlight the right tab.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -101,12 +133,19 @@ function FloatingNav() {
     return () => observer.disconnect();
   }, []);
 
+  // LEARN: useCallback hands back the *same* function instance between renders
+  //    (its deps list is empty, so it never changes). That matters because we
+  //    pass it down to ExpandableTabs as a prop; a stable function lets that
+  //    child skip re-rendering when nothing it depends on actually changed.
   const handleNavChange = useCallback((id: string) => {
     setActiveSection(id);
     const el = document.getElementById(`section-${id}`);
     if (el) smoothScrollTo(el, 2.2, 80);
   }, []);
 
+  // LEARN: createPortal(jsx, document.body) renders this nav at the end of
+  //    <body> instead of here in the tree, so its fixed positioning is measured
+  //    against the whole window and can't be clipped by an ancestor.
   return createPortal(
     <div className="flex flex-col items-center gap-1.5 transform-gpu" style={{ position: 'fixed', bottom: 'calc(clamp(16px, 4vw, 45px) + env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%) translateZ(0)', WebkitTransform: 'translateX(-50%) translateZ(0)', zIndex: 9999, opacity: navVisible ? 1 : 0, pointerEvents: navVisible ? 'auto' : 'none', transition: 'opacity 0.4s ease', maxWidth: 'calc(100vw - 32px)' }}>
       {!activeSection ? (
@@ -120,7 +159,7 @@ function FloatingNav() {
           {/* Desktop: Scroll or tap to view */}
           <div className="hidden md:flex items-center gap-1.5 animate-pulse transform-gpu" style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(12,17,16,0.6)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '20px', padding: '4px 14px', WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}>
             <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(232,230,224,0.5)', fontWeight: 700 }}>
-              Scroll or tap to view
+              Scroll or tap to EXPLORE
             </span>
           </div>
         </>
@@ -203,6 +242,9 @@ export function SourceView() {
           className="scroll-mt-24 flex flex-col gap-8"
         >
           <ScienceSection id="science" />
+          <div className="reveal-element">
+            <DecompositionExplainer />
+          </div>
           <OutputSection id="output" />
         </section>
 
@@ -233,41 +275,7 @@ export function SourceView() {
 
       </div>
 
-      {/* Closer */}
-      <section className="relative z-10 text-center py-12 px-6 overflow-hidden border-t border-white/5">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse_at_bottom,rgba(225,6,0,0.08)_0%,transparent_75%)] pointer-events-none" />
-        <h2 className="text-4xl md:text-5xl font-noto font-black text-white uppercase tracking-tighter mb-6 leading-none">
-          Lap times lie.<br />You can now know why.
-        </h2>
-        <p className="font-jetbrains text-xs md:text-sm text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
-          A causal engine built from first principles. {STATS.racesIngested} races ingested. {STATS.seasons} seasons. {STATS.tests} dbt tests + {STATS.mlTests} ML tests. 5 XGBoost models. No cloud required.
-        </p>        <div className="w-full max-w-sm sm:max-w-2xl lg:max-w-3xl flex flex-col gap-3 mx-auto mt-4 items-center">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 w-full">
-            <a
-              href={LINKS.repo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 bg-f1-red text-white font-jetbrains text-xs font-bold uppercase tracking-wider px-4 py-3 rounded hover:bg-red-700 transition-all duration-200 shadow-[0_0_20px_rgba(225,6,0,0.2)]"
-            >
-              ↗ View on GitHub
-            </a>
-            <a
-              href={LINKS.docs}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/80 hover:text-white font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200"
-            >
-              Read the Docs →
-            </a>
-            <a
-              href="/f1"
-              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/50 hover:text-white/80 font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200"
-            >
-              See the Overview ↗
-            </a>
-          </div>
-        </div>
-      </section>
+      <ClosingCTA />
 
       <footer className="relative z-10 border-t border-white/5 bg-graphite-950/80 backdrop-blur-sm py-4 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-[10px] text-white/40 tracking-wider">
         <div className="flex flex-col sm:flex-row items-center gap-2">

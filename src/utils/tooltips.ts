@@ -1,7 +1,20 @@
 /**
- * @fileoverview Reusable tooltip system for a premium, technical feel.
- * Manages a single floating DOM element and uses event delegation for efficiency.
- * Refined for site-wide consistency and route-based stability.
+ * tooltips.ts the site-wide hover-tooltip system, run outside React.
+ *
+ * Fits in: initTooltips() is called once at app start. Any element can show a
+ *          tooltip just by adding a `data-tooltip="..."` attribute (optionally
+ *          data-tooltip-pos / -color / -delay).
+ * Note:    it uses ONE shared floating <div> for every tooltip and listens at
+ *          the document level ("event delegation") instead of attaching a
+ *          listener per element far cheaper with hundreds of targets.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This is plain DOM code, not a React component. It creates a div, positions it
+ * near the cursor, and shows/hides it on mousemove. Timers add a small delay so
+ * a quick mouse pass doesn't flash the tooltip; scroll/resize/blur force-hide it
+ * so it never gets "stuck" on screen. The `__TOOLTIPS_INITIALIZED__` flag guards
+ * against wiring up the listeners twice.
+ * -----------------------------------------------------------------------------
  */
 
 interface TooltipState {

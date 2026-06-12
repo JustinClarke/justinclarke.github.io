@@ -1,3 +1,27 @@
+/**
+ * TechStackBand the interactive tech-stack DAG: nine tools laid out in three
+ * columns, wired by curved SVG edges. Hovering a tool lights up its full lineage
+ * (everything upstream and downstream); when idle, it auto-demos by cycling a
+ * random tool every few seconds.
+ *
+ * Fits in: the overview, as the "how it's built" diagram. Mobile shows a plain
+ *          grid; desktop (md+) shows the wired DAG.
+ * Note:    Edges are drawn by measuring real node positions every render, so the
+ *          curves stay glued to the cards through resizes (hence the ResizeObserver
+ *          + `setTick` re-render nudge).
+ *
+ * For beginners ----------------------------------------------------------------
+ * Several React concepts share this file:
+ *  - A ref (`useRef`) is a box that survives re-renders without causing them. We
+ *    use refs for DOM nodes (`nodeRefs`, `svgRef`) and for timer handles we need
+ *    to cancel later (`idleTimeoutRef`).
+ *  - `useState` values DO cause a re-render when changed; `hoveredTech` etc.
+ *    drive which cards light up.
+ *  - `--tech-color` / `--tech-rgb` are CSS custom properties set inline per card,
+ *    then read by Tailwind arbitrary values like `bg-[rgba(var(--tech-rgb),0.03)]`
+ *    the project's pattern for "one styled block, many colours".
+ * -----------------------------------------------------------------------------
+ */
 import React, { useRef, useState, useEffect } from 'react';
 import { cn } from '@/utils';
 
@@ -39,7 +63,7 @@ const stack: StackItem[] = [
   {
     name: 'dbt',
     sub: 'transform',
-    color: '#FF694B',
+    color: 'var(--color-dbt)',
     rgb: '255, 105, 75',
     step: '03',
     icon: (
@@ -254,7 +278,10 @@ export function TechStackBand() {
     return () => observer.disconnect();
   }, []);
 
-  // Idle timer logic
+  // LEARN: Idle auto-demo. When the section is on screen and nobody is hovering,
+  //    wait 0.9s of no activity, then start cycling a random tool every 3s so the
+  //    DAG animates itself. Any real interaction (mousemove, scroll, key) resets
+  //    the wait via `resetIdleTimer`, so the demo only runs when truly idle.
   useEffect(() => {
     if (!isIntersecting || hoveredTech) {
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
@@ -309,7 +336,10 @@ export function TechStackBand() {
     };
   }, [isIntersecting, hoveredTech, allTechNames]);
 
-  // Watch for grid resizes so edges stay geometrically accurate
+  // LEARN: The edges are computed from live `getBoundingClientRect()` positions,
+  //    which are only known AFTER layout. `setTick` increments a throwaway counter
+  //    purely to force one extra render once positions exist, and a ResizeObserver
+  //    re-forces it whenever the grid changes size so the curves never drift.
   useEffect(() => {
     setTick(t => t + 1);
     const el = gridRef.current;
@@ -340,6 +370,10 @@ export function TechStackBand() {
     };
   }, []);
 
+  // LEARN: Given the hovered tool, find everything connected to it. `walk` does a
+  //    breadth-first search over the edge list one direction at a time: "up"
+  //    follows edges backwards (ancestors / what feeds this), "down" follows them
+  //    forwards (descendants / what this feeds). The union is the lit-up lineage.
   const getActiveLineage = (hovered: string | null) => {
     if (!hovered) return { nodes: [] as string[], edges: [] as [string, string][] };
 
@@ -371,6 +405,9 @@ export function TechStackBand() {
     return { nodes: activeNodes, edges: activeEdges };
   };
 
+  // LEARN: `activeTech` is derived, not stored a real hover wins, otherwise the
+  //    idle auto-demo's pick. Computing it during render (instead of in another
+  //    useState) keeps the two sources from drifting out of sync.
   const activeTech = hoveredTech || activeIdleTech;
   const activeLineage = activeTech ? getActiveLineage(activeTech) : null;
   const isEdgeActive = (from: string, to: string) =>
@@ -456,7 +493,7 @@ export function TechStackBand() {
           {columns.map((column, colIndex) => (
             <div
               key={column.title}
-              className="flex flex-col gap-4 p-5 bg-[#0c1110]/30 border border-white/5 rounded-2xl transition-all duration-500 hover:border-white/10 group/col"
+              className="flex flex-col gap-4 p-5 bg-ink/30 border border-white/5 rounded-2xl transition-all duration-500 hover:border-white/10 group/col"
             >
               {/* Column Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">

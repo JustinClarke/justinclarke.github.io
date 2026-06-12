@@ -204,7 +204,7 @@ Dual-phase state machine in `App.tsx`: fade-out → scroll reset → fade-in. Sc
 
 ### GitHub Pages SPA routing
 
-`public/404.html` encodes unknown paths into query strings (`/?/project/litestore`). The `index.html` inline script decodes them back with `history.replaceState` before React mounts.
+`public/404.html` encodes unknown paths into query strings (`/?/project/litestore`). The `index.html` inline script decodes them back with `history.replaceState` before React mounts, automatically stripping trailing slashes to keep URLs clean and normalized.
 
 ---
 

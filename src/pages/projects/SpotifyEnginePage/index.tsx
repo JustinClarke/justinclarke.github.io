@@ -1,3 +1,23 @@
+/**
+ * SpotifyEnginePage the project case-study page for the MSc Spotify
+ * Predictive Engine: a 3-model hierarchical recommendation system trained on
+ * 1M rows of Spotify MSD data that solves the cold-start problem.
+ *
+ * Fits in: one of five project pages, reachable via /project/spotify-engine.
+ *          Rendered lazily by App.tsx inside the page-transition wrapper.
+ * Note:    the code-display block (Section 01, right column) is plain JSX
+ *          using coloured <span> elements for syntax highlighting - no
+ *          third-party syntax highlighter library is needed for a static
+ *          snippet this small.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The EQVisualizer creates 80 animated bars using Array.from({ length: 80 }).
+ * That is the JavaScript equivalent of writing a for loop 80 times and
+ * collecting the results into an array, which .map() then turns into 80
+ * <motion.div> elements. Each bar gets a random `duration` and `delay` so
+ * they animate out of sync, creating the live equalizer illusion.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/utils';
@@ -7,13 +27,17 @@ import { RelatedProjects } from '@/components/projects';
 
 /* ─────────────────────────── DATA ─────────────────────────── */
 
+// LEARN: Each entry's `color` is passed as an inline style to FeatureBar so
+//    the bar fill and value label can be coloured dynamically from data.
+//    We use CSS variable strings (e.g. 'var(--color-viz-teal)') rather than
+//    raw hex so the colour is defined once in index.css and reused everywhere.
 const AUDIO_FEATURES = [
   { label: 'Danceability',      value: 0.82, color: 'var(--color-viz-spotify)' },
   { label: 'Energy',            value: 0.74, color: 'var(--color-viz-spotify)' },
   { label: 'Valence',           value: 0.91, color: 'var(--color-viz-spotify)' },
-  { label: 'Acousticness',      value: 0.12, color: '#4fd1c5' },
-  { label: 'Instrumentalness',  value: 0.05, color: '#4fd1c5' },
-  { label: 'Liveness',          value: 0.18, color: '#4fd1c5' },
+  { label: 'Acousticness',      value: 0.12, color: 'var(--color-viz-teal)' },
+  { label: 'Instrumentalness',  value: 0.05, color: 'var(--color-viz-teal)' },
+  { label: 'Liveness',          value: 0.18, color: 'var(--color-viz-teal)' },
 ];
 
 const MODELS = [
@@ -82,7 +106,17 @@ const NOTEBOOKS = [
 
 /* ─────────────────────────── SUB-COMPONENTS ─────────────────────────── */
 
-/** Animated equalizer bars - fills the hero background */
+/**
+ * Animated EQ bars that fill the hero section background.
+ *
+ * LEARN: Array.from({ length: BAR_COUNT }) creates an array of 80 empty
+ *    slots which .map() turns into 80 <motion.div> bars. Each bar gets a
+ *    random `duration` (2-5 seconds) and a position-based `delay` so they
+ *    animate out of sync - mimicking a live audio equalizer display.
+ *    The values are calculated once at component mount (Math.random() runs
+ *    inside the render function body, not inside JSX), so they stay stable
+ *    for the lifetime of the component even if it re-renders.
+ */
 const EQVisualizer = () => {
   const BAR_COUNT = 80;
   return (
@@ -210,7 +244,7 @@ export const SpotifyEnginePage = () => {
       {/* ═══════════════════════════════════════════════════════════
           HERO
       ══════════════════════════════════════════════════════════════ */}
-      <section className="relative h-screen flex flex-col items-center justify-center px-6 md:px-12 overflow-hidden bg-[#020202] text-white">
+      <section className="relative h-screen flex flex-col items-center justify-center px-6 md:px-12 overflow-hidden bg-void text-white">
 
         {/* Background layer */}
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
@@ -219,7 +253,7 @@ export const SpotifyEnginePage = () => {
           {/* Fine grid */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:40px_40px]" />
           {/* Bottom fade over EQ bars */}
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#020202] via-[#020202]/60 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-void via-void/60 to-transparent" />
         </div>
 
         {/* Live EQ Visualizer */}
@@ -322,7 +356,7 @@ export const SpotifyEnginePage = () => {
               <p className="font-mono text-sm md:text-base text-white/35 leading-relaxed max-w-lg">
                 Each track is fingerprinted across 20+ Spotify API dimensions. The{' '}
                 <span className="text-viz-spotify font-black">green</span> features drive high-energy recommendations;{' '}
-                <span className="text-[#4fd1c5] font-black">teal</span> features fine-tune acoustic texture. Together they form the similarity vector.
+                <span className="text-viz-teal font-black">teal</span> features fine-tune acoustic texture. Together they form the similarity vector.
               </p>
 
               {/* Feature bars */}
@@ -340,7 +374,7 @@ export const SpotifyEnginePage = () => {
 
           {/* Right: cosine similarity explainer card */}
           <ScrollReveal direction="right">
-            <div className="relative rounded-[28px] overflow-hidden bg-[#0a0a0a] border border-white/[0.07] shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
+            <div className="relative rounded-[28px] overflow-hidden bg-deep border border-white/[0.07] shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
 
               {/* Card header */}
               <div className="flex items-center gap-2 px-6 py-4 border-b border-white/[0.05]">
@@ -354,10 +388,10 @@ export const SpotifyEnginePage = () => {
               <div className="p-7 md:p-10 overflow-x-auto">
                 <code className="font-mono text-[11px] md:text-[13px] text-white/40 leading-[1.9] block whitespace-pre">
                   <span className="text-white/15 select-none">01  </span><span className="text-white/25"># Build audio feature vectors</span>{'\n'}
-                  <span className="text-white/15 select-none">02  </span>audio_vecs = <span className="text-[#4fd1c5]">scaler</span>.fit_transform(df[AUDIO_COLS]){'\n'}
+                  <span className="text-white/15 select-none">02  </span>audio_vecs = <span className="text-viz-teal">scaler</span>.fit_transform(df[AUDIO_COLS]){'\n'}
                   <span className="text-white/15 select-none">03  </span>{'\n'}
                   <span className="text-white/15 select-none">04  </span><span className="text-white/25"># TF-IDF encode genre strings</span>{'\n'}
-                  <span className="text-white/15 select-none">05  </span>genre_tfidf = <span className="text-[#4fd1c5]">TfidfVectorizer</span>().fit_transform(df[<span className="text-viz-spotify">'genres'</span>]){'\n'}
+                  <span className="text-white/15 select-none">05  </span>genre_tfidf = <span className="text-viz-teal">TfidfVectorizer</span>().fit_transform(df[<span className="text-viz-spotify">'genres'</span>]){'\n'}
                   <span className="text-white/15 select-none">06  </span>{'\n'}
                   <span className="text-white/15 select-none">07  </span><span className="text-white/25"># Compute cosine similarities</span>{'\n'}
                   <span className="text-white/15 select-none">08  </span>sim  = <span className="text-viz-spotify">cosine_similarity</span>(audio_vecs, query_audio){'\n'}
@@ -366,7 +400,7 @@ export const SpotifyEnginePage = () => {
                   <span className="text-white/15 select-none">11  </span>{'\n'}
                   <span className="text-white/15 select-none">12  </span><span className="text-white/25"># Hierarchical stable sort → cold-start resolved</span>{'\n'}
                   <span className="text-white/15 select-none">13  </span>df[<span className="text-viz-spotify">'sim'</span>], df[<span className="text-viz-spotify">'sim2'</span>], df[<span className="text-viz-spotify">'sim3'</span>] = sim, sim2, sim3{'\n'}
-                  <span className="text-white/15 select-none">14  </span>result = df.sort_values([<span className="text-viz-spotify">'sim3'</span>,<span className="text-viz-spotify">'sim2'</span>,<span className="text-viz-spotify">'sim'</span>], ascending=<span className="text-[#4fd1c5]">False</span>, kind=<span className="text-viz-spotify">'stable'</span>){'\n'}
+                  <span className="text-white/15 select-none">14  </span>result = df.sort_values([<span className="text-viz-spotify">'sim3'</span>,<span className="text-viz-spotify">'sim2'</span>,<span className="text-viz-spotify">'sim'</span>], ascending=<span className="text-viz-teal">False</span>, kind=<span className="text-viz-spotify">'stable'</span>){'\n'}
                   <span className="text-white/15 select-none">15  </span><Cursor />
                 </code>
               </div>
@@ -378,7 +412,7 @@ export const SpotifyEnginePage = () => {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 02 - 3-MODEL BENCHMARK
       ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-40 px-6 md:px-12 bg-[#020202] text-white border-t border-white/[0.04] relative overflow-hidden">
+      <section className="py-24 md:py-40 px-6 md:px-12 bg-void text-white border-t border-white/[0.04] relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-16 md:gap-32 items-end mb-16 md:mb-24">
@@ -398,7 +432,10 @@ export const SpotifyEnginePage = () => {
             </ScrollReveal>
           </div>
 
-          {/* Model cards */}
+          {/* LEARN: MODELS.map() turns the data array into three model cards.
+              The active card (Model 1) gets the spotify-green accent; the
+              other two use low-opacity whites. All style props are conditional
+              on `model.active` so the same card template handles both states. */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {MODELS.map((model, i) => (
               <ScrollReveal key={model.name} delay={i * 0.1}>
@@ -506,7 +543,7 @@ export const SpotifyEnginePage = () => {
 
           {/* Self-growing dataset diagram */}
           <ScrollReveal direction="right">
-            <div className="relative rounded-[24px] overflow-hidden border border-white/[0.06] bg-[#080808] p-8 md:p-10 shadow-[0_24px_80px_rgba(0,0,0,0.5)] flex flex-col gap-8">
+            <div className="relative rounded-[24px] overflow-hidden border border-white/[0.06] bg-pitch p-8 md:p-10 shadow-[0_24px_80px_rgba(0,0,0,0.5)] flex flex-col gap-8">
 
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[9px] uppercase font-black tracking-widest text-white/25">Dataset Growth Loop</span>

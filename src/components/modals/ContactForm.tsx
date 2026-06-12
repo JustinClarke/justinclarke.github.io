@@ -1,3 +1,19 @@
+/**
+ * ContactForm the name/email/message fields, their validation, and the
+ * submit button. Sending is delegated to the parent via `onSubmit`.
+ *
+ * Fits in: rendered inside ContactModal.
+ * Note:    two anti-spam guards live here a hidden "honeypot" field (bots fill
+ *          it, humans can't see it) and a 3-minute cooldown stored in
+ *          localStorage so the same device can't spam submissions.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This is a "controlled form": every input's value comes from React state
+ * (formData) and every keystroke updates that state via onChange. `touched`
+ * tracks which fields the user has left, so we only show an error AFTER they've
+ * interacted not the instant the form appears.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { cn } from '@/utils';
@@ -30,6 +46,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // LEARN: e.preventDefault() stops the browser's default form behaviour
+    //    (a full-page reload) so React can handle the submit itself.
     // 1. Honeypot check (silently drop bot submissions)
     if (botField) {
       console.warn("Spam attempt neutralized.");

@@ -1,3 +1,18 @@
+/**
+ * MethodologyStrip a bento grid of five "rigour" cards (causal identification,
+ * CI invariants, reproducibility, docs, ML validation).
+ *
+ * Fits in: the overview, after the headline numbers.
+ * Note:    Each card carries its own Tailwind class strings (`colSpan`, gradient,
+ *          hover glow) in its data object, so one block of JSX styles all five.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `'href' in card && card.href` checks whether a card has a link before treating
+ * it as one only the Docs card does, so only it renders as an `<a>`. `in` is the
+ * JS operator that asks "does this object have this property?". Storing whole
+ * Tailwind class strings in data is the project's way to vary styling per item.
+ * -----------------------------------------------------------------------------
+ */
 import { FlaskConical, TestTube, Box, BookOpen, BarChart2 } from 'lucide-react';
 import { STATS, LINKS } from '../../../data/projectStats';
 

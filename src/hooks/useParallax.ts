@@ -1,13 +1,23 @@
+/**
+ * useParallax returns an {x, y} offset that drifts with the mouse, for a
+ * subtle "the layer follows your cursor" parallax effect.
+ *
+ * Fits in: a component points this at a container ref and adds the returned
+ *          offset to a child's transform.
+ * Note:    respects reduced-motion (returns {0,0}) and throttles to one update
+ *          per animation frame so fast mouse moves don't flood React.
+ *
+ * For beginners ----------------------------------------------------------------
+ * A "hook" is a reusable function (name starts with `use`) that plugs into
+ * React's state/effect system. Here it measures the element's box once (and on
+ * resize), then on each mouse move computes how far the cursor is from centre,
+ * scaled to -1..1, times `factor` pixels. requestAnimationFrame batches that to
+ * the screen's refresh rate; the ref boxes hold values without causing renders.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect, RefObject, useRef } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 
-/**
- * Custom hook to calculate parallax offsets based on mouse position relative to a target element.
- * 
- * @param ref - Reference to the container element for coordinate calculation.
- * @param factor - Strength of the parallax effect (displacement in pixels).
- * @returns Object containing x and y offsets.
- */
 export function useParallax(ref: RefObject<HTMLElement | null>, factor: number = 20) {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const prefersReducedMotion = useReducedMotion();

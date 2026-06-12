@@ -1,3 +1,19 @@
+/**
+ * projectStats the single source of truth for every headline number, identity
+ * term, ML model, build-status row, and external link shown across the Off The
+ * Pace pages. Edit a value here and it updates everywhere it is rendered.
+ *
+ * Fits in: imported by ProjectHero, the section components, and both views.
+ * Note:    Numbers are verified against the real pipeline output - see the
+ *          per-block "Source -" comments before changing any of them.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `as const` at the end of an object tells TypeScript "treat these exact values
+ * as fixed and read-only" - so `STATS.seasons` is known to be literally 7, not
+ * just "some number", and nothing can accidentally reassign it. This is a plain
+ * data module: no React, no logic, just exported constants other files import.
+ * -----------------------------------------------------------------------------
+ */
 // Single source of truth for landing-page headline stats. Verified against transform/ on 2026-05-31.
 //
 // Note on counts:
@@ -15,7 +31,7 @@ export const STATS = {
   seasonRange: '2018–2024',
   telemetryRowsPerSeason: '90M+',
   telemetryHz: 10,
-  dbtModels: 58,
+  dbtModels: 46,
   intermediateModels: 36,
   martTables: 9,
   tests: 340,
@@ -62,16 +78,16 @@ export const ML_FACTS = {
 export type BuildStatus = 'built' | 'fitted' | 'wip' | 'planned';
 export const BUILD_STATUS: { label: string; status: BuildStatus }[] = [
   { label: 'Ingestion (Bronze)',                    status: 'built'   },
-  { label: `Transform (${58} models, ${340} tests)`, status: 'built'   },
+  { label: `Transform (${STATS.dbtModels} models, ${STATS.tests} tests)`, status: 'built'   },
   { label: 'Coefficients  - all 6 components fitted', status: 'fitted'  },
-  { label: `ML (5 XGBoost models, ${27} tests)`,    status: 'built'   },
+  { label: `ML (5 XGBoost models, ${STATS.mlTests} tests)`,    status: 'built'   },
   { label: 'Docs & Governance (Docusaurus + 3 CI)', status: 'built'   },
   { label: 'First Attributed Finding',              status: 'built'   },
-  { label: 'Frontend (React + DuckDB-Wasm)',        status: 'planned' },
+  { label: 'Frontend (React + DuckDB-Wasm)',        status: 'built' },
   { label: 'Streaming',                             status: 'planned' },
 ];
 
 export const LINKS = {
   repo: 'https://github.com/justinclarke/off-the-pace',
-  docs: 'https://off-the-pace.onrender.com',
+  docs: 'https://offthepace.mintlify.app',
 } as const;

@@ -1,3 +1,20 @@
+/**
+ * ExpandableTabs the floating segmented nav used by SourceView's FloatingNav:
+ * a row of icon buttons that expand to show their label on hover (or when
+ * active), collapsing to icon-only on touch devices.
+ *
+ * Fits in: rendered inside the portalled FloatingNav in SourceView.
+ * Note:    `activeId` and `onChange` are controlled by the parent - this
+ *          component owns no "which tab is selected" state, only hover state.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Two things to notice. (1) Icons are looked up by name from the lucide-react
+ * library: `LucideIcons[item.icon]` returns the actual icon component to render.
+ * (2) `window.matchMedia('(hover: none)')` asks the browser "is this a
+ * no-hover (touch) device?" and the effect keeps `isTouch` updated if that
+ * changes, so touch users get the compact icon-only layout.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useEffect } from 'react';
 import * as LucideIcons from 'lucide-react';
 
@@ -43,6 +60,8 @@ export const ExpandableTabs: React.FC<ExpandableTabsProps> = ({
         const IconComponent = LucideIcons[item.icon] as React.ComponentType<any>;
         const isActive = activeId === item.id;
         const isHovered = hoveredId === item.id;
+        // LEARN: expand rule - never on touch; if anything is hovered, only the
+        //    hovered tab expands; otherwise fall back to expanding the active one.
         const isExpanded = isTouch ? false : (hoveredId !== null ? isHovered : isActive);
 
         const activeTextColor = item.color || 'text-white';

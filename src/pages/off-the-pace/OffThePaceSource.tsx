@@ -1,4 +1,22 @@
-import { lazy, Suspense, useState, useEffect } from 'react';
+/**
+ * OffThePaceSource the engineering deep-dive page for the Off The Pace F1
+ * case study (route /off-the-pace) the technical twin of OffThePaceOverview.
+ *
+ * Fits in: one of two top-level Off The Pace pages; lazy-loaded by App.tsx.
+ *          Renders ProjectHero + the heavy SourceView (the dbt/CI/ML sections).
+ * Note:    Shares the same preloader + dark-theme-lock pattern as the Overview
+ *          page, and adds a thin scroll-progress bar pinned to the top edge.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The red bar across the top tracks how far you have scrolled. The useEffect
+ * below subscribes to the browser's "scroll" event when the page appears and
+ * unsubscribes when it leaves (that returned function is the "cleanup"). Each
+ * scroll recomputes a 0-100 percentage and stores it in state, which re-renders
+ * the bar at its new width. The `{ passive: true }` flag tells the browser we
+ * will never block scrolling, so it can keep scrolling smooth.
+ * -----------------------------------------------------------------------------
+ */
+import { lazy, Suspense, useState } from 'react';
 import { SEO } from '@/components/layout';
 import { TheCloser } from '@/components/layout/TheCloser';
 import { PersistentNav } from './components/ui/PersistentNav';
@@ -29,20 +47,6 @@ export function OffThePaceSource() {
     return true;
   });
 
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = (window.scrollY / totalHeight) * 100;
-        setScrollProgress(progress);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const handlePreloaderComplete = () => {
     try {
       sessionStorage.setItem('otp_preloader_shown', 'true');
@@ -56,17 +60,8 @@ export function OffThePaceSource() {
     <div data-theme-lock="dark" className="otp-scope min-h-screen bg-graphite-900 text-white font-sans selection:bg-f1-red/30 overflow-x-hidden relative">
       <SEO
         title="Off The Pace ⋅ Architecture & Engineering"
-        description="The engineering behind the F1 Causal Pace Engine: 58 dbt models, 340 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator."
+        description="The engineering behind the F1 Causal Pace Engine: 46 dbt models, 340 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator."
         path="/off-the-pace"
-      />
-
-      {/* Scroll Progress Bar */}
-      <div 
-        className="fixed top-0 left-0 h-[2.5px] bg-f1-red z-[99999] transition-all duration-75 pointer-events-none"
-        style={{ 
-          width: `${scrollProgress}%`,
-          boxShadow: '0 0 10px rgba(225,6,0,0.8), 0 0 4px rgba(225,6,0,0.5)'
-        }}
       />
 
       {/* Ambient background decorations */}

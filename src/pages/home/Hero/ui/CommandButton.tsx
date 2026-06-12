@@ -45,9 +45,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
       data-tooltip-pos="below"
       className={cn(
         "flex w-full rounded-lg border group/btn text-left relative transition-all duration-500 justify-between",
-        large ? "overflow-visible" : "overflow-hidden",
+        large ? "overflow-hidden" : "overflow-hidden",
         large
-          ? "flex-row items-center p-3 md:flex-col md:items-stretch md:border-white/5 md:flex-1 md:min-h-0 md:h-full md:hover:scale-[1.01]"
+          ? "flex-row items-center p-3 md:flex-col md:items-stretch md:border-white/5 md:flex-1 md:min-h-0 md:h-full md:hover:scale-[1.01] hover:border-f1-red/30"
           : ((large && alignTop) ? "items-start" : "items-center p-3"),
         isLongVersion
           ? "bg-[rgba(102,14,29,0.06)] border-[rgba(216,207,192,0.18)] hover:border-[rgba(216,207,192,0.55)] hover:bg-[rgba(102,14,29,0.18)] text-f1-white hover:text-white hover:shadow-[0_10px_30px_-10px_rgba(102,14,29,0.12)]"
@@ -62,9 +62,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
     >
       {/* Left accent spine  - bolder, grows on hover */}
       <div className={cn(
-        "absolute left-0 top-2 bottom-2 transition-all duration-300 rounded-r-sm w-[3px]",
+        "absolute left-0 top-2 bottom-2 transition-all duration-300 rounded-r-sm w-[3px] z-20",
         (!isLongVersion && !large) && "bg-brand-primary/20 group-hover/btn:bg-brand-primary group-hover/btn:shadow-[0_0_10px_rgba(0,200,180,0.6)] group-hover/btn:top-0 group-hover/btn:bottom-0",
-        large && "bg-transparent",
+        large && "bg-f1-red/20 group-hover/btn:bg-f1-red group-hover/btn:shadow-[0_0_10px_rgba(225,6,0,0.6)] group-hover/btn:top-0 group-hover/btn:bottom-0",
         isLongVersion && "bg-[oklch(96.5%_0.012_78)]/30 group-hover/btn:bg-[oklch(96.5%_0.012_78)] group-hover/btn:shadow-[0_0_8px_rgba(255,255,255,0.4)] group-hover/btn:top-0 group-hover/btn:bottom-0"
       )} />
 
@@ -81,15 +81,15 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           <div className="flex items-center justify-between w-full relative z-20">
             <div className="flex items-center gap-3">
               <div className="w-2 flex justify-center">
-                <div className={cn("indicator-light bg-brand-primary/60 group-hover/btn:bg-brand-primary group-hover/btn:shadow-[0_0_6px_rgba(0,255,196,0.6)] transition-all duration-300")} />
+                <div className={cn("indicator-light bg-f1-red/60 group-hover/btn:!bg-f1-red group-hover/btn:!shadow-[0_0_6px_rgba(225,6,0,0.8)] transition-all duration-300")} />
               </div>
 
-              <div className="flex items-baseline gap-2">
+              <div className="flex items-center gap-2">
                 <span className={cn(
-                  "font-mono font-bold hidden md:inline px-1 py-px rounded-sm border transition-colors duration-300 text-[10px] md:text-[11px]",
-                  "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-brand-primary group-hover/btn:border-brand-primary/30 group-hover/btn:bg-brand-primary/5"
+                  "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px] md:text-[10px]",
+                  "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
                 )}>{num}</span>
-                <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-f1-white group-hover/btn:text-brand-primary">
+                <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-f1-white group-hover/btn:text-f1-red">
                   {cmd === 'featured project' ? (
                     <>
                       <span className="md:hidden flex items-center gap-1.5">
@@ -133,7 +133,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[16px] rounded-sm border text-[9px] text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
+              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border text-[9px] text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
               <span className="font-playfair italic font-extrabold tracking-tight text-[18px] md:text-[19px] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/btn:translate-x-2.5 group-hover/btn:scale-[1.05] inline-block origin-left">
                 the long version
               </span>
@@ -156,10 +156,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
               <div className={cn("indicator-light bg-brand-primary/60 group-hover/btn:bg-brand-primary group-hover/btn:shadow-[0_0_6px_rgba(0,255,196,0.6)] transition-all duration-300")} />
             </div>
 
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-center gap-2">
               <span className={cn(
-                "font-mono font-bold hidden md:inline px-1 py-px rounded-sm border transition-colors duration-300",
-                (large) ? "text-[10px] md:text-[11px]" : "text-[10px]",
+                "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px]",
                 important
                   ? "text-brand-primary border-brand-primary/40 bg-brand-primary/10"
                   : "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-brand-primary group-hover/btn:border-brand-primary/30 group-hover/btn:bg-brand-primary/5"

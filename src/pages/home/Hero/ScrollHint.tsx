@@ -23,12 +23,14 @@ import React from 'react';
 //    it disappears entirely once the app is built.
 interface ScrollHintProps {
   hasScrolled: boolean;
+  className?: string;
+  variant?: 'teal' | 'f1';
 }
 
 // LEARN: `React.FC<ScrollHintProps>` types this as a Function Component whose
 //    props match the interface above. `({ hasScrolled })` pulls that one prop
 //    straight out of the props object ("destructuring") so we can use it by name.
-export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
+export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className = '', variant = 'teal' }) => {
   // LEARN: `<>...</>` is a "fragment" an invisible wrapper that lets a component
   //    return two siblings (the <style> block and the <div>) without adding an
   //    extra element to the page. JSX components must return one root, and a
@@ -50,8 +52,8 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
             filter: drop-shadow(0 0 6px rgba(255,255,255,0.45));
           }
           95%, 100% {
-            color: var(--color-brand-primary); /* teal */
-            filter: drop-shadow(0 0 8px rgba(0,200,180,0.6));
+            color: var(--scroll-hint-primary, var(--color-brand-primary));
+            filter: drop-shadow(0 0 8px var(--scroll-hint-glow, rgba(0,200,180,0.6)));
           }
         }
         @keyframes scrollBorderIntro {
@@ -68,8 +70,8 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
             box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(255,255,255,0.2);
           }
           95%, 100% {
-            border-color: rgba(0,200,180,0.65); /* teal */
-            box-shadow: inset 0 0 8px rgba(0,200,180,0.1), 0 0 10px rgba(0,200,180,0.15);
+            border-color: var(--scroll-hint-border, rgba(0,200,180,0.65));
+            box-shadow: inset 0 0 8px var(--scroll-hint-glow-dim, rgba(0,200,180,0.1)), 0 0 10px var(--scroll-hint-glow-md, rgba(0,200,180,0.15));
           }
         }
         @keyframes scrollDotIntro {
@@ -86,8 +88,8 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
             box-shadow: 0 0 8px rgba(255,255,255,0.95);
           }
           95%, 100% {
-            background-color: var(--color-brand-primary);
-            box-shadow: 0 0 12px rgba(0,200,180,1);
+            background-color: var(--scroll-hint-primary, var(--color-brand-primary));
+            box-shadow: 0 0 12px var(--scroll-hint-glow-bright, rgba(0,200,180,1));
           }
         }
         @keyframes scrollWheel {
@@ -142,7 +144,19 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled }) => {
             visible change on screen. */}
       <div
         aria-hidden="true"
-        className={`scroll-hint-container ${hasScrolled ? 'has-scrolled' : ''} pointer-events-none absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+20px)] left-1/2 flex flex-col items-center z-20`}
+        className={`scroll-hint-container ${hasScrolled ? 'has-scrolled' : ''} pointer-events-none left-1/2 flex flex-col items-center z-20 ${className || 'absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+20px)]'}`}
+        style={
+          variant === 'f1'
+            ? ({
+                '--scroll-hint-primary': 'var(--color-f1-red)',
+                '--scroll-hint-border': 'rgba(225, 6, 0, 0.65)',
+                '--scroll-hint-glow': 'rgba(225, 6, 0, 0.6)',
+                '--scroll-hint-glow-dim': 'rgba(225, 6, 0, 0.1)',
+                '--scroll-hint-glow-md': 'rgba(225, 6, 0, 0.15)',
+                '--scroll-hint-glow-bright': 'rgba(225, 6, 0, 1)',
+              } as React.CSSProperties)
+            : undefined
+        }
       >
         <div className="animate-scroll-blink flex flex-col items-center gap-1.5">
           <div className="animate-scroll-text flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.25em] pl-[0.25em] whitespace-nowrap">

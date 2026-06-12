@@ -1,60 +1,55 @@
-import { ExternalLink, BookOpen } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { LINKS } from '../../../data/projectStats';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { STATS, LINKS } from '../../../data/projectStats';
 
 export function ClosingCTA() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const isOverview = pathname === '/f1';
 
   return (
-    <div className="relative group overflow-hidden rounded-2xl bg-slate-950 border border-slate-800 p-8 md:p-12 lg:p-14 flex flex-col md:flex-row md:items-center md:justify-between gap-8 transition-all duration-500 hover:border-slate-700 hover:shadow-[0_20px_50px_rgba(0,0,0,0.25)]">
-      {/* Background Glow */}
-      <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-f1-red/10 rounded-full blur-[80px] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60" />
-
-      {/* Cyberpunk corner accents */}
-      <div className="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-f1-red rounded-tl-xl transition-colors duration-300" />
-      <div className="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-f1-red rounded-br-xl transition-colors duration-300" />
-
-      <div className="relative z-10 flex flex-col gap-3.5 max-w-lg">
-        <span className="font-jetbrains text-[9px] text-f1-red uppercase tracking-[0.2em] font-semibold">
-          Next steps
-        </span>
-        <h2 className="text-2xl md:text-3xl font-noto font-black text-white uppercase tracking-tighter">
-          Seen the pitch.<br />Now see the proof.
-        </h2>
-        <p className="font-jetbrains text-sm text-slate-400 leading-relaxed">
-          The Architecture view walks through the engineering  - the DAG architecture, the CI gates,
-          the science behind the seven-term identity, and the full validation ledger.
-        </p>
+    <section className="relative z-10 text-center py-12 px-6 overflow-hidden border-t border-white/5 bg-graphite-900 text-white w-full">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse_at_bottom,rgba(225,6,0,0.08)_0%,transparent_75%)] pointer-events-none" />
+      <h2 className="text-4xl md:text-5xl font-noto font-black text-white uppercase tracking-tighter mb-6 leading-none">
+        Lap times lie.<br />You can now know why.
+      </h2>
+      <p className="font-jetbrains text-xs md:text-sm text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
+        A causal engine built from first principles. {STATS.racesIngested} races ingested. {STATS.seasons} seasons. {STATS.tests} dbt tests + {STATS.mlTests} ML tests. 5 XGBoost models. No cloud required.
+      </p>
+      <div className="w-full max-w-sm sm:max-w-2xl lg:max-w-3xl flex flex-col gap-3 mx-auto mt-4 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 w-full">
+          <a
+            href={LINKS.repo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-f1-red text-white font-jetbrains text-xs font-bold uppercase tracking-wider px-4 py-3 rounded hover:bg-red-700 transition-all duration-200 shadow-[0_0_20px_rgba(225,6,0,0.2)]"
+          >
+            ↗ View on GitHub
+          </a>
+          <a
+            href={LINKS.docs}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/80 hover:text-white font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200"
+          >
+            Read the Docs →
+          </a>
+          {isOverview ? (
+            <button
+              onClick={() => navigate('/off-the-pace')}
+              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/50 hover:text-white/80 font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
+            >
+              See the Architecture ↗
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/f1')}
+              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/50 hover:text-white/80 font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
+            >
+              See the Overview ↗
+            </button>
+          )}
+        </div>
       </div>
-
-      <div className="relative z-10 flex flex-col sm:flex-row gap-3.5 shrink-0 font-jetbrains">
-        <a
-          href={LINKS.repo}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 uppercase tracking-wider font-semibold hover:bg-slate-850 hover:text-white hover:border-slate-700 transition-all duration-300"
-        >
-          <ExternalLink className="w-4 h-4 text-slate-500" />
-          Repo
-        </a>
-        <a
-          href={LINKS.docs}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 uppercase tracking-wider font-semibold hover:bg-slate-850 hover:text-white hover:border-slate-700 transition-all duration-300"
-        >
-          <BookOpen className="w-4 h-4 text-slate-500" />
-          Docs
-        </a>
-        <button
-          onClick={() => {
-            navigate('/off-the-pace');
-          }}
-          className="flex items-center justify-center px-6 py-3.5 bg-gradient-to-r from-red-600 to-f1-red rounded-xl text-xs text-white uppercase tracking-wider font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_20px_rgba(225,6,0,0.35)] hover:shadow-[0_6px_30px_rgba(225,6,0,0.55)] cursor-pointer"
-        >
-          View the architecture
-        </button>
-      </div>
-    </div>
+    </section>
   );
 }

@@ -52,7 +52,7 @@ const ROUTES = [
   {
     path: '/off-the-pace',
     title: 'Architecture & Engineering',
-    description: 'The engineering behind the F1 Causal Pace Engine: 58 dbt models, 340 CI tests, XGBoost tyre cliff prediction, and a Frisch-Waugh ghost car simulator.'
+    description: 'The engineering behind the F1 Causal Pace Engine: 46 dbt models, 340 CI tests, XGBoost tyre cliff prediction, and a Frisch-Waugh ghost car simulator.'
   },
   {
     path: '/connect',

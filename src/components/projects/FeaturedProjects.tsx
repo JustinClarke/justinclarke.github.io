@@ -1,3 +1,23 @@
+/**
+ * FeaturedProjects the interactive bento-grid section on the home page that
+ * showcases the five portfolio projects as clickable widgets.
+ *
+ * Fits in: rendered by Home.tsx as the second major section after the Hero.
+ * Note:    two separate useEffects live here with separate cleanup - the card
+ *          cycler (setInterval) and the cursor-spotlight tracker
+ *          (mousemove → requestAnimationFrame). Each concerns a different
+ *          visual effect and must be isolated so cleanup is correct.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The cursor spotlight effect works by writing a CSS custom property
+ * (--bento-cx / --bento-cy) directly onto the <html> element via
+ * document.documentElement.style.setProperty. Every card then reads those
+ * values in its background gradient. This is faster than using React state
+ * because it skips re-rendering entirely - CSS just repaints the gradient.
+ * The requestAnimationFrame wrapper batches multiple rapid mousemove events
+ * into one per screen repaint so the browser isn't overwhelmed.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -117,10 +137,16 @@ function BentoCard({
 
 export function FeaturedProjects() {
   const [activeCardIdx, setActiveCardIdx] = useState(0);
+  // LEARN: useRef holds a value that persists across renders but does NOT cause
+  //    a re-render when it changes - the opposite of useState. We use refs here
+  //    to store the interval/animation IDs so the cleanup functions can cancel
+  //    them without needing to put them in state.
   const rafRef = useRef<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const cycleRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // LEARN: Effect 1 - auto-cycles the active card every 4 seconds. The empty
+  //    array [] means this runs once on mount and cleans up on unmount.
   useEffect(() => {
     cycleRef.current = setInterval(() => {
       setActiveCardIdx(i => (i + 1) % CYCLING_CARDS.length);
@@ -130,6 +156,12 @@ export function FeaturedProjects() {
     };
   }, []);
 
+  // LEARN: Effect 2 - the cursor spotlight. Every mousemove event writes the
+  //    cursor position as CSS custom properties on <html> so each card's
+  //    gradient can track the cursor without React re-rendering. The
+  //    requestAnimationFrame (rAF) guard means we process at most one event
+  //    per screen repaint (~60 per second) even if the mouse fires faster.
+  //    The idle timer resets the spotlight to the centre after 2s of no movement.
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
       if (rafRef.current) return;
@@ -160,6 +192,10 @@ export function FeaturedProjects() {
 
   const cyclingCard = CYCLING_CARDS[activeCardIdx];
 
+  // LEARN: cardProps is a factory helper - it collects the four arguments every
+  //    BentoCard needs (shadow, border, gradient, plus the computed isActive flag)
+  //    into one object. Calling it in JSX keeps the grid markup readable instead
+  //    of repeating the same five props on every card.
   const cardProps = (id: CardId, shadow: string, border: string, gradient: string) => {
     const isActive = id === 'f1' || cyclingCard === id;
     return {

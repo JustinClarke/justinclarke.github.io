@@ -1,7 +1,19 @@
 /**
- * @fileoverview Centralized global design constants.
+ * config/constants.ts the single home for shared design constants and the
+ * occasional bit of copy/config the UI reads (greetings, boot logs, timings).
+ *
+ * Fits in: imported wherever a fixed value is needed in JS (e.g. the Preloader).
+ * Note:    per the project's Tailwind rule, colours here are CSS-variable
+ *          references like 'var(--color-brand-primary)', NOT raw hex the real
+ *          colour values live once in src/index.css's @theme block. This file is
+ *          also the ONLY sanctioned place for JS colour constants.
+ *
+ * For beginners ----------------------------------------------------------------
+ * These are plain exported values, not components. `as const` tells TypeScript
+ * to treat the object as fixed and read-only (so, e.g., BREAKPOINTS.md is known
+ * to be exactly 768, not just "a number"). Other files import what they need.
+ * -----------------------------------------------------------------------------
  */
-
 export const THEME = {
   colors: {
     teal: 'var(--color-brand-primary)',

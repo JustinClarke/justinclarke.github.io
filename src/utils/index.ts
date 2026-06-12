@@ -1,3 +1,5 @@
+// Barrel for the shared utilities, so callers can `import { cn, debug, track }
+// from '@/utils'` instead of one import per file.
 export * from './animations';
 export * from './cn';
 export * from './debug';

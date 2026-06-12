@@ -1,3 +1,18 @@
+/**
+ * ContactModal the popup dialog that holds the contact form and sends it.
+ *
+ * Fits in: mounted once in App.tsx; opens when the shared modal state flips on.
+ * Note:    this component owns the NETWORK side (submit to web3forms + the
+ *          idle/loading/success/error status); ContactForm owns the fields and
+ *          validation. Splitting them keeps each piece small.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Radix's <Dialog> gives us accessible modal behaviour (focus trapping, Esc to
+ * close) for free. `useModal()` reads shared open/close state from a Context, so
+ * a button anywhere on the site can open this without prop-drilling.
+ * async/await + fetch send the form over the network without freezing the page.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -5,20 +20,15 @@ import { X } from 'lucide-react';
 import { useModal } from '@/providers/ModalProvider';
 import { ContactForm } from './ContactForm';
 
-/**
- * ContactModal Component
- * 
- * Secure entry point for project inquiries and networking.
- * Uses Radix UI Dialog for accessible modal behaviour.
- * Migration Status: Colors moved to theme-aware tokens (brand-modal, brand-primary).
- */
-
 export const ContactModal = () => {
   const { isContactModalOpen, setIsContactModalOpen } = useModal();
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
   const firstInputRef = useRef<HTMLInputElement>(null);
 
+  // LEARN: when the modal opens, freeze background scrolling and move keyboard
+  //    focus into the first field (after a short delay so it has mounted). The
+  //    cleanup clears that timer; the `else` restores scrolling on close.
   // Auto-focus first input on open & prevent body scroll
   useEffect(() => {
     if (isContactModalOpen) {

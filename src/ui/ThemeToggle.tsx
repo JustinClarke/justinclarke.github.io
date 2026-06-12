@@ -1,14 +1,22 @@
 /**
  * ThemeToggle sun/moon icon button that flips the site between light and dark.
+ *
  * Fits in: placed in any persistent nav surface (SidebarMenu, header).
- * Note: AnimatePresence lets Framer Motion animate the outgoing icon
- *   before it's removed from the DOM, giving the crossfade illusion.
+ * Note:    AnimatePresence lets Framer Motion animate the OUTGOING icon before
+ *          it's removed from the DOM, giving the rotate-and-crossfade illusion.
+ *
+ * For beginners ----------------------------------------------------------------
+ * useTheme() reads/sets the shared light-or-dark setting (a React Context).
+ * useReducedMotion() returns true if the visitor asked their OS to minimise
+ * animation when it does, we skip the spin by passing `false`/`undefined` as
+ * the animation, which is the accessible thing to do.
+ * -----------------------------------------------------------------------------
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/app/providers';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { cn } from '@/utils';
+import { cn, track } from '@/utils';
 
 interface ThemeToggleProps {
   className?: string;
@@ -20,9 +28,14 @@ export function ThemeToggle({ className, size = 14 }: ThemeToggleProps) {
   const reduced = useReducedMotion();
   const isDark = theme === 'dark';
 
+  const handleToggle = () => {
+    track('theme-toggle', { to: isDark ? 'light' : 'dark' });
+    toggle();
+  };
+
   return (
     <button
-      onClick={toggle}
+      onClick={handleToggle}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       className={cn(
         'relative flex items-center justify-center',

@@ -1,3 +1,18 @@
+/**
+ * data/projects.ts the content for every project card/page (title, tech,
+ * copy, metrics, status).
+ *
+ * Fits in: the source of truth for FeaturedProjects, RelatedProjects, and the
+ *          individual project pages.
+ * Note:    `color`/status classes here are Tailwind utility names (e.g.
+ *          'bg-viz-mac-yellow'), i.e. tokens, not raw hex.
+ *
+ * For beginners ----------------------------------------------------------------
+ * One array of Project objects. Components import it, then `.map()` over it to
+ * render a card per entry add a project by adding an object here, no component
+ * changes needed.
+ * -----------------------------------------------------------------------------
+ */
 import { Project } from '@/types';
 
 export const projectsData: Project[] = [

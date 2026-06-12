@@ -1,3 +1,23 @@
+/**
+ * CardSwap a 3D stack of cards that auto-cycles: the front card drops away and
+ * the rest promote forward on a timer, GSAP driving the motion. Click a back
+ * card to bring it forward, or the front card to advance.
+ *
+ * Fits in: a presentational widget used in Off The Pace overview sections to
+ *          show a rotating deck of cards. You give it <Card> children.
+ * Note:    Animation is done imperatively with GSAP on real DOM nodes (via
+ *          refs), not React state - React renders the cards once, GSAP moves
+ *          them. That is why almost everything here lives in refs, not useState.
+ *
+ * For beginners ----------------------------------------------------------------
+ * - forwardRef lets a parent grab the real <div> inside <Card> so GSAP can
+ *   animate it; a normal component can't be handed a ref.
+ * - useRef holds values that must persist between renders without causing a
+ *   re-render (the GSAP timeline, the interval id, the current card order).
+ * - cloneElement copies each child and injects extra props (a ref, sizing, a
+ *   click handler) without the caller having to wire them up.
+ * -----------------------------------------------------------------------------
+ */
 import React, { Children, cloneElement, forwardRef, isValidElement, useEffect, useMemo, useRef, ReactNode } from 'react';
 import gsap from 'gsap';
 import './CardSwap.css';
@@ -6,10 +26,15 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   customClass?: string;
 }
 
+// LEARN: forwardRef = "let my parent reach the DOM node inside me." The ref the
+//    parent passes is attached to this <div>, so CardSwap/GSAP can move it.
 export const Card = forwardRef<HTMLDivElement, CardProps>(({ customClass, ...rest }, ref) => (
   <div ref={ref} {...rest} className={`card ${customClass ?? ''} ${rest.className ?? ''}`.trim()} />
 ));
 Card.displayName = 'Card';
+
+// LEARN: makeSlot computes where card #i sits in the 3D stack - shifted right
+//    (x), up (y), back (z), and layered (zIndex) so nearer cards cover farther.
 
 const makeSlot = (i: number, distX: number, distY: number, total: number) => ({
   x: i * distX,
@@ -77,6 +102,9 @@ const CardSwap = ({
           returnDelay: 0.2
         };
 
+  // LEARN: useMemo caches a computed value so it is not rebuilt on every render
+  //    unless its inputs change. Here it keeps a stable array of children and a
+  //    matching array of refs (one DOM handle per card) tied to the card count.
   const childArr = useMemo(() => Children.toArray(children), [children]);
   const refs = useMemo(
     () => childArr.map(() => React.createRef<HTMLDivElement>()),
@@ -84,6 +112,9 @@ const CardSwap = ({
     [childArr.length]
   );
 
+  // LEARN: `order` is the current front-to-back sequence of card indices. It
+  //    lives in a ref because the animation mutates it constantly and we do NOT
+  //    want a React re-render each time - GSAP, not React, owns the visuals.
   const order = useRef(Array.from({ length: childArr.length }, (_, i) => i));
 
   const tlRef = useRef<gsap.core.Timeline | null>(null);
@@ -99,6 +130,9 @@ const CardSwap = ({
       if (r.current) placeNow(r.current, makeSlot(i, cardDistance, verticalDistance, total), skewAmount);
     });
 
+    // LEARN: one "swap" = the front card drops, everyone behind slides forward
+    //    one slot, and the dropped card flies to the back. Each step is added to
+    //    a GSAP timeline with labels (promote/return) so the moves overlap nicely.
     const swap = () => {
       if (order.current.length < 2) return;
 
@@ -218,6 +252,9 @@ const CardSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardDistance, verticalDistance, delay, skewAmount, easing]);
 
+  // LEARN: clone each child card to inject the props it needs to participate:
+  //    a ref (so GSAP can grab its node), a width/height, and a click handler
+  //    that still calls the card's own onClick first, then advances the deck.
   const rendered = childArr.map((child, i) => {
     if (isValidElement(child)) {
       const element = child as React.ReactElement<any>;

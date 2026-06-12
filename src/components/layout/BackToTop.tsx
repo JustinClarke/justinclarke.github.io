@@ -1,3 +1,19 @@
+/**
+ * BackToTop a floating button that appears after you scroll down and jumps
+ * back to the top, with a ring that fills to show scroll progress.
+ *
+ * Fits in: rendered once in App.tsx, fixed to the bottom-right of the viewport.
+ * Note:    the progress ring is an SVG circle. We animate `strokeDashoffset` a
+ *          dashed outline where the visible dash length shrinks as you scroll,
+ *          revealing more of the ring.
+ *
+ * For beginners ----------------------------------------------------------------
+ * useState gives the component memory (is it visible? hovered? how far scrolled?).
+ * useEffect subscribes to the window's scroll event when the component appears
+ * and unsubscribes when it leaves (the returned function). `{ passive: true }`
+ * tells the browser we won't block scrolling, which keeps it smooth.
+ * -----------------------------------------------------------------------------
+ */
 import { useState, useEffect } from 'react';
 import { cn } from '@/utils';
 
@@ -29,6 +45,9 @@ export function BackToTop() {
     });
   };
 
+  // LEARN: circle maths. circumference is the full length of the ring's outline;
+  //    offsetting the dash by "how far you've NOT scrolled" makes the visible arc
+  //    grow from 0% to 100% as you scroll down the page.
   const radius = 22;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (scrollProgress / 100) * circumference;

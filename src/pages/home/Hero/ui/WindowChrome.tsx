@@ -139,7 +139,7 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
       </div>
 
       {copiedToast && (
-        <div className="fixed top-6 right-6 z-[100] bg-[#0c1110] border border-brand-primary/40 px-5 py-3 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-fade-in font-mono text-xs text-brand-primary">
+        <div className="fixed top-6 right-6 z-[100] bg-ink border border-brand-primary/40 px-5 py-3 rounded-xl shadow-[0_15px_30px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-fade-in font-mono text-xs text-brand-primary">
           <div className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
           <span>EMAIL COPIED TO CLIPBOARD</span>
         </div>

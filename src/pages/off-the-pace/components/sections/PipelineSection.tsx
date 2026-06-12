@@ -1,3 +1,19 @@
+/**
+ * PipelineSection the "Transform : DAG & Invariant" visual: a four-stage
+ * Bronze->Silver->Gold->Models row, then a stats/lineage grid (stack, test
+ * coverage, telemetry rate, model lineage, build time).
+ *
+ * Fits in: rendered by SourceView under the Pipeline heading.
+ * Note:    StageCard is a private sub-component; `isLast` hides the trailing
+ *          arrow on the final stage so the chevrons read left-to-right.
+ *
+ * For beginners ----------------------------------------------------------------
+ * StageCard takes a typed props object and `isLast = false` gives that prop a
+ * default when a caller omits it. The arrow between stages is conditionally
+ * rendered with `{!isLast && (...)}`. Everything else here is static layout -
+ * the only dynamic bits are the STATS numbers interpolated into the text.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { STATS } from '../../data/projectStats';
 
@@ -70,7 +86,7 @@ export const PipelineSection: React.FC = () => {
           <StageCard
             layer="Layer 3 // Models"
             title="ML Targets"
-            desc="Five XGBoost models - degradation quantiles (p10/p50/p90), cliff classifier, and stint-life regressor. All trained on fct_cliff_prediction_features, ONNX-exported. Ghost Car app - planned."
+            desc="Five XGBoost models - degradation quantiles (p10/p50/p90), cliff classifier, and stint-life regressor. All trained on fct_cliff_prediction_features, ONNX-exported. Ghost Car app - built."
             tags={['XGBoost', '5 Models', 'ONNX']}
             isLast={true}
           />
@@ -93,7 +109,7 @@ export const PipelineSection: React.FC = () => {
                 <span className="text-f1-red">→</span> <strong className="text-white">GitHub Actions</strong> CI
               </span>
               <span className="flex items-center gap-2">
-                <span className="text-f1-red">→</span> <strong className="text-white">React + DuckDB-Wasm</strong> (planned)
+                <span className="text-f1-red">→</span> <strong className="text-white">React + DuckDB-Wasm</strong> (built)
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-f1-red">→</span> <strong className="text-white">XGBoost</strong> (built)

@@ -1,3 +1,18 @@
+/**
+ * SpotlightCard a card with a soft glow that follows the cursor inside it.
+ *
+ * Fits in: feature/numbered cards across the site.
+ * Note:    the glow is two radial gradients that read CSS variables (--mouse-x,
+ *          --mouse-y). The useSpotlight hook updates those variables directly on
+ *          the element, so the glow moves WITHOUT re-rendering React on every
+ *          mouse move that's the performance trick.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `onMouseEnter?.(e)` calls the optional `onMouseEnter` prop only if a parent
+ * passed one (the `?.` skips the call when it's undefined). We wrap the caller's
+ * handlers so the card's own behaviour AND the parent's both run.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSpotlight } from '@/hooks';
@@ -10,13 +25,7 @@ interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-/**
- * SpotlightCard Component
- * 
- * Implements a high-performance 'Cursor Spotlight' effect using dual radial gradients.
- * Uses the useSpotlight hook to minimize React re-renders.
- */
-export const SpotlightCard: React.FC<SpotlightCardProps> = ({ 
+export const SpotlightCard: React.FC<SpotlightCardProps> = ({
   children, 
   number, 
   title, 

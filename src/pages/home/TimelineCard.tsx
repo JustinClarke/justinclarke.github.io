@@ -1,3 +1,17 @@
+/**
+ * TimelineCard one expandable entry (a job or a degree) in the career timeline.
+ *
+ * Fits in: rendered by CareerTimeline, once per entry, in both columns.
+ * Note:    work entries are teal (brand-primary), education entries are amber.
+ *          Every conditional class below hangs off the single `isWork` switch.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This is a "controlled" component: it keeps NO state of its own. The parent
+ * passes in `isExpanded` (am I the open card?) and `onToggle` (call this when
+ * clicked), so the card is purely "props in, markup out" the same template
+ * stamped out for every entry with different data filled in.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
@@ -5,20 +19,24 @@ import { Briefcase, GraduationCap, ChevronDown, Zap } from 'lucide-react';
 import { TOOLTIPS, getTooltip } from '@/config/tooltips';
 import { type Entry } from '@/data/timeline';
 
+// LEARN: a TypeScript `interface` is the contract for the props this component
+//    accepts misspell a prop or forget one at the call site and the compiler
+//    complains before the browser ever runs it.
 interface TimelineCardProps {
   entry: Entry;
-  index: number;
   isExpanded: boolean;
   onToggle: () => void;
 }
 
-export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpanded, onToggle }) => {
+export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, onToggle }) => {
   const isWork = entry.type === 'work';
-  const accentColor = isWork ? 'brand-primary' : 'amber';
 
   return (
     <div className="relative pl-10 md:pl-16 pb-2">
       {/* Timeline spine connector */}
+      {/* LEARN: cn() joins class strings and drops falsy ones. The pattern all
+          through this file is: base classes, then a teal-or-amber ternary on
+          `isWork`, then extra classes that apply only while `isExpanded`. */}
       <div className={cn(
         "absolute left-[11.5px] md:left-[20.5px] top-0 bottom-0 w-px",
         isWork ? "bg-brand-primary/15" : "bg-amber/15"
@@ -70,6 +88,9 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpa
         )} />
 
         {/* Header (always visible) */}
+        {/* LEARN: data-tooltip is a plain HTML data attribute; a site-wide
+            script (src/utils/tooltips) finds these and shows hover bubbles.
+            `as keyof typeof TOOLTIPS` tells TypeScript the id is a valid key. */}
         <div className="p-5 md:p-6" data-tooltip={TOOLTIPS[entry.id as keyof typeof TOOLTIPS] || ''}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
@@ -126,6 +147,9 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpa
             </div>
 
             {/* Expand chevron */}
+            {/* LEARN: motion.div is Framer Motion's animated <div>. Setting
+                `animate` tells it the target pose; it tweens there on its own
+                whenever the value changes (here: spin the arrow when opened). */}
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
@@ -149,6 +173,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpa
 
 
           {/* Inline metrics (always visible for work entries with metrics) */}
+          {/* LEARN: `a && b && <Thing />` renders <Thing /> only when both
+              checks pass entries without metrics simply skip this block. */}
           {isWork && entry.metrics && (
             <div className="flex flex-wrap gap-4 mt-4">
               {entry.metrics.map((m, i) => (
@@ -188,6 +214,9 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpa
         </div>
 
         {/* Expanded content (CSS Grid Accordion for Safari) */}
+        {/* LEARN: the open/close animation is pure CSS. `.exp-body` (defined in
+            index.css) is a grid whose row height animates between 0fr and 1fr
+            based on the data-open attribute React only flips the attribute. */}
         <div
           className="exp-body"
           data-open={isExpanded}
@@ -198,6 +227,10 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, index, isExpa
               isWork ? "border-t border-brand-primary/10" : "border-t border-amber/10"
             )}>
               <div className="space-y-2.5">
+                {/* LEARN: each bullet gets a JS-computed stagger via a CSS
+                    variable: the inline style sets --delay per bullet, and the
+                    delay-[var(--delay)] utility consumes it (the Tailwind
+                    contract's "dynamic values flow through CSS vars" rule). */}
                 {entry.bullets.map((b, i) => (
                   <div
                     key={i}

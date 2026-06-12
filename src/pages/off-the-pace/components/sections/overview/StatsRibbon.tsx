@@ -1,15 +1,38 @@
+/**
+ * StatsRibbon four headline numbers (races, rows, models, tests) that count up
+ * from zero the first time the ribbon scrolls into view.
+ *
+ * Fits in: the overview, as a quick credibility band.
+ * Note:    The count-up only starts once, on first scroll-in then the observer
+ *          disconnects so it never re-triggers.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Two ideas combine here:
+ *  - IntersectionObserver is a browser tool that calls you back when an element
+ *    enters the viewport. We use it to flip `isVisible` true the moment the
+ *    ribbon is seen, then `disconnect()` so it fires only once.
+ *  - requestAnimationFrame (rAF) asks the browser to run `step` before the next
+ *    repaint (~60x/sec). Each call nudges the number toward its target using an
+ *    easing curve, producing a smooth count-up animation. The cleanup function
+ *    cancels any pending frame if the component unmounts mid-animation.
+ * -----------------------------------------------------------------------------
+ */
 import { useEffect, useState, useRef } from 'react';
 import { STATS } from '../../../data/projectStats';
 
+// LEARN: A custom hook (any function named use*) that animates one number from 0
+//    to `endValue`. It returns the live `count`, which the component renders.
 function useCounter(endValue: number, duration: number = 2000, trigger: boolean) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!trigger) return;
+    if (!trigger) return; // wait until the ribbon is on screen
 
     let startTime: number | null = null;
     let animationFrame: number;
 
+    // LEARN: `step` runs once per animation frame. `timestamp` is the time the
+    //    browser passes in; progress goes 0→1 over `duration` ms, then we stop.
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -24,6 +47,8 @@ function useCounter(endValue: number, duration: number = 2000, trigger: boolean)
     };
 
     animationFrame = window.requestAnimationFrame(step);
+    // LEARN: cleanup cancel the queued frame so a half-finished animation does
+    //    not keep running after the component is removed.
     return () => window.cancelAnimationFrame(animationFrame);
   }, [endValue, duration, trigger]);
 
@@ -32,6 +57,8 @@ function useCounter(endValue: number, duration: number = 2000, trigger: boolean)
 
 export function StatsRibbon() {
   const [isVisible, setIsVisible] = useState(false);
+  // LEARN: a ref is a stable handle to the real DOM node, so the observer below
+  //    has something concrete to watch. Reading `ref.current` does not re-render.
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,7 +66,7 @@ export function StatsRibbon() {
       (entries) => {
         if (entries[0].isIntersecting) {
           setIsVisible(true);
-          observer.disconnect();
+          observer.disconnect(); // fire once, then stop watching
         }
       },
       { threshold: 0.1 }

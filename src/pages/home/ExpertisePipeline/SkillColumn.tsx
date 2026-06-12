@@ -1,14 +1,24 @@
 /**
  * SkillColumn renders one stage column of skill cards inside ExpertisePipeline.
+ *
  * Fits in: inside the 3-column grid; receives DAG state from the parent orchestrator.
  * Note: each card registers its DOM node via registerNode so the parent's
  *   SVG DAG overlay can calculate edge coordinates from getBoundingClientRect().
+ *
+ * For beginners ----------------------------------------------------------------
+ * Another stateless "template" component: everything it shows and every event
+ * it raises goes through props. Data flows DOWN (stage, hoveredSkill...);
+ * events flow UP (onToggleExpand, onMouseEnter...). The parent owns the truth;
+ * this file just paints it.
+ * -----------------------------------------------------------------------------
  */
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/utils';
 import type { SkillStage } from './data';
 
+// LEARN: the function-typed props (e.g. `(name: string) => void`) are the
+//    child-to-parent channel: the parent passes its own handlers in, and this
+//    component calls them when something happens.
 interface SkillColumnProps {
   stage: SkillStage;
   stageIndex: number;
@@ -22,6 +32,8 @@ interface SkillColumnProps {
   isNodeInLineage: (name: string) => boolean;
 }
 
+// LEARN: `=> (` with no braces means the whole component is ONE expression
+//    no local state, no helpers, just props in, JSX out.
 export const SkillColumn: React.FC<SkillColumnProps> = ({
   stage, stageIndex, isActive,
   expandedSkill, hoveredSkill,
@@ -30,7 +42,9 @@ export const SkillColumn: React.FC<SkillColumnProps> = ({
 }) => (
   <div
     className={cn(
-      'relative z-10 md:hover:z-30 flex flex-col p-5 md:p-6 bg-[#0c1110]/40 border border-white/5 rounded-2xl transition-all duration-500 hover:border-white/10 group/col',
+      'relative z-10 md:hover:z-30 flex flex-col p-5 md:p-6 bg-ink/40 border border-white/5 rounded-2xl transition-all duration-500 hover:border-white/10 group/col',
+      // LEARN: on phones only the tab-selected column renders ('hidden');
+      //    from md: up all three always show ('md:flex' wins back the display).
       isActive ? 'flex' : 'hidden md:flex'
     )}
   >
@@ -73,17 +87,23 @@ export const SkillColumn: React.FC<SkillColumnProps> = ({
         return (
           <div
             key={skill.name}
+            // LEARN: a "ref callback" instead of a useRef React calls it
+            //    with the DOM element on mount (and null on unmount), and we
+            //    forward that straight into the parent's name→node Map.
             ref={(el) => registerNode(skill.name, el)}
             onMouseEnter={() => onMouseEnter(skill.name)}
             onMouseLeave={onMouseLeave}
             onClick={() => onToggleExpand(skill.name)}
+            // LEARN: the stage colour enters as the --tech-rgb CSS variable;
+            //    the rgba(var(--tech-rgb), …) classes below all read it. One
+            //    variable, many styled states no per-stage class variants.
             style={{
               '--tech-color': 'var(--color-brand-primary)',
               '--tech-rgb': stage.rgb,
             } as React.CSSProperties}
             className={cn(
               'group/card relative z-10 md:hover:z-50 flex flex-col p-2.5 border rounded-xl',
-              'bg-[#0c1110]/60 transition-all duration-300 cursor-pointer',
+              'bg-ink/60 transition-all duration-300 cursor-pointer',
               'border-white/5',
               'md:hover:bg-[rgba(var(--tech-rgb),0.03)]',
               'md:hover:border-[rgba(var(--tech-rgb),0.35)]',
@@ -124,6 +144,9 @@ export const SkillColumn: React.FC<SkillColumnProps> = ({
             </div>
 
             {/* Mobile: expandable description */}
+            {/* LEARN: the classic max-height accordion: animate between
+                max-h-0 (clipped away) and a max height taller than the
+                content. Cheap and CSS-only, at the cost of a fixed cap. */}
             <div className={cn(
               'md:hidden overflow-hidden transition-all duration-300',
               isExpanded ? 'max-h-40 opacity-100 mt-3' : 'max-h-0 opacity-0 mt-0'
@@ -134,9 +157,13 @@ export const SkillColumn: React.FC<SkillColumnProps> = ({
             </div>
 
             {/* Desktop: floating tooltip on hover */}
+            {/* LEARN: rendered all along, just invisible: opacity-0/invisible
+                until the card's group-hover flips it on. bottom-full places it
+                directly above the card; the rotated square below it is the
+                little arrow pointing back down. */}
             <div className={cn(
               'hidden md:block absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-[280px] p-4',
-              'bg-[#0c1110]/95 backdrop-blur-xl',
+              'bg-ink/95 backdrop-blur-xl',
               'border border-[rgba(var(--tech-rgb),0.3)] rounded-xl',
               'shadow-[0_0_30px_rgba(var(--tech-rgb),0.15)]',
               'opacity-0 invisible group-hover/card:opacity-100 group-hover/card:visible',
@@ -144,7 +171,7 @@ export const SkillColumn: React.FC<SkillColumnProps> = ({
               'translate-y-[8px] group-hover/card:translate-y-0'
             )}>
               <div className={cn(
-                'absolute top-full -translate-y-1/2 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#0c1110] rotate-45',
+                'absolute top-full -translate-y-1/2 left-1/2 -translate-x-1/2 w-3 h-3 bg-ink rotate-45',
                 'border-r border-b border-[rgba(var(--tech-rgb),0.3)]'
               )} />
               <h4 className="font-mono text-[11px] font-bold text-white mb-2 flex items-center gap-2.5">

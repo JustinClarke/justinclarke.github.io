@@ -15,7 +15,7 @@
  * -----------------------------------------------------------------------------
  */
 import React from 'react';
-import { cn } from '@/utils';
+import { cn, track } from '@/utils';
 import { TOOLTIPS } from '@/config/tooltips';
 import { useNavigate } from 'react-router-dom';
 import { ProjectShowcase } from './ProjectShowcase';
@@ -46,7 +46,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
     { n: '01', cmd: 'resumé', desc: 'download pdf', important: false, hot: false, className: "resume-blink-active", tooltip: TOOLTIPS.resume, onClick: () => onCommand('resume', 'sidebar'), mobileOrder: 2 },
     { n: '02', cmd: 'connect', desc: 'get in touch', important: true, hot: false, tooltip: TOOLTIPS.contactme, onClick: () => onCommand('connect', 'sidebar'), mobileOrder: 3 },
     { n: '03', cmd: 'the long version', desc: 'how I got here', important: false, hot: false, tooltip: TOOLTIPS.everythingelse, onClick: () => onCommand('the long version', 'sidebar'), mobileOrder: 4 },
-    { n: '04', cmd: 'featured project', desc: 'VIEW OVERVIEW', large: true, badge: <ProjectShowcase project={crownJewelProject} />, hot: false, alignTop: true, tooltip: TOOLTIPS.projects, onClick: () => navigate('/f1'), mobileOrder: 1 },
+    { n: '04', cmd: 'featured project', desc: 'VIEW OVERVIEW', large: true, badge: <ProjectShowcase project={crownJewelProject} />, hot: false, alignTop: true, tooltip: TOOLTIPS.projects, onClick: () => { track('project-click', { project: crownJewelProject.id }); navigate('/f1'); }, mobileOrder: 1 },
   ];
 
   return (
@@ -66,7 +66,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
       <div className="flex items-center gap-3 group/header">
         <div className="flex items-center gap-2">
           <span
-            className="font-mono text-[8px] tracking-[0.2em] font-black uppercase px-1.5 py-0.5 rounded-sm border border-brand-primary/35 text-brand-primary bg-brand-primary/6"
+            className="font-mono text-[8px] tracking-[0.2em] font-black uppercase inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border border-brand-primary/35 text-brand-primary bg-brand-primary/6"
             style={{ boxShadow: 'inset 0 0 8px rgba(0,200,180,0.08)' }}
           >
             SYS

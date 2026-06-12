@@ -1,3 +1,17 @@
+/**
+ * InsightCallout a "timing feed" table of driver skill residuals for one lap,
+ * each row showing the number plus a proportional bar.
+ *
+ * Fits in: the overview, as a worked example of the decomposition in action.
+ * Note:    Bars are scaled relative to the biggest absolute value (`maxAbs`), so
+ *          the longest bar is always full-width regardless of the raw numbers.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `Math.max(...array)` finds the largest value; the `...` (spread) passes each
+ * array element as a separate argument. We compute `maxAbs` once at module load
+ * (the data is fixed), then each row's bar width is its share of that maximum.
+ * -----------------------------------------------------------------------------
+ */
 import { LINKS } from '../../../data/projectStats';
 
 // Portugal 2021 (race 2021_3), lap 17. Field-centred driver_skill_residual_s.

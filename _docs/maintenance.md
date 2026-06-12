@@ -28,7 +28,7 @@ If you touched a signature subsystem (terminal engine, F1 telemetry, design toke
 
 If you added or removed a route, also update:
 - `ROUTES` array in `scripts/inject-metadata.js`
-- `public/sitemap.xml`
+- `public/sitemap.xml` (canonical routes only — `/contact` is an alias of `/connect` and is intentionally omitted)
 
 ---
 

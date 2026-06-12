@@ -1,3 +1,18 @@
+/**
+ * ProductPipeline the three-stage architecture diagram (Ingest to Model to
+ * Output) plus a mock terminal showing the resulting table schema.
+ *
+ * Fits in: the overview, explaining how the data flows.
+ * Note:    The connecting line between stages is an inline `<svg>` with an
+ *          animated gradient stroke (`.sb-flow-dash`), purely decorative.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The `<svg>` here is just more markup like HTML, but for drawing. A `<path>`'s
+ * `d` attribute is the line's geometry; a `<linearGradient>` defined in `<defs>`
+ * is referenced by `stroke="url(#pipeline-grad)"`. Colours come from CSS vars
+ * (`var(--color-f1-red)`) so they stay in sync with the design tokens.
+ * -----------------------------------------------------------------------------
+ */
 import { Database, Network, LineChart } from 'lucide-react';
 import { STATS } from '../../../data/projectStats';
 

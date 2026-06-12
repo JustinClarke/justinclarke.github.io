@@ -1,13 +1,23 @@
 /**
  * ExpertisePipeline interactive skill DAG section on the home page.
+ *
  * Fits in: Home.tsx, lazily loaded so its Lucide icons don't bloat the initial bundle.
  * Note: the DAG edges are SVG paths drawn between real DOM nodes. A
  *   ResizeObserver watches the grid and increments a tick counter to force
  *   re-renders whenever the layout changes, keeping edge coordinates accurate.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This is the most state-heavy component on the homepage. Three skill columns
+ * (data in ./data.ts, cards in ./SkillColumn.tsx) sit on top of an SVG layer
+ * that draws curved "pipes" between related skills (./DagEdge.tsx). This file
+ * is the orchestrator: it remembers which skill you are hovering, walks the
+ * edge list to find everything upstream/downstream of it (the "lineage"), and
+ * hands each child the yes/no answers it needs to light up or dim.
+ * -----------------------------------------------------------------------------
  */
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/utils';
+import { cn, debug } from '@/utils';
 import { MousePointer2 } from 'lucide-react';
 import { ScrollReveal } from '@/ui';
 import { InteractiveHint } from '@/ui/InteractiveHint';
@@ -15,11 +25,24 @@ import { SKILLS, ALL_EDGES, NARRATIVES } from './data';
 import { DagEdge } from './DagEdge';
 import { SkillColumn } from './SkillColumn';
 
+// LEARN: silent-by-default logger. Enable in the browser console with
+//    localStorage.debug = 'pipeline'  then refresh (see src/utils/debug.ts).
+const log = debug('pipeline');
+
 export const ExpertisePipeline: React.FC = () => {
   const gridRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  // LEARN: a Map from skill name to its real DOM element. Each card registers
+  //    itself here as it mounts (see registerNode below), so the SVG layer can
+  //    measure where to draw edges. A ref (not state) because updating it
+  //    should NOT cause a re-render it's bookkeeping, not display data.
   const nodeRefs = useRef<Map<string, HTMLDivElement | null>>(new Map());
 
+  // LEARN: five separate pieces of state, by what the user is doing:
+  //    expandedSkill   tapped-open card (mobile), userHoveredSkill  mouse
+  //    hover (desktop), activeIdleSkill  the auto-demo's pick when you go
+  //    idle, isIntersecting  is the section on screen, activeStage  which
+  //    column the mobile tab bar shows.
   const [expandedSkill, setExpandedSkill] = useState<string | null>(null);
   const [userHoveredSkill, setUserHoveredSkill] = useState<string | null>(null);
   const [activeIdleSkill, setActiveIdleSkill] = useState<string | null>(null);
@@ -27,16 +50,25 @@ export const ExpertisePipeline: React.FC = () => {
   const [activeStage, setActiveStage] = useState(0);
   // Incrementing this forces DagEdge to re-render and recalculate
   // getBoundingClientRect() after window resizes.
+  // LEARN: we never read this number the empty slot in `[, setTick]` skips
+  //    the value. Bumping state is just the lever that makes React re-render.
   const [, setTick] = useState(0);
 
   const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cycleIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // LEARN: useMemo computes a value once and reuses it on later renders the
+  //    `[]` dependency list means "never recompute". flatMap flattens the
+  //    three per-stage lists into one array of all 15 skill names.
   const allSkillNames = React.useMemo(() => {
     return SKILLS.flatMap(stage => stage.items.map(item => item.name));
   }, []);
 
   // Intersection observer to track if the section is in view
+  // LEARN: IntersectionObserver is a browser API that calls you back when an
+  //    element enters/leaves the viewport much cheaper than listening to
+  //    every scroll event. threshold 0.15 = "count it once 15% is visible".
+  //    The `([entry])` destructures the first item out of the callback's array.
   useEffect(() => {
     const el = document.getElementById('expertise');
     if (!el) return;
@@ -51,6 +83,11 @@ export const ExpertisePipeline: React.FC = () => {
   }, []);
 
   // Idle timer logic
+  // LEARN: the auto-demo. When the section is on screen and the visitor does
+  //    nothing for 0.9s, start picking a random skill every 3s as if a ghost
+  //    were hovering. ANY activity (mouse, key, scroll, touch) resets the
+  //    timer and stops the show. Timer ids live in refs so each re-run of the
+  //    effect can cancel the previous run's timers.
   useEffect(() => {
     if (!isIntersecting || userHoveredSkill) {
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
@@ -65,8 +102,11 @@ export const ExpertisePipeline: React.FC = () => {
       setActiveIdleSkill(null);
 
       idleTimeoutRef.current = setTimeout(() => {
+        // LEARN: `currentSkill` is captured by nextRandomSkill below a
+        //    closure. It lives on between interval ticks, letting the picker
+        //    re-roll until it lands on a DIFFERENT skill than last time.
         let currentSkill: string | null = null;
-        
+
         const nextRandomSkill = () => {
           if (allSkillNames.length === 0) return null;
           if (allSkillNames.length === 1) return allSkillNames[0];
@@ -79,10 +119,14 @@ export const ExpertisePipeline: React.FC = () => {
           return next;
         };
 
-        setActiveIdleSkill(nextRandomSkill());
+        const first = nextRandomSkill();
+        log('idle demo: start', first);
+        setActiveIdleSkill(first);
 
         cycleIntervalRef.current = setInterval(() => {
-          setActiveIdleSkill(nextRandomSkill());
+          const next = nextRandomSkill();
+          log('idle demo:', next);
+          setActiveIdleSkill(next);
         }, 3000);
       }, 900); // 0.90 seconds
     };
@@ -92,6 +136,8 @@ export const ExpertisePipeline: React.FC = () => {
     const activityEvents = ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart'];
     const handleActivity = () => resetIdleTimer();
 
+    // LEARN: `{ passive: true }` promises the browser this listener never
+    //    calls preventDefault(), so scrolling stays smooth while we listen.
     activityEvents.forEach(event => {
       window.addEventListener(event, handleActivity, { passive: true });
     });
@@ -106,6 +152,9 @@ export const ExpertisePipeline: React.FC = () => {
   }, [isIntersecting, userHoveredSkill, allSkillNames]);
 
   // Watch for grid resizes so edges stay geometrically accurate
+  // LEARN: ResizeObserver = IntersectionObserver's sibling for size changes.
+  //    Edge coordinates are measured from the live DOM, so any reflow must
+  //    trigger a re-render hence the tick bump (explained at setTick above).
   useEffect(() => {
     setTick(t => t + 1);
     const el = gridRef.current;
@@ -116,14 +165,20 @@ export const ExpertisePipeline: React.FC = () => {
   }, []);
 
   const toggleExpand = (skillName: string) => {
+    log('toggle', skillName);
     setExpandedSkill(prev => {
       const next = prev === skillName ? null : skillName;
+      // On phones there is no hover, so tapping a card also drives the
+      // hover-based lineage highlighting.
       if (window.innerWidth < 768) setUserHoveredSkill(next);
       return next;
     });
   };
 
   // Debounced hover small delay prevents edge flickering during fast mouse moves
+  // LEARN: moving between two cards fires leave→enter within a few ms. Leave
+  //    doesn't clear the hover immediately; it schedules the clear 150ms out,
+  //    and entering the next card cancels it so the highlight never blinks.
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleMouseEnter = (skillName: string) => {
@@ -136,12 +191,19 @@ export const ExpertisePipeline: React.FC = () => {
     hoverTimeoutRef.current = setTimeout(() => setUserHoveredSkill(null), 150);
   };
 
+  // LEARN: an effect that ONLY returns a cleanup it does nothing on mount,
+  //    but cancels any pending hover-clear timer when the section unmounts.
   useEffect(() => () => { if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current); }, []);
 
+  // LEARN: a real hover always beats the idle demo's pick.
   const hoveredSkill = userHoveredSkill || activeIdleSkill;
 
   // ── DAG lineage helpers ──────────────────────────────────────────────────────
 
+  // LEARN: given the hovered skill, find every skill connected to it through
+  //    the edge list both its sources ("up") and its consumers ("down").
+  //    This is a breadth-first graph walk: keep a queue of nodes to visit, and
+  //    a Set of already-visited ones so shared paths aren't walked twice.
   const getActiveLineage = (hovered: string | null) => {
     if (!hovered) return { nodes: [] as string[], edges: [] as [string, string][] };
 
@@ -149,6 +211,8 @@ export const ExpertisePipeline: React.FC = () => {
       const visited = new Set<string>();
       let queue = [start];
       while (queue.length > 0) {
+        // LEARN: the `!` after shift() tells TypeScript "this is not undefined"
+        //    safe here because the loop condition guarantees a non-empty queue.
         const cur = queue.shift()!;
         for (const [from, to] of ALL_EDGES) {
           const neighbour = direction === 'up' ? (to === cur ? from : null) : (from === cur ? to : null);
@@ -170,6 +234,9 @@ export const ExpertisePipeline: React.FC = () => {
     return { nodes: activeNodes, edges: activeEdges };
   };
 
+  // LEARN: these are computed fresh during every render, not stored in state.
+  //    State is for facts React must remember; anything derivable from state
+  //    should just be derived keeping one source of truth.
   const activeLineage = hoveredSkill ? getActiveLineage(hoveredSkill) : null;
   const isEdgeActive = (from: string, to: string) =>
     activeLineage?.edges.some(([f, t]) => f === from && t === to) ?? false;
@@ -216,6 +283,10 @@ export const ExpertisePipeline: React.FC = () => {
         <ScrollReveal delay={0.2} className="w-full">
 
           {/* Lineage console bar (desktop only) */}
+          {/* LEARN: the hovered stage's colour flows in through the --tech-rgb
+              CSS variable (the Tailwind contract's pattern for JS-dynamic
+              values); every rgb()/rgba() below reuses it. aria-live="polite"
+              makes screen readers announce the narrative text when it changes. */}
           <div
             className={cn(
               'hidden md:flex items-center justify-between px-5 py-3.5 rounded-xl border mb-6',
@@ -238,6 +309,10 @@ export const ExpertisePipeline: React.FC = () => {
               <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 font-bold whitespace-nowrap">Lineage Console</span>
               <span className="text-white/25 font-mono text-[10px] select-none">|</span>
               <div className="h-4 flex items-center overflow-hidden w-full">
+                {/* LEARN: AnimatePresence lets a component animate OUT before
+                    it is removed. mode="wait" plays exit then enter in
+                    sequence, and keying on the skill name tells React "this is
+                    a NEW element" each time, which is what triggers the swap. */}
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={hoveredSkill || 'idle'}
@@ -276,7 +351,11 @@ export const ExpertisePipeline: React.FC = () => {
           </div>
 
           {/* Mobile stage tab selector */}
-          <div className="flex md:hidden items-center justify-between border border-white/5 bg-[#0c1110]/30 rounded-xl p-1 mb-5 relative z-20">
+          {/* LEARN: phones show one column at a time, picked by these tabs.
+              The motion.div with layoutId="activeTabGlow" is one shared
+              element that Framer Motion slides between tabs when the active
+              one changes (a "magic motion" layout animation). */}
+          <div className="flex md:hidden items-center justify-between border border-white/5 bg-ink/30 rounded-xl p-1 mb-5 relative z-20">
             {SKILLS.map((stage, i) => {
               const isActive = activeStage === i;
               const shortName = stage.cat.split(' ')[0];
@@ -311,6 +390,9 @@ export const ExpertisePipeline: React.FC = () => {
             onMouseLeave={handleMouseLeave}
           >
             {/* SVG edge layer (desktop only, z-0, behind cards) */}
+            {/* LEARN: pointer-events-none lets clicks pass through the SVG to
+                the cards underneath; aria-hidden hides this purely decorative
+                layer from screen readers. One <DagEdge> per edge in the data. */}
             <svg
               ref={svgRef}
               className="hidden md:block absolute inset-0 w-full h-full overflow-visible pointer-events-none z-0"
@@ -343,6 +425,9 @@ export const ExpertisePipeline: React.FC = () => {
                   onToggleExpand={toggleExpand}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
+                  // LEARN: children don't change the parent's data directly
+                  //    they call functions the parent handed them. This one files
+                  //    each card's DOM node into the nodeRefs Map by name.
                   registerNode={(name, el) => nodeRefs.current.set(name, el)}
                   isNodeInLineage={isNodeInLineage}
                 />

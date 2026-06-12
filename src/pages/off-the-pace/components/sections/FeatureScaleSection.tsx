@@ -1,3 +1,18 @@
+/**
+ * FeatureScaleSection a 4-up stat grid (races, telemetry rows, models, tests)
+ * pulled straight from the STATS source of truth.
+ *
+ * Fits in: a reusable "scale" band for the Off The Pace pages.
+ * Note:    forwardRef passes a ref through to the <section> so a parent can
+ *          scroll to it or observe it.
+ *
+ * For beginners ----------------------------------------------------------------
+ * METRICS is a small array of plain objects; `.map(...)` below turns each one
+ * into a card. Writing the data once and looping is cleaner than copy-pasting
+ * four near-identical blocks of JSX. forwardRef is explained more fully in
+ * CardSwap - here it just lets the parent reach this section's DOM node.
+ * -----------------------------------------------------------------------------
+ */
 import React, { forwardRef } from 'react';
 import { STATS } from '../../data/projectStats';
 

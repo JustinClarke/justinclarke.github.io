@@ -1,8 +1,20 @@
 /**
- * @fileoverview Centralized Framer Motion variants and physics configurations.
- * Ensures consistent motion kinetics across the portfolio.
+ * config/animations.ts the shared Framer Motion presets for the whole site.
+ *
+ * Fits in: components import these instead of hand-writing animation numbers,
+ *          so motion feels consistent everywhere and is tunable in one place.
+ * Note:    keep new motion presets HERE rather than inline at the call site.
+ *
+ * For beginners ----------------------------------------------------------------
+ * In Framer Motion, a "variant" is a named set of states for example
+ * { hidden: {...}, visible: {...} } and you tell an element which state to be
+ * in. A SPRING describes physics-based motion (stiffness/damping) rather than a
+ * fixed duration. EASING arrays are bezier curves that shape how a tween
+ * accelerates. `as const` freezes these objects so their exact values are kept
+ * by TypeScript. The `(i = 0) => ({...delay: i * 0.1})` functions let a list
+ * stagger its children by index.
+ * -----------------------------------------------------------------------------
  */
-
 export const SPRINGS = {
   soft: { type: 'spring', stiffness: 100, damping: 20 },
   snappy: { type: 'spring', stiffness: 300, damping: 30 },

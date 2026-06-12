@@ -1,3 +1,23 @@
+/**
+ * WorkflowLayers the "one pipeline, five layers" showcase: a stack of cards that
+ * auto-rotate (via CardSwap), each with a hover spotlight and an animated SVG.
+ *
+ * Fits in: the overview, as the marquee architecture explainer.
+ * Note:    The five layers are data (`LAYERS`); CardSwap handles the 3D shuffle.
+ *          Each card draws its own wireframe glyph chosen by `step` in
+ *          LayerIllustration.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This uses Framer Motion, an animation library:
+ *  - `useMotionValue` holds a number that can change every frame WITHOUT
+ *    re-rendering the component (cheap for mouse tracking). `mouseX`/`mouseY`
+ *    follow the cursor inside a card.
+ *  - `useMotionTemplate` weaves those live values into a CSS string here a
+ *    radial-gradient that becomes the spotlight glow under the pointer.
+ *  - `variants` + `whileHover` describe two states (initial/hover); Motion
+ *    animates the SVG strokes between them (`pathLength` 0→1 = "draw the line").
+ * -----------------------------------------------------------------------------
+ */
 import { MouseEvent } from 'react';
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion';
 import { CardSwap, Card } from '../../ui/CardSwap';
@@ -159,10 +179,16 @@ function LayerIllustration({ step, accentClass }: { step: string; accentClass: s
   );
 }
 
+// LEARN: `{ layer, ...rest }` pulls out the `layer` prop and bundles everything
+//    else into `rest`. CardSwap injects its own positioning props onto each child,
+//    so we forward `{...rest}` to <Card> to pass those through untouched.
 function LayerCard({ layer, ...rest }: { layer: Layer; [key: string]: any }) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // LEARN: On every pointer move, convert the cursor's page coordinates into
+  //    coordinates relative to this card's top-left, then store them in the motion
+  //    values. The spotlight gradient above reads them to follow the cursor.
   function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
     const { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
@@ -172,7 +198,7 @@ function LayerCard({ layer, ...rest }: { layer: Layer; [key: string]: any }) {
   return (
     <Card
       {...rest}
-      customClass={`group relative overflow-hidden flex flex-col justify-between p-7 cursor-pointer bg-[#0A0A0A] border border-white/10 ${layer.shadow} transition-shadow duration-500 text-white shadow-xl`}
+      customClass={`group relative overflow-hidden flex flex-col justify-between p-7 cursor-pointer bg-deep border border-white/10 ${layer.shadow} transition-shadow duration-500 text-white shadow-xl`}
       onMouseMove={handleMouseMove}
     >
       {/* Interactive Spotlight Glow */}

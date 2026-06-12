@@ -1,7 +1,24 @@
+/**
+ * ProjectHero the full-screen hero atop the Source (engineering) page: looping
+ * F1 video background, the big "OFF THE pace." headline, three CTA buttons, and
+ * a control-panel telemetry readout in the corner.
+ *
+ * Fits in: rendered once by OffThePaceSource, directly under PersistentNav.
+ * Note:    The three CTAs hover-animate via direct DOM style writes in the
+ *          event handlers (box-shadow/transform), which is why they use inline
+ *          `style` rather than Tailwind hover: classes here.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The `<style>{...}</style>` block defines a couple of one-off CSS keyframe
+ * animations scoped by class name - fine for animations used only on this page.
+ * `color-mix(in srgb, var(--color-f1-red) 40%, transparent)` is plain CSS that
+ * blends the brand-red token with transparency, so the glow colour still flows
+ * from the design token rather than a hard-coded rgba.
+ * -----------------------------------------------------------------------------
+ */
 import { useState } from 'react';
 import { STATS, LINKS } from '../data/projectStats';
 import { ScrambleText } from './ui/ScrambleText';
-import { smoothScrollTo } from '@/utils';
 
 const PILLARS = [
   { label: `${STATS.racesIngested} races · ${STATS.seasons} seasons` },
@@ -132,7 +149,7 @@ export const ProjectHero = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
                 </span>
-                <ScrambleText text="RUN CAUSAL MODELS" isHovered={hoverOver} prefix="[" suffix="]" />
+                <ScrambleText text="LAUNCH PLATFORM" isHovered={hoverOver} prefix="[" suffix="]" />
               </a>
 
               {/* GREEN: DOCUMENTATION */}
@@ -149,30 +166,6 @@ export const ProjectHero = () => {
               </a>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Bottom-left control panel readout */}
-      <div className="absolute bottom-8 left-10 hidden lg:flex flex-col gap-0 font-jetbrains text-[10px] text-white/40 uppercase tracking-[0.2em] pointer-events-none">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-viz-success)', boxShadow: 'color-mix(in srgb, var(--color-viz-success) 60%, transparent) 0 0 12px' }} />
-          <span className="text-white/80 font-bold tracking-widest">SYS: PIPELINE HEALTHY</span>
-        </div>
-        <div className="grid grid-cols-[6rem_1fr] gap-x-6 border-b border-white/10 py-2">
-          <span>INGEST</span>
-          <span className="text-white/80 font-semibold">{STATS.racesIngested} RACES // {STATS.seasons} SEASONS</span>
-        </div>
-        <div className="grid grid-cols-[6rem_1fr] gap-x-6 border-b border-white/10 py-2">
-          <span>TRANSFORM</span>
-          <span className="text-white/80 font-semibold">{STATS.dbtModels} MODELS // {STATS.tests} TESTS</span>
-        </div>
-        <div className="grid grid-cols-[6rem_1fr] gap-x-6 border-b border-white/10 py-2">
-          <span>ML</span>
-          <span className="text-white/80 font-semibold">5 XGBOOST // {STATS.mlTests} TESTS</span>
-        </div>
-        <div className="grid grid-cols-[6rem_1fr] gap-x-6 pt-2">
-          <span>TELEMETRY</span>
-          <span className="text-white/80 font-semibold">10 HZ // 90M+ ROWS/SEASON</span>
         </div>
       </div>
     </section>

@@ -1,3 +1,18 @@
+/**
+ * DocsGovernanceSection section "08 / Docs & Governance": three CI-workflow
+ * cards, four documentation "pillar" cards, and an ADR strip with a docs link.
+ *
+ * Fits in: rendered by SourceView's final block.
+ * Note:    Each CI workflow carries its own `style` object (token-based colours
+ *          via color-mix) so the three cards read amber / blue / green.
+ *
+ * For beginners ----------------------------------------------------------------
+ * CI_WORKFLOWS and DOC_PILLARS are data arrays mapped into cards - the same
+ * write-once-then-loop pattern as the other sections. Carrying the per-card
+ * colour in the data (the `style` field) keeps the JSX below identical for all
+ * three cards; only the data differs.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { STATS, LINKS } from '../../data/projectStats';
 
@@ -41,7 +56,7 @@ const DOC_PILLARS = [
   },
   {
     title: 'Auto-Reference',
-    desc: 'dbt-generated schema reference  - all 58 models, columns, tests, lineage : CI-enforced to never drift.',
+    desc: `dbt-generated schema reference  - all ${STATS.dbtModels} models, columns, tests, lineage : CI-enforced to never drift.`,
   },
 ];
 

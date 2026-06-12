@@ -1,3 +1,20 @@
+/**
+ * RelatedProjects a "Explore Other Records" strip at the bottom of every
+ * project page, linking to two randomly chosen other projects.
+ *
+ * Fits in: rendered as the last section before <TheCloser> on each project
+ *          page (HRArchetype, Spotify, SqlDisaster, LiteStore, CapitalBudgeting).
+ * Note:    the shuffle is wrapped in useMemo so it only runs once per mount.
+ *          Without that, every re-render would re-shuffle and React would
+ *          throw away and recreate the cards unnecessarily.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Think of useMemo as "remember this result and only recalculate it when the
+ * input changes." The input here is currentProjectId. As long as the same
+ * project page is open, the two related cards stay the same even if the
+ * rest of the page re-renders.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -11,7 +28,11 @@ interface RelatedProjectsProps {
 }
 
 export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProjectId }) => {
-  // Get all other projects and take 2 - memoized to prevent jerky re-renders
+  // LEARN: useMemo runs the function once and caches the result. It only
+  //    re-runs when currentProjectId changes (listed in the dependency array).
+  //    The sort trick `() => 0.5 - Math.random()` randomly shuffles the array
+  //    (a common-but-imperfect Fisher-Yates shortcut) then slice(0, 2) takes
+  //    the first two - giving us two different related projects each visit.
   const related = React.useMemo(() => {
     return projectsData
       .filter(p => p.id !== currentProjectId)

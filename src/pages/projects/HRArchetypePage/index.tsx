@@ -1,3 +1,22 @@
+/**
+ * HRArchetypePage the project case-study page for the AI-powered HR
+ * Archetype System: an 8-archetype, 13-axis employee retention engine
+ * built with Gemini 1.5, Firestore real-time listeners, and Recharts.
+ *
+ * Fits in: one of five project pages, reachable via /project/hr-archetype.
+ *          Rendered lazily by App.tsx inside the page-transition wrapper.
+ * Note:    useScroll + useTransform drive the thin progress bar pinned at
+ *          the top of the page - they read the container's scroll position
+ *          directly, without touching React state, so scrolling stays smooth.
+ *
+ * For beginners ----------------------------------------------------------------
+ * useScroll watches how far the user has scrolled inside containerRef.
+ * useTransform converts that 0→1 progress fraction into a CSS width string
+ * ("0%" → "100%"). Both are from Framer Motion and update via an internal
+ * motion value - not useState - so the progress bar never triggers a
+ * re-render of the whole page; only the bar's own DOM node updates.
+ * -----------------------------------------------------------------------------
+ */
 import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/utils';
@@ -113,7 +132,16 @@ const ScoreBar = ({ pct, delay = 0, color = 'from-white/60 to-white/20' }: { pct
   </div>
 );
 
-/* Spider chart  -  6 axes, animated polygon */
+/**
+ * Spider (radar) chart drawn as an SVG polygon with animated dots per axis.
+ *
+ * LEARN: This component converts data values (0–1 fractions) into x,y
+ *    coordinates using trigonometry. Each axis is evenly spaced around a
+ *    circle: angle = (i / total) * 2π (a full rotation). Multiplying by
+ *    the data value scales the radius outward - a 0.91 "Purpose" score
+ *    reaches 91% of the maximum radius. Math.cos / Math.sin convert the
+ *    angle to x/y offsets just like in high-school unit circle diagrams.
+ */
 const SpiderChart = ({ size = 120 }: { size?: number }) => {
   const cx = size / 2;
   const cy = size / 2;
@@ -198,7 +226,15 @@ const DistributionBars = () => {
 export const HRArchetypePage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStream, setActiveStream] = useState(0);
+  // LEARN: hoveredArch stores the index (0-7) of the archetype card the mouse
+  //    is over, or null if none. Each card reads this value and dims/brightens
+  //    its tier badge accordingly - this is "lifted state": the state lives in
+  //    the parent so multiple children can react to the same hover.
   const [hoveredArch, setHoveredArch] = useState<number | null>(null);
+  // LEARN: useScroll tracks how far the user has scrolled inside containerRef.
+  //    scrollYProgress is a Framer Motion "motion value" (0 = top, 1 = bottom).
+  //    useTransform maps that range to CSS widths so the progress bar grows
+  //    from "0%" to "100%" as the page scrolls - without re-rendering anything.
   const { scrollYProgress } = useScroll({ container: containerRef });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
@@ -398,6 +434,9 @@ export const HRArchetypePage = () => {
             </ScrollReveal>
           </div>
 
+          {/* LEARN: ARCHETYPES.map() turns the data array into a list of <li>
+              cards. Each card registers its index via onMouseEnter so the
+              parent's hoveredArch state knows which one is active. */}
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-black/[0.06] border border-black/[0.06]" aria-label="Eight employee archetypes">
             {ARCHETYPES.map((arch, i) => {
               const meta = TIER_META[arch.tier];
@@ -568,7 +607,7 @@ export const HRArchetypePage = () => {
 
           {/* AI insight card */}
           <ScrollReveal direction="up">
-            <div className="relative p-8 md:p-12 rounded-[28px] md:rounded-[40px] bg-[#080808] text-white overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.25)] group">
+            <div className="relative p-8 md:p-12 rounded-[28px] md:rounded-[40px] bg-pitch text-white overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.25)] group">
               <div className="absolute inset-0 opacity-[0.04] pointer-events-none group-hover:opacity-[0.07] transition-opacity duration-700">
                 <div className="absolute inset-0 bg-[linear-gradient(white_1px,transparent_1px),linear-gradient(90deg,white_1px,transparent_1px)] bg-[size:22px_22px]" />
               </div>

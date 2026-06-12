@@ -1,3 +1,18 @@
+/**
+ * SEO sets the page's <title> and the social/search meta tags for whatever
+ * page renders it.
+ *
+ * Fits in: drop one <SEO .../> near the top of each page with its own title,
+ *          description, and share image.
+ * Note:    it writes into the document <head>, not the visible page react-helmet
+ *          handles that. It also renders <Schema> for structured search data.
+ *
+ * For beginners ----------------------------------------------------------------
+ * <Helmet> is a component whose children are <title>/<meta> tags it hoists them
+ * into the page's <head> for you. The defaults in the function signature
+ * (title = '...', path = '/') are used whenever a page doesn't pass that prop.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Schema } from './Schema';

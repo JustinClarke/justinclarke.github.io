@@ -1,3 +1,20 @@
+/**
+ * MLImpactSection section "06 / Machine Learning": an overview panel of ML
+ * facts beside five model cards, each comparing a model's eval metric to its
+ * baseline.
+ *
+ * Fits in: rendered by SourceView's ML block.
+ * Note:    ModelCard is a private sub-component; its "beats baseline" maths
+ *          flips direction depending on whether higher or lower is better.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `.toFixed(3)` formats a number to a fixed number of decimal places (a string).
+ * `model.metric.includes('↑')` checks whether the metric label contains an
+ * up-arrow, i.e. "higher is better"; if so the improvement is eval/baseline-1,
+ * otherwise it is how far eval dropped below baseline. `.toLocaleString()` adds
+ * thousands separators (110440 -> "110,440").
+ * -----------------------------------------------------------------------------
+ */
 import React, { forwardRef } from 'react';
 import { ML_MODELS, ML_FACTS } from '../../data/projectStats';
 
@@ -62,6 +79,9 @@ interface ModelCardProps {
 }
 
 const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
+  // LEARN: small numbers (< 1) get 3 decimals, larger ones 2, so each metric
+  //    reads sensibly. beatsPct then expresses the gain as a percentage, sign
+  //    and direction chosen by whether the metric is "up good" or "down good".
   const evalStr     = model.eval     < 1 ? model.eval.toFixed(3)      : model.eval.toFixed(2);
   const baselineStr = model.baseline < 1 ? model.baseline.toFixed(3)  : model.baseline.toFixed(2);
   const beatsPct = model.metric.includes('↑')

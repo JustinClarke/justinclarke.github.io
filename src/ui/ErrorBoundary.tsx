@@ -1,3 +1,19 @@
+/**
+ * ErrorBoundary catches a crash in any child component and shows a friendly
+ * "Something went wrong" screen instead of a blank white page.
+ *
+ * Fits in: wrap it around risky subtrees (it sits high up in App.tsx).
+ * Note:    error boundaries MUST be class components React only exposes the
+ *          "catch a render error" lifecycle to classes, not to function
+ *          components/hooks. That's the one reason this file isn't a function.
+ *
+ * For beginners ----------------------------------------------------------------
+ * A "class component" is the older React style: instead of one function, it's an
+ * object with named methods React calls at set moments ("lifecycle methods").
+ * Here, getDerivedStateFromError flips a flag when a child throws, and render()
+ * reads that flag to decide whether to show the children or the fallback.
+ * -----------------------------------------------------------------------------
+ */
 import React, { ReactNode, ErrorInfo } from 'react';
 import { AlertCircle, RotateCw } from 'lucide-react';
 
@@ -11,21 +27,21 @@ interface State {
   error: Error | null;
 }
 
-/**
- * ErrorBoundary Component
- * 
- * Catches component-level crashes and provides a graceful, theme-aware fallback UI.
- */
 export class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
+  // LEARN: React calls this automatically when a child throws during render.
+  //    Whatever object it returns becomes the new state, so returning
+  //    { hasError: true } is what triggers the fallback UI on the next render.
   static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
+  // LEARN: also called on a crash, but AFTER render this is the place for
+  //    side-effects like logging to the console or an error-reporting service.
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("ErrorBoundary caught an error", error, errorInfo);
   }

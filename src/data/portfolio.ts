@@ -1,3 +1,16 @@
+/**
+ * data/portfolio.ts the written content for work history and education
+ * (companies, roles, dates, bullet points) plus hero/closer copy.
+ *
+ * Fits in: rendered by the home page's experience/education sections.
+ * Note:    edit the actual words HERE the components just lay this data out.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `experiences: Experience[]` means "an array of Experience objects". The
+ * `Experience` type is the agreed shape (which fields, what types) imported from
+ * @/types think of it as the schema this data must match, checked at compile time.
+ * -----------------------------------------------------------------------------
+ */
 import { Experience, Education, HeroMetadata, CloserMetadata } from '@/types';
 
 export const experiences: Experience[] = [

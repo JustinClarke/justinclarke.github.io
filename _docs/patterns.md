@@ -98,13 +98,13 @@ Height animations without JS measurement:
 | Command | Purpose |
 |:---|:---|
 | `npm run dev` | Vite dev server on port 3000 |
-| `npm run build` | `tsc --noEmit && vite build && node scripts/inject-metadata.js` |
+| `npm run build` | `tsc && vite build && node scripts/inject-metadata.js` |
 | `npm run preview` | Serve production `dist/` locally |
 | `npm run lint` | `tsc --noEmit` + Tailwind token audit (`scripts/check-tailwind-tokens.mjs`) |
 
 ### Build pipeline
 
-1. **`tsc --noEmit`** type-check, no emit. Strict mode. Fails build on errors.
+1. **`tsc`** type-check only — no emit (`noEmit: true` in `tsconfig.json`). Strict mode. Fails build on errors.
 2. **`vite build`** esbuild minify, CSS code-split, manual chunks:
    - `vendor-react`: `react`, `react-dom`, `react-router-dom`
    - `vendor-animation`: `framer-motion`
@@ -122,7 +122,7 @@ Two workflows:
 
 - `.nojekyll` prevents Jekyll processing (required for `_docs/`, `_` prefixed folders)
 - `public/robots.txt` allows all crawlers
-- `public/sitemap.xml` all public routes with priority weights; keep in sync with `inject-metadata.js` routes
+- `public/sitemap.xml` canonical public routes with priority weights; keep in sync with `inject-metadata.js` routes (the `/contact` alias of `/connect` is intentionally omitted)
 
 ---
 

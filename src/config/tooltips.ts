@@ -1,8 +1,19 @@
 /**
- * Tooltip copy. Dry, professional, occasionally cheeky.
- * Calibrated for UK / UAE readers. Understated humour, no slapstick.
+ * config/tooltips.ts the actual tooltip TEXT, keyed by a normalised label.
+ *
+ * Fits in: getTooltip('Power BI') -> the copy, used by Badge and the tooltip
+ *          system in utils/tooltips.ts (which handles SHOWING them).
+ * Note:    keys are stripped to letters/digits only, so 'Next.js', 'C/C++' and
+ *          'Microsoft Fabric' all map cleanly to 'nextjs' / 'cc' / etc.
+ *
+ * For beginners ----------------------------------------------------------------
+ * TOOLTIPS is one big lookup object (key -> sentence). `tooltipKey` cleans a
+ * human label into a key: lowercase, strip accents (normalize('NFD') splits a
+ * letter from its accent mark, then the regex removes the marks), and drop
+ * anything that isn't a-z/0-9. `keyof typeof TOOLTIPS` is a TypeScript type
+ * meaning "any one of TOOLTIPS' keys".
+ * -----------------------------------------------------------------------------
  */
-
 export const TOOLTIPS = {
   // ── Career / Timeline ─────────────────────────────────
   vns: "Where 'we'll automate it next quarter' actually became a quarter.",

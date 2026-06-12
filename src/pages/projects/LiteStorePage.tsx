@@ -1,9 +1,33 @@
+/**
+ * LiteStorePage the project case-study page for the LiteStore retail SaaS
+ * platform built and shipped solo at age 19.
+ *
+ * Fits in: one of five project pages, reachable via /project/litestore.
+ *          Rendered lazily by App.tsx and mounted inside the page-transition
+ *          wrapper.
+ * Note:    BRAND_COLOR stores the CSS variable string so the same value can be
+ *          passed both to JSX `style={{ color: BRAND_COLOR }}` and to
+ *          Tailwind utilities via `text-litestore`. Never a raw hex here.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The rotating "Build Output" log at the bottom of the hero uses two React
+ * ideas together. useState stores which log line is currently visible (a
+ * number 0-4). useEffect runs a setInterval that increments that number every
+ * 2.8 seconds, cycling back to 0 at the end. AnimatePresence from Framer
+ * Motion then plays a fade-slide animation each time the number changes and
+ * a different <motion.span> needs to appear.
+ * -----------------------------------------------------------------------------
+ */
 import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
+// LEARN: This constant stores a CSS variable reference, not a raw hex colour.
+//    When React renders `style={{ color: BRAND_COLOR }}`, the browser resolves
+//    `var(--color-litestore)` at paint time from index.css - so if the token
+//    ever changes, every usage updates automatically.
 const BRAND_COLOR = 'var(--color-litestore)';
 
 const STACK_PILLS = [
@@ -54,7 +78,7 @@ const METRICS = [
 ];
 
 const BRAND_TOKENS = [
-  { name: 'LiteStore', hex: '#7e7ca6' }, // tw-allow-hex — displayed as a literal swatch label
+  { name: 'LiteStore', hex: '#7e7ca6' }, // tw-allow-hex displayed as a literal swatch label
   { name: 'MensXP', hex: '#ff5e03' },
   { name: 'Vitro', hex: '#2c4b35' },
   { name: 'WOW', hex: '#bc9850' },
@@ -74,6 +98,10 @@ export const LiteStorePage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeLog, setActiveLog] = useState(0);
 
+  // LEARN: setInterval fires the callback repeatedly on a fixed delay. The
+  //    function returned from useEffect is the "cleanup" - it runs when this
+  //    component unmounts (the visitor navigates away) and cancels the interval
+  //    so it doesn't keep running in the background after the page is gone.
   useEffect(() => {
     const interval = setInterval(() => setActiveLog(p => (p + 1) % LOGS.length), 2800);
     return () => clearInterval(interval);
@@ -185,7 +213,7 @@ export const LiteStorePage = () => {
       {/* ══════════════════════════════════════════════
           TECH STACK + ARCHITECTURE (combined)
       ══════════════════════════════════════════════ */}
-      <section className="py-20 md:py-28 px-6 md:px-16 bg-[#080808] text-white border-y border-white/5">
+      <section className="py-20 md:py-28 px-6 md:px-16 bg-pitch text-white border-y border-white/5">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
           {/* Left: stack + architecture narrative */}
@@ -256,6 +284,7 @@ export const LiteStorePage = () => {
               </p>
 
               <div className="relative p-1 bg-gradient-to-br from-litestore/20 to-transparent rounded-[28px]">
+                {/* tw-allow-hex: one-off swatch card colour in the design system demo */}
                 <div className="bg-[#0d0d0d] rounded-[27px] p-6 border border-white/5">
                   <div className="flex items-center gap-2 mb-5 opacity-40">
                     <div className="w-2 h-2 rounded-full bg-red-500/60" />

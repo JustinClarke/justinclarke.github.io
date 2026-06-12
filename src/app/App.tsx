@@ -15,7 +15,7 @@
  * -----------------------------------------------------------------------------
  */
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { BackToTop, SEO } from '@/components/layout';
 import { Analytics } from '@/components/analytics';
 import { initTooltips, initScrollAnimations, debug } from '@/utils';
@@ -125,6 +125,10 @@ function decideInitialPreloader(isTheLongVersion: boolean, isOffThePace: boolean
   return true;
 }
 
+const getNormalizedPathname = (path: string): string => {
+  return path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+};
+
 /**
  * Main application layout and routing.
  * Root providers (Modal, ErrorBoundary) are handled in RootProviders via main.tsx.
@@ -134,6 +138,7 @@ export default function App() {
   //    (pathname, search, hash). When the URL changes, this component re-renders
   //    with the new value that's how we react to navigation.
   const location = useLocation();
+  const navigate = useNavigate();
 
   // LEARN: We deliberately keep TWO locations: `location` is where the URL says we
   //    are RIGHT NOW; `displayLocation` is the page currently painted on screen.
@@ -142,14 +147,17 @@ export default function App() {
   const [displayLocation, setDisplayLocation] = useState(location);
   const [transitionState, setTransitionState] = useState<'idle' | 'fade-out'>('idle');
 
-  const isTheLongVersion = displayLocation.pathname === '/the-long-version';
-  const isOffThePace = displayLocation.pathname === '/f1' || displayLocation.pathname === '/off-the-pace';
+  const isTheLongVersion = getNormalizedPathname(displayLocation.pathname) === '/the-long-version';
+  const isOffThePace = getNormalizedPathname(displayLocation.pathname) === '/f1' || getNormalizedPathname(displayLocation.pathname) === '/off-the-pace';
 
   // LEARN: useState can take a FUNCTION instead of a value. React calls it once, on
   //    the first render only, to compute the initial state. We use that to run
   //    our (slightly expensive, side-effecting) preloader decision exactly once.
   const [showPreloader, setShowPreloader] = useState(() =>
-    decideInitialPreloader(isTheLongVersion, isOffThePace),
+    decideInitialPreloader(
+      getNormalizedPathname(location.pathname) === '/the-long-version',
+      getNormalizedPathname(location.pathname) === '/f1' || getNormalizedPathname(location.pathname) === '/off-the-pace'
+    ),
   );
 
   // LEARN: useRef holds a value that survives re-renders but, unlike state, changing
@@ -206,13 +214,16 @@ export default function App() {
   //    drives the cross-fade: fade the old page out, jump to the top, then swap
   //    in the new page and fade it back in.
   useEffect(() => {
-    if (location.pathname !== displayLocation.pathname) {
+    const normLoc = getNormalizedPathname(location.pathname);
+    const normDisp = getNormalizedPathname(displayLocation.pathname);
+
+    if (normLoc !== normDisp) {
       // The path changed → begin fading the current page out.
       log('navigate', displayLocation.pathname, '→', location.pathname);
       setTransitionState('fade-out');
 
       // The "long version" page gets a slower, more dramatic fade.
-      const isCurrentLong = displayLocation.pathname === '/the-long-version';
+      const isCurrentLong = getNormalizedPathname(displayLocation.pathname) === '/the-long-version';
       const duration = isCurrentLong ? 600 : 400; // fade-out time in ms
 
       const timer = setTimeout(() => {
@@ -227,8 +238,10 @@ export default function App() {
 
       return () => clearTimeout(timer);
     } else if (
-      // Same page, but the query string / hash / history key changed (e.g. a
-      // ?tab=… link or back/forward). Update without a full fade.
+      // Same page (or trailing slash difference resolved), but the query string /
+      // hash / history key changed (e.g. a ?tab=… link or back/forward).
+      // Update without a full fade.
+      location.pathname !== displayLocation.pathname ||
       location.search !== displayLocation.search ||
       location.hash !== displayLocation.hash ||
       location.key !== displayLocation.key
@@ -236,6 +249,20 @@ export default function App() {
       setDisplayLocation(location);
     }
   }, [location, displayLocation]);
+
+  // ── Effect 3: trailing-slash normalization ─────────────────────────────────
+  // LEARN: If a visitor lands on a path with a trailing slash (e.g., /f1/),
+  //    redirect them immediately to the clean version (e.g., /f1) without causing
+  //    a full reload. This unifies analytics tracking and page checks.
+  useEffect(() => {
+    if (location.pathname !== '/' && location.pathname.endsWith('/')) {
+      navigate({
+        pathname: location.pathname.slice(0, -1),
+        search: location.search,
+        hash: location.hash,
+      }, { replace: true });
+    }
+  }, [location, navigate]);
 
   return (
     <div className="min-h-screen text-white selection:bg-white/20">

@@ -1,10 +1,20 @@
+/**
+ * SectionContainer the standard <section> wrapper used by every page block.
+ *
+ * Fits in: wrap each major page section in this so spacing and max-width match
+ *          across the whole site (Hero, Projects, Expertise, Footer, etc.).
+ * Note:    `containerVariant` swaps the inner max-width preset ('site' wide,
+ *          'project' narrower, 'none' for full-bleed). Change spacing here once,
+ *          and every section updates.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `forwardRef` passes a parent's ref down to the real <section> element, so a
+ * parent can scroll to or measure this section. `cn(...)` just joins class
+ * strings together (and drops empty ones) see src/utils/cn.ts.
+ * -----------------------------------------------------------------------------
+ */
 import React, { ReactNode, forwardRef } from 'react';
 import { cn } from '@/utils';
-
-/**
- * @fileoverview Standardized container for section layouts.
- * Enforces consistent max-width and horizontal padding across the entire site.
- */
 
 interface SectionContainerProps {
   /** Optional ID for navigation target */

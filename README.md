@@ -73,5 +73,5 @@ The Tailwind token contract is enforced in [`_docs/patterns.md` Tailwind token c
 
 ---
 
-> Built by **Justin Clarke** Analytics Engineer & Full-Stack Developer.
+> Built by **Justin Clarke**.
 > The interface respects `prefers-reduced-motion` throughout.

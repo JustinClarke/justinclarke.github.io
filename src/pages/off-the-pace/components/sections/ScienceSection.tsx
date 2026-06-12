@@ -1,3 +1,20 @@
+/**
+ * ScienceSection section "03 / The Science": an interactive equation where each
+ * term (fuel, compound, dirty air, driver skill, ...) is a clickable tab that
+ * swaps the detail text and a bespoke hand-drawn SVG telemetry chart.
+ *
+ * Fits in: rendered by SourceView's Science & Output block.
+ * Note:    DETAILS / TERM_LABELS / the chart are all keyed by the same TermKey
+ *          union, so adding a term means adding it in each of those places.
+ *
+ * For beginners ----------------------------------------------------------------
+ * One `selectedTerm` state value (the active tab) drives everything below it -
+ * the heading, the formula, the prose, and which branch of TelemetryChart
+ * renders. The charts are plain SVG written as JSX: <path>, <line>, <text> are
+ * HTML-like tags whose `d`/coordinates draw the shapes, and the `<style>` block
+ * defines the keyframes that animate the line "drawing" itself in.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState } from 'react';
 
 interface ScienceSectionProps {
@@ -356,6 +373,9 @@ const TelemetryChart: React.FC<{ term: TermKey }> = ({ term }) => {
 };
 
 export const ScienceSection: React.FC<ScienceSectionProps> = ({ id }) => {
+  // LEARN: the single source of truth for "which term is open". Clicking a tab
+  //    calls setSelectedTerm, which re-renders and pulls the matching detail
+  //    object out of the DETAILS table - no separate copies to keep in sync.
   const [selectedTerm, setSelectedTerm] = useState<TermKey>('air');
 
   const current = DETAILS[selectedTerm];

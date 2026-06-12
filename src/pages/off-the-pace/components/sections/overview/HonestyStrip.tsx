@@ -1,3 +1,17 @@
+/**
+ * HonestyStrip a build-status board that labels each feature built / fitted /
+ * in-progress / planned, so the page never overclaims what is shipped.
+ *
+ * Fits in: the overview, near the end, as a candour note.
+ * Note:    The status-to-styling map lives in `badge`; the list itself lives in
+ *          `BUILD_STATUS` (data file). Change copy in the data, look in the map.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `Record<BuildStatus, ...>` is a TypeScript type meaning "an object whose keys
+ * are exactly the BuildStatus values". It's a lookup table: `badge[item.status]`
+ * fetches the right label + CSS classes for a row, instead of a chain of ifs.
+ * -----------------------------------------------------------------------------
+ */
 import { BUILD_STATUS, type BuildStatus } from '../../../data/projectStats';
 
 const badge: Record<BuildStatus, { label: string; cls: string }> = {

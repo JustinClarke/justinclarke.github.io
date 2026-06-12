@@ -1,3 +1,15 @@
+/**
+ * SkeletonLoader a grey placeholder shape shown while real content loads.
+ *
+ * Fits in: rendered as the `fallback` for lazy-loaded pages/sections so the
+ *          layout doesn't jump when the real content arrives.
+ * Note:    `variant` picks a preset size (text line, card, hero, project grid).
+ *
+ * For beginners ----------------------------------------------------------------
+ * It's pure CSS the `animate-pulse` class fades it in and out, and the inner
+ * gradient div sweeps a "shimmer" across it. No data, no logic, just a shape.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { cn } from '@/utils';
 
@@ -6,10 +18,6 @@ interface SkeletonProps {
   className?: string;
 }
 
-/**
- * Premium Skeleton Loader with shimmer effect and pulse animation.
- * Used for high-fidelity lazy loading states.
- */
 export function SkeletonLoader({ variant = 'text', className }: SkeletonProps) {
   const variantClasses = {
     text: 'h-4 w-full rounded',

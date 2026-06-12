@@ -33,7 +33,7 @@ import {
 } from '../pages/home/Hero/engine';
 import { elevatorScroll } from '@/utils/scroll';
 import { GITHUB_USERNAME } from '@/config/constants';
-import { debug } from '@/utils';
+import { debug, track } from '@/utils';
 
 const log = debug('terminal');
 
@@ -128,6 +128,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     if (!raw) return;                // ignore empty input
     if (source === 'terminal' && isTyping) return; // don't accept a new command mid-typing
     log('command', { raw, source });
+    track('terminal-command', { command: raw, source });
 
     if (raw.toLowerCase() === 'clear') {
       setHistory([]);

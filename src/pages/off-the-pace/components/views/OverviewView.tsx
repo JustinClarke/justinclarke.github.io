@@ -1,17 +1,31 @@
+/**
+ * OverviewView assembles the story-first Overview page body: a vertical stack
+ * of narrative sections from NarrativeOpener through ClosingCTA, plus the page
+ * footer.
+ *
+ * Fits in: lazy-loaded by OffThePaceOverview inside a <Suspense> boundary.
+ * Note:    Every child sits in a `.reveal-element` wrapper that starts hidden
+ *          (via CSS) and gets a `.visible` class when it scrolls into view.
+ *
+ * For beginners ----------------------------------------------------------------
+ * IntersectionObserver is a browser tool that watches elements and tells you
+ * when they enter the viewport, far cheaper than checking on every scroll. The
+ * useEffect below builds one observer, points it at every `.reveal-element` on
+ * the page, and on first sighting adds `.visible` (which the CSS animates) then
+ * calls `unobserve` so each element only animates once. `disconnect()` in the
+ * cleanup tears it all down when the page leaves.
+ * -----------------------------------------------------------------------------
+ */
 import { useEffect } from 'react';
 import { StatsRibbon } from '../sections/overview/StatsRibbon';
 import { ProductPipeline } from '../sections/overview/ProductPipeline';
 import { BusinessValue } from '../sections/overview/BusinessValue';
 import { NarrativeOpener } from '../sections/overview/NarrativeOpener';
-import { DecompositionExplainer } from '../sections/overview/DecompositionExplainer';
-import { WhatMakesThisHard } from '../sections/overview/WhatMakesThisHard';
-import { MethodologyStrip } from '../sections/overview/MethodologyStrip';
 import { TechStackBand } from '../sections/overview/TechStackBand';
 import { InsightCallout } from '../sections/overview/InsightCallout';
 import { ClosingCTA } from '../sections/overview/ClosingCTA';
 import { HonestyStrip } from '../sections/overview/HonestyStrip';
 import { WorkflowLayers } from '../sections/overview/WorkflowLayers';
-import { CaseStudiesSection } from '../sections/CaseStudiesSection';
 import { STATS } from '../../data/projectStats';
 
 export function OverviewView() {
@@ -49,19 +63,10 @@ export function OverviewView() {
           <div className="reveal-element" style={{ transitionDelay: '70ms' }}>
             <WorkflowLayers />
           </div>
-
-          <div className="reveal-element" style={{ transitionDelay: '80ms' }}>
-            <DecompositionExplainer />
-          </div>
-
-          <div className="reveal-element" style={{ transitionDelay: '100ms' }}>
-            <CaseStudiesSection id="case-studies" />
-          </div>
         </div>
       </div>
 
-      {/* ── BOTTOM SECTION: GRAPHITE (starts at THE DATA PIPELINE) ── */}
-      <div className="bg-graphite-900 text-white border-t border-white/5 relative overflow-hidden">
+      <div className="bg-graphite-900 text-white relative overflow-hidden">
         {/* Background Grids & Radial Glows */}
         <div className="absolute inset-0 bg-dots-dark opacity-70 pointer-events-none" />
         <div className="absolute top-[10%] left-[-10%] w-[50vw] h-[50vw] bg-[radial-gradient(closest-side,rgba(225,6,0,0.04),transparent)] pointer-events-none" />
@@ -73,31 +78,22 @@ export function OverviewView() {
             <ProductPipeline />
           </div>
 
-          <div className="reveal-element border-t border-slate-200 py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
-            <WhatMakesThisHard />
-          </div>
-
-          <div className="reveal-element border-t border-slate-200 py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <BusinessValue />
           </div>
 
-          <div className="reveal-element border-t border-slate-200 py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
-            <MethodologyStrip />
-          </div>
-
-          <div className="reveal-element border-t border-slate-200 py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <InsightCallout />
           </div>
 
-          <div className="reveal-element border-t border-slate-200 py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <HonestyStrip />
           </div>
 
-          <div className="reveal-element border-t border-slate-200 pt-16 pb-24 md:pt-24 md:pb-32" style={{ transitionDelay: '60ms' }}>
-            <ClosingCTA />
-          </div>
         </div>
       </div>
+
+      <ClosingCTA />
 
       <footer className="relative z-10 border-t border-white/5 bg-graphite-950/80 backdrop-blur-sm py-4 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-[10px] text-white/40 tracking-wider">
         <div className="flex flex-col sm:flex-row items-center gap-2">

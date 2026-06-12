@@ -1,3 +1,22 @@
+/**
+ * SqlErd an interactive Entity-Relationship Diagram rendered as a CSS grid of
+ * entity cards with SVG lines connecting related tables.
+ *
+ * Fits in: rendered inside SqlDisasterPage in the "Relational Blueprint" section.
+ * Note:    the SVG overlay lines are drawn by measuring the DOM positions of
+ *          each entity card after render (getBoundingClientRect). A ResizeObserver
+ *          re-measures on every resize so the lines stay accurate when the
+ *          viewport width changes. The SVG lives in a separate absolute-positioned
+ *          layer on top of the cards.
+ *
+ * For beginners ----------------------------------------------------------------
+ * In HTML you can't draw lines between arbitrary elements - you'd need SVG or
+ * Canvas. Here we measure where each card is on screen (its center x,y pixel),
+ * store those positions in React state, and then draw <line> elements in an
+ * SVG overlay that covers the whole grid. This is a common "measure then draw"
+ * pattern for any diagram or graph UI in React.
+ * -----------------------------------------------------------------------------
+ */
 import React, { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';

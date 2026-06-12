@@ -10,15 +10,20 @@ import { PRELOADER_EXIT } from '@/config/animations';
 import { useReducedMotion } from '@/hooks';
 
 /**
- * Preloader Component
- * 
- * Orchestrates a precisely timed sequence of multilingual greetings 
- * and terminal boot logs to create a premium "loading" experience.
- * 
- * Architecture:
- * - Decryption Rhythm: Cycles through random languages at varying speeds.
- * - Terminal Logs: Asynchronous status reports synchronized with the progress bar.
- * - Design: High-contrast monochrome with subtle theme-driven ambient glow.
+ * Preloader the intro "loading" screen: a greeting cycles through languages
+ * while terminal-style boot logs and a progress bar fill in, then it fades out.
+ *
+ * Fits in: shown once on first visit (App.tsx decides whether to render it).
+ * Note:    when it finishes it fires a `preloaderComplete` window event the rest
+ *          of the app listens for that to reveal the page. A "Skip Intro" button
+ *          fires the same event early.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The whole thing is choreographed with timers. A chain of setTimeout calls
+ * swaps the greeting text at set moments; clearTimeout in the cleanup cancels
+ * any still-pending ones if the component leaves early. `progress` is a Framer
+ * Motion value animated from 0 to 100, and the bar's width follows it.
+ * -----------------------------------------------------------------------------
  */
 export const Preloader = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -27,6 +32,9 @@ export const Preloader = () => {
   const [colorPhase, setColorPhase] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
+  // LEARN: useMemo runs this once and remembers the result, so the random pick
+  //    of 9 languages stays fixed for the life of the component instead of
+  //    reshuffling on every render. The empty `[]` means "never recompute".
   // Pick 9 random non-English languages (3 slow + 6 fast)
   const sessionLanguages = useMemo(() => {
     return [...OTHER_LANGUAGES].sort(() => 0.5 - Math.random()).slice(0, 9);

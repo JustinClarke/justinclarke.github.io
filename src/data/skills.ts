@@ -1,3 +1,16 @@
+/**
+ * data/skills.ts the grouped skills shown in the Expertise section
+ * (categories, each with a list of skills + proficiency level).
+ *
+ * Fits in: read by the ExpertisePipeline columns.
+ * Note:    `colorClass` is a short key (e.g. 'lang') the UI maps to a colour
+ *          token; it's not a raw colour.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Pure data: an array of SkillGroup objects. The shape comes from @/types, so
+ * the editor will warn if a field is missing or misspelled.
+ * -----------------------------------------------------------------------------
+ */
 import { SkillGroup } from '@/types';
 
 export const expertiseColumns: SkillGroup[] = [

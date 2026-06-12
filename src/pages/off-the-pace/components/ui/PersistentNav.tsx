@@ -1,3 +1,18 @@
+/**
+ * PersistentNav the small floating "Overview / Architecture" pill fixed to the
+ * top of both Off The Pace pages, letting you hop between the two views.
+ *
+ * Fits in: rendered near the top of OffThePaceOverview and OffThePaceSource.
+ * Note:    Clicking the tab you are already on scrolls to the top instead of
+ *          navigating; clicking the other tab routes to that page.
+ *
+ * For beginners ----------------------------------------------------------------
+ * useLocation/useNavigate come from React Router: the first tells us the
+ * current URL (so we know which tab is active), the second changes pages
+ * without a full browser reload. Like the preloader, the nav is portalled into
+ * document.body so its fixed position is measured against the whole window.
+ * -----------------------------------------------------------------------------
+ */
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { smoothScrollTo } from '@/utils';
@@ -6,6 +21,8 @@ export function PersistentNav() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  // LEARN: derived value, not state - we recompute "are we on the overview
+  //    page?" from the URL on every render, so it can never fall out of sync.
   const isOverview = pathname === '/f1';
 
   const navigateWithTransition = (to: string) => {

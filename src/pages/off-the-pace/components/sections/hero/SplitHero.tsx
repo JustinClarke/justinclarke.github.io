@@ -1,8 +1,26 @@
-import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+/**
+ * SplitHero the hero atop the Overview page: a two-column split with the
+ * headline + three CTAs on the left and a live "causal decomposition" panel
+ * (DecompositionPanel) on the right, over a looping F1 video.
+ *
+ * Fits in: rendered once by OffThePaceOverview, under PersistentNav.
+ * Note:    Like ProjectHero, the CTAs animate via direct DOM style writes in
+ *          their mouse handlers, so those colours live in inline `style`, and
+ *          one-off keyframes live in the scoped <style> block.
+ *
+ * For beginners ----------------------------------------------------------------
+ * DecompositionPanel is a private presentational sub-component: it takes no
+ * props and just renders the DECOMPOSITION data array as labelled bars. The
+ * three `hover*` useState booleans only feed ScrambleText so each button's label
+ * "decodes" when you point at it. The "Findings" link calls smoothScrollTo
+ * instead of jumping, after `e.preventDefault()` stops the default anchor jump.
+ * -----------------------------------------------------------------------------
+ */
+import { useState, useEffect } from 'react';
 import { ScrambleText } from '../../ui/ScrambleText';
-import { STATS } from '../../../data/projectStats';
+import { STATS, LINKS } from '../../../data/projectStats';
 import { smoothScrollTo } from '@/utils';
+import { ScrollHint } from '@/pages/home/Hero/ScrollHint';
 
 const GROSS_TIME = '1:31.408';
 const TRUE_PACE = '1:29.035';
@@ -22,7 +40,7 @@ const DECOMPOSITION: DecompositionRow[] = [
 
 function DecompositionPanel() {
   return (
-    <div className="relative group overflow-hidden bg-[#0A0A0A]/92 border border-white/[0.08] backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-xl shadow-2xl transition-all duration-500 hover:bg-[#0A0A0A]/95 hover:border-white/[0.12] hover:shadow-[0_0_40px_rgba(225,6,0,0.15)]">
+    <div className="relative group overflow-hidden bg-deep/92 border border-white/[0.08] backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-xl shadow-2xl transition-all duration-500 hover:bg-deep/95 hover:border-white/[0.12] hover:shadow-[0_0_40px_rgba(225,6,0,0.15)]">
       {/* Subtle glowing orb in the background */}
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-[radial-gradient(closest-side,rgba(225,6,0,0.25),transparent)] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60" />
 
@@ -113,9 +131,24 @@ export function SplitHero() {
   const [hoverCta, setHoverCta] = useState(false);
   const [hoverSource, setHoverSource] = useState(false);
   const [hoverFindings, setHoverFindings] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  // Detect scroll to dismiss the scroll hint when entering other sections
+  useEffect(() => {
+    const handleScroll = () => {
+      setHasScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
-    <section className="relative min-h-screen lg:h-screen flex flex-col pt-20 pb-16 lg:pt-24 lg:pb-32 overflow-hidden">
+    <section className="relative min-h-screen lg:h-screen flex flex-col py-20 lg:py-24 overflow-hidden">
       <style>{`
         @keyframes slideArrow {
           0% { transform: translateX(-6px); opacity: 0; }
@@ -225,40 +258,93 @@ export function SplitHero() {
                 <ScrambleText text="ARCHITECTURE" isHovered={hoverSource} prefix="[" suffix="]" />
               </a>
 
-              {/* RED: LAUNCH DASHBOARD */}
+              {/* RED: LAUNCH DASHBOARD — unified single CTA */}
               <a
                 href="https://off-the-pace.web.app/"
                 target="_blank"
                 rel="noreferrer"
                 onMouseEnter={(e) => {
                   setHoverCta(true);
-                  e.currentTarget.style.boxShadow = '0 0 40px color-mix(in srgb, var(--color-f1-red) 100%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red) 60%, transparent)';
-                  e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 0 40px color-mix(in srgb, var(--color-f1-red) 50%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red) 25%, transparent)';
+                  e.currentTarget.style.transform = 'scale(1.015) translateY(-2px)';
                 }}
                 onMouseLeave={(e) => {
                   setHoverCta(false);
                   e.currentTarget.style.boxShadow = '';
-                  e.currentTarget.style.opacity = '1';
                   e.currentTarget.style.transform = '';
                 }}
-                className="app-launch-btn cta-button order-1 col-span-2 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-black whitespace-nowrap transition-all duration-300"
-                style={{ backgroundColor: 'var(--color-f1-red)', borderColor: 'var(--color-f1-red)', borderWidth: '1px', zIndex: 50 }}
+                className="app-launch-btn group order-1 col-span-2 relative flex items-stretch text-white transition-all duration-300 overflow-hidden rounded-md"
+                style={{ backgroundColor: '#0a0a0c', borderColor: 'color-mix(in srgb, var(--color-f1-red) 35%, transparent)', borderWidth: '1px', zIndex: 50 }}
               >
-                <span className="mr-3 flex h-2.5 w-2.5 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
-                </span>
-                <ScrambleText text="RUN CAUSAL MODELS // INTERACTIVE" isHovered={hoverCta} prefix="[" suffix="]" />
+                {/* Left accent bar */}
+                <div
+                  className="w-1 sm:w-1.5 shrink-0 transition-all duration-300 group-hover:w-2"
+                  style={{ background: 'linear-gradient(180deg, var(--color-f1-red), color-mix(in srgb, var(--color-f1-red) 50%, #1a0000))' }}
+                />
+
+                {/* Subtle shimmer overlay on hover */}
+                <div className="absolute inset-0 translate-x-[-100%] group-hover:animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/[0.04] to-transparent skew-x-[-20deg] pointer-events-none" />
+
+                {/* Content area */}
+                <div className="flex-1 flex flex-col gap-2 sm:gap-2.5 px-4 sm:px-5 py-3 sm:py-4 relative z-10">
+                  {/* Row 1: Label + status */}
+                  <div className="flex items-center gap-3 flex-wrap">
+                    {/* Ping dot */}
+                    <span className="relative flex h-2 w-2 shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-f1-red opacity-60" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-f1-red shadow-[0_0_6px_rgba(225,6,0,0.8)]" />
+                    </span>
+
+                    <span className="font-jetbrains text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black text-white group-hover:text-white transition-colors">
+                      <ScrambleText text="LAUNCH PLATFORM" isHovered={hoverCta} prefix="[" suffix="]" />
+                    </span>
+
+                    {/* Status pill */}
+                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 group-hover:bg-emerald-500/15 group-hover:border-emerald-500/30 transition-colors">
+                      <span className="relative flex h-1 w-1">
+                        <span className="group-hover:animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
+                        <span className="relative inline-flex rounded-full h-1 w-1 bg-emerald-400" />
+                      </span>
+                      <span className="font-jetbrains text-[7px] sm:text-[8px] uppercase tracking-[0.15em] text-emerald-400/90 font-semibold group-hover:text-emerald-300 transition-colors">
+                        Live · {"<"}10ms
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* Row 2: Feature pills — inline, horizontal */}
+                  <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                    {['Ghost Car Standings', 'Tyre Cliff Survival', 'ONNX Simulators'].map((feat, i) => (
+                      <span
+                        key={feat}
+                        className="font-jetbrains text-[7px] sm:text-[8px] tracking-wider uppercase px-2 py-[3px] rounded-[3px] border transition-colors duration-300"
+                        style={{
+                          color: `rgba(255,255,255,${0.55 - i * 0.12})`,
+                          borderColor: `rgba(255,255,255,${0.08 - i * 0.02})`,
+                          backgroundColor: `rgba(255,255,255,${0.03 - i * 0.005})`,
+                        }}
+                      >
+                        {feat}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right arrow affordance */}
+                <div className="flex items-center pr-4 sm:pr-5 shrink-0 relative z-10">
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-white/25 group-hover:text-f1-red group-hover:translate-x-0.5 transition-all duration-300"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </div>
               </a>
 
-              {/* GREEN: SEE THE FINDINGS */}
+              {/* GREEN: DOCUMENTATION */}
               <a
-                href="#case-studies"
-                onClick={(e) => {
-                  e.preventDefault();
-                  smoothScrollTo('case-studies', 2.2, 80);
-                }}
+                href={LINKS.docs}
+                target="_blank"
+                rel="noopener noreferrer"
                 onMouseEnter={(e) => {
                   setHoverFindings(true);
                   e.currentTarget.style.boxShadow = 'color-mix(in srgb, #00665E 80%, transparent) 0 0 35px';
@@ -276,9 +362,12 @@ export function SplitHero() {
                 className="cta-button order-2 col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
                 style={{ backgroundColor: 'transparent', borderColor: '#00665E', borderWidth: '1px', boxShadow: 'color-mix(in srgb, #00665E 40%, transparent) 0 0 20px', opacity: 0.9 }}
               >
-                <ScrambleText text="SEE THE FINDINGS" isHovered={hoverFindings} prefix="[" suffix="]" />
+                <ScrambleText text="DOCUMENTATION" isHovered={hoverFindings} prefix="[" suffix="]" />
               </a>
             </div>
+
+
+
           </div>
         </div>
 
@@ -287,6 +376,8 @@ export function SplitHero() {
         </div>
       </div>
 
+      {/* Scroll hint retro F1 style, starts dark grey, turns light red, blinks if idle, disappears in other sections */}
+      <ScrollHint hasScrolled={hasScrolled} variant="f1" className="absolute bottom-6 md:bottom-8" />
     </section>
   );
 }

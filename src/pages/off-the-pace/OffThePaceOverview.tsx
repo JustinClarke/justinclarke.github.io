@@ -1,3 +1,21 @@
+/**
+ * OffThePaceOverview the marketing-style "Overview" page for the Off The Pace
+ * F1 causal-ML case study (route /f1).
+ *
+ * Fits in: one of two top-level Off The Pace pages. This is the story-first
+ *          view; OffThePaceSource is the engineering-deep-dive twin. Both are
+ *          lazy-loaded by App.tsx.
+ * Note:    `data-theme-lock="dark"` + the `otp-scope` class pin this whole
+ *          subtree to the dark theme regardless of the site-wide toggle.
+ *
+ * For beginners ----------------------------------------------------------------
+ * This file shows two React patterns. (1) `lazy()` + `<Suspense>` split the
+ * heavy OverviewView into its own download that only fetches when this page
+ * mounts, keeping the first paint fast. (2) `useState` with a function argument
+ * runs that function once on first render to decide the start value - here,
+ * whether to show the intro preloader (skipped for bots and on repeat visits).
+ * -----------------------------------------------------------------------------
+ */
 import { lazy, Suspense, useState } from 'react';
 import { SEO } from '@/components/layout';
 import { TheCloser } from '@/components/layout/TheCloser';
@@ -10,6 +28,11 @@ const OverviewView = lazy(() =>
 );
 
 export function OffThePaceOverview() {
+  // LEARN: Passing a function to useState (a "lazy initialiser") makes React
+  //    run it only on the very first render to compute the starting value. We
+  //    do the work here so the preloader is skipped for automated tools
+  //    (Lighthouse, headless browsers) and for visitors who already saw it this
+  //    session - sessionStorage remembers that across page navigations.
   const [showPreloader, setShowPreloader] = useState(() => {
     if (typeof window !== 'undefined') {
       const isAutomation =
@@ -50,6 +73,9 @@ export function OffThePaceOverview() {
         <OffThePacePreloader onComplete={handlePreloaderComplete} />
       )}
 
+      {/* LEARN: This inline style is a legitimate use of `style` (the contract
+          reserves it for JS-driven values): opacity flips with the runtime
+          `showPreloader` boolean, fading the real page in once the intro ends. */}
       <div
         style={{
           opacity: showPreloader ? 0 : 1,

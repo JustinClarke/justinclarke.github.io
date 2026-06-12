@@ -1,7 +1,25 @@
+/**
+ * ActionButtons the "Repository" + "Documentation" link pair, with text that
+ * scrambles on hover.
+ *
+ * Fits in: a small reusable CTA row dropped into Off The Pace hero/section areas.
+ * Note:    Takes a `theme` prop so the docs button can adapt its border/text
+ *          colour for light vs dark backgrounds; defaults to dark.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Each button keeps a boolean in useState for whether the mouse is over it.
+ * onMouseEnter/onMouseLeave flip that boolean, and we pass it down to
+ * ScrambleText as `isHovered` so the child can animate. This is the standard
+ * "lift a tiny piece of UI state into the parent" pattern.
+ * -----------------------------------------------------------------------------
+ */
 import { useState } from 'react';
 import { ScrambleText } from './ui/ScrambleText';
 import { LINKS } from '../data/projectStats';
 
+// LEARN: `{ theme = 'dark' }: { theme?: 'light' | 'dark' }` destructures the
+//    single prop and gives it a default. The `?` marks it optional; callers can
+//    omit it and get 'dark'. The union type limits it to exactly two strings.
 export const ActionButtons = ({ theme = 'dark' }: { theme?: 'light' | 'dark' }) => {
   const isDark = theme === 'dark';
   const [hoverRepo, setHoverRepo] = useState(false);

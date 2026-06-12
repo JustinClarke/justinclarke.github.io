@@ -1,7 +1,23 @@
+/**
+ * OutputSection section "05 / The Output": shows the engine's actual product -
+ * a SQL query, a switchable results table for four sample races, and stacked
+ * "decomposition bars" that break each lap time into its causal components.
+ *
+ * Fits in: rendered by SourceView's Science & Output block.
+ * Note:    DATA_SAMPLES holds illustrative figures; the dropdown picks which
+ *          race feeds both the table and the decomposition bars.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Three useState values drive the interactivity: which sample is selected,
+ * whether the dropdown is open, and (on mobile) whether the full table is shown.
+ * In DecompositionBar each segment's pixel width is a share of the whole:
+ * value / totalShown * COMPONENT_SPAN, so the bar visually adds up to 100%.
+ * `keyof LapData` lets a segment name the data field it reads in a type-safe way.
+ * -----------------------------------------------------------------------------
+ */
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { STATS } from '../../data/projectStats';
-import { smoothScrollTo } from '@/utils';
 
 interface OutputSectionProps {
   id: string;
@@ -78,6 +94,10 @@ const BAR_SEGMENTS: { key: keyof LapData; label: string; bg: string; text: strin
 ];
 
 const DecompositionBar = ({ row }: { row: LapData }) => {
+  // LEARN: build the list of visible segments: take each segment's absolute
+  //    value, drop the negligible ones (filter), then `reduce` sums them plus
+  //    the driver-skill slice to get the total. `span()` converts any one value
+  //    into a percentage of COMPONENT_SPAN so all the bars share one scale.
   const comps = BAR_SEGMENTS
     .map((s) => ({ ...s, value: Math.abs(row[s.key] as number) }))
     .filter((s) => s.value > 0.001);

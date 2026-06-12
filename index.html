@@ -29,6 +29,9 @@
         var decoded = l.search.slice(1).split('&').map(function (s) {
           return s.replace(/~and~/g, '&')
         }).join('?');
+        if (decoded.length > 1 && decoded.charAt(decoded.length - 1) === '/') {
+          decoded = decoded.slice(0, -1);
+        }
         window.history.replaceState(null, null,
           l.pathname.slice(0, -1) + decoded + l.hash
         );

@@ -1,3 +1,17 @@
+/**
+ * SectionHeader the shared heading block for Off The Pace sections: a coloured
+ * "eyebrow" line (optionally numbered), a big title, and an optional lede.
+ *
+ * Fits in: reused at the top of most section components on both OTP pages.
+ * Note:    `title` is typed React.ReactNode (not string) so callers can pass
+ *          rich markup - e.g. a title with a <br /> or a coloured <span>.
+ *
+ * For beginners ----------------------------------------------------------------
+ * ACCENT_COLORS is a lookup table: give it an accent name like 'amber' and it
+ * hands back the matching Tailwind class. This keeps the four allowed colours in
+ * one place instead of scattering if/else branches through the markup.
+ * -----------------------------------------------------------------------------
+ */
 interface SectionHeaderProps {
   number?: string;
   eyebrow: string;

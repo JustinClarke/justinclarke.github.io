@@ -1,3 +1,26 @@
+/**
+ * TheLongVersion a long-form editorial page "the personal statement" of the
+ * portfolio. Styled as a printed broadsheet using custom CSS injected via a
+ * <style> tag (the STYLES constant), rather than Tailwind, because this page
+ * has its own distinct typographic design identity that must not leak into
+ * the rest of the app.
+ *
+ * Fits in: rendered by App.tsx at /the-long-version as a lazy-loaded page.
+ *          It receives optional href props from the route so links can be
+ *          overridden during testing without touching the component itself.
+ * Note:    three separate useEffects run here with distinct concerns:
+ *          (1) font injection (runs once), (2) live clock + elapsed timer,
+ *          (3) scroll-progress bar. The STYLES block (lines 8-541) is a
+ *          complete self-contained stylesheet injected once at mount.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Most of this app uses Tailwind utility classes. This page uses a different
+ * approach: a large string of plain CSS is placed inside a <style> tag at
+ * render time, scoped under the `.ee-root` class so it cannot affect other
+ * pages. This is like writing a stylesheet in a <style> tag in a normal HTML
+ * file - React lets you insert that tag into the document the same way.
+ * -----------------------------------------------------------------------------
+ */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/layout";
@@ -558,7 +581,10 @@ export default function TheLongVersion({
   const [elapsed, setElapsed] = useState(0);
   const [progress, setProgress] = useState(0);
 
-  // inject Google Fonts once
+  // LEARN: Effect 1 - font injection. This page uses Newsreader and JetBrains
+  //    Mono, which are not loaded by the main app. We imperatively create a
+  //    <link> element and append it to <head> once. The `id` guard prevents
+  //    duplicating it if React's Strict Mode mounts twice in development.
   useEffect(() => {
     const id = "ee-fonts";
     if (typeof document === "undefined" || document.getElementById(id)) return;
@@ -569,7 +595,10 @@ export default function TheLongVersion({
     document.head.appendChild(link);
   }, []);
 
-  // live date + elapsed timer
+  // LEARN: Effect 2 - the live clock and read-time counter. We capture
+  //    Date.now() at mount as `start`, then every second compute how many
+  //    whole seconds have elapsed since then. `now` is set once so the date
+  //    label doesn't flicker on the first server-render, then stays stable.
   useEffect(() => {
     setNow(new Date());
     const start = Date.now();
@@ -578,7 +607,11 @@ export default function TheLongVersion({
     return () => clearInterval(t);
   }, []);
 
-  // scroll progress
+  // LEARN: Effect 3 - scroll progress bar. scrollY / (totalHeight - viewport)
+  //    gives a 0-1 fraction of how far the visitor has scrolled; we multiply
+  //    by 100 for a percentage, clamp to 100, and store it in state. The
+  //    { passive: true } flag lets the browser scroll without waiting for
+  //    our handler to finish - important for smooth scrolling performance.
   useEffect(() => {
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;

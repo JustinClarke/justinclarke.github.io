@@ -1,3 +1,15 @@
+/**
+ * NarrativeOpener the headline + thesis that opens the Off-the-Pace overview.
+ *
+ * Fits in: first block inside OverviewView, above the data sections.
+ * Note:    Pure presentation no state, no effects. Edit the copy here freely.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `causes` is a plain array of strings. `causes.map(...)` turns each string into
+ * a `<span>` the React way to render a list. Every mapped item needs a unique
+ * `key` (here the string itself) so React can tell the chips apart when redrawing.
+ * -----------------------------------------------------------------------------
+ */
 export function NarrativeOpener() {
   const causes = [
     'Car baseline', 'Fuel mass', 'Tyre chemistry', 'Rubber evolution',

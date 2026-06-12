@@ -1,3 +1,18 @@
+/**
+ * ValidationSection section "07 / Validation": a faux `make test-all` terminal
+ * beside a build-status checklist (built / fitted / wip / planned).
+ *
+ * Fits in: rendered by SourceView's Validation block.
+ * Note:    Each status maps to its own badge classes, inline colours, and label
+ *          prefix via three small Record lookup tables keyed by BuildStatus.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `Record<BuildStatus, ...>` is a typed dictionary: its keys must be exactly the
+ * four BuildStatus strings, so if a new status is added TypeScript forces you to
+ * fill in every table here. Looking a value up by `table[status]` replaces what
+ * would otherwise be a stack of if/else branches in the markup.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { STATS, BUILD_STATUS, type BuildStatus } from '../../data/projectStats';
 
@@ -96,7 +111,7 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
                 ))}
               </div>
               <p className="font-jetbrains text-[10px] text-white/35 mt-5 leading-relaxed">
-                Planned items are designed and specced; not yet implemented. Ghost Car and the frontend are app-layer concerns built on top of the shipped transform and ML stack.
+                Planned items are designed and specced; not yet implemented. The transform, ML, and frontend stack are fully shipped.
               </p>
             </div>
           </div>

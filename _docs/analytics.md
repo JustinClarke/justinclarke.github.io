@@ -31,7 +31,11 @@ if (document.querySelector('script[data-website-id]')) return; // inject once
 
 `data-domains="justinclarke.github.io"` is set on the tag so the collector rejects beacons from `localhost` and any preview host the primary defence keeping non-prod traffic out of the dashboard. Mounted once beside `<SEO />` in [`src/app/App.tsx`](../src/app/App.tsx).
 
-**Pageviews are automatic.** Umami patches `history.pushState`, which React Router calls on every navigation. The app updates the URL at navigation start (the visual swap is deferred via `displayLocation`), so each route change registers as its own pageview.
+**Pageviews are automatic and normalized.** Umami patches `history.pushState`, which React Router calls on every navigation. The app updates the URL at navigation start (the visual swap is deferred via `displayLocation`), so each route change registers as its own pageview.
+
+To prevent traffic statistics from being split between paths with and without trailing slashes (e.g., `/f1/` vs `/f1`), the app automatically normalizes all paths to a non-trailing-slash format. This is handled at two levels:
+1. **GitHub Pages Redirect (`index.html`):** Direct hits on trailing-slash URLs (which go through the custom 404 router) are normalized during the redirect decode process before React mounts.
+2. **Client-side Router (`App.tsx`):** If a trailing-slash URL is resolved inside React, a replace-navigation is executed. The page-transition state machine explicitly ignores trailing-slash differences so that this cleanup does not trigger a visual page fade transition.
 
 ### Custom events [`src/utils/track.ts`](../src/utils/track.ts)
 
@@ -46,7 +50,7 @@ A no-op when the tracker isn't loaded (optional-chains `window.umami?.track`), s
 | `contact-open` | `openContactModal()` [`ModalProvider.tsx`](../src/app/providers/ModalProvider.tsx) | |
 | `email-open` | `openEmailModal()` [`ModalProvider.tsx`](../src/app/providers/ModalProvider.tsx) | |
 | `email-copy` | copy button [`EmailModal.tsx`](../src/components/modals/EmailModal.tsx) | |
-| `outbound-click` | LinkedIn / GitHub / cal.com links [`Connect.tsx`](../src/pages/Connect.tsx) | `{ channel }` |
+| `outbound-click` | cal.com booking / LinkedIn / GitHub links [`Connect.tsx`](../src/pages/Connect.tsx) | `{ channel: 'book' \| 'linkedin' \| 'github' }` |
 
 Modal events are instrumented on the provider (the single choke point) rather than each caller. Keep event names kebab-case and stable renaming splits history in the dashboard.
 

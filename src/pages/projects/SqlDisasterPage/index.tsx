@@ -1,3 +1,22 @@
+/**
+ * SqlDisasterPage the project case-study page for the SQL Disaster Response
+ * System: an 11-entity MySQL relational database modelling Philippine relief
+ * logistics, with a 1,603-line D3 v7 force-graph command dashboard.
+ *
+ * Fits in: one of five project pages, reachable via /project/sql-disaster.
+ *          Rendered lazily by App.tsx inside the page-transition wrapper.
+ * Note:    entity colours (`var(--color-sql-*)`) come from `@theme` tokens
+ *          in index.css. The `style={{ color: entity.color }}` pattern passes
+ *          the CSS variable string so the browser resolves it at paint time.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The fixed HUD pill in the top-right corner cycles through entity names using
+ * the same useState + setInterval pattern as LiteStorePage: a number ticks up
+ * every 2.2 seconds and picks a different entry from ENTITY_REGISTRY. The
+ * interactive D3 graph is rendered by the SqlErd component - a separate file
+ * that injects a plain JavaScript file at mount time (no React inside it).
+ * -----------------------------------------------------------------------------
+ */
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
@@ -51,7 +70,9 @@ export const SqlDisasterPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [ticker, setTicker] = useState(0);
 
-  // Ticker - cycles through entity counts for the HUD
+  // LEARN: `ticker` is just a counter (0-6). The HUD reads
+  //    ENTITY_REGISTRY[ticker] to display whichever entity is "active".
+  //    Each tick increments the index and wraps back to 0 with `% length`.
   useEffect(() => {
     const id = setInterval(() => setTicker(t => (t + 1) % ENTITY_REGISTRY.length), 2200);
     return () => clearInterval(id);
@@ -195,7 +216,7 @@ export const SqlDisasterPage = () => {
       {/* ════════════════════════════════════════════════════════════════
           ENTITY STAT RAIL
       ════════════════════════════════════════════════════════════════ */}
-      <div className="border-y border-white/5 bg-[#080808] text-white overflow-hidden">
+      <div className="border-y border-white/5 bg-pitch text-white overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-4 md:grid-cols-7 divide-x divide-white/5">
           {ENTITY_REGISTRY.map(entity => (
             <div key={entity.id} className="flex flex-col items-center justify-center py-6 px-4 gap-1.5 group">
@@ -264,7 +285,7 @@ export const SqlDisasterPage = () => {
       {/* ════════════════════════════════════════════════════════════════
           SCHEMA RIGOR
       ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 md:py-28 px-6 md:px-12 bg-[#080808] text-white border-y border-white/5">
+      <section className="py-20 md:py-28 px-6 md:px-12 bg-pitch text-white border-y border-white/5">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 md:gap-28 items-center">
 
           {/* Left: header + description */}
@@ -383,7 +404,7 @@ export const SqlDisasterPage = () => {
       {/* ════════════════════════════════════════════════════════════════
           QUERY SYLLABUS
       ════════════════════════════════════════════════════════════════ */}
-      <section className="py-20 md:py-32 px-6 md:px-12 bg-[#080808] text-white border-y border-white/5 relative overflow-hidden">
+      <section className="py-20 md:py-32 px-6 md:px-12 bg-pitch text-white border-y border-white/5 relative overflow-hidden">
         <div className="max-w-7xl mx-auto">
 
           <ScrollReveal direction="up">
@@ -480,6 +501,7 @@ export const SqlDisasterPage = () => {
             </div>
 
             {/* Mock terminal preview */}
+            {/* tw-allow-hex: one-off "fake browser chrome" colors specific to this mock UI */}
             <div className="relative w-full max-w-4xl mx-auto rounded-[28px] md:rounded-[36px] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.25)] bg-[#05080f] border border-white/10">
 
               {/* Browser chrome */}
@@ -539,7 +561,7 @@ export const SqlDisasterPage = () => {
       {/* ════════════════════════════════════════════════════════════════
           IMPACT RAIL
       ════════════════════════════════════════════════════════════════ */}
-      <div className="border-y border-white/5 bg-[#080808] text-white">
+      <div className="border-y border-white/5 bg-pitch text-white">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-white/5">
           {[
             { v: '11', l: 'Entities', d: 'core + junction tables' },

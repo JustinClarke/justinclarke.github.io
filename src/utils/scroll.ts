@@ -1,3 +1,18 @@
+/**
+ * scroll.ts smooth-scroll helpers that animate the page to a target.
+ *
+ * Fits in: called by nav links / "scroll to section" buttons.
+ * Note:    all three respect reduced-motion: when the visitor prefers less
+ *          motion they jump instantly instead of animating.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `expoInOut` is an "easing function": given progress t (0..1) it returns an
+ * eased 0..1, so the scroll starts slow, speeds up, and slows to a stop instead
+ * of moving at a constant rate. Each scroller drives that with a
+ * requestAnimationFrame loop (`tick`), nudging window.scrollY a bit per frame
+ * until t reaches 1.
+ * -----------------------------------------------------------------------------
+ */
 const expoInOut = (t: number): number => {
   if (t === 0 || t === 1) return t;
   return t < 0.5

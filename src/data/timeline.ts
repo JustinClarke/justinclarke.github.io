@@ -1,3 +1,18 @@
+/**
+ * data/timeline.ts the combined career + education timeline entries.
+ *
+ * Fits in: read by the CareerTimeline section. Unlike portfolio.ts, this file
+ *          defines its OWN `Entry` type here (it isn't shared via @/types).
+ * Note:    `start`/`end` are decimal years (e.g. 2024.0) so the timeline can
+ *          position and overlap entries on a numeric axis; `concurrent` links
+ *          entries that ran at the same time.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `interface Entry { ... }` describes the shape of one timeline item; `ENTRIES`
+ * below is the array of them. A `?` after a field (badge?, ongoing?) marks it
+ * optional that item may or may not include it.
+ * -----------------------------------------------------------------------------
+ */
 export interface Entry {
   id: string;
   type: 'work' | 'edu';

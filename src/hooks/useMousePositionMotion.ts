@@ -1,12 +1,19 @@
-import { useEffect, useMemo } from 'react';
+/**
+ * useMousePositionMotion tracks the cursor's position on the whole PAGE.
+ *
+ * Fits in: used by CustomCursor to move the custom cursor dot.
+ * Note:    like useSpotlight but page-wide (clientX/clientY straight from the
+ *          window), not relative to one element.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Returns Framer Motion values that update without re-rendering React on every
+ * mouse move. The effect subscribes to the window's mousemove on mount and
+ * unsubscribes on unmount (the returned cleanup function).
+ * -----------------------------------------------------------------------------
+ */
+import { useEffect } from 'react';
 import { useMotionValue } from 'framer-motion';
 
-/**
- * useMousePositionMotion
- * A high-performance mouse tracking hook that uses Framer Motion's useMotionValue
- * to bypass the React render loop. This prevents the entire component from re-rendering
- * on every single mousemove event (60-120 times per second).
- */
 export function useMousePositionMotion() {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);

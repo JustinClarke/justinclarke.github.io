@@ -1,23 +1,43 @@
 /**
  * TheCloser the full-height footer section used at the bottom of every page.
- * Fits in: pages/home/ (it is a home/contact section, not a generic layout primitive).
- * Note: re-exported from @/components/layout so existing import sites
- *   don't need to change the barrel at components/layout/TheCloser.tsx forwards here.
+ *
+ * Fits in: pages/home/ (it is a home/contact section, not a generic layout
+ *          primitive), but every page renders it last via the re-export at
+ *          components/layout/TheCloser.tsx.
+ * Note:    one piece of state the fake "compliance audit" terminal's
+ *          open/closed flag drives both the toggle button and a scroll nudge.
+ *
+ * For beginners ----------------------------------------------------------------
+ * Mostly static HTML: a headline, a contact button, social links, and a
+ * tongue-in-cheek legal panel. The two React ideas worth reading for are
+ * (1) the `containerRef` + useEffect pair that scrolls the section into view
+ * when the terminal opens, and (2) the BRAND_STYLES lookup table near the
+ * bottom data picking classes instead of four copies of the same markup.
+ * -----------------------------------------------------------------------------
  */
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { SectionContainer, ScrollReveal } from '@/ui';
 import { closerMetadata } from '@/data';
-import { cn } from '@/utils';
+import { cn, track } from '@/utils';
 import { Mail, ArrowUpRight, Github, Linkedin, Instagram, Terminal, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { TOOLTIPS } from '@/config/tooltips';
 
 export const TheCloser = () => {
+  // LEARN: useRef gives a box whose .current React fills with the real DOM
+  //    element once it renders the React way to grab a node, instead of
+  //    document.querySelector. Needed for scrollIntoView below.
   const containerRef = useRef<HTMLElement>(null);
+  // LEARN: useNavigate returns a function that changes the URL from code
+  //    the router equivalent of clicking an <a>, for use inside onClick.
   const navigate = useNavigate();
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
   // Scroll into view when terminal is opened
+  // LEARN: this effect re-runs whenever isTerminalOpen flips. The 150ms
+  //    timeout lets the terminal finish appearing first, so the section's new,
+  //    taller height is what gets scrolled to. `?.` skips the call safely if
+  //    the ref hasn't been attached yet.
   useEffect(() => {
     if (isTerminalOpen) {
       const timer = setTimeout(() => {
@@ -65,7 +85,10 @@ export const TheCloser = () => {
               {/* CTA Button */}
               <ScrollReveal once={false} delay={0.4}>
                 <button
-                  onClick={() => navigate('/connect')}
+                  onClick={() => {
+                    track('outbound-click', { channel: 'connect_button_footer' });
+                    navigate('/connect');
+                  }}
                   data-tooltip={TOOLTIPS.getintouch}
                   className='group flex items-center justify-center gap-6 px-10 md:px-12 py-[18px] md:py-[22px] bg-transparent text-white font-noto text-[13px] md:text-[14px] font-bold tracking-[0.2em] uppercase rounded-full cursor-pointer transition-all duration-700 ease-out border border-brand-primary/20 hover:border-brand-primary hover:bg-brand-primary/[0.05] hover:shadow-[0_0_40px_rgba(0,200,180,0.15)] focus-ring relative overflow-hidden min-w-[280px] md:min-w-[320px]'
                   aria-label='Open contact form'
@@ -219,7 +242,10 @@ export const TheCloser = () => {
                 [STATUS: ACTIVE_VERIFICATION]
               </span>
               <button
-                onClick={() => setIsTerminalOpen(!isTerminalOpen)}
+                onClick={() => {
+                  track('compliance-audit-toggle', { state: !isTerminalOpen ? 'open' : 'closed' });
+                  setIsTerminalOpen(!isTerminalOpen);
+                }}
                 className='flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/[0.02] border border-white/[0.06] text-white/50 hover:text-brand-primary hover:border-brand-primary/30 transition-all duration-300 hover:bg-brand-primary/[0.02] cursor-pointer text-[7.5px] md:text-[8.5px] tracking-wider uppercase self-start sm:self-auto'
               >
                 <Terminal className='w-3 h-3 text-brand-primary' />
@@ -282,6 +308,10 @@ export const TheCloser = () => {
   );
 };
 
+// LEARN: Record<string, string> is TypeScript for "an object used as a
+//    dictionary: any string key, string values". These two tables let
+//    FooterSocialLink LOOK UP its tooltip and colours by label instead of
+//    hardcoding four near-identical copies of the markup.
 const SOCIAL_TOOLTIP: Record<string, string> = {
   GitHub: TOOLTIPS.github,
   LinkedIn: TOOLTIPS.linkedin,
@@ -291,27 +321,31 @@ const SOCIAL_TOOLTIP: Record<string, string> = {
 
 const BRAND_STYLES: Record<string, { default: string; hover: string; shadow: string }> = {
   GitHub: {
-    default: 'bg-[#8957e5]/5 border-[#8957e5]/20 text-[#8957e5]',
-    hover: 'hover:bg-[#8957e5] hover:text-[#0c1110] hover:border-transparent',
+    default: 'bg-social-github/5 border-social-github/20 text-social-github',
+    hover: 'hover:bg-social-github hover:text-ink hover:border-transparent',
     shadow: 'hover:shadow-[0_0_20px_rgba(137,87,229,0.4)]',
   },
   LinkedIn: {
-    default: 'bg-[#0a66c2]/5 border-[#0a66c2]/20 text-[#0a66c2]',
-    hover: 'hover:bg-[#0a66c2] hover:text-[#0c1110] hover:border-transparent',
+    default: 'bg-social-linkedin/5 border-social-linkedin/20 text-social-linkedin',
+    hover: 'hover:bg-social-linkedin hover:text-ink hover:border-transparent',
     shadow: 'hover:shadow-[0_0_20px_rgba(10,102,194,0.4)]',
   },
   Instagram: {
-    default: 'bg-[#e1306c]/5 border-[#e1306c]/20 text-[#e1306c]',
-    hover: 'hover:bg-[#e1306c] hover:text-[#0c1110] hover:border-transparent',
+    default: 'bg-social-instagram/5 border-social-instagram/20 text-social-instagram',
+    hover: 'hover:bg-social-instagram hover:text-ink hover:border-transparent',
     shadow: 'hover:shadow-[0_0_20px_rgba(225,48,108,0.4)]',
   },
   Email: {
-    default: 'bg-[#ff4757]/5 border-[#ff4757]/20 text-[#ff4757]',
-    hover: 'hover:bg-[#ff4757] hover:text-[#0c1110] hover:border-transparent',
+    default: 'bg-social-email/5 border-social-email/20 text-social-email',
+    hover: 'hover:bg-social-email hover:text-ink hover:border-transparent',
     shadow: 'hover:shadow-[0_0_20px_rgba(255,71,87,0.4)]',
   },
 };
 
+// LEARN: components are plain values, so they can be passed as props.
+//    `icon: Icon` destructures the prop AND renames it with a capital letter,
+//    because JSX treats <Icon /> as "render this component" but <icon /> as a
+//    literal HTML tag.
 const FooterSocialLink = ({
   href,
   icon: Icon,
@@ -323,16 +357,28 @@ const FooterSocialLink = ({
   label: string;
   onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => {
+  // LEARN: `||` falls back to the neutral grey style if a label has no entry
+  //    in BRAND_STYLES so a new link still renders sensibly.
   const styles = BRAND_STYLES[label] || {
     default: 'bg-white/[0.02] border-white/5 text-white/30',
     hover: 'hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/5',
     shadow: '',
   };
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    track('outbound-click', { channel: label.toLowerCase() });
+    if (onClick) {
+      onClick(e);
+    }
+  };
+
   return (
     <a
       href={href}
-      onClick={onClick}
+      onClick={handleClick}
+      // LEARN: passing `undefined` to a JSX attribute is the same as omitting
+      //    it links with a custom onClick stay in-tab; plain links open a new
+      //    tab (with the standard rel guard for third-party sites).
       target={onClick ? undefined : '_blank'}
       rel={onClick ? undefined : 'noopener noreferrer'}
       aria-label={label}

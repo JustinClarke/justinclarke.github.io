@@ -1,3 +1,16 @@
+/**
+ * ConfirmPrompt a tiny inline "confirm? y / n" popover.
+ *
+ * Fits in: shown next to a destructive action (e.g. clearing terminal state)
+ *          to make the user confirm before it happens.
+ * Note:    it positions itself absolutely, so its parent must be `relative`.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `if (!isOpen) return null;` is the React way of saying "render nothing".
+ * A component that returns null adds no HTML to the page, which is how we
+ * show/hide the prompt without removing it from the parent's code.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 
 interface ConfirmPromptProps {

@@ -1,3 +1,18 @@
+/**
+ * BusinessValue three "why it matters" cards, each pairing a short pitch with a
+ * tiny hand-drawn SVG diagram (ghost car, tyre cliff, pit strategy).
+ *
+ * Fits in: the overview, translating the engineering into racing value.
+ * Note:    Each diagram is its own small component (GhostCarGraphic etc.) and is
+ *          stored as JSX inside the `products` array, then rendered per card.
+ *
+ * For beginners ----------------------------------------------------------------
+ * A React component is just a function that returns markup, so the three
+ * `*Graphic` functions are reusable drawings. Storing one as `graphic: <Ghost.../>`
+ * in the data array works because JSX elements are ordinary values you can put in
+ * a variable and render later with `{item.graphic}`.
+ * -----------------------------------------------------------------------------
+ */
 import { Car, TimerReset, Flag } from 'lucide-react';
 
 function GhostCarGraphic() {
@@ -34,7 +49,7 @@ function TyreCliffGraphic() {
         <line x1="15" y1="52" x2="185" y2="52" stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
         
         {/* Grip Degradation Curve */}
-        <path d="M15 15 C 60 18, 110 22, 135 32 C 145 37, 150 48, 160 52" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" className="sb-line-draw" />
+        <path d="M15 15 C 60 18, 110 22, 135 32 C 145 37, 150 48, 160 52" stroke="var(--color-amber)" strokeWidth="2" strokeLinecap="round" className="sb-line-draw" />
         
         {/* Cliff Threshold line */}
         <line x1="140" y1="10" x2="140" y2="52" stroke="rgba(239,68,68,0.3)" strokeWidth="1" strokeDasharray="2 2" />

@@ -78,7 +78,7 @@ export const NowPlaying: React.FC = () => {
         <span className="text-viz-spotify flex items-center shrink-0">
           <SpotifyLogo />
         </span>
-        <span className="text-[#e8e6e0] font-semibold">{track.artist}</span>
+        <span className="text-paper font-semibold">{track.artist}</span>
         <span className="text-term-faint shrink-0"> - </span>
         <span className="text-term-dim">{track.name}</span>
       </div>

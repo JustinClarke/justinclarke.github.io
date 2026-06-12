@@ -140,6 +140,58 @@
   --color-sql-shelter: #2dce68;
   --color-sql-supply: #ff6a25;
 
+  /* Social brand palette (TheCloser footer + Connect page link lists) */
+  --color-social-github: #8957e5;
+  --color-social-linkedin: #0a66c2;
+  --color-social-instagram: #e1306c;
+  --color-social-email: #ff4757;
+
+  /* Near-black green-tinted "ink" terminal panels and hover-inverted icon text
+     (footer console, Connect, EmailModal, BackToTerminal, ExpertisePipeline) */
+  --color-ink: #0c1110;
+
+  /* Education/academic amber timeline edu column, [data-term="edu"],
+     off-the-pace "planned" status */
+  --color-amber: #f59e0b;
+
+  /* Near-black alternating dark section backgrounds on project pages.
+     pitch (#080808) is the most common; void (#020202) is the deepest
+     used for the Spotify hero; deep (#0a0a0a) sits between them. */
+  --color-pitch: #080808;
+  --color-void: #020202;
+  --color-deep: #0a0a0a;
+
+  /* IDC Capital Budgeting project gold accent (WACC / NPV highlight) */
+  --color-capital: #E6A100;
+
+  /* Spotify acoustic-feature teal (Danceability/Acousticness bars + code syntax) */
+  --color-viz-teal: #4fd1c5;
+
+  /* Tech-stack brand colours for the TechStack badge row (src/ui/TechStack.tsx):
+     python blue, dbt orange, Power BI gold. */
+  --color-python: #4B8BBE;
+  --color-dbt: #FF694B;
+  --color-power-bi: #FDBF2B;
+
+  /* cal.com booking channel orange (Connect page BOOK row) */
+  --color-social-cal: #ff5000;
+
+  /* Warm parchment off-white text used throughout the Connect page terminal */
+  --color-paper: #e8e6e0;
+
+  /* Off-the-Pace / F1 telemetry semantic colours. These were referenced as
+     var(--color-*) across f1.ts, the decomposition chart, OutputSection and
+     projectStats but never defined here, so they resolved to nothing (added
+     after the gap was found mid-refactor). Standard Tailwind palette values:
+       emerald      green-500  "faster / good" residuals and sector straps
+       emerald-dark green-700  tyre-compound segment (darker than rubber #065F46)
+       blue-bright  blue-500   dirty-air tax segment
+       sql-red      red-500    "slower / bad" residuals (mirrors viz-red) */
+  --color-emerald: #10b981;
+  --color-emerald-dark: #047857;
+  --color-blue-bright: #3b82f6;
+  --color-sql-red: #ef4444;
+
   /* Semantic surface / text / border tokens (light-adaptive, dark defaults).
      Override blocks below swap them for the light theme. */
   --surface-primary: #050505;
@@ -469,7 +521,7 @@ body {
 }
 
 [data-term="edu"] {
-  color: #f59e0b;
+  color: var(--color-amber);
   font-weight: bold;
 }
 

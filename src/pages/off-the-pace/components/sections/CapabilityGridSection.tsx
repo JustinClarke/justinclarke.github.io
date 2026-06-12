@@ -1,3 +1,19 @@
+/**
+ * CapabilityGridSection a 6-card grid summarising the engine's headline
+ * capabilities (ghost car, overtake graph, tyre cliff, etc.), each with its own
+ * hover-glow colour and source-table footnote.
+ *
+ * Fits in: a standalone band on the Off The Pace pages.
+ * Note:    CapCard is a small private sub-component declared in this same file
+ *          because it is only ever used here.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `glowColor` is passed in as a prop and dropped into an inline `style` because
+ * it differs per card (a JS-driven value, so inline style is correct here). The
+ * radial-gradient only shows on hover via the `group`/`group-hover` Tailwind
+ * pattern: the parent has `group`, children react to its hover with `group-hover:`.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 
 interface CapCardProps {

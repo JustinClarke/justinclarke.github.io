@@ -1,3 +1,17 @@
+/**
+ * caseStudies the data for the "Findings" / case-study cards: each entry is one
+ * attributed race analysis with a headline finding and a few metric chips.
+ *
+ * Fits in: imported by CaseStudiesSection, which maps each entry to a card.
+ * Note:    Add new findings to the CASE_STUDIES array; the UI grows to fit.
+ *
+ * For beginners ----------------------------------------------------------------
+ * The `interface CaseStudy` is a shape contract: it lists which fields every
+ * case study must have (and `?` marks optional ones, like `highlight`). Typing
+ * the array as `CaseStudy[]` means TypeScript will flag a typo or a missing
+ * field right here, before it can break the page.
+ * -----------------------------------------------------------------------------
+ */
 export interface CaseStudy {
   id: string;
   title: string;

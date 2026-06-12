@@ -1,3 +1,16 @@
+/**
+ * EmailModal a small popup offering "copy email" or "open mail app".
+ *
+ * Fits in: opened from the shared modal state when a visitor clicks an email CTA.
+ * Note:    copying uses the modern Clipboard API, with a hidden-<textarea> +
+ *          execCommand fallback for older browsers that lack it.
+ *
+ * For beginners ----------------------------------------------------------------
+ * `if (!isEmailModalOpen) return null;` renders nothing when closed. The dark
+ * overlay <div> and the dialog are siblings inside a fragment (<>...</>); clicking
+ * the overlay calls closeEmailModal, the classic "click outside to dismiss".
+ * -----------------------------------------------------------------------------
+ */
 import React, { useState } from 'react';
 import { Mail, Copy, Mail as MailOpen } from 'lucide-react';
 import { useModal } from '@/providers/ModalProvider';
@@ -40,13 +53,13 @@ export const EmailModal = () => {
         onClick={closeEmailModal}
       />
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-in fade-in scale-in duration-300">
-        <div className="bg-[#0c1110] border border-white/10 rounded-2xl shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] w-full max-w-sm p-6 md:p-8">
+        <div className="bg-ink border border-white/10 rounded-2xl shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] w-full max-w-sm p-6 md:p-8">
           <h2 className="font-mono text-[11px] text-brand-primary tracking-[0.2em] mb-6 flex items-center gap-2">
             <Mail className="w-4 h-4" />
             EMAIL ACTION
           </h2>
 
-          <p className="font-mono text-sm md:text-base text-[#e8e6e0] mb-2 break-all select-all">
+          <p className="font-mono text-sm md:text-base text-paper mb-2 break-all select-all">
             {EMAIL}
           </p>
           <p className="font-mono text-xs text-white/40 mb-8">
@@ -65,7 +78,7 @@ export const EmailModal = () => {
             <a
               href={`mailto:${EMAIL}`}
               onClick={closeEmailModal}
-              className="w-full px-4 py-3 md:px-5 md:py-3.5 bg-transparent hover:bg-white/[0.03] text-[#e8e6e0] border border-white/15 rounded-lg font-mono text-[10px] md:text-[11px] font-black tracking-[0.25em] flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-95 duration-200"
+              className="w-full px-4 py-3 md:px-5 md:py-3.5 bg-transparent hover:bg-white/[0.03] text-paper border border-white/15 rounded-lg font-mono text-[10px] md:text-[11px] font-black tracking-[0.25em] flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-95 duration-200"
             >
               <MailOpen className="w-4 h-4" />
               <span>OPEN EMAIL APP</span>

@@ -1,3 +1,19 @@
+/**
+ * NotFound the 404 error page, shown by the router's catch-all route.
+ *
+ * Fits in: rendered by App.tsx's <Route path="*"> when no URL matches.
+ * Note:    the floating hex "bits" use Math.random() at render time; in
+ *          React Strict Mode the component mounts twice so positions will
+ *          differ between the two renders - cosmetically fine here but
+ *          something to keep in mind for data-bearing uses.
+ *
+ * For beginners ----------------------------------------------------------------
+ * A regular HTML page would just show static text for 404. Here we layer
+ * Framer Motion animations on top: the giant "404" fades in, hex numbers
+ * drift upward on a loop, and the bottom nav has a "step back" button that
+ * calls the browser's own history API - the same as clicking Back.
+ * -----------------------------------------------------------------------------
+ */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
@@ -9,13 +25,16 @@ export const NotFound = () => {
   return (
     <main className="min-h-screen bg-brand-bg text-white flex items-center justify-center p-6 relative overflow-hidden font-sans">
       <SEO title="404" />
-      
-      {/* ── CINEMATIC BACKGROUND ────────────────────────────────── */}
+
       <div className="absolute inset-0 z-0">
          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,200,180,0.1)_0%,transparent_70%)]" />
          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:40px_40px]" />
-         
-         {/* Drifting Bits */}
+
+         {/* LEARN: [...Array(6)] creates an array of 6 empty slots; .map gives us
+             six <motion.div> elements without writing them out by hand. Each one
+             gets a random starting position (left/top) and a random drift
+             direction via Math.random(). The y animation loops from 0 → -100 → 0
+             so each bit floats upward and loops back - like a particle effect. */}
          {[...Array(6)].map((_, i) => (
            <motion.div
              key={i}
@@ -75,12 +94,13 @@ export const NotFound = () => {
           The coordinates you've requested do not exist within this namespace. The system has reached a terminal boundary.
         </p>
 
-        {/* Navigation Actions */}
         <div className="flex flex-col items-center justify-center gap-8 md:gap-12">
           <div className="relative h-20 hidden md:flex items-center justify-center">
             <BackToTerminal />
           </div>
 
+          {/* LEARN: window.history.back() is the same as the browser's Back button.
+              No routing library needed for this - it's a plain browser API call. */}
           <button
             onClick={() => window.history.back()}
             data-tooltip={TOOLTIPS.stepback}
