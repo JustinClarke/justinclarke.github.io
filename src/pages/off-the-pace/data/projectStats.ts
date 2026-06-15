@@ -19,8 +19,8 @@
 // Note on counts:
 //   races: 147 = distinct race_ids in fct_lap_residuals (fully processed; qualifying for analysis).
 //          168 = Bronze ingestion coverage (README.md / ingestion/README.md use this larger number).
-//   tests: 340 = total dbt tests in schema.yml + singular tests/ (100% pass rate).
-//          339 = the count transform/README.md usually cites (one test was previously skipped; now all 340 green).
+//   tests: 336 = total dbt tests in schema.yml + singular tests/ (100% pass rate).
+//          336 = the count transform/README.md usually cites.
 //   mlTests: 27 = ML test suite (ml/tests/); runs via ml-ci.yml.
 //
 // Update this file whenever the pipeline is rebuilt with a new season or model changes.
@@ -31,10 +31,10 @@ export const STATS = {
   seasonRange: '2018–2024',
   telemetryRowsPerSeason: '90M+',
   telemetryHz: 10,
-  dbtModels: 46,
+  dbtModels: 60,
   intermediateModels: 36,
   martTables: 9,
-  tests: 340,
+  tests: 336,
   mlTests: 27,
   buildSeconds: 4,
 } as const;

@@ -82,7 +82,7 @@ export const education: Education[] = [
 export const heroMetadata: HeroMetadata = {
   role: 'Full-Stack · Analytics Engineer',
   name: 'Justin\nClarke',
-  bio: 'Data to decisions and decisions into products',
+  bio: 'Data to decisions & decisions into products',
   cta: 'Get in touch',
   tooltips: {
     role: "I've spent approximately 4,200 hours staring at pipelines. Most of them didn't leak.",

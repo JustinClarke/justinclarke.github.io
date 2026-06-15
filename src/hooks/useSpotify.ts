@@ -3,7 +3,7 @@
  * are currently playing. The connection uses the official "PKCE" login flow.
  *
  * Fits in: an optional, interactive Spotify widget. Returns { track, isAuthorized,
- *          isLoading, startAuth }. (The site's default music badge uses Last.fm —
+ *          isLoading, startAuth }. (The site's default music badge uses Last.fm  
  *          see useLastFm which needs no login.)
  * Note:    OAuth here is a redirect dance: startAuth() sends the browser to
  *          Spotify, Spotify sends it back with a `code` in the URL, and the first

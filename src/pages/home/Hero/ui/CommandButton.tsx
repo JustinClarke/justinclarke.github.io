@@ -104,10 +104,13 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             </div>
 
             {desc && (
-              <div className="ml-auto hidden md:flex items-center gap-2">
+              <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
                 <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
                   {desc}
                 </div>
+                <span className="font-mono text-[13px] leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
+                  →
+                </span>
               </div>
             )}
           </div>
@@ -141,10 +144,10 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
-            <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] text-f1-grey-dark group-hover/btn:text-[oklch(96.5%_0.012_78)] transition-all duration-500">
+            <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
               {desc}
             </div>
-            <span className="font-mono text-[14px] leading-none text-[oklch(96.5%_0.012_78)] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
+            <span className="font-mono text-[13px] leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
               →
             </span>
           </div>
@@ -173,12 +176,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
-            <div
-              className={cn(
-                "font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase transition-colors duration-300",
-                important ? "text-f1-white font-bold opacity-70" : "text-f1-grey-dark group-hover/btn:text-f1-grey"
-              )}
-            >
+            <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
               {desc}
             </div>
             <span className={cn(

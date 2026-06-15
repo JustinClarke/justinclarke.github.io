@@ -48,6 +48,7 @@ const CapitalBudgetingPage = lazy(() => import('@/pages/projects/CapitalBudgetin
 const HRArchetypePage = lazy(() => import('@/pages/projects/HRArchetypePage').then(m => ({ default: m.HRArchetypePage })));
 const OffThePaceOverview = lazy(() => import('@/pages/off-the-pace/OffThePaceOverview').then(m => ({ default: m.OffThePaceOverview })));
 const OffThePaceSource = lazy(() => import('@/pages/off-the-pace/OffThePaceSource').then(m => ({ default: m.OffThePaceSource })));
+const LinkedinBannerPage = lazy(() => import('@/pages/LinkedinBannerPage').then(m => ({ default: m.LinkedinBannerPage })));
 
 // ─── Preloader policy ─────────────────────────────────────────────────────────
 // The cinematic intro ("Preloader") should appear at most ONCE per browser tab,
@@ -310,6 +311,7 @@ export default function App() {
               <Route path="/off-the-pace" element={<OffThePaceSource />} />
               <Route path="/connect" element={<ConnectPage />} />
               <Route path="/contact" element={<ConnectPage />} />
+              <Route path="/linkedin-banner" element={<LinkedinBannerPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

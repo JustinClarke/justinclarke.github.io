@@ -2,7 +2,7 @@
  * ScrollHint the little "SCROLL TO EXPLORE" cue with the animated mouse-wheel,
  * pinned under the hero terminal.
  *
- * Fits in: rendered by the Hero (src/pages/home/Hero/index.tsx). Purely visual —
+ * Fits in: rendered by the Hero (src/pages/home/Hero/index.tsx). Purely visual  
  *          it has no behaviour of its own, it just reacts to one prop.
  * Note:    all of the motion lives in the <style> block below as CSS keyframes.
  *          The component's only job is to switch a class on/off so the hint
@@ -19,7 +19,7 @@ import React from 'react';
 
 // LEARN: An `interface` is TypeScript's way of describing the SHAPE of an object.
 //    Here it says: "anything calling <ScrollHint> must pass a `hasScrolled`
-//    that is a true/false value." It is a compile-time contract, not real code —
+//    that is a true/false value." It is a compile-time contract, not real code  
 //    it disappears entirely once the app is built.
 interface ScrollHintProps {
   hasScrolled: boolean;
@@ -148,13 +148,13 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
         style={
           variant === 'f1'
             ? ({
-                '--scroll-hint-primary': 'var(--color-f1-red)',
-                '--scroll-hint-border': 'rgba(225, 6, 0, 0.65)',
-                '--scroll-hint-glow': 'rgba(225, 6, 0, 0.6)',
-                '--scroll-hint-glow-dim': 'rgba(225, 6, 0, 0.1)',
-                '--scroll-hint-glow-md': 'rgba(225, 6, 0, 0.15)',
-                '--scroll-hint-glow-bright': 'rgba(225, 6, 0, 1)',
-              } as React.CSSProperties)
+              '--scroll-hint-primary': 'var(--color-f1-red)',
+              '--scroll-hint-border': 'rgba(225, 6, 0, 0.65)',
+              '--scroll-hint-glow': 'rgba(225, 6, 0, 0.6)',
+              '--scroll-hint-glow-dim': 'rgba(225, 6, 0, 0.1)',
+              '--scroll-hint-glow-md': 'rgba(225, 6, 0, 0.15)',
+              '--scroll-hint-glow-bright': 'rgba(225, 6, 0, 1)',
+            } as React.CSSProperties)
             : undefined
         }
       >

@@ -258,7 +258,7 @@ export function SplitHero() {
                 <ScrambleText text="ARCHITECTURE" isHovered={hoverSource} prefix="[" suffix="]" />
               </a>
 
-              {/* RED: LAUNCH DASHBOARD — unified single CTA */}
+              {/* RED: LAUNCH DASHBOARD unified single CTA */}
               <a
                 href="https://off-the-pace.web.app/"
                 target="_blank"
@@ -311,12 +311,14 @@ export function SplitHero() {
                     </span>
                   </div>
 
-                  {/* Row 2: Feature pills — inline, horizontal */}
+                  {/* Row 2: Feature pills inline, horizontal */}
                   <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     {['Ghost Car Standings', 'Tyre Cliff Survival', 'ONNX Simulators'].map((feat, i) => (
                       <span
                         key={feat}
-                        className="font-jetbrains text-[7px] sm:text-[8px] tracking-wider uppercase px-2 py-[3px] rounded-[3px] border transition-colors duration-300"
+                        className={`font-jetbrains text-[7px] sm:text-[8px] tracking-wider uppercase px-2 py-[3px] rounded-[3px] border transition-colors duration-300 ${
+                          feat === 'ONNX Simulators' ? 'hidden sm:inline-block' : 'inline-block'
+                        }`}
                         style={{
                           color: `rgba(255,255,255,${0.55 - i * 0.12})`,
                           borderColor: `rgba(255,255,255,${0.08 - i * 0.02})`,

@@ -40,7 +40,7 @@ export function StatusBar({ activeSector, thermalSurface, thermalBulk }: StatusB
 
       {/* Row 2: Thermal Metrics */}
       <div className="flex gap-2.5 items-center justify-center text-[9px] md:text-[10px]">
-        {/* LEARN: the temperature turns red once it crosses a danger threshold —
+        {/* LEARN: the temperature turns red once it crosses a danger threshold  
             a tiny rule in code (`> 110`) shown as a colour change in the UI. */}
         <div className="flex items-center gap-1">
           <Thermometer size={10} className="text-neutral-500 shrink-0" />

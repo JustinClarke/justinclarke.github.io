@@ -104,7 +104,7 @@ Height animations without JS measurement:
 
 ### Build pipeline
 
-1. **`tsc`** type-check only — no emit (`noEmit: true` in `tsconfig.json`). Strict mode. Fails build on errors.
+1. **`tsc`** type-check only no emit (`noEmit: true` in `tsconfig.json`). Strict mode. Fails build on errors.
 2. **`vite build`** esbuild minify, CSS code-split, manual chunks:
    - `vendor-react`: `react`, `react-dom`, `react-router-dom`
    - `vendor-animation`: `framer-motion`

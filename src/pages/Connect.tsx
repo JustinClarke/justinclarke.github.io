@@ -202,7 +202,7 @@ export function ConnectPage() {
 
                     <div className="font-mono text-xs md:text-sm text-term-dim space-y-2 leading-relaxed">
                       <div className="flex items-start gap-2">
-                        <span>Data to decisions and decisions into products</span>
+                        <span>Data to decisions & decisions into products</span>
                       </div>
                       {/* <div className="flex items-start gap-2">
                         <span className="text-brand-primary shrink-0 opacity-70">↳</span>

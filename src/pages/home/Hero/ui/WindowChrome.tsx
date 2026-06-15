@@ -11,7 +11,7 @@
  * For beginners ----------------------------------------------------------------
  * Note how many props end in `?` and have `= default` values: that's how one
  * component flexes to many situations without the caller wiring up everything.
- * `React.ReactNode` means "anything renderable" text, an element, or nothing —
+ * `React.ReactNode` means "anything renderable" text, an element, or nothing  
  * which lets a parent inject custom content into the `right` slot.
  * -----------------------------------------------------------------------------
  */

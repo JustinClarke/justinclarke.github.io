@@ -167,6 +167,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
 }) => {
   const outRef = useRef<HTMLDivElement>(null);
   const inpRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // LEARN: Lazy initializer (the `() => …` form) runs once to load prior commands from
   //    sessionStorage. The try/catch guards against malformed saved JSON if parsing
@@ -182,6 +183,14 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
   const konamiProgress = useRef(0);
   const ranCommands = useRef<Set<string>>(new Set());
 
+  // Dynamic textarea height adjustment for desktop
+  const adjustTextareaHeight = useCallback(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, []);
+
   // LEARN: Listen for window resizes to track mobile vs desktop, and REMOVE the
   //    listener on cleanup. The `[]` deps mean this wiring happens once on mount.
   useEffect(() => {
@@ -196,7 +205,12 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
     if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight;
   }, [history]);
 
-
+  // Adjust height of textarea when user types or inputValue changes programmatically
+  useEffect(() => {
+    if (!isMobile) {
+      adjustTextareaHeight();
+    }
+  }, [inputValue, isMobile, adjustTextareaHeight]);
 
   // Track run commands for PlaceholderCycler exclusion
   useEffect(() => {
@@ -270,79 +284,162 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
     }
   }, [ghostText, inputValue, cmdHistory, historyIndex, onInputChange, onCommand]);
 
+  // Keyboard handler for the desktop textarea
+  const handleTextareaKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === KONAMI[konamiProgress.current]) {
+      konamiProgress.current++;
+      if (konamiProgress.current === KONAMI.length) {
+        konamiProgress.current = 0;
+        onCommand('matrix');
+      }
+    } else {
+      konamiProgress.current = 0;
+    }
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const current = (e.target as HTMLTextAreaElement).value;
+      const { completion } = getCompletion(current);
+      if (completion) onInputChange(current + completion);
+      return;
+    }
+    if (e.key === 'ArrowRight') {
+      const current = (e.target as HTMLTextAreaElement).value;
+      const { completion } = getCompletion(current);
+      if (completion) { e.preventDefault(); onInputChange(current + completion); return; }
+    }
+    if (e.key === 'Enter') {
+      if (e.shiftKey) {
+        // Allow newline insertion (Shift+Enter)
+        return;
+      }
+      // Enter without Shift runs the command
+      e.preventDefault();
+      const cmd = inputValue.trim();
+      if (cmd) {
+        const updated = [cmd, ...cmdHistory.filter(c => c !== cmd).slice(0, 49)];
+        setCmdHistory(updated);
+        try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
+      }
+      setHistoryIndex(-1);
+      setGhostText('');
+      onCommand(inputValue);
+    } else if (e.key === 'ArrowUp') {
+      const hasNewlines = inputValue.includes('\n');
+      if (!hasNewlines) {
+        e.preventDefault();
+        if (historyIndex < cmdHistory.length - 1) {
+          const next = historyIndex + 1;
+          setHistoryIndex(next);
+          onInputChange(cmdHistory[next]);
+        }
+      }
+    } else if (e.key === 'ArrowDown') {
+      const hasNewlines = inputValue.includes('\n');
+      if (!hasNewlines) {
+        e.preventDefault();
+        if (historyIndex > -1) {
+          const next = historyIndex - 1;
+          setHistoryIndex(next);
+          onInputChange(next === -1 ? '' : cmdHistory[next]);
+        }
+      }
+    }
+  }, [inputValue, cmdHistory, historyIndex, onInputChange, onCommand]);
+
   const lastPromptIndex = history.map((l) => l.t).lastIndexOf('prompt');
   const showPlaceholder = !inputValue && !isInputFocused;
   const showInputCursor = isInputFocused || !!inputValue;
 
   return (
-    <div
-      className="flex-1 overflow-y-auto pr-4 custom-scrollbar cursor-text"
-      ref={outRef}
-      onClick={() => inpRef.current?.focus()}
-      aria-label="Terminal output"
-    >
-      <div className="min-h-full flex flex-col justify-start pb-4">
-        {/* Mobile intro */}
-        {isMobile && (
-          <div className="space-y-4 mb-4 shrink-0">
-            <div className="space-y-1">
-              <div>
-                <h1 className="leading-[0.9] tracking-tighter flex flex-col">
-                  <Typewriter text="justin" speed={20} delay={180} className="font-mono text-3xl font-black text-term-fg" skip={true} />
-                  <Typewriter text="clarke." speed={20} delay={300} className="font-playfair italic text-3xl text-brand-primary font-black" skip={true} />
-                </h1>
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="space-y-2.5">
-                <Typewriter text="data & analytics developer." speed={12} delay={880} className="font-mono text-[11px] sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
-                <TechStack animate className="!text-[11px]" />
-                <Typewriter text="Data to decisions and decisions into products" speed={12} delay={1650} className="font-mono text-[11px] sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Command History */}
-        {/* LEARN: We `.map` over the history array, rendering each line. A line's `t`
-              (type) decides its shape: a `prompt` shows the "~$ command" you typed;
-              everything else is output, which may be plain text, coloured `parts`,
-              clickable `chips`, or a link. `aria-live="polite"` lets screen readers
-              announce new output as it appears. */}
-        <div className="space-y-1" aria-live="polite" aria-atomic="false">
-          {history.map((line, i) => (
-            <div key={i} className="font-mono text-[11px] md:text-[12px] leading-tight">
-              {line.t === 'prompt' ? (
-                <div className="flex gap-2 md:gap-4 items-center">
-                  <span className="text-brand-primary font-bold shrink-0">~$</span>
-                  <span className="text-term-fg tracking-tight truncate">{line.text.replace('~$ ', '')}</span>
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+      <div
+        className="flex-1 overflow-y-auto pr-4 custom-scrollbar cursor-text"
+        ref={outRef}
+        onClick={() => {
+          if (!isMobile) {
+            textareaRef.current?.focus();
+          } else {
+            inpRef.current?.focus();
+          }
+        }}
+        aria-label="Terminal output"
+      >
+        <div className="flex flex-col justify-start pb-4">
+          {/* Mobile intro */}
+          {isMobile && (
+            <div className="space-y-4 mb-4 shrink-0">
+              <div className="space-y-1">
+                <div>
+                  <h1 className="leading-[0.9] tracking-tighter flex flex-col">
+                    <Typewriter text="justin" speed={20} delay={180} className="font-mono text-3xl font-black text-term-fg" skip={true} />
+                    <Typewriter text="clarke." speed={20} delay={300} className="font-playfair italic text-3xl text-brand-primary font-black" skip={true} />
+                  </h1>
                 </div>
-              ) : (
-                <div
-                  className={cn(
-                    'pl-6 md:pl-9 text-term-dim',
-                    !isMobile && i > lastPromptIndex && 'opacity-0 animate-terminal-fade-in'
-                  )}
-                  style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
-                >
-                  {line.parts ? (
-                    <div>
-                      <div className="flex flex-wrap gap-x-2">
-                        {line.parts.map((p, j) => {
-                          const content = (
-                            <span key={`${i}-${j}`} className={cn(getLineColor(p.t), p.href && 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>
-                              {p.text}
-                            </span>
-                          );
-                          const isInternal = p.href?.startsWith('/');
-                          return p.href ? (
-                            isInternal ? <Link key={`${i}-${j}`} to={p.href}>{content}</Link>
-                              : <a key={`${i}-${j}`} href={p.href} target="_blank" rel="noopener noreferrer">{content}</a>
-                          ) : content;
-                        })}
+              </div>
+              <div className="space-y-1">
+                <div className="space-y-2.5">
+                  <Typewriter text="data & analytics developer." speed={12} delay={880} className="font-mono text-[11px] sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
+                  <TechStack animate className="!text-[11px]" />
+                  <Typewriter text="Data to decisions & decisions into products" speed={12} delay={1650} className="font-mono text-[11px] sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Command History */}
+          {/* LEARN: We `.map` over the history array, rendering each line. A line's `t`
+                (type) decides its shape: a `prompt` shows the "~$ command" you typed;
+                everything else is output, which may be plain text, coloured `parts`,
+                clickable `chips`, or a link. `aria-live="polite"` lets screen readers
+                announce new output as it appears. */}
+          <div className="space-y-1" aria-live="polite" aria-atomic="false">
+            {history.map((line, i) => (
+              <div key={i} className="font-mono text-[11px] md:text-[12px] leading-tight">
+                {line.t === 'prompt' ? (
+                  <div className="flex gap-2 md:gap-4 items-center">
+                    <span className="text-brand-primary font-bold shrink-0">~$</span>
+                    <span className="text-term-fg tracking-tight truncate">{line.text.replace('~$ ', '')}</span>
+                  </div>
+                ) : (
+                  <div
+                    className={cn(
+                      'pl-6 md:pl-9 text-term-dim',
+                      !isMobile && i > lastPromptIndex && 'opacity-0 animate-terminal-fade-in'
+                    )}
+                    style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
+                  >
+                    {line.parts ? (
+                      <div>
+                        <div className="flex flex-wrap gap-x-2">
+                          {line.parts.map((p, j) => {
+                            const content = (
+                              <span key={`${i}-${j}`} className={cn(getLineColor(p.t), p.href && 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>
+                                {p.text}
+                              </span>
+                            );
+                            const isInternal = p.href?.startsWith('/');
+                            return p.href ? (
+                              isInternal ? <Link key={`${i}-${j}`} to={p.href}>{content}</Link>
+                                : <a key={`${i}-${j}`} href={p.href} target="_blank" rel="noopener noreferrer">{content}</a>
+                            ) : content;
+                          })}
+                        </div>
+                        {line.chips && line.chips.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-1.5">
+                            {line.chips.map((chip, ci) => (
+                              <button key={ci} type="button" onClick={() => onCommand(chip)}
+                                className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
+                                {chip}
+                              </button>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                      {line.chips && line.chips.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-1.5">
+                    ) : line.chips && line.chips.length > 0 ? (
+                      <div>
+                        {line.text && <span className={getLineColor(line.t)}>{line.text}</span>}
+                        <div className="flex flex-wrap gap-2 mt-1">
                           {line.chips.map((chip, ci) => (
                             <button key={ci} type="button" onClick={() => onCommand(chip)}
                               className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
@@ -350,94 +447,172 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                             </button>
                           ))}
                         </div>
-                      )}
-                    </div>
-                  ) : line.chips && line.chips.length > 0 ? (
-                    <div>
-                      {line.text && <span className={getLineColor(line.t)}>{line.text}</span>}
-                      <div className="flex flex-wrap gap-2 mt-1">
-                        {line.chips.map((chip, ci) => (
-                          <button key={ci} type="button" onClick={() => onCommand(chip)}
-                            className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
-                            {chip}
-                          </button>
-                        ))}
                       </div>
-                    </div>
-                  ) : line.href ? (
-                    line.href.startsWith('/') ? (
-                      <Link to={line.href}><span className={cn(getLineColor(line.t), 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>{line.text}</span></Link>
+                    ) : line.href ? (
+                      line.href.startsWith('/') ? (
+                        <Link to={line.href}><span className={cn(getLineColor(line.t), 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>{line.text}</span></Link>
+                      ) : (
+                        <a href={line.href} target="_blank" rel="noopener noreferrer"><span className={cn(getLineColor(line.t), 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>{line.text}</span></a>
+                      )
                     ) : (
-                      <a href={line.href} target="_blank" rel="noopener noreferrer"><span className={cn(getLineColor(line.t), 'hover:underline cursor-pointer text-brand-primary brightness-110 font-bold')}>{line.text}</span></a>
-                    )
-                  ) : (
-                    <span className={getLineColor(line.t)}>{line.text}</span>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Active Prompt Phase 3.1: exit code semantics */}
-        {bootStep >= 7 && (
-          <div
-            className={cn(
-              'flex items-center gap-2 md:gap-4 transition-all duration-500',
-              isTyping ? 'opacity-0 pointer-events-none translate-y-1' : 'opacity-100 translate-y-0'
-            )}
-            onClick={() => inpRef.current?.focus()}
-          >
-            {lastExitCode && lastExitCode !== 0 ? (
-              <span className="font-mono text-[11px] md:text-xs shrink-0 flex items-center gap-1">
-                <span className="text-viz-mac-red font-bold">[{lastExitCode}]</span>
-                <span className="text-viz-mac-red font-bold">~$</span>
-              </span>
-            ) : (
-              <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold shrink-0">~$</span>
-            )}
-
-            <div className="relative flex-1 flex items-center min-w-0 font-mono text-[11px] md:text-[12px]">
-              <input
-                ref={inpRef}
-                type="text"
-                value={inputValue}
-                onChange={(e) => onInputChange(e.target.value)}
-                onKeyDown={handleKeyDown}
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-                className="terminal-input-zoom-fix bg-transparent border-none outline-none font-mono text-term-fg caret-transparent py-1 relative z-10"
-                spellCheck={false}
-                placeholder=""
-                autoComplete="off"
-                aria-label="Terminal input"
-              />
-
-              {showPlaceholder && (
-                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none z-0">
-                  <PlaceholderCycler ran={ranCommands.current} />
-                </div>
-              )}
-
-              {showInputCursor && (
-                <InputCursor text={inputValue} ghost={isInputFocused ? ghostText : undefined} />
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Mobile completion chips top-3 candidates (Phase 3.4) */}
-        {isMobile && bootStep >= 7 && !isTyping && inputValue && completionCandidates.length > 0 && (
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {completionCandidates.map((c, ci) => (
-              <button key={ci} type="button" onClick={() => onInputChange(c)}
-                className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] active:bg-brand-primary/20 transition-colors">
-                {c}
-              </button>
+                      <span className={getLineColor(line.t)}>{line.text}</span>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
-        )}
+
+          {/* Active Prompt (Mobile view inline) */}
+          {isMobile && bootStep >= 7 && (
+            <div
+              className={cn(
+                'flex items-center gap-2 md:gap-4 transition-all duration-500',
+                isTyping ? 'opacity-0 pointer-events-none translate-y-1' : 'opacity-100 translate-y-0'
+              )}
+              onClick={() => inpRef.current?.focus()}
+            >
+              {lastExitCode && lastExitCode !== 0 ? (
+                <span className="font-mono text-[11px] md:text-xs shrink-0 flex items-center gap-1">
+                  <span className="text-viz-mac-red font-bold">[{lastExitCode}]</span>
+                  <span className="text-viz-mac-red font-bold">~$</span>
+                </span>
+              ) : (
+                <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold shrink-0">~$</span>
+              )}
+
+              <div className="relative flex-1 flex items-center min-w-0 font-mono text-[11px] md:text-[12px]">
+                <input
+                  ref={inpRef}
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => onInputChange(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  onFocus={() => setIsInputFocused(true)}
+                  onBlur={() => setIsInputFocused(false)}
+                  className="terminal-input-zoom-fix bg-transparent border-none outline-none font-mono text-term-fg caret-transparent py-1 relative z-10"
+                  spellCheck={false}
+                  placeholder=""
+                  autoComplete="off"
+                  aria-label="Terminal input"
+                />
+
+                {showPlaceholder && (
+                  <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none z-0">
+                    <PlaceholderCycler ran={ranCommands.current} />
+                  </div>
+                )}
+
+                {showInputCursor && (
+                  <InputCursor text={inputValue} ghost={isInputFocused ? ghostText : undefined} />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Mobile completion chips top-3 candidates (Phase 3.4) */}
+          {isMobile && bootStep >= 7 && !isTyping && inputValue && completionCandidates.length > 0 && (
+            <div className="flex gap-2 mt-2 flex-wrap">
+              {completionCandidates.map((c, ci) => (
+                <button key={ci} type="button" onClick={() => onInputChange(c)}
+                  className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] active:bg-brand-primary/20 transition-colors">
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Permanent Textarea Prompt for Desktop */}
+      {!isMobile && bootStep >= 7 && (
+        <div
+          className={cn(
+            'mt-auto shrink-0 pt-4 pb-2 transition-opacity duration-300',
+            isTyping ? 'opacity-60 pointer-events-none' : 'opacity-100'
+          )}
+        >
+          {inputValue && completionCandidates.length > 0 && (
+            <div className="flex gap-2 mb-2 flex-wrap pl-6 md:pl-9">
+              {completionCandidates.map((c, ci) => (
+                <button
+                  key={ci}
+                  type="button"
+                  onClick={() => onInputChange(c)}
+                  className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 transition-colors cursor-pointer"
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div
+            className={cn(
+              'flex items-center gap-2 md:gap-3 w-full max-w-lg bg-black/40 border rounded-[20px] p-1.5 pl-4 transition-all duration-300 cursor-default',
+              isInputFocused ? 'border-brand-primary/50 shadow-[0_0_15px_rgba(0,200,180,0.15)] bg-black/60' : 'border-white/10 hover:border-white/20 hover:bg-black/50'
+            )}
+            onClick={() => textareaRef.current?.focus()}
+          >
+            <div className="shrink-0 flex items-center h-[34px] md:h-[36px] cursor-default select-none">
+              {lastExitCode && lastExitCode !== 0 ? (
+                <span className="font-mono text-[11px] md:text-xs text-viz-mac-red font-bold mr-1">[{lastExitCode}] ~$</span>
+              ) : (
+                <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold mr-1">~$</span>
+              )}
+            </div>
+
+            <div className="relative flex-1 flex min-w-0 font-mono text-[11px] md:text-[12px] min-h-[34px] md:min-h-[36px]">
+              <textarea
+                ref={textareaRef}
+                value={inputValue}
+                onChange={(e) => {
+                  onInputChange(e.target.value);
+                  adjustTextareaHeight();
+                }}
+                onKeyDown={handleTextareaKeyDown}
+                onFocus={() => setIsInputFocused(true)}
+                onBlur={() => setIsInputFocused(false)}
+                className="w-full bg-transparent border-none outline-none font-mono text-term-fg placeholder-white/30 caret-brand-primary py-[10px] md:py-[11px] resize-none custom-scrollbar max-h-[160px] min-h-[34px] md:min-h-[36px] leading-relaxed relative z-10 cursor-text"
+                spellCheck={false}
+                placeholder="Ask about Justin, or type a command..."
+                autoComplete="off"
+                aria-label="Terminal input"
+                disabled={isTyping}
+                rows={1}
+              />
+            </div>
+
+            <div className="shrink-0 flex items-center h-[34px] md:h-[36px] pr-0.5 pb-[1px]">
+              <button
+                type="button"
+                className={cn(
+                  "flex items-center justify-center w-8 h-8 md:w-[34px] md:h-[34px] rounded-[14px] transition-all duration-300",
+                  inputValue.trim()
+                    ? "bg-brand-primary text-black hover:bg-brand-primary/80 hover:scale-105 cursor-pointer shadow-[0_0_10px_rgba(0,200,180,0.3)]"
+                    : "bg-white/5 text-white/20 cursor-default"
+                )}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (inputValue.trim() && !isTyping) {
+                    const cmd = inputValue.trim();
+                    const updated = [cmd, ...cmdHistory.filter(c => c !== cmd).slice(0, 49)];
+                    setCmdHistory(updated);
+                    try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
+                    setHistoryIndex(-1);
+                    setGhostText('');
+                    onCommand(inputValue);
+                  }
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="translate-y-[-1px]">
+                  <path d="M12 19V5M5 12l7-7 7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

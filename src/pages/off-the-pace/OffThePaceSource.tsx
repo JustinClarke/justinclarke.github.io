@@ -60,7 +60,7 @@ export function OffThePaceSource() {
     <div data-theme-lock="dark" className="otp-scope min-h-screen bg-graphite-900 text-white font-sans selection:bg-f1-red/30 overflow-x-hidden relative">
       <SEO
         title="Off The Pace ⋅ Architecture & Engineering"
-        description="The engineering behind the F1 Causal Pace Engine: 46 dbt models, 340 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator."
+        description="The engineering behind the F1 Causal Pace Engine: 60 dbt models, 336 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator."
         path="/off-the-pace"
       />
 

@@ -204,7 +204,7 @@ export function useF1Telemetry() {
 
   // LEARN: each track is just a long SVG path string (the "d" attribute of an
   //    <path>). This returns the right one for the selected circuit; the widget
-  //    draws it and animates a dot along it. The numbers are pre-drawn shapes —
+  //    draws it and animates a dot along it. The numbers are pre-drawn shapes  
   //    nothing to read here, just data.
   const getTrackPath = () => {
     switch (activeTrack) {
@@ -294,7 +294,7 @@ export function useF1Telemetry() {
 
 // LEARN: `ReturnType<typeof useF1Telemetry>` asks TypeScript "what type does this
 //    function return?" and names it F1Telemetry. Child panels then write
-//    `Pick<F1Telemetry, 'liveSpeed' | ...>` to type just the props they accept —
+//    `Pick<F1Telemetry, 'liveSpeed' | ...>` to type just the props they accept  
 //    so the prop types stay in sync with this hook automatically, no hand-copying.
 /** The full object returned by {@link useF1Telemetry}. Child panels Pick their slice. */
 export type F1Telemetry = ReturnType<typeof useF1Telemetry>;

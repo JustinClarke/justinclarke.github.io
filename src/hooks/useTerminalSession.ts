@@ -67,7 +67,7 @@ async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
     const cached = sessionStorage.getItem(cacheKey);
     const ts = Number(sessionStorage.getItem(cacheTs) || '0');
     if (cached && Date.now() - ts < 5 * 60 * 1000) return JSON.parse(cached);
-  } catch {}
+  } catch { }
 
   // LEARN: fetch(...) makes an HTTP request and returns a Promise of the
   //    response. We `await` it to get the actual response object.
@@ -96,7 +96,7 @@ async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
   try {
     sessionStorage.setItem(cacheKey, JSON.stringify(events));
     sessionStorage.setItem(cacheTs, String(Date.now()));
-  } catch {}
+  } catch { }
 
   return events;
 }
@@ -205,7 +205,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     setIsTyping(true);   // lock input + show a "typing" cursor
     setInputValue('');
 
-    // Echo the command the user typed, wait a beat, then print the response —
+    // Echo the command the user typed, wait a beat, then print the response  
     // the small delays make it feel like a real machine responding.
     setHistory(prev => [...prev, { t: 'prompt', text: `~$ ${raw}` }]);
     // LEARN: `await new Promise(res => setTimeout(res, 220))` is a one-line way to

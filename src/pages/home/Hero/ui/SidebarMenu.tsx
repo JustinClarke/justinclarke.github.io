@@ -24,6 +24,7 @@ import { CommandButton, CommandButtonProps } from './CommandButton';
 
 interface SidebarMenuProps {
   onCommand: (cmd: string, source?: 'terminal' | 'sidebar') => void;
+  isVisible?: boolean;
 }
 
 // LEARN: `Omit<CommandButtonProps, 'num'>` builds a new type = all of a button's
@@ -34,7 +35,7 @@ interface MenuItem extends Omit<CommandButtonProps, 'num'> {
   mobileOrder: number;
 }
 
-export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
+export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible = true }) => {
   // LEARN: `useNavigate` is React Router's hook for changing pages from code (rather
   //    than via a clicked <Link>). We call `navigate('/f1')` inside an onClick below.
   const navigate = useNavigate();
@@ -50,7 +51,10 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand }) => {
   ];
 
   return (
-    <div className="relative flex flex-col gap-4 md:gap-6 pt-6 md:pt-2 shrink-0 md:flex-1 border-t md:border-t-0 border-white/5 md:pl-8 lg:pl-12 min-h-0">
+    <div className={cn(
+      "relative flex flex-col gap-4 md:gap-6 pt-6 md:pt-2 shrink-0 md:flex-1 border-t md:border-t-0 border-white/5 md:pl-8 lg:pl-12 min-h-0 transition-opacity duration-1000",
+      isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+    )}>
       {/* Sidebar spine  -  gradient accent on the dividing edge (desktop only) */}
       <div
         aria-hidden

@@ -2,7 +2,7 @@
  * visuals.tsx the little hand-drawn SVG "charts" used as project thumbnails (the
  * fake dashboards behind each case study: telemetry, schema, audio-space, etc.).
  *
- * Fits in: `getProjectIllustration(id)` at the very bottom is the public entry —
+ * Fits in: `getProjectIllustration(id)` at the very bottom is the public entry  
  *          given a project id it returns the matching illustration element.
  * Note:    this is a long file but a SHALLOW one. It's almost all SVG markup, and
  *          every illustration follows the same recipe: define some data, then
@@ -111,7 +111,7 @@ export const LiteStoreIllustration: React.FC = () => {
     { label: 'PERF', val: 98, color: GREEN },
     { label: 'A11Y', val: 92, color: LITESTORE_LIGHT },
     { label: 'BEST', val: 95, color: LITESTORE_LIGHT },
-    { label: 'SEO',  val: 100, color: GREEN },
+    { label: 'SEO', val: 100, color: GREEN },
   ];
 
   return (
@@ -257,8 +257,8 @@ export const DisasterIllustration: React.FC = () => {
       <rect x="4" y="29.5" width="36" height="14" fill="rgba(0,0,0,0.5)" stroke={DISASTER(0.35)} strokeWidth="0.4" />
       {[
         { kk: 'PK', n: 'agency_id', t: 'INT', y: 33.5 },
-        { kk: '',   n: 'name',      t: 'VARCHAR', y: 37.5 },
-        { kk: '',   n: 'region',    t: 'VARCHAR', y: 41.5 },
+        { kk: '', n: 'name', t: 'VARCHAR', y: 37.5 },
+        { kk: '', n: 'region', t: 'VARCHAR', y: 41.5 },
       ].map((r, i) => (
         <g key={i}>
           <text x="6" y={r.y} fill={r.kk === 'PK' ? DISASTER(0.95) : WHITE(0.55)} fontSize="2.4" fontFamily={MONO}>
@@ -274,10 +274,10 @@ export const DisasterIllustration: React.FC = () => {
       <rect x="60" y="38.5" width="40" height="22" fill="rgba(0,0,0,0.5)" stroke={DISASTER_ORANGE(0.35)} strokeWidth="0.4" />
       {[
         { kk: 'PK', n: 'dispatch_id', t: 'INT', y: 42.5, fk: false },
-        { kk: 'FK', n: 'agency_id',   t: 'INT', y: 46.5, fk: true },
+        { kk: 'FK', n: 'agency_id', t: 'INT', y: 46.5, fk: true },
         { kk: 'FK', n: 'resource_id', t: 'INT', y: 50.5, fk: true },
-        { kk: '',   n: 'qty',         t: 'INT', y: 54.5, fk: false },
-        { kk: '',   n: 'eta',         t: 'DATETIME', y: 58.5, fk: false },
+        { kk: '', n: 'qty', t: 'INT', y: 54.5, fk: false },
+        { kk: '', n: 'eta', t: 'DATETIME', y: 58.5, fk: false },
       ].map((r, i) => (
         <g key={i}>
           <text x="62" y={r.y} fill={r.fk ? VIOLET(0.95) : r.kk === 'PK' ? DISASTER_ORANGE(0.95) : WHITE(0.55)} fontSize="2.4" fontFamily={MONO}>
@@ -293,8 +293,8 @@ export const DisasterIllustration: React.FC = () => {
       <rect x="120" y="29.5" width="38" height="14" fill="rgba(0,0,0,0.5)" stroke={DISASTER_CYAN(0.3)} strokeWidth="0.4" />
       {[
         { kk: 'PK', n: 'resource_id', t: 'INT', y: 33.5 },
-        { kk: '',   n: 'type',        t: 'ENUM', y: 37.5 },
-        { kk: '',   n: 'stock',       t: 'INT', y: 41.5 },
+        { kk: '', n: 'type', t: 'ENUM', y: 37.5 },
+        { kk: '', n: 'stock', t: 'INT', y: 41.5 },
       ].map((r, i) => (
         <g key={i}>
           <text x="122" y={r.y} fill={r.kk === 'PK' ? DISASTER_CYAN(0.95) : WHITE(0.55)} fontSize="2.4" fontFamily={MONO}>
@@ -359,17 +359,17 @@ export const HRMindIllustration: React.FC = () => {
 
   const stages: { label: string; icon: string; c: (a: number) => string }[] = [
     { label: 'COLLECT', icon: '◆', c: BLUE },
-    { label: 'MAP',     icon: '⚡', c: HR_PURPLE },
+    { label: 'MAP', icon: '⚡', c: HR_PURPLE },
     { label: 'ANALYZE', icon: '◇', c: AMBER },
     { label: 'INSIGHT', icon: '●', c: GREEN },
   ];
 
   const archetypes: { x: number; l: string; n: number; c: (a: number) => string }[] = [
-    { x: 4,   l: 'VISION',   n: 24, c: HR_PURPLE },
-    { x: 33,  l: 'STEADY',   n: 19, c: GREEN },
-    { x: 62,  l: 'STRETCH',  n: 18, c: AMBER },
-    { x: 91,  l: 'BURNT',    n: 12, c: RED },
-    { x: 120, l: 'AT-RISK',  n: 8,  c: RED },
+    { x: 4, l: 'VISION', n: 24, c: HR_PURPLE },
+    { x: 33, l: 'STEADY', n: 19, c: GREEN },
+    { x: 62, l: 'STRETCH', n: 18, c: AMBER },
+    { x: 91, l: 'BURNT', n: 12, c: RED },
+    { x: 120, l: 'AT-RISK', n: 8, c: RED },
   ];
 
   return (
@@ -562,9 +562,9 @@ export const SpotifyIllustration: React.FC = () => {
         <text x="3" y="4.5" fill={SPOTIFY(0.6)} fontSize="2" fontFamily={MONO} letterSpacing="0.5">NEAREST · cos θ</text>
 
         {[
-          { name: 'Holocene',      sim: 94 },
-          { name: 'Latch',         sim: 89 },
-          { name: 'Firestarter',   sim: 86 },
+          { name: 'Holocene', sim: 94 },
+          { name: 'Latch', sim: 89 },
+          { name: 'Firestarter', sim: 86 },
           { name: 'Flightless B.', sim: 83 },
           { name: 'One More Time', sim: 81 },
         ].map((r, i) => (
@@ -594,13 +594,13 @@ export const CapitalIllustration: React.FC = () => {
   type Step = { label: string; val: number; kind: 'out' | 'in' | 'term' | 'npv' };
   const data: Step[] = [
     { label: 'CapEx', val: -581, kind: 'out' },
-    { label: 'Y1',    val: 142, kind: 'in' },
-    { label: 'Y2',    val: 168, kind: 'in' },
-    { label: 'Y3',    val: 191, kind: 'in' },
-    { label: 'Y4',    val: 188, kind: 'in' },
-    { label: 'Y5',    val: 175, kind: 'in' },
-    { label: 'Term',  val: 220, kind: 'term' },
-    { label: 'NPV',   val: 503, kind: 'npv' },
+    { label: 'Y1', val: 142, kind: 'in' },
+    { label: 'Y2', val: 168, kind: 'in' },
+    { label: 'Y3', val: 191, kind: 'in' },
+    { label: 'Y4', val: 188, kind: 'in' },
+    { label: 'Y5', val: 175, kind: 'in' },
+    { label: 'Term', val: 220, kind: 'term' },
+    { label: 'NPV', val: 503, kind: 'npv' },
   ];
 
   const top = 24, btmAxis = 78;
@@ -668,16 +668,16 @@ export const CapitalIllustration: React.FC = () => {
       {bars.map((b, i) => {
         const fill = b.kind === 'out' ? `url(#${k}-out)`
           : b.kind === 'npv' ? `url(#${k}-npv)`
-          : b.kind === 'term' ? `url(#${k}-term)`
-          : `url(#${k}-in)`;
+            : b.kind === 'term' ? `url(#${k}-term)`
+              : `url(#${k}-in)`;
         const stroke = b.kind === 'out' ? RED(0.9)
           : b.kind === 'npv' ? CAPITAL_AMBER(1)
-          : b.kind === 'term' ? CAPITAL_AMBER(0.7)
-          : GREEN(0.85);
+            : b.kind === 'term' ? CAPITAL_AMBER(0.7)
+              : GREEN(0.85);
         const labelColor = b.kind === 'out' ? RED(0.95)
           : b.kind === 'npv' ? CAPITAL_AMBER(1)
-          : b.kind === 'term' ? CAPITAL_AMBER(0.85)
-          : GREEN(0.9);
+            : b.kind === 'term' ? CAPITAL_AMBER(0.85)
+              : GREEN(0.9);
         return (
           <g key={i}>
             <rect x={b.x} y={b.y} width="10" height={Math.max(b.h, 0.6)} fill={fill} stroke={stroke} strokeWidth="0.4"
@@ -705,12 +705,12 @@ export const CapitalIllustration: React.FC = () => {
 //    Callers just write `getProjectIllustration(project.id)` and render the result.
 export const getProjectIllustration = (projectId: string): React.ReactElement => {
   switch (projectId) {
-    case 'litestore':      return <LiteStoreIllustration />;
-    case 'sql-disaster':   return <DisasterIllustration />;
-    case 'hr-archetype':   return <HRMindIllustration />;
+    case 'litestore': return <LiteStoreIllustration />;
+    case 'sql-disaster': return <DisasterIllustration />;
+    case 'hr-archetype': return <HRMindIllustration />;
     case 'spotify-engine': return <SpotifyIllustration />;
-    case 'off-the-pace':   return <DefaultIllustration />;
-    case 'capital':        return <CapitalIllustration />;
-    default:               return <DefaultIllustration />;
+    case 'off-the-pace': return <DefaultIllustration />;
+    case 'capital': return <CapitalIllustration />;
+    default: return <DefaultIllustration />;
   }
 };

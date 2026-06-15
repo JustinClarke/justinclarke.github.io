@@ -22,9 +22,8 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { SnakeGame } from './SnakeGame';
 import { useTerminalSession } from '@/hooks/useTerminalSession';
 import { useTerminalBoot } from '@/hooks/useTerminalBoot';
-import { useFirstVisit } from '@/hooks/useFirstVisit';
-import { useReducedMotion } from '@/hooks/useReducedMotion';
-import { debug } from '@/utils';
+
+import { debug, cn } from '@/utils';
 
 import { WindowChrome } from './ui/WindowChrome';
 import { SidebarMenu } from './ui/SidebarMenu';
@@ -84,16 +83,33 @@ export const Hero: React.FC = () => {
 
   // ── Logic borrowed from hooks (the real work lives there) ──────────────────
   const { bootStep, setBootStep } = useTerminalBoot();
-  const { inputValue, setInputValue, history, setHistory, isTyping, lastExitCode, handleCommand } = useTerminalSession({ onLaunchGame: setActiveGame });
-  const isFirstVisit = useFirstVisit('terminal_visited'); // true only the first time ever
-  const prefersReducedMotion = useReducedMotion();        // respect OS "reduce motion"
+  const [showGradients, setShowGradients] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
-  // LEARN: these refs are bookkeeping for the first-visit auto-demo. Refs (not
-  //    state) because changing them should NOT trigger a re-render they're
-  //    just flags/handles we read inside effects and timers.
-  const autoDemoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const autoDemoCancelled = useRef(false);
-  const autoDemoStarted = useRef(false);
+  useEffect(() => {
+    if (bootStep >= 7) {
+      const gradientTimer = setTimeout(() => {
+        setShowGradients(true);
+      }, 150);
+
+      const sidebarTimer = setTimeout(() => {
+        setShowSidebar(true);
+      }, 1000);
+
+      return () => {
+        clearTimeout(gradientTimer);
+        clearTimeout(sidebarTimer);
+      };
+    } else {
+      setShowGradients(false);
+      setShowSidebar(false);
+    }
+  }, [bootStep]);
+
+  const { inputValue, setInputValue, history, setHistory, isTyping, lastExitCode, handleCommand } = useTerminalSession({ onLaunchGame: setActiveGame });
+
+
+
   // LEARN: a ref pointed at a DOM node. After render, `staticCanvasRef.current`
   //    is the actual <canvas> element, which we draw TV-static onto by hand.
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -136,58 +152,7 @@ export const Hero: React.FC = () => {
     }, 1000);
   }, [setHistory, setInputValue, setBootStep]);
 
-  // First-visit auto-demo: if a brand-new visitor just sits there after boot, we
-  // gently demo the terminal for them type `whoami`, pause, then `ls projects`
-  // so they realise it's interactive. Any interaction cancels it (next effect).
-  useEffect(() => {
-    // Guard clauses: bail unless this is genuinely an idle first-time visitor on
-    // a fully-booted terminal who hasn't typed anything and wants motion.
-    if (autoDemoStarted.current || autoDemoCancelled.current) return;
-    if (!isFirstVisit || prefersReducedMotion || bootStep < 7 || isTyping || history.length > 0) return;
 
-    autoDemoStarted.current = true;
-    autoDemoCancelled.current = false;
-    autoDemoTimer.current = setTimeout(async () => {
-      if (autoDemoCancelled.current) return;
-      await handleCommand('whoami');
-      if (autoDemoCancelled.current) return;
-      await new Promise(r => setTimeout(r, 1200));
-      if (autoDemoCancelled.current) return;
-      await handleCommand('ls projects');
-    }, 6000);
-    return () => {
-      if (autoDemoTimer.current) {
-        clearTimeout(autoDemoTimer.current);
-        autoDemoTimer.current = null;
-      }
-    };
-  }, [isFirstVisit, prefersReducedMotion, bootStep, isTyping, history.length, handleCommand]);
-
-  // The moment the visitor does ANYTHING (type, click, scroll), cancel the
-  // auto-demo they clearly don't need the hand-holding.
-  useEffect(() => {
-    const cancelDemo = () => {
-      autoDemoCancelled.current = true;
-      if (autoDemoTimer.current) {
-        clearTimeout(autoDemoTimer.current);
-        autoDemoTimer.current = null;
-      }
-    };
-
-    if (inputValue || history.length > 0 || isTyping) {
-      cancelDemo();
-    }
-
-    window.addEventListener('scroll', cancelDemo, { passive: true });
-    window.addEventListener('click', cancelDemo, { passive: true });
-    window.addEventListener('keydown', cancelDemo, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', cancelDemo);
-      window.removeEventListener('click', cancelDemo);
-      window.removeEventListener('keydown', cancelDemo);
-    };
-  }, [inputValue, history.length, isTyping]);
 
   // TV-static effect: paint random black-and-white noise on the <canvas> every
   // animation frame, but ONLY while terminalState === 'static'.
@@ -285,7 +250,10 @@ export const Hero: React.FC = () => {
 
   return (
     <section data-theme-lock="dark" className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-12 lg:p-16 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,200,180,0.02)_0%,transparent_70%)] pointer-events-none" />
+      <div className={cn(
+        "absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,200,180,0.02)_0%,transparent_70%)] pointer-events-none transition-opacity duration-1000",
+        showGradients ? "opacity-100" : "opacity-0"
+      )} />
 
       {terminalState === 'static' && (
         <div className="fixed inset-0 z-[9999] bg-black crt-static-container">
@@ -301,7 +269,27 @@ export const Hero: React.FC = () => {
       )}
 
       <div className={`${getContainerClass()} relative w-full h-[85vh] min-h-[600px] max-w-[1536px] lg:h-[80vh] transition-all duration-300`}>
-        <div className="w-full h-full bg-brand-card border border-white/10 rounded-xl overflow-hidden flex flex-col shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] cursor-text">
+        <div className="w-full h-full relative bg-[#060608] border border-white/10 rounded-xl overflow-hidden flex flex-col shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] cursor-text">
+          {/* Ambient Glows (Smooth CSS radial gradients without blur filters to prevent Safari stuttering) */}
+          <div className="absolute inset-0 pointer-events-none hidden md:block overflow-hidden rounded-xl">
+            {/* Teal top-right glow (fades in with the sidebar to prevent block clipping) */}
+            <div 
+              className={cn(
+                "absolute top-0 right-0 w-[55%] h-[55%] rounded-full translate-x-1/4 -translate-y-1/4 transition-opacity duration-1000",
+                showSidebar ? "opacity-100" : "opacity-0"
+              )}
+              style={{ background: 'radial-gradient(circle, rgba(0,200,180,0.16) 0%, rgba(0,200,180,0.08) 35%, rgba(0,200,180,0.02) 65%, transparent 100%)' }}
+            />
+            {/* Blue bottom-left glow (fades in with the text gradients) */}
+            <div 
+              className={cn(
+                "absolute bottom-0 left-0 w-[50%] h-[50%] rounded-full -translate-x-1/4 translate-y-1/4 transition-opacity duration-1000",
+                showGradients ? "opacity-100" : "opacity-0"
+              )}
+              style={{ background: 'radial-gradient(circle, rgba(75,139,190,0.14) 0%, rgba(75,139,190,0.06) 35%, rgba(75,139,190,0.015) 65%, transparent 100%)' }}
+            />
+          </div>
+
           {activeGame === 'snake' && (
             <div className="absolute inset-0 z-50 bg-brand-bg flex flex-col">
               <WindowChrome url="snake.exe" right={<button onClick={() => setActiveGame(null)} className="text-viz-mac-red font-bold px-2 hover:bg-white/5 rounded transition-colors">EXIT</button>} />
@@ -317,12 +305,12 @@ export const Hero: React.FC = () => {
             onCloseConfirm={handleShutdownAndReboot}
           />
 
-          <div className="flex-1 flex flex-col lg:grid lg:grid-cols-[1.6fr_1fr] gap-4 md:gap-8 p-3 md:py-8 md:px-6 lg:py-10 lg:px-8 overflow-hidden">
+          <div className="relative z-10 flex-1 flex flex-col lg:grid lg:grid-cols-[1.6fr_1fr] gap-4 md:gap-8 p-3 md:py-8 md:px-6 lg:py-10 lg:px-8 overflow-hidden">
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
               <SessionClock />
 
               <div className="hidden md:block">
-                <TerminalHeader bootStep={bootStep} onStepComplete={setBootStep} />
+                <TerminalHeader bootStep={bootStep} onStepComplete={setBootStep} showGradients={showGradients} />
               </div>
 
               <TerminalBody
@@ -337,7 +325,7 @@ export const Hero: React.FC = () => {
               />
             </div>
 
-            <SidebarMenu onCommand={handleCommand} />
+            <SidebarMenu onCommand={handleCommand} isVisible={showSidebar} />
           </div>
         </div>
 
