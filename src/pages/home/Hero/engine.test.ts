@@ -172,6 +172,39 @@ describe('levenshtein', () => {
   it('expertse vs expertise → 1', () => expect(levenshtein('expertse', 'expertise')).toBe(1));
 });
 
+describe('ask command', () => {
+  it('ask with question returns ai effect', () => {
+    const r = resolveCommand('ask does Justin know Python?');
+    expect(r.effect?.type).toBe('ai');
+    expect(r.effect?.aiQuery).toBe('does Justin know Python?');
+  });
+
+  it('ask bare returns usage hint with no effect', () => {
+    const r = resolveCommand('ask');
+    expect(r.effect).toBeUndefined();
+    const text = r.lines.map(l => l.text + (l.parts ?? []).map(p => p.text).join('')).join(' ');
+    expect(text).toMatch(/usage/i);
+  });
+
+  it('ai alias with question returns ai effect', () => {
+    const r = resolveCommand('ai does Justin know dbt?');
+    expect(r.effect?.type).toBe('ai');
+    expect(r.effect?.aiQuery).toBe('does Justin know dbt?');
+  });
+
+  it('ask appears in help output', () => {
+    const r = resolveCommand('help');
+    const text = r.lines.map(l => (l.parts ?? []).map(p => p.text).join('')).join(' ');
+    expect(text).toContain('ask');
+  });
+
+  it('man ask returns manual entry', () => {
+    const r = resolveCommand('man ask');
+    const text = r.lines.map(l => (l.parts ?? []).map(p => p.text).join('')).join(' ');
+    expect(text).toContain('ask');
+  });
+});
+
 describe('COMMAND_MANIFEST integrity', () => {
   it('all command ids are unique', () => {
     const ids = COMMAND_MANIFEST.map(c => c.id);

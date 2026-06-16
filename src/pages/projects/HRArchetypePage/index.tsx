@@ -20,7 +20,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/utils';
-import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
+import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
@@ -258,7 +258,7 @@ export const HRArchetypePage = () => {
         <motion.div className="h-full bg-white/30" style={{ width: progressWidth }} />
       </div>
 
-      <BackToTerminal />
+
 
       {/* Fixed HUD */}
       <div className="fixed top-10 right-10 z-[100] hidden md:flex gap-3 items-center" role="status" aria-live="polite">

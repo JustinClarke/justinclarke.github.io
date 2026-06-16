@@ -168,10 +168,10 @@
   --color-viz-teal: #4fd1c5;
 
   /* Tech-stack brand colours for the TechStack badge row (src/ui/TechStack.tsx):
-     python blue, dbt orange, Power BI gold. */
+     python blue, dbt orange, Fabric teal. */
   --color-python: #4B8BBE;
   --color-dbt: #FF694B;
-  --color-power-bi: #FDBF2B;
+  --color-fabric: #2AAC94;
 
   /* cal.com booking channel orange (Connect page BOOK row) */
   --color-social-cal: #ff5000;
@@ -825,7 +825,7 @@ body {
   100% { offset-distance: 100%; }
 }
 
-/* F1 visual: slower, more cinematic animation timings */
+/* F1 visual: slower, smoother animation timings */
 .f1-visual .sb-led-cascade > rect { animation-duration: 6s; }
 .f1-visual .sb-bar-pulse > rect   { animation-duration: 8s; }
 .f1-visual .sb-line-draw          { animation-duration: 12s; }
@@ -1114,6 +1114,17 @@ body {
   }
 }
 
+/* Pulsing dot shown beside the AGENT badge while a response is streaming. */
+.ai-pulse-dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 9999px;
+  background-color: var(--color-brand-primary);
+  animation: terminal-cursor-glow 1.1s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
 @keyframes fade-in-scale {
   from {
     opacity: 0;
@@ -1126,7 +1137,7 @@ body {
   }
 }
 
-@keyframes cinematic-reveal {
+@keyframes smooth-reveal {
   0% {
     opacity: 0;
     filter: blur(10px);

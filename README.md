@@ -1,6 +1,6 @@
 # Justin Clarke Portfolio
 
-A high-fidelity, interactive engineering portfolio built as a cinematic system interface: a functional terminal hero, a causal-ML F1 case study, live data widgets, and five technical case studies. Not a static gallery a demonstration of production-grade frontend architecture.
+A high-fidelity, interactive engineering portfolio built as a system interface: a functional terminal hero, a causal-ML F1 case study, live data widgets, and five technical case studies. Not a static gallery a demonstration of production-grade frontend architecture.
 
 **Live:** [justinclarke.github.io](https://justinclarke.github.io)
 

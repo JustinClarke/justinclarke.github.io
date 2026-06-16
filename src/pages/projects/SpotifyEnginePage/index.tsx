@@ -21,7 +21,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/utils';
-import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
+import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
@@ -219,7 +219,7 @@ export const SpotifyEnginePage = () => {
         schemaType="CreativeWork"
       />
 
-      <BackToTerminal />
+
 
       {/* ── FIXED HUD ────────────────────────────────────────── */}
       <div

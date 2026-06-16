@@ -52,7 +52,7 @@ export const OTHER_LANGUAGES = [
 ];
 
 export const BOOT_LOGS = [
-  "[ OK ] [BOOT] CINEMATIC_HUD V4.2 LOADED SUCCESSFULLY.",
+  "[ OK ] [BOOT] SYSTEM_HUD V4.2 LOADED SUCCESSFULLY.",
   "[ OK ] [DATA] DBT COMPILE → 6 LAYERS RESOLVED.",
   "[ OK ] [STRM] FABRIC EVENTHOUSE LISTENING ON :443.",
   "[ INFO ] [VITE] HMR UPDATE → /SRC/INDEX.CSS (X6)",
@@ -63,6 +63,17 @@ export const BOOT_LOGS = [
 export const PIPELINE_COLORS = ['var(--color-brand-primary)', 'var(--color-acc-cloud)', 'var(--color-acc-bi)'] as const;
 
 export const GITHUB_USERNAME = 'JustinClarke';
+
+export const AI_AGENT = {
+  proxyUrl: import.meta.env.VITE_AI_PROXY_URL || 'https://portfolio-ai.justinclarke.workers.dev',
+  maxSessionQueries: 20,
+  maxPromptLength: 500,
+  maxHistoryTurns: 6,
+  requestTimeoutMs: 30_000,
+  // Short display label for the response footer. Backend runs Cloudflare Workers
+  // AI: @cf/meta/llama-3.3-70b-instruct-fp8-fast (see worker/worker.js).
+  model: 'llama-3.3-70b',
+} as const;
 
 export const PRELOADER_TIMELINE = {
   SLOW_PHASE_DURATION: 0.9,

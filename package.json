@@ -46,7 +46,7 @@
     "vite": "^6.2.0",
     "vitest": "^4.1.8"
   },
-  "description": "Portfolio of Justin Clarke Data & Analytics Developer. Cinematic HUD portfolio featuring live F1 telemetry simulation, an interactive terminal, and production-grade data engineering case studies.",
+  "description": "Portfolio of Justin Clarke Data Product Engineer. Featuring live F1 telemetry simulation, an interactive terminal, and production-grade data engineering case studies.",
   "author": "Justin Clarke",
   "repository": {
     "type": "git",

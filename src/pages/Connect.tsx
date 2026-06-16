@@ -108,7 +108,7 @@ export function ConnectPage() {
       'N:Clarke;Justin;;;',
       'EMAIL;TYPE=INTERNET:justinsavioclarke@outlook.com',
       'TEL;TYPE=CELL:+971585376967',
-      'TITLE:Data & Analytics Developer',
+      'TITLE:Data Product Engineer',
       'URL:https://justinclarke.github.io',
       'X-SOCIALPROFILE;type=linkedin:justinsavioclarke',
       'X-SOCIALPROFILE;type=github:JustinClarke',
@@ -193,7 +193,7 @@ export function ConnectPage() {
                     <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-gradient-to-b from-brand-primary via-brand-primary/45 to-transparent rounded-full shadow-[0_0_8px_rgba(0,200,180,0.4)] opacity-90" />
 
                     <span className="font-mono !text-xs md:!text-sm text-term-fg leading-relaxed block font-bold">
-                      data & analytics developer.
+                      data product engineer
                     </span>
 
                     {/* Responsive Stack Badges (Visible on all sizes, wraps beautifully) */}

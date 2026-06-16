@@ -20,7 +20,7 @@
  */
 import { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
+import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
@@ -116,7 +116,7 @@ export const LiteStorePage = () => {
         schemaType="SoftwareApplication"
       />
 
-      <BackToTerminal />
+
 
       {/* ── LIVE STATUS PILL ── */}
       <div className="fixed top-12 right-6 md:right-12 z-[100] flex items-center gap-3">

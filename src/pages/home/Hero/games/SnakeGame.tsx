@@ -260,6 +260,17 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [onExit]);
 
+  const handleTurn = (key: string) => {
+    if (ph.current !== 'playing') return;
+    const d = dir.current;
+    switch (key) {
+      case 'ArrowUp': if (d.y === 0) dir.current = { x: 0, y: -1 }; break;
+      case 'ArrowDown': if (d.y === 0) dir.current = { x: 0, y: 1 }; break;
+      case 'ArrowLeft': if (d.x === 0) dir.current = { x: -1, y: 0 }; break;
+      case 'ArrowRight': if (d.x === 0) dir.current = { x: 1, y: 0 }; break;
+    }
+  };
+
   /* ── Actions ── */
   const restart = () => {
     reset();
@@ -287,13 +298,6 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
           <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e]" />
           SCORE: {score}
         </div>
-        <div className="flex-1" />
-        <button
-          onClick={onExit}
-          className="bg-white/10 border border-white/15 text-white/80 font-mono text-[8px] tracking-[0.12em] font-bold px-2.5 py-1 rounded transition-all duration-200 flex items-center gap-2 hover:bg-viz-red hover:text-white hover:border-viz-red hover:-translate-y-px active:scale-95 cursor-pointer"
-        >
-          <span className="bg-white/10 border border-white/20 rounded px-1 text-[8px] text-brand-primary">ESC</span> EXIT
-        </button>
       </div>
 
       <div className="flex-1 grid place-items-center overflow-hidden p-4 min-h-0">
@@ -371,6 +375,36 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
               <button className="px-10 py-3 bg-brand-primary text-black font-black rounded-sm cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs tracking-widest uppercase" onClick={restart}>RE-SYNC KERNEL</button>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* On-screen controls for mobile */}
+      <div className="flex flex-col items-center gap-2 p-4 lg:hidden border-t border-white/5">
+        <button
+          className="w-14 h-14 bg-white/5 active:bg-white/10 rounded-lg flex items-center justify-center text-white/50 touch-manipulation"
+          onPointerDown={(e) => { e.preventDefault(); handleTurn('ArrowUp'); }}
+        >
+          ▲
+        </button>
+        <div className="flex gap-2">
+          <button
+            className="w-14 h-14 bg-white/5 active:bg-white/10 rounded-lg flex items-center justify-center text-white/50 touch-manipulation"
+            onPointerDown={(e) => { e.preventDefault(); handleTurn('ArrowLeft'); }}
+          >
+            ◀
+          </button>
+          <button
+            className="w-14 h-14 bg-white/5 active:bg-white/10 rounded-lg flex items-center justify-center text-white/50 touch-manipulation"
+            onPointerDown={(e) => { e.preventDefault(); handleTurn('ArrowDown'); }}
+          >
+            ▼
+          </button>
+          <button
+            className="w-14 h-14 bg-white/5 active:bg-white/10 rounded-lg flex items-center justify-center text-white/50 touch-manipulation"
+            onPointerDown={(e) => { e.preventDefault(); handleTurn('ArrowRight'); }}
+          >
+            ▶
+          </button>
         </div>
       </div>
     </div>

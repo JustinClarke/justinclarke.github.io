@@ -51,7 +51,7 @@ export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, o
     <div className="relative shrink-0 space-y-4 md:space-y-6 mb-4 md:mb-8">
       {/* Brand Ambient Glows - strictly behind the header text & badges (optimised without CSS filters for Safari 60fps performance) */}
       <div className={cn(
-        "absolute -inset-10 pointer-events-none -z-10 hidden md:block select-none transition-opacity duration-1000",
+        "absolute -inset-10 pointer-events-none -z-10 select-none transition-opacity duration-1000",
         showGradients ? "opacity-100" : "opacity-0"
       )}>
         {/* Python Blue */}
@@ -90,7 +90,7 @@ export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, o
           <span className="font-mono text-[11px] md:text-xs text-term-dim">profile.read()</span>
         </div>
         <div className="pl-4 md:pl-6 border-l border-white/5 space-y-3.5 md:space-y-4">
-          <span className="font-mono text-xs md:text-sm text-term-fg leading-relaxed block font-bold" style={fadeIn(850)}>data & analytics developer.</span>
+          <span className="font-mono text-xs md:text-sm text-term-fg leading-relaxed block font-bold" style={fadeIn(850)}>data product engineer</span>
           <div style={fadeIn(1050)}><TechStack animate /></div>
           <span className="font-mono text-xs md:text-sm text-term-dim leading-relaxed block" style={fadeIn(1250)}>Data to decisions & decisions into products</span>
         </div>

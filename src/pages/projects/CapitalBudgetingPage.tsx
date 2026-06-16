@@ -21,7 +21,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils';
-import { ScrollReveal, MagneticButton, BackToTerminal } from '@/ui';
+import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { RelatedProjects } from '@/components/projects';
 
@@ -66,9 +66,9 @@ export const CapitalBudgetingPage = () => {
         schemaType="SoftwareApplication"
       />
       
-      <BackToTerminal />
 
-      {/* ── CINEMATIC HUD ACTIONS ─────────────────────────────── */}
+
+      {/* ── HUD ACTIONS ───────────────────────────────────────── */}
       <div 
         className="fixed top-12 right-12 z-[100] hidden md:flex gap-4"
         role="status"

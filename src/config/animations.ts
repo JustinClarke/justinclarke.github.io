@@ -22,7 +22,7 @@ export const SPRINGS = {
 } as const;
 
 export const EASING = {
-  quintic: [0.16, 1, 0.3, 1], // cinematic decel
+  quintic: [0.16, 1, 0.3, 1], // smooth decel
   circOut: [0, 0.55, 0.45, 1],
   smooth: [0.22, 1, 0.36, 1],
   softQuartic: [0.25, 1, 0.4, 1],

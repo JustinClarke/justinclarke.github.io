@@ -34,8 +34,8 @@ export const STATS = {
   dbtModels: 60,
   intermediateModels: 36,
   martTables: 9,
-  tests: 336,
-  mlTests: 27,
+  tests: 424,
+  mlTests: 28,
   buildSeconds: 4,
 } as const;
 
@@ -65,7 +65,7 @@ export const ML_MODELS = [
 export const ML_FACTS = {
   modelCount: 5,
   trainRows: 110_440,
-  featureCount: 38,
+  featureCount: 42,
   calibrationNominal: 0.80,
   calibrationEmpirical: 0.804,
   meanIntervalWidth: 1.11,

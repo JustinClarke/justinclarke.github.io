@@ -17,7 +17,7 @@ export const experiences: Experience[] = [
   {
     index: '01',
     company: 'VNS Solutions',
-    role: 'BI & Analytics Developer',
+    role: 'Analytics Engineer',
     year: 'Jan 2024 – Dec 2025',
     tag: 'Microsoft Fabric · Power BI · Python · SQL',
     details: [

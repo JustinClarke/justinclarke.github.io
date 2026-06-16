@@ -15,6 +15,7 @@ Consolidated reference for the portfolio's structure, design system, routing, an
 | **Styling** | Tailwind CSS | 4.x | CSS-first `@theme` tokens, `@utility` directives |
 | **Animation** | Framer Motion | 12.x | Spring physics, `AnimatePresence`, `useMotionValue` |
 | **Modals** | Radix UI Dialog | 1.x | Accessible modal primitives |
+| **Data Viz** | D3.js | 7.x | SVG and canvas visualizations |
 | **SEO** | react-helmet-async | 3.x | Dynamic meta tags + JSON-LD structured data |
 | **Icons** | Lucide React | 0.5.x | Tree-shakeable SVG icons |
 | **Bundler** | Vite | 6.x | Sub-second HMR, esbuild minification, manual chunks |
@@ -148,7 +149,7 @@ Tailwind utilities: `bg-surface-primary`, `text-text-base`, `border-border-defau
 
 | Context | Font | Weight | Notes |
 |:---|:---|:---|:---|
-| Section headings | Noto Sans | 900 | Cinematic impact |
+| Section headings | Noto Sans | 900 | Strong impact |
 | Body / UI | Inter | 300–700 | High-readability sans |
 | Italic accents | Playfair Display | 800 italic | Premium contrast in technical text |
 | Terminal / metadata | IBM Plex Mono | 400–700 | Technical voice |
@@ -167,7 +168,7 @@ Tailwind utilities: `bg-surface-primary`, `text-text-base`, `border-border-defau
 
 1. No raw hex for tokenised colours use the utility (`text-f1-red`) or CSS var (`var(--color-f1-red)`).
 2. New colours used ≥2 times must become `@theme` tokens before the second use.
-3. JS hex constants live in `src/config/constants.ts` only. Audited by `scripts/check-tailwind-tokens.mjs`.
+3. JS hex constants live in `src/config/constants.ts` only.
 4. Static inline styles → utilities (`style={{ zIndex: 40 }}` → `z-40`).
 5. Dynamic values via CSS vars: `style={{ '--accent': accent }}` + `className="bg-(--accent)"`.
 
@@ -186,6 +187,7 @@ Tailwind utilities: `bg-surface-primary`, `text-text-base`, `border-border-defau
 | `/f1` | `OffThePaceOverview` | F1 case study visual presentation |
 | `/off-the-pace` | `OffThePaceSource` | F1 case study technical/data read |
 | `/the-long-version` | `TheLongVersionPage` | Light-themed editorial; slower transition |
+| `/linkedin-banner` | `LinkedInBanner` | Utility route for generating the banner image |
 | `/connect`, `/contact` | `ConnectPage` | |
 | `*` | `NotFound` | |
 

@@ -23,6 +23,7 @@ import { TerminalLine, getCompletion } from '../engine';
 import { Typewriter } from './Typewriter';
 import { cn } from '@/utils';
 import { TechStack } from '@/ui';
+import { TerminalHeader } from './TerminalHeader';
 
 interface TerminalBodyProps {
   history: TerminalLine[];
@@ -33,6 +34,8 @@ interface TerminalBodyProps {
   getLineColor: (type: string) => string;
   isTyping: boolean;
   lastExitCode?: number | null;
+  onStepComplete?: (step: number) => void;
+  showGradients?: boolean;
 }
 
 // LEARN: The famous "konami code" key sequence. We watch for it being typed in order
@@ -44,16 +47,21 @@ const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'Ar
 // ---------------------------------------------------------------------------
 const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   const allSuggestions = [
-    { prefix: 'try typing ', cmd: 'whoami', suffix: " (unless you're an AI)" },
-    { prefix: 'try typing ', cmd: 'ls projects', suffix: ' to see my digital craftsmanship' },
-    { prefix: 'try typing ', cmd: 'timeline', suffix: ' to travel through time' },
-    { prefix: 'try typing ', cmd: 'resumé', suffix: ' to download my CV' },
-    { prefix: 'try typing ', cmd: 'connect', suffix: ' to contact me' },
-    { prefix: 'try typing ', cmd: 'snake', suffix: ' (warning: highly addictive)' },
-    { prefix: 'try typing ', cmd: 'the long version', suffix: ' for my secret vault' },
-    { prefix: 'try typing ', cmd: 'help', suffix: ' (we all need it sometimes)' },
-    { prefix: 'try typing ', cmd: 'clear', suffix: ' to make this pristine again' },
-    { prefix: 'try typing ', cmd: 'about me', suffix: ' to read my autobiography (short version)' },
+    { prefix: 'type ', cmd: 'whoami', suffix: ' to skip the small talk' },
+    { prefix: 'try asking ', cmd: 'how much coffee he drinks?', suffix: '' },
+    { prefix: 'type ', cmd: 'ls projects', suffix: ' for the good stuff' },
+    { prefix: 'try asking ', cmd: 'why is he studying again?', suffix: '' },
+    { prefix: 'type ', cmd: 'timeline', suffix: ' to see his origin story' },
+    { prefix: 'type ', cmd: 'play', suffix: ' to ruin your productivity' },
+    { prefix: 'try asking ', cmd: 'if he actually sleeps', suffix: '' },
+    { prefix: 'type ', cmd: 'resumé', suffix: ' to hire him immediately' },
+    { prefix: 'type ', cmd: 'off the pace', suffix: ' for F1 drama' },
+    { prefix: 'type ', cmd: 'expertise', suffix: ' to see his weapon choice' },
+    { prefix: 'try asking ', cmd: 'what is his biggest flex?', suffix: '' },
+    { prefix: 'type ', cmd: 'connect', suffix: ' to slide into his inbox' },
+    { prefix: 'type ', cmd: 'sudo', suffix: ' to see what happens' },
+    { prefix: 'try asking ', cmd: 'can he fix my printer?', suffix: '' },
+    { prefix: 'type ', cmd: 'help', suffix: ' if you are completely lost' },
   ];
   // LEARN: `ran` is a Set of commands already used; we drop those from the hints so
   //    the cycler suggests fresh things. If everything's been tried, fall back to all.
@@ -102,7 +110,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   void charsDone; // used for cursor sync
 
   return (
-    <div className="font-mono text-[11px] md:text-[12px] text-term-fg select-none leading-tight whitespace-pre-wrap">
+    <div className="font-mono text-[11px] md:text-[12px] text-term-fg select-none leading-tight whitespace-pre-wrap opacity-85">
       <Typewriter key={`prefix-${key}`} text={current.prefix} speed={speed} className="text-term-fg" />
       <Typewriter key={`cmd-${key}`} text={current.cmd} speed={speed} delay={cmdDelay} className="text-brand-primary font-black brightness-110" />
       <Typewriter key={`suffix-${key}`} text={current.suffix} speed={speed} delay={suffixDelay} className="text-term-fg" />
@@ -164,6 +172,8 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
   getLineColor,
   isTyping,
   lastExitCode,
+  onStepComplete,
+  showGradients = false,
 }) => {
   const outRef = useRef<HTMLDivElement>(null);
   const inpRef = useRef<HTMLInputElement>(null);
@@ -379,12 +389,21 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
               </div>
               <div className="space-y-1">
                 <div className="space-y-2.5">
-                  <Typewriter text="data & analytics developer." speed={12} delay={880} className="font-mono text-[11px] sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
+                  <Typewriter text="data product engineer" speed={12} delay={880} className="font-mono text-[11px] sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
                   <TechStack animate className="!text-[11px]" />
                   <Typewriter text="Data to decisions & decisions into products" speed={12} delay={1650} className="font-mono text-[11px] sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
                 </div>
               </div>
             </div>
+          )}
+
+          {/* Desktop intro */}
+          {!isMobile && onStepComplete && (
+            <TerminalHeader
+              bootStep={bootStep}
+              onStepComplete={onStepComplete}
+              showGradients={showGradients}
+            />
           )}
 
           {/* Command History */}
@@ -400,6 +419,48 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                   <div className="flex gap-2 md:gap-4 items-center">
                     <span className="text-brand-primary font-bold shrink-0">~$</span>
                     <span className="text-term-fg tracking-tight truncate">{line.text.replace('~$ ', '')}</span>
+                  </div>
+                ) : line.t === 'ai-head' ? (
+                  <div
+                    className={cn(
+                      'pl-6 md:pl-9 flex items-center gap-2 pt-1',
+                      !isMobile && i > lastPromptIndex && 'opacity-0 animate-terminal-fade-in'
+                    )}
+                    style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
+                  >
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/10 px-2 py-0.5 text-[10px] font-black tracking-[0.2em] text-brand-primary">
+                      <span className="text-[8px] leading-none" aria-hidden="true">◆</span>{line.text}
+                    </span>
+                    {line.streaming && <span className="ai-pulse-dot" aria-hidden="true" />}
+                  </div>
+                ) : line.t === 'ai-foot' ? (
+                  <div
+                    className={cn(
+                      'pl-6 md:pl-9 flex items-center gap-2 pt-1',
+                      !isMobile && i > lastPromptIndex && 'opacity-0 animate-terminal-fade-in'
+                    )}
+                    style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
+                  >
+                    <span className="text-brand-primary/40 select-none" aria-hidden="true">└─</span>
+                    <span className="text-[10px] tracking-wide text-term-faint">{line.text}</span>
+                  </div>
+                ) : line.gutter ? (
+                  <div
+                    className={cn(
+                      'pl-6 md:pl-9 flex gap-2',
+                      !isMobile && i > lastPromptIndex && 'opacity-0 animate-terminal-fade-in'
+                    )}
+                    style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
+                  >
+                    <span className="text-brand-primary/40 select-none shrink-0" aria-hidden="true">│</span>
+                    <div className="flex-1 text-term-fg whitespace-pre-wrap break-words leading-relaxed">
+                      {line.parts
+                        ? line.parts.map((p, j) => (
+                          <span key={`${i}-${j}`} className={getLineColor(p.t)}>{p.text}</span>
+                        ))
+                        : line.text}
+                      {line.streaming && <span className="terminal-block-cursor ml-[2px]" aria-hidden="true" />}
+                    </div>
                   </div>
                 ) : (
                   <div
@@ -514,7 +575,17 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
           {isMobile && bootStep >= 7 && !isTyping && inputValue && completionCandidates.length > 0 && (
             <div className="flex gap-2 mt-2 flex-wrap">
               {completionCandidates.map((c, ci) => (
-                <button key={ci} type="button" onClick={() => onInputChange(c)}
+                <button key={ci} type="button" onClick={() => {
+                  const cmd = c.trim();
+                  if (!isTyping) {
+                    const updated = [cmd, ...cmdHistory.filter(h => h !== cmd).slice(0, 49)];
+                    setCmdHistory(updated);
+                    try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
+                    setHistoryIndex(-1);
+                    setGhostText('');
+                    onCommand(cmd);
+                  }
+                }}
                   className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] active:bg-brand-primary/20 transition-colors">
                   {c}
                 </button>
@@ -538,7 +609,17 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                 <button
                   key={ci}
                   type="button"
-                  onClick={() => onInputChange(c)}
+                  onClick={() => {
+                    const cmd = c.trim();
+                    if (!isTyping) {
+                      const updated = [cmd, ...cmdHistory.filter(h => h !== cmd).slice(0, 49)];
+                      setCmdHistory(updated);
+                      try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
+                      setHistoryIndex(-1);
+                      setGhostText('');
+                      onCommand(cmd);
+                    }
+                  }}
                   className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 transition-colors cursor-pointer"
                 >
                   {c}
@@ -565,6 +646,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
             <div className="relative flex-1 flex min-w-0 font-mono text-[11px] md:text-[12px] min-h-[34px] md:min-h-[36px]">
               <textarea
                 ref={textareaRef}
+                id="hero-terminal-input"
                 value={inputValue}
                 onChange={(e) => {
                   onInputChange(e.target.value);
@@ -575,12 +657,18 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                 onBlur={() => setIsInputFocused(false)}
                 className="w-full bg-transparent border-none outline-none font-mono text-term-fg placeholder-white/30 caret-brand-primary py-[10px] md:py-[11px] resize-none custom-scrollbar max-h-[160px] min-h-[34px] md:min-h-[36px] leading-relaxed relative z-10 cursor-text"
                 spellCheck={false}
-                placeholder="Ask about Justin, or type a command..."
+                placeholder=""
                 autoComplete="off"
                 aria-label="Terminal input"
                 disabled={isTyping}
                 rows={1}
               />
+
+              {showPlaceholder && (
+                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none z-0">
+                  <PlaceholderCycler ran={ranCommands.current} />
+                </div>
+              )}
             </div>
 
             <div className="shrink-0 flex items-center h-[34px] md:h-[36px] pr-0.5 pb-[1px]">

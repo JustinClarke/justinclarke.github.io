@@ -47,7 +47,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
         "flex w-full rounded-lg border group/btn text-left relative transition-all duration-500 justify-between",
         large ? "overflow-hidden" : "overflow-hidden",
         large
-          ? "flex-row items-center p-3 md:flex-col md:items-stretch md:border-white/5 md:flex-1 md:min-h-0 md:h-full md:hover:scale-[1.01] hover:border-f1-red/30"
+          ? "flex-col items-stretch p-3 md:flex-1 md:min-h-0 md:h-full hover:scale-[1.01] hover:border-f1-red/30"
           : ((large && alignTop) ? "items-start" : "items-center p-3"),
         isLongVersion
           ? "bg-[rgba(102,14,29,0.06)] border-[rgba(216,207,192,0.18)] hover:border-[rgba(216,207,192,0.55)] hover:bg-[rgba(102,14,29,0.18)] text-f1-white hover:text-white hover:shadow-[0_10px_30px_-10px_rgba(102,14,29,0.12)]"
@@ -55,7 +55,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             ? "bg-brand-primary/10 border-brand-primary text-f1-white shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02] important-control"
             : hot
               ? "bg-brand-primary/5 border-brand-primary/30 text-f1-white"
-              : "bg-transparent border-white/5 text-f1-white",
+              : large
+                ? "bg-transparent border-f1-red/20 md:border-white/5 text-f1-white"
+                : "bg-transparent border-white/5 text-f1-white",
         (!isLongVersion && !large) && "system-control-hover",
         className
       )}
@@ -76,35 +78,27 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             renders exactly ONE of the three layouts. This nested-ternary-in-JSX is a
             common React idiom for "pick one of N templates". */}
       {large ? (
-        <div className="flex flex-col md:h-full w-full relative z-10 gap-0 md:gap-3">
+        <div className="flex flex-col md:h-full w-full relative z-10 gap-3">
           {/* Header row consistent with other items, floating elegantly on the top vignette */}
           <div className="flex items-center justify-between w-full relative z-20">
-            <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-3">
               <div className="w-2 flex justify-center">
                 <div className={cn("indicator-light bg-f1-red/60 group-hover/btn:!bg-f1-red group-hover/btn:!shadow-[0_0_6px_rgba(225,6,0,0.8)] transition-all duration-300")} />
               </div>
 
               <div className="flex items-center gap-2">
                 <span className={cn(
-                  "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px] md:text-[10px]",
+                  "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px] md:text-[10px]",
                   "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
                 )}>{num}</span>
                 <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-f1-white group-hover/btn:text-f1-red">
-                  {cmd === 'featured project' ? (
-                    <>
-                      <span className="md:hidden flex items-center gap-1.5">
-                        <img src="/assets/f1.svg" alt="Formula 1" className="h-[9px] w-auto shrink-0 drop-shadow-[0_0_6px_rgba(225,6,0,0.6)] ml-1" />
-                        <span>CAUSAL PERFORMANCE ANALYSIS</span>
-                      </span>
-                      <span className="hidden md:inline">{cmd}</span>
-                    </>
-                  ) : cmd}
+                  {cmd}
                 </span>
               </div>
             </div>
 
             {desc && (
-              <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
+              <div className="hidden md:flex ml-auto items-center gap-2 relative z-10">
                 <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
                   {desc}
                 </div>
@@ -124,7 +118,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           />
 
           {/* Badge Showcase */}
-          <div className="hidden md:block flex-1 min-h-0 w-full">
+          <div className="flex-1 min-h-0 w-full">
             {badge}
           </div>
         </div>

@@ -12,7 +12,7 @@ const ROUTES = [
   {
     path: '/',
     title: 'Justin Clarke ⋅ Home',
-    description: 'Portfolio of Justin Clarke. Case studies in data & analytics development, data architecture, and high-fidelity data systems.'
+    description: 'Portfolio of Justin Clarke. Case studies in data product engineering, data architecture, and high-fidelity data systems.'
   },
   {
     path: '/project/spotify-engine',

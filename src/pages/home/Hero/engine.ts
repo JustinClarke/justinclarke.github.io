@@ -32,6 +32,7 @@
 export type TerminalLineType =
   | 'muted' | 'success' | 'info' | 'brand' | 'error' | 'obscured' | 'prompt' | 'cmd' | 'edu'
   | 'viz-mac-red' | 'viz-mac-yellow' | 'viz-success'
+  | 'ai-head' | 'ai-foot'
   | 'p' | 'g' | 'b' | 'pu' | 'm' | 'o' | 'r' | 't';
 
 // LEARN: `interface` describes the shape of one printed line. The `?` marks an
@@ -45,13 +46,17 @@ export interface TerminalLine {
   href?: string;
   chips?: string[];
   streaming?: boolean;
+  // When true, the line renders inside the AI response block with a left "│" rail
+  // (used for the streamed agent answer and its parsed body lines).
+  gutter?: boolean;
 }
 
-export type SideEffectType = 'scroll' | 'snake' | 'theme' | 'download' | 'contact' | 'the-long-version' | 'github';
+export type SideEffectType = 'scroll' | 'snake' | 'pong' | 'tetris' | 'space_invaders' | 'theme' | 'download' | 'contact' | 'the-long-version' | 'github' | 'ai';
 
 export interface CommandEffect {
   type: SideEffectType;
   payload?: string;
+  aiQuery?: string;
 }
 
 export interface CommandResult {
@@ -405,6 +410,28 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     run: () => ({ lines: [], effect: { type: 'download' } }),
   },
 
+  // ── ask (bare usage — query interception happens in resolveCommand) ────────
+  {
+    id: 'ask',
+    aliases: ['ai', 'agent', 'gemini'],
+    summary: 'Ask the AI assistant about Justin, his projects, or his stack.',
+    category: 'core',
+    run: () => ({
+      lines: [
+        line('m', 'usage: ask <question>'),
+        line('muted', "e.g. 'ask does Justin have Fabric experience?'"),
+        sp(),
+        {
+          t: 'm', text: '', parts: [
+            { t: 'muted', text: 'powered by ' },
+            { t: 'brand', text: 'llama-3.3-70b' },
+            { t: 'muted', text: ' · 20 queries per session' },
+          ]
+        },
+      ],
+    }),
+  },
+
   // ── advanced ───────────────────────────────────────────────────────────────
   {
     id: 'advanced',
@@ -471,11 +498,55 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
   // ── snake ──────────────────────────────────────────────────────────────────
   {
     id: 'snake',
-    aliases: ['play snake', 'playsnake', 'game', 'play', 'arcade', 'minigame', 'snak'],
-    summary: 'Launch Snake arcade game (desktop only).',
+    aliases: ['play snake', 'playsnake', 'minigame', 'snak'],
+    summary: 'Launch Snake arcade game.',
     category: 'egg',
     hidden: true,
     run: () => ({ lines: [], effect: { type: 'snake' } }),
+  },
+
+  // ── play ───────────────────────────────────────────────────────────────────
+  {
+    id: 'play',
+    aliases: ['game', 'arcade', 'games'],
+    summary: 'List available retro arcade games.',
+    category: 'system',
+    run: () => ({
+      lines: [
+        line('g', 'Arcade mode: ready.'),
+        { t: 'm', text: 'Select a game to launch:', chips: ['play snake', 'play pong', 'play tetris', 'play space invaders'] },
+      ],
+    }),
+  },
+
+  // ── pong ──────────────────────────────────────────────────────────────────
+  {
+    id: 'pong',
+    aliases: ['play pong'],
+    summary: 'Launch Pong arcade game.',
+    category: 'egg',
+    hidden: true,
+    run: () => ({ lines: [], effect: { type: 'pong' } }),
+  },
+
+  // ── tetris ────────────────────────────────────────────────────────────────
+  {
+    id: 'tetris',
+    aliases: ['play tetris'],
+    summary: 'Launch Tetris arcade game.',
+    category: 'egg',
+    hidden: true,
+    run: () => ({ lines: [], effect: { type: 'tetris' } }),
+  },
+
+  // ── space invaders ────────────────────────────────────────────────────────
+  {
+    id: 'space invaders',
+    aliases: ['spaceinvaders', 'play space invaders', 'invaders'],
+    summary: 'Launch Space Invaders arcade game.',
+    category: 'egg',
+    hidden: true,
+    run: () => ({ lines: [], effect: { type: 'space_invaders' } }),
   },
 
   // ── the long version ───────────────────────────────────────────────────────
@@ -633,6 +704,9 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
     line('viz-success', "→ justinsavioclarke@outlook.com · two distinctions · ships fast"),
   ],
   'play snake': [line('g', "launching snake.exe · arrow keys · don't blame us for the lost productivity")],
+  'play pong': [line('g', "launching pong.exe · paddle to the metal")],
+  'play tetris': [line('g', "launching tetris.exe · don't stack overflow")],
+  'play space invaders': [line('g', "launching space_invaders.exe · defend the port")],
   pwd: [line('g', "/home/justin/portfolio · exactly where you should be.")],
   exit: [
     line('r', "exit: blocked."),
@@ -816,6 +890,26 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
     return { lines: FUNNY_ERRORS['sudo'] };
   }
 
+  // ── ask <question> → AI agent ──────────────────────────────────────────────
+  if (cmd.startsWith('ask ') || cmd.startsWith('ai ') || cmd.startsWith('agent ') || cmd.startsWith('gemini ')) {
+    const prefixLen = cmd.startsWith('ask ') ? 4 : cmd.startsWith('ai ') ? 3 : cmd.startsWith('agent ') ? 6 : 7;
+    const query = raw.trim().slice(prefixLen).trim();
+    if (!query) {
+      return {
+        lines: [
+          line('r', 'ask: missing question.'),
+          line('m', "usage: ask <your question>"),
+        ],
+      };
+    }
+    return {
+      lines: [
+        { t: 'muted' as TerminalLineType, text: 'thinking...', streaming: true },
+      ],
+      effect: { type: 'ai', aiQuery: query },
+    };
+  }
+
   // ── hire special case (contact effect) ────────────────────────────────────
   if (cmd === 'hire' || cmd === 'hire justin') {
     return { lines: FUNNY_ERRORS[cmd] ?? [], effect: { type: 'contact' } };
@@ -835,6 +929,21 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   // ── Funny errors ───────────────────────────────────────────────────────────
   for (const key of Object.keys(FUNNY_ERRORS)) {
     if (cmd === key || cmd.startsWith(key + ' ')) return { lines: FUNNY_ERRORS[key] };
+  }
+
+  // ── Natural language → AI ─────────────────────────────────────────────────
+  // If the input looks like a question or sentence rather than a command typo,
+  // send it straight to the AI agent instead of showing "command not found".
+  const QUESTION_STARTERS = ['what', 'who', 'where', 'when', 'why', 'how', 'is', 'does', 'can', 'will', 'would', 'has', 'have', 'did', 'could', 'should', 'tell'];
+  const isNaturalLanguage =
+    raw.includes('?') ||
+    raw.trim().split(/\s+/).length >= 4 ||
+    QUESTION_STARTERS.some(w => cmd.startsWith(w + ' '));
+  if (isNaturalLanguage) {
+    return {
+      lines: [{ t: 'muted' as TerminalLineType, text: 'thinking...', streaming: true }],
+      effect: { type: 'ai', aiQuery: raw.trim() },
+    };
   }
 
   // ── Keyword guesses ────────────────────────────────────────────────────────

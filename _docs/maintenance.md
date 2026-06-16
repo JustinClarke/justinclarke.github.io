@@ -65,6 +65,47 @@ Full contract: [`_docs/patterns.md` Tailwind token contract](_docs/patterns.md#t
 
 ---
 
+## Updating the AI agent's knowledge
+
+The AI terminal assistant (and the floating chat drawer) is powered by a Cloudflare Worker at `portfolio-ai.justinclarke.workers.dev`. Its knowledge comes entirely from one file:
+
+```
+worker/system-prompt.js
+```
+
+`_docs/_resume.yaml` is the single source of truth for all accomplishment data — metrics, bullet points, skills, project stats. When you update your resume, sync the relevant facts into `system-prompt.js`.
+
+### How to update
+
+1. Edit `worker/system-prompt.js` — add or update the relevant section (EXPERIENCE, PROJECTS, SKILLS, etc.)
+2. Redeploy the worker:
+   ```bash
+   cd worker
+   npx wrangler deploy
+   ```
+3. Test in the terminal: ask a question that exercises the new info.
+
+### What the system prompt contains
+
+| Section | What to put here |
+|:---|:---|
+| IDENTITY | Contact info, location, work auth |
+| EDUCATION | Degrees, distinctions, relevant highlights |
+| SKILLS | Grouped by category — reorder to reflect current focus |
+| EXPERIENCE | Role, company, dates, key accomplishment bullets with metrics |
+| PROJECTS | Name, live URL, stack, key stats and accomplishments |
+| INSTRUCTIONS | Tone, response length, off-topic handling, formatting rules |
+
+### Formatting rule
+
+The terminal renders **plain text only** — no markdown. The system prompt instructs the model not to use `**bold**`, `# headers`, or hyphen bullets. Keep accomplishment bullets as plain prose with numbers inline (e.g. `cut refresh from 45 min to 20 min`).
+
+### History truncation
+
+The worker rejects history items longer than 500 characters. The client already truncates history text to 490 chars before sending (`src/hooks/useAIAgent.ts`), so multi-turn conversations are safe.
+
+---
+
 ## Deploy pipeline (for reference)
 
 ```

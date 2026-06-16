@@ -34,7 +34,7 @@ export const ENTRIES: Entry[] = [
     id: 'vns',
     type: 'work',
     title: 'VNS Solutions',
-    subtitle: 'BI & Analytics Developer',
+    subtitle: 'Analytics Engineer',
     period: 'Jan 2024 – Dec 2025',
     start: 2024.0,
     end: 2025.0,

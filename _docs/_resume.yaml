@@ -1,0 +1,741 @@
+# =============================================================================
+# MASTER RESUME — Justin Clarke
+# =============================================================================
+# This is the SINGLE SOURCE OF TRUTH. It holds everything, including bullets
+# that get cut from any given tailored version. Tailoring = SELECTION, not
+# rewriting: filter accomplishments by `tags` + `strength`, swap the headline
+# and summary variant, reorder the skills block to lead with what the role asks.
+#
+# HOW TO TAILOR (prompt an AI with this file):
+#   "Build a Data Analyst resume: pull `signature` + `strong` bullets tagged
+#    `data-analyst`, lead skills with SQL/Python/Power BI/DAX, use the
+#    `data-analyst` headline + summary, 1 page."
+#
+# HOW TO UPDATE:
+#   Add a new accomplishment under the right `experience`/`projects` entry with
+#   the next free id (e.g. vns-09), fill text/metric/skills/tags/strength.
+#   Bump meta.last_updated. Inline `# notes` are for you/the AI, never printed.
+#
+# FIELD GLOSSARY:
+#   text     -> the canonical resume bullet, polished, ready to print
+#   metric   -> the headline number in that bullet (for quick scanning/ranking)
+#   skills   -> technologies/skills this bullet evidences
+#   tags     -> which role archetypes this bullet should surface for
+#   strength -> signature (must-include) | strong (include if room) | supporting (filler/depth)
+#   variants -> OPTIONAL role-specific rephrasings. Same achievement, different emphasis.
+#               If a variant exists for the role you're tailoring to, use it INSTEAD of `text`.
+#
+# TAILORING RECIPES:
+#   The `tailoring_recipes` section (below role_targets) encodes, per role, the exact
+#   bullet order, what to cut, and where projects go. If a recipe exists for your target
+#   role, follow it; otherwise fall back to tags + strength selection.
+# =============================================================================
+
+meta:
+  schema_version: 1
+  last_updated: 2026-06-17
+  owner: Justin Clarke
+  source_of_truth_notes: |
+    Off The Pace figures here are swept from the repo's compiled manifests
+    (dbt manifest.json, ml manifest.json) and are AUTHORITATIVE. If the GitHub
+    README or any portfolio page disagrees, fix the README to match THIS file.
+
+# -----------------------------------------------------------------------------
+# Role archetypes. Every accomplishment is tagged against one or more of these.
+# -----------------------------------------------------------------------------
+role_targets:
+  - id: data-analyst        # lead: customer KPI tracking, stakeholder translation
+  - id: analytics-engineer  # lead: dbt, pipeline architecture, testing rigour
+  - id: bi-developer        # lead: Power BI, DAX, data modelling, RLS, Fabric
+  - id: ml-engineer         # lead: XGBoost->ONNX, feature engineering, calibration, leakage audit
+  - id: frontend            # lead: React/TS, data-products, in-browser data apps
+  - id: agentic-ai          # lead: lineage agent, ChromaDB, knowledge-graph tooling
+
+# -----------------------------------------------------------------------------
+# Tailoring recipes. Per-role assembly instructions: title overrides, bullet
+# order, cuts, and project placement. Follow the recipe for the target role;
+# fall back to tags + strength when no recipe exists. `use_variant: true` means
+# prefer the bullet's role variant text over its canonical `text`.
+# -----------------------------------------------------------------------------
+tailoring_recipes:
+  - id: recipe-analytics-engineer
+    for: analytics-engineer
+    headline: head-analytics-engineer
+    summary: sum-analytics-engineer
+    title_overrides:
+      vns: Analytics Engineer        # (conservative alt: "BI Developer / Analytics Engineer")
+    experience_order:
+      vns:
+        # lead with pipelines/ETL, push pure-BI bullets down, cut the weakest
+        order: [vns-02, vns-03, vns-06, vns-08, vns-05, vns-09, vns-04]
+        use_variant: true            # vns-02/05/06/08 + vns-04 have AE variants below
+        cut: [vns-10]                # weakest; deployment/release adds little here
+        include_if_room: [vns-07, vns-01, vns-11]
+    project_order:
+      # Off The Pace goes DIRECTLY under VNS for AE applications — these three
+      # bullets are stronger AE signals than most candidates with 3-5 yrs experience
+      first: off-the-pace
+      lead_bullets: [otp-02, otp-01, otp-04]
+      then: [litestore, spotify-engine, sql-disaster, hr-archetype]
+    skills_lead: analytics-engineering
+    notes: |
+      Rationale: vns-02 first answers ETL/SQL/pipelines/Fabric/Lakehouse in one line.
+      vns-08 (source-to-target validation) is a differentiator — most AE resumes are
+      weak on data quality. vns-04 kept last because AEs do care about dimensional
+      modelling, but it reads BI-first, so use its AE variant.
+
+# -----------------------------------------------------------------------------
+# Contact / identity (canonical, final)
+# -----------------------------------------------------------------------------
+contact:
+  name: Justin Clarke
+  email: justinsavioclarke@outlook.com
+  linkedin: linkedin.com/in/justinsavioclarke
+  github: github.com/JustinClarke          # note: verify exact casing before printing
+  portfolio: justinclarke.github.io
+  phone: "+971 58 537 6967"
+  location: Dubai, UAE
+  work_authorization: UAE Family Residence Visa — no sponsorship required, available immediately
+
+# -----------------------------------------------------------------------------
+# Headline variants. Pick ONE per tailored resume to match the role title.
+# -----------------------------------------------------------------------------
+headlines:
+  - id: head-data-analyst
+    for: [data-analyst, bi-developer]
+    text: "Data Product Engineer — BI, KPI Reporting & Stakeholder Insight"
+  - id: head-analytics-engineer
+    for: [analytics-engineer]
+    text: "Analytics Engineer — dbt, Pipeline Architecture & Tested Data Models"
+  - id: head-ml-engineer
+    for: [ml-engineer]
+    text: "ML Engineer — Feature Engineering, Gradient Boosting & In-Browser Inference"
+  - id: head-frontend
+    for: [frontend]
+    text: "Front-End Engineer · Data Products — React + TypeScript for Data-Intensive Apps"
+  - id: head-agentic-ai
+    for: [agentic-ai]
+    text: "Data & AI Engineer — Agentic Tooling, Knowledge Graphs & ML Pipelines"
+
+# -----------------------------------------------------------------------------
+# Summary / about variants. Pick ONE.
+# -----------------------------------------------------------------------------
+summaries:
+  - id: sum-data-analyst
+    for: [data-analyst, bi-developer]
+    text: >
+      Data Product Engineer with 2+ years turning operational data from POS, ERP and
+      e-commerce systems into automated KPI reporting that business leaders actually use.
+      Strong in SQL, Python, Power BI and DAX; comfortable translating ambiguous business
+      requirements into validated, reconciled metrics. Dubai-based, immediately available.
+  - id: sum-analytics-engineer
+    for: [analytics-engineer]
+    text: >
+      Analytics Engineer who builds tested, reproducible data layers. I architect medallion
+      pipelines (FastF1/Jolpica -> Hive-partitioned Parquet -> dbt on DuckDB) with 400+
+      CI-enforced tests and CI-gated invariants, and have automated multi-source ETL in
+      Microsoft Fabric in production. dbt, SQL, Python, incremental loading, data contracts.
+  - id: sum-ml-engineer
+    for: [ml-engineer]
+    text: >
+      ML engineer focused on physics-grounded features and honest evaluation. Built a 5-model
+      gradient-boosted suite (quantile trio + classifier + regressor) over 42 engineered
+      features, exported to ONNX for in-browser inference with conformal calibration, a
+      CI-enforced leakage spine, and beats-baseline gating across season-grouped splits.
+  - id: sum-frontend
+    for: [frontend]
+    text: >
+      Front-end engineer for data products. I build production React + TypeScript apps that
+      turn high-volume datasets into fast interactive tools — including a zero-backend F1
+      analytics SPA running DuckDB-Wasm SQL and ONNX inference fully client-side at sub-10ms.
+  - id: sum-agentic-ai
+    for: [agentic-ai]
+    text: >
+      Data & AI engineer building agentic tooling over real codebases: a ChromaDB-backed
+      lineage agent and a knowledge-graph generator (6,600+ nodes) that answer
+      "what connects to what" across a 700-file repository, on top of a tested ML pipeline.
+
+# =============================================================================
+# EXPERIENCE
+# =============================================================================
+experience:
+
+  # ---------------------------------------------------------------------------
+  - id: vns
+    company: VNS Solutions
+    title: Analytics Engineer
+    start: 2024-01
+    end: 2025-12
+    location: London, UK
+    context: |
+      Reporting/analytics delivery for ~8-10 clients across retail, F&B and e-commerce.
+      Cross-functional team of data engineers + BI developers. Microsoft Fabric stack.
+    accomplishments:
+      - id: vns-01
+        text: >
+          Owned development and maintenance of 12+ Power BI dashboards and KPI reporting
+          solutions for ~8-10 clients across retail, F&B and e-commerce, automating reporting
+          that cut roughly 12 hours/week of manual effort.
+        metric: 12+ dashboards, ~8-10 clients, ~12 hrs/week saved
+        skills: [Power BI, Microsoft Fabric, Python, SQL, KPI reporting]
+        tags: [data-analyst, bi-developer]
+        strength: signature
+
+      - id: vns-02
+        text: >
+          Designed and maintained ETL pipelines ingesting POS, ERP and e-commerce data into
+          reporting-ready datasets using SQL transformations, Python notebooks and Microsoft
+          Fabric pipelines, standardising workflows and improving reporting reliability.
+        metric: 3+ source-system types (POS/ERP/e-commerce)
+        skills: [ETL, SQL, Python, Microsoft Fabric, Fabric pipelines]
+        tags: [analytics-engineer, bi-developer, data-analyst]
+        strength: signature
+        variants:
+          analytics-engineer: >
+            Designed and maintained ETL pipelines ingesting POS, ERP and e-commerce data into a
+            Microsoft Fabric Lakehouse using SQL transformations, Python notebooks and Fabric
+            pipelines, producing reusable analytics datasets and improving reporting reliability.
+
+      - id: vns-03
+        text: >
+          Cut dataset refresh time from ~45 minutes to ~20 minutes on a multi-million-record
+          reporting workflow by moving transformations from Power Query into SQL and
+          implementing incremental loading.
+        metric: ~45 min -> ~20 min refresh, multi-million rows
+        skills: [SQL, incremental loading, query optimization, Power Query]
+        tags: [analytics-engineer, bi-developer]
+        strength: signature
+
+      - id: vns-04
+        text: >
+          Built star-schema models (fact + dimension tables) and authored DAX measures and
+          calculated columns for sales, profitability, inventory and operational KPIs, with
+          row-level security (RLS) providing client-specific report access.
+        metric: star-schema + RLS across multi-client reporting
+        skills: [Power BI, DAX, dimensional modelling, RLS, data modelling]
+        tags: [bi-developer, data-analyst]
+        strength: strong
+        variants:
+          analytics-engineer: >
+            Built dimensional data models and row-level security frameworks supporting
+            multi-client analytical reporting environments.
+
+      - id: vns-05
+        text: >
+          Wrote complex SQL queries, stored procedures and transformation logic to enforce
+          consistent KPI definitions across clients.
+        metric: cross-client KPI consistency
+        skills: [SQL, stored procedures, T-SQL]
+        tags: [analytics-engineer, bi-developer, data-analyst]
+        strength: strong
+        variants:
+          analytics-engineer: >
+            Wrote SQL transformation logic and stored procedures to standardize KPI definitions
+            and business logic across reporting domains.
+
+      - id: vns-06
+        text: >
+          Worked within Microsoft Fabric using Lakehouse storage, transformation notebooks and
+          data pipelines to orchestrate data movement and prepare datasets for Power BI.
+        metric: Fabric Lakehouse + notebooks + pipelines
+        skills: [Microsoft Fabric, Lakehouse, PySpark, data pipelines]
+        tags: [analytics-engineer, bi-developer]
+        strength: strong
+        variants:
+          analytics-engineer: >
+            Built and maintained Microsoft Fabric data workflows using Lakehouse storage, 
+            PySpark transformation notebooks and orchestrated pipelines, creating curated 
+            analytics datasets for downstream BI consumption.
+
+      - id: vns-07
+        text: >
+          Managed refresh schedules, monitored pipeline performance and supported reporting
+          SLAs by troubleshooting refresh failures and resolving data-quality issues.
+        metric: SLA-supported refresh reliability
+        skills: [data quality, monitoring, SLA management, Power BI gateways]
+        tags: [bi-developer, analytics-engineer]
+        strength: supporting
+
+      - id: vns-08
+        text: >
+          Built validation and reconciliation checks between source systems and reporting
+          datasets to catch discrepancies, improving reporting accuracy and stakeholder trust
+          in reported metrics.
+        metric: source-to-report reconciliation
+        skills: [data validation, reconciliation, data quality]
+        tags: [analytics-engineer, data-analyst]
+        strength: strong
+        variants:
+          analytics-engineer: >
+            Implemented source-to-target validation and reconciliation checks across ETL
+            workflows, detecting data-quality issues early and improving dataset reliability.
+
+      - id: vns-09
+        text: >
+          Partnered with client stakeholders to gather reporting requirements, define KPI
+          logic, run user acceptance testing (UAT) and present reporting solutions.
+        metric: end-to-end requirements -> UAT -> delivery
+        skills: [stakeholder management, requirements gathering, UAT, communication]
+        tags: [data-analyst, bi-developer]
+        strength: signature   # the "translation" bullet — leads Data Analyst resumes
+
+      - id: vns-10
+        text: >
+          Contributed to deployment and release activities for Power BI reports and pipeline
+          updates within a cross-functional team, streamlining delivery and reducing
+          deployment issues.
+        metric: cross-functional release process
+        skills: [release management, deployment, collaboration]
+        tags: [bi-developer, analytics-engineer]
+        strength: supporting
+
+      - id: vns-11
+        text: >
+          Delivered a sales-performance dashboard consolidating POS, inventory and ERP data
+          into one model — designed the ETL, built the star schema, authored DAX for revenue,
+          gross margin, average transaction value and inventory turnover, and shipped
+          interactive reports for operational managers and leadership.
+        metric: 1 consolidated multi-source dashboard, 4+ headline KPIs
+        skills: [Power BI, DAX, ETL, dimensional modelling, SQL]
+        tags: [data-analyst, bi-developer]
+        strength: strong   # good as a "selected project" bullet or interview story
+
+  # ---------------------------------------------------------------------------
+  - id: litestore
+    company: LiteStore
+    title: Product & Analytics Developer
+    start: 2021-04
+    end: 2023-04
+    location: India (remote)
+    context: |
+      Sole engineer on litestore.in, a multi-tenant Retail-as-a-Service platform. "Brands"
+      = physical retail tenants renting mall space; each gets a landing page on the site.
+      11 brands across 3 mall locations. Owned platform end-to-end + client relationship.
+    accomplishments:
+      - id: lite-01
+        text: >
+          Sole engineer for a Retail-as-a-Service platform serving 11 retail brands across 3
+          mall locations — owning frontend architecture, multi-tenant theming, analytics,
+          client-facing feature delivery and ongoing maintenance end-to-end.
+        metric: 11 brands, 3 malls, sole engineer
+        skills: [Next.js, React, ownership, multi-tenant architecture]
+        tags: [frontend]
+        strength: signature
+
+      - id: lite-02
+        text: >
+          Led the Create React App -> Next.js 12 migration, redesigning around statically
+          pre-rendered routes (Pages Router + getStaticProps) for SEO-friendly storefronts and
+          edge caching, cutting average page load from ~3.0s to 0.6s.
+        metric: 3.0s -> 0.6s load (5x)
+        skills: [Next.js, React, SSG, getStaticProps, Vercel edge, performance]
+        tags: [frontend]
+        strength: signature
+
+      - id: lite-03
+        text: >
+          Designed a multi-tenant architecture letting multiple brands run from one shared
+          codebase via a centralized Tailwind config + tenant-specific design tokens — new
+          brands onboarded with no forked stylesheets, supporting a 48-hour brand-transition.
+        metric: 48-hour brand transition, single shared codebase
+        skills: [Tailwind CSS, design systems, multi-tenancy, theming]
+        tags: [frontend]
+        strength: strong
+
+      - id: lite-04
+        text: >
+          Built and maintained 30+ statically generated routes (storefronts, brand landing
+          pages, lead-gen flows) with reusable React/Next.js components using Tailwind,
+          Material UI and Swiper, consistent across tenants but brand-customisable.
+        metric: 30+ static routes
+        skills: [React, Next.js, Tailwind CSS, Material UI, Swiper, component design]
+        tags: [frontend]
+        strength: supporting
+
+      - id: lite-05
+        text: >
+          Implemented a zero-backend serverless lead-capture pipeline (Next.js form -> Axios ->
+          Sheet.best -> client's Google Sheet) — client-owned, revocable without code changes
+          or redeploys.
+        metric: zero-backend, client-revocable data capture
+        skills: [serverless, Next.js, Axios, Sheet.best, Google Sheets API]
+        tags: [frontend, analytics-engineer]
+        strength: supporting
+
+      - id: lite-06
+        text: >
+          Instrumented Google Analytics 4 across the platform with staging/production env
+          isolation, and used the analytics to drive A/B experiments that delivered a 20%
+          conversion uplift.
+        metric: 20% conversion uplift via A/B testing
+        skills: [GA4, A/B testing, conversion optimization, analytics instrumentation]
+        tags: [data-analyst, frontend]
+        strength: signature   # the analytics + business-impact bullet for Data Analyst cuts
+
+      - id: lite-07
+        text: >
+          Platform delivered Rs 2.2 Cr+ GMV across tenants.
+        metric: Rs 2.2 Cr+ GMV
+        skills: [business impact]
+        tags: [frontend, data-analyst]
+        strength: strong
+        notes: pair with lite-01 or lite-06; standalone it's thin
+
+      - id: lite-08
+        text: >
+          Collaborated directly with business stakeholders and retail partners to gather
+          requirements and ship production-ready features, while managing client communications,
+          branding/design decisions, Google Workspace administration and deployment.
+        metric: end-to-end client + product ownership
+        skills: [stakeholder management, requirements gathering, Google Workspace, product]
+        tags: [data-analyst, frontend]
+        strength: supporting
+
+      - id: lite-09
+        text: >
+          Documented system architecture, dev workflows and operational processes, then
+          recruited and onboarded a successor engineer for a clean handoff and long-term
+          maintainability.
+        metric: full documentation + successor onboarding
+        skills: [documentation, knowledge transfer, mentoring]
+        tags: [frontend]
+        strength: supporting
+
+  # ---------------------------------------------------------------------------
+  - id: drop
+    company: Drop
+    title: Frontend & Brand Developer
+    start: 2021-01
+    end: 2021-04
+    location: India
+    context: |
+      Smart-lockbox courier/delivery product. Startup later shut down — no outcome metric
+      to claim. Keep minimal; include only when filling an early-career timeline gap.
+    accomplishments:
+      - id: drop-01
+        text: >
+          Built React surfaces for a smart-lockbox delivery product as the sole technical and
+          creative contributor — owning backend services, the CD pipeline, hosting and brand
+          identity.
+        metric: sole technical + creative contributor
+        skills: [React, backend, CI/CD, hosting, branding]
+        tags: [frontend]
+        strength: supporting
+
+# =============================================================================
+# PROJECTS
+# =============================================================================
+projects:
+
+  # ---------------------------------------------------------------------------
+  - id: off-the-pace
+    name: Off The Pace
+    tagline: "When a car is off the pace, why? — F1 lap-time causal decomposition, ML, and a zero-server analytics app."
+    role: Sole creator
+    status: Live / actively developed
+    links:
+      app: off-the-pace.web.app
+      docs: offthepace.mintlify.app
+      repo: github.com/JustinClarke   # note: confirm exact repo path before printing
+    stack: [React, TypeScript, Python, SQL, dbt, DuckDB, DuckDB-Wasm, XGBoost, ONNX, FastF1, Firebase, GCS]
+    canonical_stats:   # AUTHORITATIVE — swept from compiled manifests. Reconcile README to these.
+      seasons: "2018-2024 (7 full seasons), 2025 held out as reproducible OpenF1 validation set"
+      races: "168 ingested (147 fully processed for lap-level analysis)"
+      processed_laps: 137447
+      dbt_models: 60          # 12 staging / 34 intermediate / 10 marts / 4 reference dims
+      dbt_tests: 424          # CI-enforced; incl. 28 bespoke singular tests
+      ml_models: 5            # quantile trio (p10/p50/p90) + cliff classifier + stint-life regressor
+      ml_features: 42         # v4 feature spine
+      ml_tests: 28
+      app_tests: 35
+      decomposition_terms: 7  # fuel + compound + rubber + ambient + constructor + dirty_air + driver_skill
+      chart_primitives: 8
+      routes: "12 (9 shipped, 3 coming soon)"
+      ts_files: 318           # 158 .tsx + 160 .ts
+      onnx_artifacts: 25      # across v1->v4 lineage
+      parquet_files: 1674
+      tracked_files: 731
+      docs_pages: 92          # 85 .mdx + 7 .md, Mintlify, auto-generated reference
+    accomplishments:
+      - id: otp-01
+        text: >
+          Built a 7-term additive causal model decomposing every F1 lap into fuel, compound,
+          rubber, ambient, constructor, dirty-air and driver-skill components — with a
+          CI-enforced invariant that the terms reconstruct lap-time pace to within 0.0001s
+          (observed residual ~1.4e-14s, machine precision) or the build fails.
+        metric: 7-term decomposition, CI-enforced to 0.0001s
+        skills: [causal modelling, dbt, SQL, fixed effects, statistics]
+        tags: [analytics-engineer, ml-engineer]
+        strength: signature
+
+      - id: otp-02
+        text: >
+          Engineered the data layer: FastF1 + Jolpica ingestion to Hive-partitioned Parquet,
+          transformed through a dbt medallion architecture of 60 models on DuckDB, guarded by
+          424 CI-enforced data-quality tests.
+        metric: 60 dbt models, 424 CI tests
+        skills: [dbt, DuckDB, SQL, Hive partitioning, Parquet, FastF1, data testing, medallion architecture]
+        tags: [analytics-engineer]
+        strength: signature
+
+      - id: otp-03
+        text: >
+          Built a 5-model XGBoost suite (degradation quantile trio, tyre-cliff classifier,
+          stint-life regressor) over 42 physics-grounded features, exported to ONNX with
+          conformal calibration (empirical coverage 0.80 at nominal 0.80) and beats-baseline
+          gating on season-grouped TimeSeriesSplit.
+        metric: 5 models, 42 features, calibrated intervals
+        skills: [XGBoost, ONNX, feature engineering, conformal calibration, scikit-learn, Optuna]
+        tags: [ml-engineer]
+        strength: signature
+
+      - id: otp-04
+        text: >
+          Enforced a CI leakage spine — an sqlglot audit of compiled SQL plus an adversarial
+          probe (recovers race_year at 0.9999, proving it would leak) — so no forward-looking
+          information enters training.
+        metric: CI-enforced leakage audit
+        skills: [data leakage, sqlglot, ML validation, CI/CD]
+        tags: [ml-engineer, analytics-engineer]
+        strength: strong
+
+      - id: otp-05
+        text: >
+          Shipped a zero-backend React + TypeScript SPA (318 TS files) running analytical SQL
+          over F1 telemetry in-browser via DuckDB-Wasm at sub-10ms, with live ML inference via
+          ONNX Runtime Web — no server, zero compute cost.
+        metric: sub-10ms in-browser SQL, zero backend
+        skills: [React, TypeScript, DuckDB-Wasm, ONNX Runtime Web, Vite]
+        tags: [frontend, ml-engineer]
+        strength: signature
+
+      - id: otp-06
+        text: >
+          Built 8 reusable chart primitives (Gantt, survival, quantile-fan, waterfall,
+          CI-ribbon, heatmap, scatter, ranked table) across 9 shipped analytics views on a
+          consistent dark design system, covered by 35 app tests.
+        metric: 8 chart primitives, 9 views, 35 tests
+        skills: [React, TypeScript, data visualization, D3, design systems, testing]
+        tags: [frontend]
+        strength: strong
+
+      - id: otp-07
+        text: >
+          Built an interactive ONNX-served Tyre Degradation Simulator and an equal-machinery
+          "Ghost Car" counterfactual engine that propagates standard errors through to
+          Monte Carlo finish-order probabilities.
+        metric: live in-browser inference + uncertainty propagation
+        skills: [ONNX Runtime Web, Monte Carlo, uncertainty quantification, React]
+        tags: [ml-engineer, frontend]
+        strength: strong
+
+      - id: otp-08
+        text: >
+          Auto-generated documentation and model governance: a Mintlify docs site (92 pages)
+          and a model card (metrics, baselines, calibration, feature importance, limitations)
+          regenerated from a single source manifest and drift-gated in CI.
+        metric: 92 doc pages, drift-gated, auto-generated
+        skills: [Mintlify, model cards, ML governance, documentation automation, CI/CD]
+        tags: [ml-engineer, analytics-engineer]
+        strength: supporting
+    sub_entries:
+      - id: lineage-synth
+        name: lineage-synth / graphify
+        text: >
+          Built a ChromaDB-backed lineage agent and a knowledge-graph generator over the
+          codebase (6,607 nodes, 11,150 edges across 658 files) to answer "what connects to
+          what" capability queries via BFS sweeps — a portfolio differentiator for agentic-AI roles.
+        metric: 6,607 nodes / 11,150 edges / 658 files
+        skills: [ChromaDB, knowledge graphs, RAG, agentic AI, Python, embeddings]
+        tags: [agentic-ai, ml-engineer]
+        strength: signature   # for agentic-ai cuts; supporting otherwise
+
+  # ---------------------------------------------------------------------------
+  - id: spotify-engine
+    name: "Spotify: Predictive Engine"
+    tagline: "Music recommendation solving cold-start via 3-D hierarchical acoustic-DNA similarity (MSc research)."
+    role: Sole author (MSc project)
+    status: Complete
+    links:
+      report: justinclarke.github.io (MSc project page)
+    stack: [Python, scikit-learn, Spotipy, TF-IDF, "Gemini 1.5", "React", TypeScript, Firestore]
+    accomplishments:
+      - id: spot-01
+        text: >
+          Solved the recommendation cold-start problem with a hierarchical model that stable-sorts
+          across three similarity dimensions — genre TF-IDF, then artist/track popularity, then
+          acoustic-DNA cosine similarity over 20+ Spotify audio features — benchmarked against
+          Spotify's own API as the control.
+        metric: 3-dimension hierarchical similarity, benchmarked vs Spotify API
+        skills: [scikit-learn, TF-IDF, cosine similarity, recommendation systems, Python]
+        tags: [ml-engineer, data-analyst]
+        strength: strong
+
+      - id: spot-02
+        text: >
+          Engineered a 1M-row dataset to run within a sub-200MB memory footprint using
+          float16/int8 downcasting and chunked CSV processing, with a self-growing ingestion
+          loop (Spotipy fetch -> append -> auto-merge at 200 new rows).
+        metric: 1M rows in <200MB, auto-growing corpus
+        skills: [Python, pandas, memory optimization, Spotipy, data engineering]
+        tags: [ml-engineer, analytics-engineer]
+        strength: strong
+
+  # ---------------------------------------------------------------------------
+  - id: sql-disaster
+    name: SQL Disaster Response System
+    tagline: "Philippine relief-logistics coordination modelled as a rigorous MySQL relational engine."
+    role: Sole author
+    status: Complete
+    links:
+      page: justinclarke.github.io (SQL Disaster page)
+    stack: [MySQL, "D3.js v7", "Vanilla JS"]
+    accomplishments:
+      - id: sqld-01
+        text: >
+          Designed an 11-entity MySQL schema (core + 4 junction tables with composite primary
+          keys) coordinating relief across 7 Philippine regions and 5 concurrent disasters,
+          with FK chains (Agency -> Team -> Disaster -> Region -> Shelter) and CHECK constraints
+          enforcing occupancy <= capacity at the schema level.
+        metric: 11 entities, composite PKs, CHECK invariants
+        skills: [MySQL, relational modelling, database design, constraints, normalization]
+        tags: [analytics-engineer, data-analyst]
+        strength: strong
+
+      - id: sqld-02
+        text: >
+          Wrote 47 queries across 11 analytical categories (CTEs, window functions —
+          RANK/DENSE_RANK/NTILE — subqueries, TIMESTAMPDIFF) at <200ms average latency on an
+          indexed design.
+        metric: 47 queries, <200ms avg latency
+        skills: [SQL, CTEs, window functions, query optimization, indexing]
+        tags: [analytics-engineer, data-analyst]
+        strength: supporting
+
+      - id: sqld-03
+        text: >
+          Built a zero-framework interactive command dashboard — 1,603 lines of vanilla JS on a
+          D3 v7 force simulation (61 nodes, 71 edges) with multi-layer filtering, full-text
+          search and a programmatic alert system.
+        metric: 1,603 lines vanilla JS, D3 v7 force graph
+        skills: ["D3.js", JavaScript, data visualization, force-directed graphs]
+        tags: [frontend]
+        strength: supporting
+
+  # ---------------------------------------------------------------------------
+  - id: hr-archetype
+    name: HR Archetype System
+    tagline: "Workforce-retention engine classifying flight risk across 8 behavioural archetypes with AI-driven interventions."
+    role: Sole author
+    status: Live
+    links:
+      app: yourarchetype.vercel.app
+    stack: [React, TypeScript, Firestore, "Gemini 1.5", Framer Motion, Recharts]
+    accomplishments:
+      - id: hr-01
+        text: >
+          Built a 13-axis behavioural diagnostic mapping employees onto 8 archetypes across an
+          Engagement x Retention-Risk x Motivation model, surfacing a 90-day intervention window
+          with AI-generated retention recommendations (Gemini 1.5).
+        metric: 13-axis diagnostic, 8 archetypes, 90-day window
+        skills: [React, TypeScript, "Gemini 1.5", behavioural modelling, product analytics]
+        tags: [data-analyst, agentic-ai, frontend]
+        strength: strong
+
+      - id: hr-02
+        text: >
+          Delivered a real-time 7-panel dashboard with Firestore onSnapshot listeners updating
+          at sub-40ms, including presentation mode and CSV/TXT export for executive briefings.
+        metric: 7-panel dashboard, <40ms live sync
+        skills: [Firestore, React, Recharts, real-time data, data visualization]
+        tags: [frontend, data-analyst]
+        strength: supporting
+
+# =============================================================================
+# EDUCATION
+# =============================================================================
+education:
+  - id: mba-bits
+    degree: MBA, Business Analytics
+    institution: BITS Pilani, Dubai Campus
+    start: 2026-02
+    end: 2028
+    status: In progress (part-time, evening)
+    notes: include as in-progress; signals analytics + business depth for tier-1 employers
+
+  - id: msc-qmul
+    degree: MSc, Computer Science
+    institution: Queen Mary University of London
+    start: 2022
+    end: 2023
+    highlights:
+      - Distinction in semi-structured data analysis
+      - Built a predictive analytics model for music recommendation (see Spotify project)
+      - "Security & system design: secure system architecture, natural language processing"
+      - Specialisation in data analysis with Python and R for structured data
+      - "Human-Computer Interaction: interactive system design and user-centric methodologies"
+
+  - id: btech-gitam
+    degree: B.Tech, Computer Science & Engineering
+    institution: Gandhi Institute of Technology and Management (GITAM)
+    start: 2018
+    end: 2022
+    highlights:
+      - Awarded Distinction
+      - "Algorithms & data structures: graph theory, sorting/searching, complexity analysis"
+      - "Optimisation & applied mathematics: linear programming, nonlinear optimisation"
+      - "Distributed systems & databases: multi-tier architecture, SQL/NoSQL, fault-tolerant distributed computing"
+      - Researched encryption using quantum key generation
+
+# =============================================================================
+# CERTIFICATIONS
+# =============================================================================
+certifications:
+  - id: pl-300
+    name: "Microsoft PL-300: Power BI Data Analyst"
+    status: Expected July 2026
+    notes: most relevant for Microsoft-stack / BI cold applications
+
+# =============================================================================
+# SKILLS — reorder per role so the resume LEADS with what's asked.
+# The `lead_for` field tells the AI which block to put first.
+# =============================================================================
+skills:
+  groups:
+    - id: data-and-bi
+      label: Data & BI
+      lead_for: [data-analyst, bi-developer]
+      items: [SQL, Python, Power BI, DAX, "Microsoft Fabric", PySpark, PostgreSQL, "Excel (pivot tables, macros, VBA)", ETL, "dimensional modelling", RLS]
+    - id: analytics-engineering
+      label: Analytics Engineering
+      lead_for: [analytics-engineer]
+      items: [dbt, DuckDB, SQL, "Hive partitioning", Parquet, "incremental loading", "data testing", "CI/CD", "data quality / reconciliation"]
+    - id: ml
+      label: Machine Learning
+      lead_for: [ml-engineer]
+      items: [XGBoost, ONNX, scikit-learn, "feature engineering", "conformal calibration", Optuna, "leakage auditing (sqlglot)", "model governance / model cards"]
+    - id: frontend
+      label: Frontend
+      lead_for: [frontend]
+      items: [React, TypeScript, JavaScript, "Next.js", "Tailwind CSS", Vite, HTML5, CSS3, "DuckDB-Wasm", "ONNX Runtime Web", "interactive charting", "D3.js"]
+    - id: agentic-ai
+      label: AI / Agentic
+      lead_for: [agentic-ai]
+      items: [ChromaDB, "knowledge graphs", RAG, embeddings, "Gemini 1.5", "agentic tooling"]
+    - id: infra
+      label: Infra & Tooling
+      lead_for: []
+      items: [AWS, Docker, "CI/CD", "GitHub Actions", "Firebase Hosting", "GCS", Git, "REST APIs", Mixpanel, GA4]
+
+# =============================================================================
+# OPTIONAL / NOT CURRENTLY SURFACED
+# Uncomment and fill if you ever want these available for tailoring.
+# =============================================================================
+# extras:
+#   publications:
+#     - name: Crescendo
+#       role: ""
+#       notes: editorial / literary writing
+#   languages: []
+#   awards: []
+#   volunteer: []

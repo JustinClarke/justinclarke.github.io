@@ -38,6 +38,7 @@ jobs:
           VITE_UMAMI_WEBSITE_ID: ${{ vars.VITE_UMAMI_WEBSITE_ID }}
           VITE_UMAMI_SRC: ${{ vars.VITE_UMAMI_SRC }}
           VITE_WEB3FORMS_KEY: ${{ secrets.VITE_WEB3FORMS_KEY }}
+          VITE_AI_PROXY_URL: ${{ vars.VITE_AI_PROXY_URL }}
         run: |
           npm ci
           npm run build

@@ -1,0 +1,16 @@
+name = "portfolio-ai"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[ai]
+binding = "AI"
+
+[vars]
+ALLOWED_ORIGINS = "https://justinclarke.github.io,http://localhost:3000"
+
+# Account-coordinated rate limiting — free, no external store, survives isolate recycling.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }

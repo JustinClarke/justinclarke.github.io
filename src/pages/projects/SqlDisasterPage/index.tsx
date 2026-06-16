@@ -20,7 +20,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
-import { ScrollReveal, MagneticButton, BackToTerminal, Badge, FireParticles } from '@/ui';
+import { ScrollReveal, MagneticButton, Badge, FireParticles } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
 import { SqlErd } from '@/components/projects/SqlErd';
 import { RelatedProjects } from '@/components/projects';
@@ -90,9 +90,9 @@ export const SqlDisasterPage = () => {
         schemaType="CreativeWork"
       />
 
-      <BackToTerminal />
 
-      {/* ── CINEMATIC HUD ──────────────────────────────────────────────── */}
+
+      {/* ── HUD ──────────────────────────────────────────────────────── */}
       <div
         className="fixed top-12 right-12 z-[100] hidden md:flex gap-4 items-center"
         role="status"

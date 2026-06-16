@@ -51,6 +51,10 @@ A no-op when the tracker isn't loaded (optional-chains `window.umami?.track`), s
 | `email-open` | `openEmailModal()` [`ModalProvider.tsx`](../src/app/providers/ModalProvider.tsx) | |
 | `email-copy` | copy button [`EmailModal.tsx`](../src/components/modals/EmailModal.tsx) | |
 | `outbound-click` | cal.com booking / LinkedIn / GitHub links [`Connect.tsx`](../src/pages/Connect.tsx) | `{ channel: 'book' \| 'linkedin' \| 'github' }` |
+| `project-click` | Project grid clicks | `{ project: string }` |
+| `compliance-audit-toggle` | Toggling compliance audit overlay | `{ state: 'on' \| 'off' }` |
+| `terminal-command` | Terminal command execution | `{ command: string }` |
+| `theme-toggle` | Toggling light/dark theme | `{ theme: 'light' \| 'dark' }` |
 
 Modal events are instrumented on the provider (the single choke point) rather than each caller. Keep event names kebab-case and stable renaming splits history in the dashboard.
 

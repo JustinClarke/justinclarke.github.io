@@ -14,17 +14,17 @@ export const LinkedinBannerPage: React.FC = () => {
 
   // Array for a subtle github contribution graph visual
   const contribs = [
-    [0, 1, 0, 2, 1], [1, 2, 3, 1, 0], [0, 1, 4, 2, 1], 
-    [2, 3, 2, 1, 0], [1, 4, 3, 2, 1], [2, 1, 0, 1, 2], 
-    [3, 4, 2, 1, 0], [1, 2, 0, 3, 1], [0, 1, 1, 2, 0], 
+    [0, 1, 0, 2, 1], [1, 2, 3, 1, 0], [0, 1, 4, 2, 1],
+    [2, 3, 2, 1, 0], [1, 4, 3, 2, 1], [2, 1, 0, 1, 2],
+    [3, 4, 2, 1, 0], [1, 2, 0, 3, 1], [0, 1, 1, 2, 0],
     [2, 3, 4, 2, 1], [1, 2, 0, 1, 0], [0, 1, 1, 0, 0],
     [1, 0, 2, 1, 1], [2, 3, 1, 2, 0], [1, 4, 2, 3, 1],
     [0, 2, 1, 4, 2], [1, 0, 3, 2, 1], [2, 1, 0, 1, 0],
   ];
 
   const theme = isDark ? {
-    frameBg: '#060608',
-    outerBg: 'bg-[#020202]',
+    frameBg: '#060608', // tw-allow-hex
+    outerBg: 'bg-void',
     dotColor: 'rgba(255, 255, 255, 0.07)',
     lineStroke: 'white',
     lineOpacity: 'opacity-[0.06]',
@@ -41,24 +41,24 @@ export const LinkedinBannerPage: React.FC = () => {
     circuitStroke: 'white',
     circuitOpacity: 'opacity-[0.08]',
     circuitNode: 'rgba(0,200,180,0.4)',
-    profileBorder: '#060608',
-    profileBg: 'radial-gradient(circle at 35% 35%, #1a1a1a, #0d0d0d)',
+    profileBorder: '#060608', // tw-allow-hex
+    profileBg: 'radial-gradient(circle at 35% 35%, var(--color-term-text), #0d0d0d)', // tw-allow-hex
     profileText: 'text-white/15',
     profileShadow: '0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,200,180,0.03)',
     arrowGlow: 'rgba(0,200,180,0.15)',
     arrowGradStart: 'rgba(0,200,180,0.08)',
     arrowGradMid: 'rgba(0,200,180,0.35)',
-    arrowGradEnd: '#00c8b4',
-    arrowHead: '#00c8b4',
+    arrowGradEnd: 'var(--color-brand-primary)',
+    arrowHead: 'var(--color-brand-primary)',
     titleText: 'text-white',
-    titleDevGrad: 'linear-gradient(135deg, #00c8b4, #4B8BBE)',
+    titleDevGrad: 'linear-gradient(135deg, var(--color-brand-primary), var(--color-python))',
     stackBg: 'rgba(255,255,255,0.02)',
     stackBorder: 'border-white/[0.08]',
     stackShadow: '0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)',
     stackLabel: 'text-white/25',
-    badgeText: 'text-[#f4f4f3]',
-    taglineText: 'text-[#8a8a86]',
-    taglineAmp: 'text-[#00c8b4]/50',
+    badgeText: 'text-term-fg',
+    taglineText: 'text-term-dim',
+    taglineAmp: 'text-brand-primary/50',
     accentGrad: 'linear-gradient(90deg, transparent 0%, rgba(0,200,180,0.25) 30%, rgba(0,200,180,0.5) 60%, transparent 100%)',
     uiWireframeBg: 'rgba(255,255,255,0.015)',
     uiWireframeBorder: 'rgba(255,255,255,0.08)',
@@ -66,15 +66,15 @@ export const LinkedinBannerPage: React.FC = () => {
     uiWireframeGrad: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
     codeSnippetText: 'text-white/30',
     syntax: {
-      keyword: '#c678dd',
-      func: '#61afef',
-      string: '#98c379',
-      tag: '#e06c75',
-      attr: '#d19a66',
+      keyword: '#c678dd', // tw-allow-hex
+      func: '#61afef', // tw-allow-hex
+      string: '#98c379', // tw-allow-hex
+      tag: '#e06c75', // tw-allow-hex
+      attr: '#d19a66', // tw-allow-hex
     }
   } : {
-    frameBg: 'linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%)',
-    outerBg: 'bg-[#f8fafc]',
+    frameBg: 'linear-gradient(135deg, var(--color-light-bg) 0%, var(--color-term-white) 100%)',
+    outerBg: 'bg-[#f8fafc]', // tw-allow-hex
     dotColor: 'rgba(15, 23, 42, 0.1)',
     lineStroke: 'rgba(15, 23, 42, 0.08)',
     lineOpacity: 'opacity-100',
@@ -86,22 +86,22 @@ export const LinkedinBannerPage: React.FC = () => {
     glowBlend: 'normal',
     scanlineOpacity: 'opacity-20',
     scanlineColor: 'rgba(6,182,212,0.02)',
-    chartFill: '#e2e8f0',
+    chartFill: '#e2e8f0', // tw-allow-hex
     chartOpacity: 'opacity-100',
     circuitStroke: 'rgba(15, 23, 42, 0.16)',
     circuitOpacity: 'opacity-100',
     circuitNode: 'rgba(6,182,212,0.8)',
-    profileBorder: '#ffffff',
-    profileBg: 'radial-gradient(circle at 35% 35%, #ffffff, #f1f5f9)',
+    profileBorder: 'var(--color-light-bg)',
+    profileBg: 'radial-gradient(circle at 35% 35%, var(--color-light-bg), var(--color-term-white))',
     profileText: 'text-black/20',
     profileShadow: '0 10px 30px rgba(15, 23, 42, 0.08), inset 0 0 20px rgba(0,200,180,0.02)',
     arrowGlow: 'rgba(6,182,212,0.25)',
     arrowGradStart: 'rgba(99,102,241,0.2)',
     arrowGradMid: 'rgba(6,182,212,0.6)',
-    arrowGradEnd: '#0d9488',
-    arrowHead: '#0d9488',
+    arrowGradEnd: '#0d9488', // tw-allow-hex
+    arrowHead: '#0d9488', // tw-allow-hex
     titleText: 'text-slate-900',
-    titleDevGrad: 'linear-gradient(135deg, #0d9488, #4f46e5)',
+    titleDevGrad: 'linear-gradient(135deg, #0d9488, #4f46e5)', // tw-allow-hex
     stackBg: 'rgba(255, 255, 255, 0.25)',
     stackBorder: 'border-slate-200/80',
     stackShadow: '0 4px 20px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.9)',
@@ -116,17 +116,17 @@ export const LinkedinBannerPage: React.FC = () => {
     uiWireframeGrad: 'linear-gradient(90deg, rgba(15, 23, 42, 0.08) 0%, transparent 100%)',
     codeSnippetText: 'text-slate-700',
     syntax: {
-      keyword: '#a8229b',
-      func: '#0277bd',
-      string: '#2e7d32',
-      tag: '#d84315',
-      attr: '#ad7b00',
+      keyword: '#a8229b', // tw-allow-hex
+      func: '#0277bd', // tw-allow-hex
+      string: '#2e7d32', // tw-allow-hex
+      tag: '#d84315', // tw-allow-hex
+      attr: '#ad7b00', // tw-allow-hex
     }
   };
 
   return (
     <div className={`w-full min-h-screen ${theme.outerBg} flex flex-col items-center justify-center px-4 py-8 transition-colors duration-300`}>
-      
+
       {/* ── Helper Control Panel (not part of the screenshotted banner) ── */}
       <div className="flex items-center gap-4 mb-4 select-none">
         <p className="text-black/40 dark:text-white/30 font-mono text-[11px] tracking-widest uppercase">
@@ -138,7 +138,7 @@ export const LinkedinBannerPage: React.FC = () => {
           style={{
             borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)',
             backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-            color: isDark ? '#ffffff' : '#000000',
+            color: isDark ? 'var(--color-light-bg)' : 'var(--color-light-text)',
           }}
         >
           Toggle: {isDark ? 'Dark Mode' : 'Light Mode'}
@@ -151,7 +151,7 @@ export const LinkedinBannerPage: React.FC = () => {
         style={{ aspectRatio: '1584/396', background: theme.frameBg, containerType: 'inline-size' }}
       >
         {/* ── BG LAYER 1: Isometric Grid Floor ── */}
-        <div 
+        <div
           className="absolute bottom-0 left-0 right-0 h-[140px] pointer-events-none transition-all duration-300"
           style={{
             backgroundImage: `linear-gradient(transparent 95%, ${theme.lineStroke} 100%), linear-gradient(90deg, transparent 95%, ${theme.lineStroke} 100%)`,
@@ -205,7 +205,7 @@ export const LinkedinBannerPage: React.FC = () => {
             <circle cx="70" cy="70" r="60" fill="none" stroke={theme.circuitStroke} strokeWidth="0.5" strokeDasharray="2 4" />
             <circle cx="70" cy="70" r="40" fill="none" stroke={theme.circuitStroke} strokeWidth="0.5" strokeDasharray="2 4" />
             <circle cx="70" cy="70" r="20" fill="none" stroke={theme.circuitStroke} strokeWidth="0.5" strokeDasharray="2 4" />
-            
+
             <line x1="70" y1="10" x2="70" y2="130" stroke={theme.circuitStroke} strokeWidth="0.5" opacity="0.6" />
             <line x1="10" y1="70" x2="130" y2="70" stroke={theme.circuitStroke} strokeWidth="0.5" opacity="0.6" />
             <line x1="27" y1="27" x2="113" y2="113" stroke={theme.circuitStroke} strokeWidth="0.5" opacity="0.3" />
@@ -213,7 +213,7 @@ export const LinkedinBannerPage: React.FC = () => {
 
             <path d="M 70 30 L 95 50 L 85 90 L 50 100 L 25 60 Z" fill={theme.arrowHead} opacity="0.1" stroke={theme.arrowHead} strokeWidth="1" />
             <path d="M 70 45 L 85 60 L 75 80 L 60 85 L 45 65 Z" fill={theme.arrowHead} opacity="0.15" stroke={theme.arrowHead} strokeWidth="1" />
-            
+
             <circle cx="95" cy="50" r="2" fill={theme.arrowHead} />
             <circle cx="85" cy="90" r="2" fill={theme.arrowHead} />
             <circle cx="50" cy="100" r="2" fill={theme.arrowHead} />
@@ -253,10 +253,10 @@ export const LinkedinBannerPage: React.FC = () => {
         </div>
 
         {/* ── BG LAYER 8: Floating Data Panel (Top Right center) ── */}
-        <div 
+        <div
           className="absolute top-[12%] right-[45%] w-[180px] rounded-lg backdrop-blur-md transition-all duration-300 pointer-events-none rotate-[3deg] z-10"
-          style={{ 
-            background: theme.uiWireframeBg, 
+          style={{
+            background: theme.uiWireframeBg,
             border: `1px solid ${theme.uiWireframeBorder}`,
             boxShadow: '0 10px 30px rgba(0,0,0,0.05)'
           }}
@@ -280,10 +280,10 @@ export const LinkedinBannerPage: React.FC = () => {
         </div>
 
         {/* ── BG LAYER 9: Abstract UI/UX Wireframe (Floating Component) ── */}
-        <div 
+        <div
           className="absolute top-[35%] left-[32%] w-[240px] h-[180px] rounded-xl backdrop-blur-md transition-all duration-300 pointer-events-none rotate-[-3deg] z-10"
-          style={{ 
-            background: theme.uiWireframeBg, 
+          style={{
+            background: theme.uiWireframeBg,
             border: `1px solid ${theme.uiWireframeBorder}`,
             boxShadow: '0 20px 40px rgba(0,0,0,0.04)'
           }}
@@ -318,29 +318,29 @@ export const LinkedinBannerPage: React.FC = () => {
         </div>
 
         {/* ── BG LAYER 10: Mini IDE Code Window ── */}
-        <div 
+        <div
           className="absolute top-[12%] left-[8%] w-[300px] rounded-lg backdrop-blur-md transition-all duration-300 pointer-events-none rotate-[2deg] z-10"
-          style={{ 
-            background: theme.uiWireframeBg, 
+          style={{
+            background: theme.uiWireframeBg,
             border: `1px solid ${theme.uiWireframeBorder}`,
             boxShadow: '0 10px 30px rgba(0,0,0,0.05)'
           }}
         >
           {/* Mac window header */}
           <div className="flex items-center gap-1.5 px-3 py-2 border-b transition-colors duration-300" style={{ borderColor: theme.uiWireframeBorder }}>
-            <div className="w-2 h-2 rounded-full bg-[#ff5f56] opacity-80" />
-            <div className="w-2 h-2 rounded-full bg-[#ffbd2e] opacity-80" />
-            <div className="w-2 h-2 rounded-full bg-[#27c93f] opacity-80" />
+            <div className="w-2 h-2 rounded-full bg-[#ff5f56] opacity-80" /> // tw-allow-hex
+            <div className="w-2 h-2 rounded-full bg-[#ffbd2e] opacity-80" /> // tw-allow-hex
+            <div className="w-2 h-2 rounded-full bg-[#27c93f] opacity-80" /> // tw-allow-hex
             <span className={`ml-2 font-mono text-[8px] opacity-50 transition-colors duration-300 ${theme.titleText}`}>Analytics.tsx</span>
           </div>
           <div className={`p-3 font-mono text-[9px] leading-[1.6] transition-colors duration-300 ${theme.codeSnippetText} opacity-[0.85] select-none`}>
             <div className="flex">
-              <div className="w-4 text-right pr-2 opacity-30 select-none">1<br/>2<br/>3<br/>4<br/>5</div>
+              <div className="w-4 text-right pr-2 opacity-30 select-none">1<br />2<br />3<br />4<br />5</div>
               <div>
-                <span style={{ color: theme.syntax.keyword }}>import</span> {'{'} <span style={{ color: theme.syntax.func }}>useAnalytics</span> {'}'} <span style={{ color: theme.syntax.keyword }}>from</span> <span style={{ color: theme.syntax.string }}>'@hooks'</span>;<br/>
-                <span style={{ color: theme.syntax.keyword }}>function</span> <span style={{ color: theme.syntax.func }}>DataViz</span>() {'{'}<br/>
-                &nbsp;&nbsp;<span style={{ color: theme.syntax.keyword }}>const</span> {'{'} data {'}'} = <span style={{ color: theme.syntax.func }}>useAnalytics</span>();<br/>
-                &nbsp;&nbsp;<span style={{ color: theme.syntax.keyword }}>return</span> {'<'}<span style={{ color: theme.syntax.tag }}>Chart</span> <span style={{ color: theme.syntax.attr }}>data</span>={'{'}data{'}'} <span style={{ color: theme.syntax.attr }}>tension</span>={'{'}<span style={{ color: theme.syntax.attr }}>0.4</span>{'}'} {'/>'};<br/>
+                <span style={{ color: theme.syntax.keyword }}>import</span> {'{'} <span style={{ color: theme.syntax.func }}>useAnalytics</span> {'}'} <span style={{ color: theme.syntax.keyword }}>from</span> <span style={{ color: theme.syntax.string }}>'@hooks'</span>;<br />
+                <span style={{ color: theme.syntax.keyword }}>function</span> <span style={{ color: theme.syntax.func }}>DataViz</span>() {'{'}<br />
+                &nbsp;&nbsp;<span style={{ color: theme.syntax.keyword }}>const</span> {'{'} data {'}'} = <span style={{ color: theme.syntax.func }}>useAnalytics</span>();<br />
+                &nbsp;&nbsp;<span style={{ color: theme.syntax.keyword }}>return</span> {'<'}<span style={{ color: theme.syntax.tag }}>Chart</span> <span style={{ color: theme.syntax.attr }}>data</span>={'{'}data{'}'} <span style={{ color: theme.syntax.attr }}>tension</span>={'{'}<span style={{ color: theme.syntax.attr }}>0.4</span>{'}'} {'/>'};<br />
                 {'}'}
               </div>
             </div>
@@ -401,7 +401,7 @@ export const LinkedinBannerPage: React.FC = () => {
         >
           {/* glow behind the main arrow */}
           <path
-            d="M 740 145 C 600 145, 470 285, 360 300"
+            d="M 930 145 L 740 145 C 600 145, 470 285, 360 300"
             stroke={theme.arrowGlow}
             strokeWidth="20"
             strokeLinecap="round"
@@ -410,7 +410,7 @@ export const LinkedinBannerPage: React.FC = () => {
 
           {/* Secondary dashed trajectory line (UI/UX detail) */}
           <path
-            d="M 740 130 C 600 130, 450 265, 350 285"
+            d="M 930 130 L 740 130 C 600 130, 450 265, 350 285"
             stroke={theme.arrowHead}
             strokeWidth="1.5"
             strokeDasharray="4 6"
@@ -419,7 +419,7 @@ export const LinkedinBannerPage: React.FC = () => {
 
           {/* Main solid arrow line */}
           <path
-            d="M 740 145 C 600 145, 470 285, 360 300"
+            d="M 930 145 L 740 145 C 600 145, 470 285, 360 300"
             stroke="url(#arrowGrad)"
             strokeWidth="3"
             strokeLinecap="round"
@@ -440,11 +440,11 @@ export const LinkedinBannerPage: React.FC = () => {
           />
 
           {/* Origin/Start Point Indicator */}
-          <circle cx="740" cy="145" r="6" fill="none" stroke={theme.arrowHead} strokeWidth="1.5" opacity="0.6" />
-          <circle cx="740" cy="145" r="2.5" fill={theme.arrowHead} />
+          <circle cx="930" cy="145" r="6" fill="none" stroke={theme.arrowHead} strokeWidth="1.5" opacity="0.6" />
+          <circle cx="930" cy="145" r="2.5" fill={theme.arrowHead} />
 
           <defs>
-            <linearGradient id="arrowGrad" x1="740" y1="145" x2="360" y2="300" gradientUnits="userSpaceOnUse">
+            <linearGradient id="arrowGrad" x1="930" y1="145" x2="360" y2="300" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor={theme.arrowGradStart} />
               <stop offset="40%" stopColor={theme.arrowGradMid} />
               <stop offset="100%" stopColor={theme.arrowGradEnd} />
@@ -462,9 +462,9 @@ export const LinkedinBannerPage: React.FC = () => {
             className="font-mono font-black tracking-tighter leading-[1.1] text-right transition-colors duration-300"
             style={{ fontSize: '3.1cqw' }}
           >
-            <span className={theme.titleText}>data & analytics </span>
+            <span className={theme.titleText}>data product </span>
             <span className="text-transparent bg-clip-text transition-all duration-300" style={{ backgroundImage: theme.titleDevGrad }}>
-              developer.
+              engineer
             </span>
           </h1>
 
@@ -488,37 +488,37 @@ export const LinkedinBannerPage: React.FC = () => {
               └─ stack:
             </span>
             {/* Python */}
-            <span className="inline-flex items-center rounded border border-[#4B8BBE]/30 bg-[#4B8BBE]/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded border border-python/30 bg-python/[0.06] font-mono font-bold transition-all duration-300"
               style={{
                 padding: '0.38cqw 0.63cqw',
                 fontSize: '0.82cqw',
                 gap: '0.3cqw'
               }}>
-              <Code2 style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-[#4B8BBE]" />
+              <Code2 style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-python" />
               <span className={`transition-colors duration-300 ${theme.badgeText}`}>python</span>
             </span>
             {/* SQL */}
-            <span className="inline-flex items-center rounded border border-[#8a8a86]/30 bg-[#8a8a86]/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded border border-term-dim/30 bg-term-dim/[0.06] font-mono font-bold transition-all duration-300"
               style={{
                 padding: '0.38cqw 0.63cqw',
                 fontSize: '0.82cqw',
                 gap: '0.3cqw'
               }}>
-              <Cylinder style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-[#8a8a86]" />
+              <Cylinder style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-term-dim" />
               <span className={`transition-colors duration-300 ${theme.badgeText}`}>sql</span>
             </span>
             {/* dbt */}
-            <span className="inline-flex items-center rounded border border-[#FF694B]/30 bg-[#FF694B]/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded border border-dbt/30 bg-dbt/[0.06] font-mono font-bold transition-all duration-300"
               style={{
                 padding: '0.38cqw 0.63cqw',
                 fontSize: '0.82cqw',
                 gap: '0.3cqw'
               }}>
-              <Circle style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-[#FF694B] fill-[#FF694B]" />
+              <Circle style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-dbt fill-dbt" />
               <span className={`transition-colors duration-300 ${theme.badgeText}`}>dbt</span>
             </span>
             {/* Fabric */}
-            <span className="inline-flex items-center rounded border border-[#2AAC94]/30 bg-[#2AAC94]/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded border border-[#2AAC94]/30 bg-[#2AAC94]/[0.06] font-mono font-bold transition-all duration-300" // tw-allow-hex
               style={{
                 padding: '0.38cqw 0.63cqw',
                 fontSize: '0.82cqw',
@@ -530,64 +530,64 @@ export const LinkedinBannerPage: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ width: '0.88cqw', height: '0.88cqw' }}
               >
-                <path fill="url(#if6f791-a)" fillRule="evenodd" d="m2.82 15.802-.293 1.072c-.11.343-.262.847-.345 1.295a2.815 2.815 0 0 0 2.32 3.795c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.588-5.832z" clipRule="evenodd"/>
-                <path fill="url(#if6f791-b)" d="M5.07 16.078c-2.431.376-2.93 2.211-2.93 2.211l2.328-8.556 12.168-1.646-1.66 6.027a.85 0 0 1-.693.622l-.068.011-9.213 1.342z"/>
-                <path fill="url(#if6f791-c)" fillOpacity={0.8} d="M5.07 16.078c-2.431.376-2.93 2.211-2.93 2.211l2.328-8.556 12.168-1.646-1.66 6.027a.85 0 0 1-.693.622l-.068.011-9.213 1.342z"/>
-                <path fill="url(#if6f791-d)" d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z"/>
-                <path fill="url(#if6f791-e)" d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z"/>
-                <path fill="url(#if6f791-f)" fillOpacity={0.4} d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z"/>
-                <path fill="url(#if6f791-g)" d="M6.45 10.619c-1.95.353-2.435.981-2.757 1.966L2.139 18.29s.497-1.816 2.899-2.205l9.177-1.337.068-.01a.85 0 0 0 .694-.623l1.365-4.958z"/>
-                <path fill="url(#if6f791-h)" fillOpacity={0.2} d="M6.45 10.619c-1.95.353-2.435.981-2.757 1.966L2.139 18.29s.497-1.816 2.899-2.205l9.177-1.337.068-.01a.85 0 0 0 .694-.623l1.365-4.958z"/>
-                <path fill="url(#if6f791-i)" fillRule="evenodd" d="M5.038 16.086c-2.03.328-2.697 1.673-2.856 2.082a2.817 2.817 0 0 0 2.32 3.796c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.448-5.317z" clipRule="evenodd"/>
+                <path fill="url(#if6f791-a)" fillRule="evenodd" d="m2.82 15.802-.293 1.072c-.11.343-.262.847-.345 1.295a2.815 2.815 0 0 0 2.32 3.795c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.588-5.832z" clipRule="evenodd" />
+                <path fill="url(#if6f791-b)" d="M5.07 16.078c-2.431.376-2.93 2.211-2.93 2.211l2.328-8.556 12.168-1.646-1.66 6.027a.85 0 0 1-.693.622l-.068.011-9.213 1.342z" />
+                <path fill="url(#if6f791-c)" fillOpacity={0.8} d="M5.07 16.078c-2.431.376-2.93 2.211-2.93 2.211l2.328-8.556 12.168-1.646-1.66 6.027a.85 0 0 1-.693.622l-.068.011-9.213 1.342z" />
+                <path fill="url(#if6f791-d)" d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z" />
+                <path fill="url(#if6f791-e)" d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z" />
+                <path fill="url(#if6f791-f)" fillOpacity={0.4} d="m6.45 10.619 13.47-1.99a.8.8 0 0 0 .662-.586l1.39-5.03a.797.797 0 0 0-.87-1.006L8.25 3.905a3.59 3.59 0 0 0-2.89 2.597L3.507 13.22c.372-1.36.6-2.178 2.943-2.602Z" />
+                <path fill="url(#if6f791-g)" d="M6.45 10.619c-1.95.353-2.435.981-2.757 1.966L2.139 18.29s.497-1.816 2.899-2.205l9.177-1.337.068-.01a.85 0 0 0 .694-.623l1.365-4.958z" />
+                <path fill="url(#if6f791-h)" fillOpacity={0.2} d="M6.45 10.619c-1.95.353-2.435.981-2.757 1.966L2.139 18.29s.497-1.816 2.899-2.205l9.177-1.337.068-.01a.85 0 0 0 .694-.623l1.365-4.958z" />
+                <path fill="url(#if6f791-i)" fillRule="evenodd" d="M5.038 16.086c-2.03.328-2.697 1.673-2.856 2.082a2.817 2.817 0 0 0 2.32 3.796c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.448-5.317z" clipRule="evenodd" />
                 <defs>
                   <linearGradient id="if6f791-a" x1="6.477" x2="6.477" y1="22.003" y2="14.73" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.056" stopColor="#2AAC94"/>
-                    <stop offset="0.155" stopColor="#239C87"/>
-                    <stop offset="0.372" stopColor="#177E71"/>
-                    <stop offset="0.588" stopColor="#0E6961"/>
-                    <stop offset="0.799" stopColor="#095D57"/>
-                    <stop offset="1" stopColor="#085954"/>
+                    <stop offset="0.056" stopColor="#2AAC94" /> // tw-allow-hex
+                    <stop offset="0.155" stopColor="#239C87" /> // tw-allow-hex
+                    <stop offset="0.372" stopColor="#177E71" /> // tw-allow-hex
+                    <stop offset="0.588" stopColor="#0E6961" /> // tw-allow-hex
+                    <stop offset="0.799" stopColor="#095D57" /> // tw-allow-hex
+                    <stop offset="1" stopColor="#085954" /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-b" x1="15.667" x2="8.644" y1="16.726" y2="9.087" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.042" stopColor="#ABE88E"/>
-                    <stop offset="0.549" stopColor="#2AAA92"/>
-                    <stop offset="0.906" stopColor="#117865"/>
+                    <stop offset="0.042" stopColor="#ABE88E" /> // tw-allow-hex
+                    <stop offset="0.549" stopColor="#2AAA92" /> // tw-allow-hex
+                    <stop offset="0.906" stopColor="#117865" /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-c" x1="-1.592" x2="5.092" y1="16.354" y2="14.075" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#6AD6F9"/>
-                    <stop offset="1" stopColor="#6AD6F9" stopOpacity={0}/>
+                    <stop stopColor="#6AD6F9" /> // tw-allow-hex
+                    <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-d" x1="3.507" x2="21.297" y1="7.61" y2="7.61" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.043" stopColor="#25FFD4"/>
-                    <stop offset="0.874" stopColor="#55DDB9"/>
+                    <stop offset="0.043" stopColor="#25FFD4" /> // tw-allow-hex
+                    <stop offset="0.874" stopColor="#55DDB9" /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-e" x1="3.507" x2="19.532" y1="5.124" y2="12.565" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#6AD6F9"/>
-                    <stop offset="0.23" stopColor="#60E9D0"/>
-                    <stop offset="0.651" stopColor="#6DE9BB"/>
-                    <stop offset="0.994" stopColor="#ABE88E"/>
+                    <stop stopColor="#6AD6F9" /> // tw-allow-hex
+                    <stop offset="0.23" stopColor="#60E9D0" /> // tw-allow-hex
+                    <stop offset="0.651" stopColor="#6DE9BB" /> // tw-allow-hex
+                    <stop offset="0.994" stopColor="#ABE88E" /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-f" x1="4.989" x2="13.703" y1="6.516" y2="8.444" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#fff" stopOpacity={0}/>
-                    <stop offset="0.459" stopColor="#fff"/>
-                    <stop offset="1" stopColor="#fff" stopOpacity={0}/>
+                    <stop stopColor="#fff" stopOpacity={0} />
+                    <stop offset="0.459" stopColor="#fff" />
+                    <stop offset="1" stopColor="#fff" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="if6f791-g" x1="7.879" x2="8.085" y1="13.981" y2="7.87" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.205" stopColor="#063D3B" stopOpacity={0}/>
-                    <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237}/>
-                    <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75}/>
+                    <stop offset="0.205" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
+                    <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237} /> // tw-allow-hex
+                    <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75} /> // tw-allow-hex
                   </linearGradient>
                   <linearGradient id="if6f791-h" x1="1.405" x2="8.851" y1="13.373" y2="14.774" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#fff" stopOpacity={0}/>
-                    <stop offset="0.459" stopColor="#fff"/>
-                    <stop offset="1" stopColor="#fff" stopOpacity={0}/>
+                    <stop stopColor="#fff" stopOpacity={0} />
+                    <stop offset="0.459" stopColor="#fff" />
+                    <stop offset="1" stopColor="#fff" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="if6f791-i" x1="6.784" x2="5.331" y1="19.988" y2="12.884" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.064" stopColor="#063D3B" stopOpacity={0}/>
-                    <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135}/>
-                    <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599}/>
-                    <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9}/>
-                    <stop offset="1" stopColor="#063D3B"/>
+                    <stop offset="0.064" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
+                    <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135} /> // tw-allow-hex
+                    <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599} /> // tw-allow-hex
+                    <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9} /> // tw-allow-hex
+                    <stop offset="1" stopColor="#063D3B" /> // tw-allow-hex
                   </linearGradient>
                 </defs>
               </svg>

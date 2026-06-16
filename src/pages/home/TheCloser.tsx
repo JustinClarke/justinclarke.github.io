@@ -20,6 +20,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { SectionContainer, ScrollReveal } from '@/ui';
 import { closerMetadata } from '@/data';
 import { cn, track } from '@/utils';
+import { smoothScrollTo } from '@/utils/scroll';
 import { Mail, ArrowUpRight, Github, Linkedin, Instagram, Terminal, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { TOOLTIPS } from '@/config/tooltips';
 
@@ -125,7 +126,7 @@ export const TheCloser = () => {
           onClick={(e) => {
             if (window.location.pathname === '/') {
               e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+              smoothScrollTo(0, 1.2);
             }
           }}
           className='flex items-center gap-5 md:gap-6 group/logo cursor-pointer no-underline text-left'

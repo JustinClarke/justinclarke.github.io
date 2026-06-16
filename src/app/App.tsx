@@ -16,7 +16,7 @@
  */
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { BackToTop, SEO } from '@/components/layout';
+import { CommandDock, SEO } from '@/components/layout';
 import { Analytics } from '@/components/analytics';
 import { initTooltips, initScrollAnimations, debug } from '@/utils';
 import { ContactModal } from '@/components/modals';
@@ -51,7 +51,7 @@ const OffThePaceSource = lazy(() => import('@/pages/off-the-pace/OffThePaceSourc
 const LinkedinBannerPage = lazy(() => import('@/pages/LinkedinBannerPage').then(m => ({ default: m.LinkedinBannerPage })));
 
 // ─── Preloader policy ─────────────────────────────────────────────────────────
-// The cinematic intro ("Preloader") should appear at most ONCE per browser tab,
+// The intro ("Preloader") should appear at most ONCE per browser tab,
 // and never on certain pages or devices. The rules are fiddly, so we keep them
 // in one place `decideInitialPreloader()` below instead of scattering them.
 
@@ -279,7 +279,7 @@ export default function App() {
           true. So the Preloader appears only while showPreloader is true. */}
       {showPreloader && <Suspense fallback={null}><Preloader /></Suspense>}
       {/* <CustomCursor /> */}
-      <BackToTop />
+      <CommandDock />
 
       <div
         // LEARN: The `key` prop is a hint to React: when it changes, React throws

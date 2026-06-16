@@ -123,40 +123,6 @@ function scanSourceFiles(tokens) {
   return violations;
 }
 
-// Check F1_COLORS parity in constants.ts
-function checkF1ColorsParity(tokens) {
-  const constantsPath = path.join(projectRoot, 'src', 'config', 'constants.ts');
-  if (!fs.existsSync(constantsPath)) {
-    return [];
-  }
-
-  const content = fs.readFileSync(constantsPath, 'utf-8');
-  const violations = [];
-
-  // Find F1_COLORS object and check each value
-  const f1Match = content.match(/F1_COLORS\s*=\s*{([^}]+)}/s);
-  if (!f1Match) return [];
-
-  const f1Block = f1Match[1];
-  const colorRegex = /#([0-9a-f]{6})/gi;
-
-  let match;
-  while ((match = colorRegex.exec(f1Block)) !== null) {
-    const hex = `#${match[1].toLowerCase()}`;
-    if (tokens[hex]) {
-      const line = content.substring(0, match.index).split('\n').length;
-      violations.push({
-        file: 'src/config/constants.ts',
-        line,
-        hex,
-        token: tokens[hex],
-        type: 'parity',
-      });
-    }
-  }
-
-  return violations;
-}
 
 // Main
 function main() {
@@ -164,8 +130,7 @@ function main() {
   console.log(`✓ Parsed ${Object.keys(tokens).length} color tokens from @theme\n`);
 
   const hexViolations = scanSourceFiles(tokens);
-  const parityViolations = checkF1ColorsParity(tokens);
-  const violations = [...hexViolations, ...parityViolations];
+  const violations = [...hexViolations];
 
   if (violations.length === 0) {
     console.log('✓ No tokenized hex violations found!');

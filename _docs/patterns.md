@@ -11,7 +11,8 @@ Engineering patterns, animation system, and build pipeline.
 Pure TypeScript with zero React dependencies fully testable in isolation.
 
 - **Registry pattern.** `COMMANDS` map keys command strings to handlers returning `{ lines: TerminalLine[]; effect? }`. Side effects (`scroll`, `contact`, `download`, `snake`) are returned as a discriminator `Hero.tsx` reads that and dispatches. The engine never touches the DOM.
-- **Boot sequence.** Seven phases driven from `TerminalHeader.tsx`, gated on `preloaderComplete` event. Lines render one at a time via `async/await` with `max(400ms, text.length * 15ms)` per line.
+- **Boot sequence.** Seven phases driven from `TerminalHeader.tsx`, gated on `preloaderComplete` event. Transitions from step 0 to 7 happen via timeouts, and staggered reveals are powered purely by CSS `animation-delay` rather than an `async/await` loop.
+- **Output typing.** Output lines are immediately pushed to React state. The "typing" effect is handled entirely by CSS `animation-delay` staggers on individual spans.
 
 ### SQL ERD connector (`SqlErd.tsx`)
 
@@ -24,14 +25,12 @@ Edges are SVG `<path>` elements whose coordinates are derived from `getBoundingC
 ### Scroll-driven reveal
 
 Two patterns coexist:
-- **`<ScrollReveal>`** (`ui/ScrollReveal.tsx`): `IntersectionObserver` per component, opt-in with React tree co-location. Use this for new code.
-- **`initScrollAnimations()`** (`utils/animations.ts`): global observer + `MutationObserver`, scans for `[data-reveal]` attributes.
-
-Both respect `prefers-reduced-motion` and clean up `will-change` after 2000ms.
+- **`<ScrollReveal>`** (`ui/ScrollReveal.tsx`): Currently a pass-through placeholder component with animation logic disabled.
+- **`initScrollAnimations()`** (`utils/animations.ts`): Global `MutationObserver` that scans for `[data-count-target]` attributes and populates their numbers instantly (no scroll-driven reveals).
 
 ### Elevator scroll (`utils/scroll.ts`)
 
-Custom scroll-to-section with exponential in-out easing (factor 20 for dramatic accel/decel). Recalculates the target offset every frame to stay accurate if the layout shifts mid-scroll. Falls back to instant `scrollTo` under reduced motion.
+Custom scroll-to-section with exponential in-out easing (factor 20 for dramatic accel/decel). Calculates the target offset exactly once on activation, rather than recalculating every frame. Falls back to instant `scrollTo` under reduced motion.
 
 ### Provider pattern
 
@@ -60,7 +59,7 @@ SPRINGS = {
 }
 
 EASING = {
-  quintic:  [0.16, 1, 0.3, 1],   // Cinematic deceleration
+  quintic:  [0.16, 1, 0.3, 1],   // Smooth deceleration
   smooth:   [0.22, 1, 0.36, 1],  // General smooth
 }
 ```
@@ -132,7 +131,7 @@ Enforced by `scripts/check-tailwind-tokens.mjs`, which runs as part of `npm run 
 
 1. **No raw hex for tokenised colours.** If a colour exists in `src/index.css` as a `--color-*` token, use the utility (`text-f1-red`, `bg-brand-primary`) or CSS var (`var(--color-f1-red)`) never the literal hex.
 2. **New colours go into `@theme` first.** Any colour used ≥ 2 times must become a token before its second use. No exceptions.
-3. **JS colour constants live in `src/config/constants.ts` only.** When JS genuinely needs raw hex (canvas/SVG draw calls, Framer Motion values), keep it there. The token gate script verifies this file mirrors `@theme`.
+3. **JS colour constants live in `src/config/constants.ts` only.** When JS genuinely needs raw hex (canvas/SVG draw calls, Framer Motion values), keep it there.
 4. **Static inline styles → utilities.** `style={{ zIndex: 40 }}` becomes `z-40`. Inline `style` is reserved for JS-dynamic values only.
 5. **Dynamic values flow through CSS vars:**
    ```tsx

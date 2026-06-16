@@ -35,4 +35,3 @@ yarn-error.log*
 
 graphify-out/
 .agents
-_docs/llm implementation.md

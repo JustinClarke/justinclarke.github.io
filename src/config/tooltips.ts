@@ -100,6 +100,7 @@ export const TOOLTIPS = {
   // ── Easter eggs ───────────────────────────────────────
   easter: "Nicely spotted. Have a digestive.",
   secret: "About as secret as your Slack DMs.",
+  yellowbutton: "you got games on your phone??",
 } as const;
 
 export type TooltipKey = keyof typeof TOOLTIPS;

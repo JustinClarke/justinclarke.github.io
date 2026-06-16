@@ -7,7 +7,7 @@
  * (imported directly where used) so the barrel stays focused on the common ones.
  * -----------------------------------------------------------------------------
  */
-export * from './BackToTop';
+export * from './CommandDock';
 export * from './TheCloser';
 export * from './SEO';
 export * from './Schema';

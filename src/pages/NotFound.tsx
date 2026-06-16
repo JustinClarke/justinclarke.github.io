@@ -17,7 +17,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { BackToTerminal } from '@/ui';
 import { TOOLTIPS } from '@/config/tooltips';
 import { SEO } from '@/components/layout';
 
@@ -73,7 +72,7 @@ export const NotFound = () => {
           <span className="font-mono text-[9px] uppercase tracking-[0.3em] font-black text-red-400 text-center">Error 404 // Path_Resolution_Failed</span>
         </motion.div>
 
-        {/* Cinematic 404 */}
+        {/* 404 */}
         <div className="relative mb-8 md:mb-12">
           <motion.h1 
             initial={{ scale: 0.9, opacity: 0 }}
@@ -95,9 +94,6 @@ export const NotFound = () => {
         </p>
 
         <div className="flex flex-col items-center justify-center gap-8 md:gap-12">
-          <div className="relative h-20 hidden md:flex items-center justify-center">
-            <BackToTerminal />
-          </div>
 
           {/* LEARN: window.history.back() is the same as the browser's Back button.
               No routing library needed for this - it's a plain browser API call. */}

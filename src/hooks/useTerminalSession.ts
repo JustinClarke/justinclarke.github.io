@@ -34,6 +34,7 @@ import {
 import { elevatorScroll } from '@/utils/scroll';
 import { GITHUB_USERNAME } from '@/config/constants';
 import { debug, track } from '@/utils';
+import { useAIAgent } from './useAIAgent';
 
 const log = debug('terminal');
 
@@ -109,6 +110,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
   const [history, setHistory] = useState<TerminalLine[]>([]); // the printed lines above it
   const [isTyping, setIsTyping] = useState(false);            // true while we "type out" output
   const [lastExitCode, setLastExitCode] = useState<number | null>(null); // 0 = ok, non-zero = error
+  const { askAgent, isQuerying } = useAIAgent();
 
   // LEARN: useRef holds a value that survives re-renders WITHOUT causing one when
   //    it changes (unlike state). Perfect for bookkeeping the UI doesn't show:
@@ -126,7 +128,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
   ) => {
     const raw = cmd.trim();          // remove leading/trailing spaces
     if (!raw) return;                // ignore empty input
-    if (source === 'terminal' && isTyping) return; // don't accept a new command mid-typing
+    if (source === 'terminal' && (isTyping || isQuerying)) return; // don't accept a new command mid-typing or mid-AI call
     log('command', { raw, source });
     track('terminal-command', { command: raw, source });
 
@@ -170,22 +172,6 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
       return;
     }
 
-    // ── Snake game guard ──────────────────────────────────────────────────────
-    // The game needs a keyboard + room, so block it on small screens with a
-    // friendly note instead of launching something unplayable.
-    if (raw.toLowerCase() === 'snake' || raw.toLowerCase() === 'play snake') {
-      if (window.innerWidth < 1024) {
-        setHistory(prev => [
-          ...prev,
-          { t: 'prompt', text: `~$ ${raw}` },
-          { t: 'o', text: '[SYSTEM] - snake.exe is a desktop-only experience.' },
-          { t: 'muted', text: 'Come back on a bigger screen. Worth it.' },
-        ]);
-        setInputValue('');
-        return;
-      }
-    }
-
     if (raw.toLowerCase() === 'sudo') sudoCount.current += 1;
 
     // ── Normal typed command: DECIDE, then PERFORM ──────────────────────────────
@@ -213,10 +199,13 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     //    resolves the Promise, which lets the awaited line continue.
     await new Promise(res => setTimeout(res, 220));
 
+    const commandEffect = result.effect ?? null;
+    const isAiQuery = commandEffect?.type === 'ai';
+
     const preamble = getConversationalPreamble(raw);
     setHistory(prev => [
       ...prev,
-      { t: 'success', text: `[SYSTEM]: ${preamble}` },
+      ...(isAiQuery ? [] : [{ t: 'success' as const, text: `[SYSTEM]: ${preamble}` }]),
       ...result.lines,
     ]);
 
@@ -225,7 +214,6 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     // ── Side effect (if any) ────────────────────────────────────────────────────
     // Some commands DO something after printing scroll, navigate, download,
     // launch the game. The engine only NAMED the effect; we carry it out here.
-    const commandEffect = result.effect ?? null;
 
     if (commandEffect) {
       log('effect', commandEffect.type);
@@ -243,10 +231,35 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
         link.href = '/resources/JustinClarke_resume.pdf';
         link.download = 'JustinClarke_resume.pdf';
         link.click();
-      } else if (commandEffect.type === 'snake') {
-        onLaunchGame('snake');
+      } else if (['snake', 'pong', 'tetris', 'space_invaders'].includes(commandEffect.type)) {
+        onLaunchGame(commandEffect.type);
       } else if (commandEffect.type === 'the-long-version') {
         navigate('/the-long-version');
+      } else if (commandEffect.type === 'ai' && commandEffect.aiQuery) {
+        // Replace the "thinking..." placeholder with the live agent block: a
+        // badge header (pulsing dot while streaming) + a railed body line that
+        // grows as tokens arrive.
+        setHistory(prev => [
+          ...prev.slice(0, -1),
+          { t: 'ai-head' as const, text: 'AGENT', streaming: true },
+          { t: 'g' as const, text: '', gutter: true, streaming: true },
+        ]);
+
+        const onToken = (token: string) => {
+          setHistory(prev => {
+            const updated = [...prev];
+            const lastIdx = updated.length - 1;
+            if (updated[lastIdx]?.streaming) {
+              updated[lastIdx] = { ...updated[lastIdx], text: updated[lastIdx].text + token };
+            }
+            return updated;
+          });
+        };
+
+        const finalLines = await askAgent(commandEffect.aiQuery, onToken);
+        // Swap the two streamed placeholder lines for the hook's authoritative
+        // assembled block, dropping the streaming flags so the cursor stops.
+        setHistory(prev => [...prev.slice(0, -2), ...finalLines]);
       } else if (commandEffect.type === 'github') {
         // The `github` command needs live data, so it's a two-step dance:
         //   1. fetch the activity (or capture why it failed),
@@ -262,7 +275,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
         setHistory(prev => [...prev, ...ghResult.lines]);
       }
     }
-  }, [navigate, isTyping, onLaunchGame]);
+  }, [navigate, isTyping, isQuerying, onLaunchGame, askAgent]);
 
   return {
     inputValue, setInputValue,
