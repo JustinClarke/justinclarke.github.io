@@ -83,6 +83,7 @@ function parseAIResponseToLines(raw: string, meta?: AIResponseMeta): TerminalLin
 export interface AIMessage {
   role: 'user' | 'model';
   text: string;
+  footer?: string;
 }
 
 interface UseAIAgentReturn {

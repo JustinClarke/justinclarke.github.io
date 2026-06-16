@@ -156,8 +156,12 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
       setStreamingText(accumulated);
     });
 
-    const responseText = finalLines.map(l => l.text).join('\n').replace(/^\[AGENT\]:\s*/, '');
-    const withReply: AIMessage[] = [...nextMessages, { role: 'model', text: responseText }];
+    const aiFoot = finalLines.find(l => l.t === 'ai-foot')?.text;
+    const footerText = (aiFoot && aiFoot !== 'response complete') ? aiFoot : undefined;
+    const textLines = finalLines.filter(l => l.t !== 'ai-foot' && l.t !== 'ai-head');
+    const responseText = textLines.map(l => l.text).join('\n').replace(/^\[AGENT\]:\s*/, '');
+
+    const withReply: AIMessage[] = [...nextMessages, { role: 'model', text: responseText, footer: footerText }];
     setMessages(withReply);
     saveMessages(withReply);
     setStreamingText('');
@@ -246,15 +250,22 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
                 animate={{ opacity: 1, y: 0 }}
                 className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}
               >
-                <div
-                  className={cn(
-                    'max-w-[85%] text-xs font-mono px-3.5 py-2.5 rounded-2xl leading-relaxed',
-                    msg.role === 'user'
-                      ? 'rounded-tr-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary/95 shadow-[0_0_12px_rgba(0,200,180,0.05)]'
-                      : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60',
+                <div className={cn("flex flex-col gap-1.5 max-w-[85%]", msg.role === 'user' ? "items-end" : "items-start")}>
+                  <div
+                    className={cn(
+                      'text-xs font-mono px-3.5 py-2.5 rounded-2xl leading-relaxed w-fit',
+                      msg.role === 'user'
+                        ? 'rounded-tr-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary/95 shadow-[0_0_12px_rgba(0,200,180,0.05)]'
+                        : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60',
+                    )}
+                  >
+                    {msg.role === 'user' ? msg.text : renderModelText(msg.text)}
+                  </div>
+                  {msg.footer && (
+                    <span className="text-[10px] font-mono text-white/20 px-2 select-none">
+                      {msg.footer}
+                    </span>
                   )}
-                >
-                  {msg.role === 'user' ? msg.text : renderModelText(msg.text)}
                 </div>
               </motion.div>
             ))}
@@ -283,7 +294,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
           </div>
 
           {/* Input */}
-          <div className="border-t border-white/[0.05] px-4 py-3 shrink-0 bg-[#09090b]/80"> // tw-allow-hex
+          <div className="border-t border-white/[0.05] px-4 py-3 shrink-0 bg-[#09090b]/80"> {/* tw-allow-hex */}
             <div className="flex items-center gap-2 px-3.5 py-2 bg-white/[0.02] border border-white/[0.06] rounded-full focus-within:border-brand-primary/30 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_16px_rgba(0,200,180,0.04)] transition-all duration-300">
               <input
                 ref={inputRef}
