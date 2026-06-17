@@ -501,11 +501,10 @@ export const SqlDisasterPage = () => {
             </div>
 
             {/* Mock terminal preview */}
-            {/* tw-allow-hex: one-off "fake browser chrome" colors specific to this mock UI */}
-            <div className="relative w-full max-w-4xl mx-auto rounded-[28px] md:rounded-[36px] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.25)] bg-[#05080f] border border-white/10">
+            <div className="relative w-full max-w-4xl mx-auto rounded-[28px] md:rounded-[36px] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.25)] bg-[rgb(5,8,15)] border border-white/10">
 
               {/* Browser chrome */}
-              <div className="h-10 bg-[#0b1120] border-b border-white/5 flex items-center px-5 justify-between">
+              <div className="h-10 bg-[rgb(11,17,32)] border-b border-white/5 flex items-center px-5 justify-between">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500/70" />
                   <div className="w-3 h-3 rounded-full bg-yellow-400/40" />

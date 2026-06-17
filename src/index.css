@@ -86,6 +86,7 @@
   /* Spotify Green */
   --color-viz-mac-red: #ff5f57;
   --color-viz-mac-yellow: #febc2e;
+  --color-viz-mac-green: #28c840;
 
   /* Terminal Specifics (Hero) */
   --color-term-text: #1a1a1a;
@@ -144,6 +145,7 @@
   --color-social-github: #8957e5;
   --color-social-linkedin: #0a66c2;
   --color-social-instagram: #e1306c;
+  --color-social-spotify: #1db954;
   --color-social-email: #ff4757;
 
   /* Near-black green-tinted "ink" terminal panels and hover-inverted icon text

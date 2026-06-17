@@ -72,6 +72,7 @@ export const TOOLTIPS = {
   github: "Where the receipts live.",
   linkedin: "The professional one. Allegedly.",
   instagram: "Mostly café signage and questionable lighting.",
+  spotify: "Music taste, for better or worse.",
   email: "Replies usually arrive faster than you'd think.",
   viewcode: "Code, in its natural habitat.",
   livedemo: "Live, against my better judgement.",

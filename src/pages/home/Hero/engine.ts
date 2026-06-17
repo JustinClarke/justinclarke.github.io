@@ -144,7 +144,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
       lines: [
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'IDENTITY:  ' }, { t: 'g', text: 'Justin Clarke · Analytics Engineer · Full-Stack' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'FOCUS:     ' }, { t: 'b', text: 'pipelines and the products they power' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOCATION:  ' }, { t: 'pu', text: 'Dubai, UAE · open to relocation · visa sponsored' }] },
+        { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOCATION:  ' }, { t: 'pu', text: 'Dubai, UAE · open to relocation · sponsorship not required (UAE)' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:     ' }, { t: 'viz-mac-yellow', text: 'Python ' }, { t: 'viz-mac-red', text: 'SQL ' }, { t: 'b', text: 'dbt ' }, { t: 'pu', text: 'PowerBI' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'IN FLIGHT: ' }, { t: 'muted', text: 'MBA Business Analytics · Off the Pace' }] },
         sp(),
@@ -394,7 +394,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'CHANNEL:       ' }, { t: 'g', text: 'justinsavioclarke@outlook.com' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'LINKEDIN:      ' }, { t: 'g', text: 'linkedin.com/in/justinsavioclarke ↗' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'AVAILABILITY:  ' }, { t: 'viz-success', text: 'OPEN · full-time alongside MBA' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'VISA:          ' }, { t: 'muted', text: 'UAE Family Residence · sponsored' }] },
+        { t: 'm', text: '', parts: [{ t: 'brand', text: 'SPONSORSHIP:   ' }, { t: 'muted', text: 'not required (UAE Family Residence Visa)' }] },
         { t: 'm', text: '', parts: [{ t: 'brand', text: 'RESPONSE TIME: ' }, { t: 'viz-mac-yellow', text: '< 24h' }] },
       ],
       effect: { type: 'contact' },
@@ -628,7 +628,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
       lines: [
         line('m', 'connecting to market-rate.io...'),
         line('viz-success', 'result: whatever you were thinking, add 20%.'),
-        line('muted', '(two distinctions, MBA in progress, visa sponsored. do the math.)'),
+        line('muted', '(two distinctions, MBA in progress, no sponsorship required. do the math.)'),
       ],
     }),
   },
@@ -697,7 +697,7 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   hire: [
     line('g', "redirecting to good-decision-making.exe..."),
     line('b', "→ justinsavioclarke@outlook.com"),
-    line('muted', "visa sponsored required. that's already one less problem."),
+    line('muted', "no sponsorship required. that's already one less problem."),
   ],
   'hire justin': [
     line('g', "outstanding choice. forwarding CV to your conscience..."),
@@ -748,7 +748,7 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
     line('muted', "yes, he's doing it alongside full-time work. yes, he's fine. mostly."),
   ],
   dubai: [
-    line('pu', "Dubai, UAE · UTC+4 · visa sponsored."),
+    line('pu', "Dubai, UAE · UTC+4 · sponsorship not required (UAE)."),
     line('muted', "open to relocation. also open to remote. very flexible. very available."),
   ],
   quantum: [

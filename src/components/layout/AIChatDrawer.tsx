@@ -89,6 +89,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   // Click outside to close handler
   useEffect(() => {
@@ -113,6 +114,29 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
       document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [isOpen, onClose]);
+
+  // Adjust bottom offset dynamically when virtual keyboard opens (e.g. iOS Safari)
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined' || !window.visualViewport) {
+      setKeyboardHeight(0);
+      return;
+    }
+
+    const handleViewportChange = () => {
+      const vv = window.visualViewport!;
+      const offset = window.innerHeight - vv.height - vv.offsetTop;
+      setKeyboardHeight(Math.max(0, offset));
+    };
+
+    window.visualViewport.addEventListener('resize', handleViewportChange);
+    window.visualViewport.addEventListener('scroll', handleViewportChange);
+    handleViewportChange();
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleViewportChange);
+      window.visualViewport?.removeEventListener('scroll', handleViewportChange);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
@@ -176,158 +200,168 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          ref={drawerRef}
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 20, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className={cn(
-            'fixed bottom-24 right-4 md:right-8 z-[99]',
-            'w-[calc(100vw-2rem)] max-w-[400px]',
-            'bg-[#0c0c0c]/90 backdrop-blur-2xl border border-white/10 rounded-2xl', // tw-allow-hex
-            'shadow-[0_20px_50px_rgba(0,0,0,0.8)]',
-            'flex flex-col overflow-hidden',
-            'max-h-[60vh] md:max-h-[65vh]',
-          )}
-          role="dialog"
-          aria-label="AI chat with Justin's portfolio assistant"
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.05] shrink-0 bg-black/20">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand-primary" />
-              </span>
-              <span className="text-brand-primary text-[13px] font-mono font-bold tracking-tight">ask_justin.ai</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-white/30 text-xs font-mono tabular-nums">
-                {remainingQueries}/{AI_AGENT.maxSessionQueries}
-              </span>
-              <button
-                onClick={onClose}
-                className="w-6 h-6 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] text-white/40 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition-all duration-300 cursor-pointer"
-                aria-label="Close chat"
-                tabIndex={0}
-              >
-                <X size={12} />
-              </button>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div
-            ref={scrollRef}
-            className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0"
-          >
-            {messages.length === 0 && !isQuerying && (
-              <div className="space-y-4 py-4">
-                <p className="text-white/30 text-[11px] font-mono text-center leading-relaxed max-w-[260px] mx-auto">
-                  Ask me anything about Justin's work, stack, or availability.
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center px-4">
-                  {SUGGESTED_PROMPTS.map(p => (
-                    <button
-                      key={p}
-                      onClick={() => send(p)}
-                      className="text-[11px] font-mono px-3.5 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] text-white/45 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/[0.04] active:scale-95 transition-all duration-300 cursor-pointer"
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {messages.map((msg, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}
-              >
-                <div className={cn("flex flex-col gap-1.5 max-w-[85%]", msg.role === 'user' ? "items-end" : "items-start")}>
-                  <div
-                    className={cn(
-                      'text-xs font-mono px-3.5 py-2.5 rounded-2xl leading-relaxed w-fit',
-                      msg.role === 'user'
-                        ? 'rounded-tr-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary/95 shadow-[0_0_12px_rgba(0,200,180,0.05)]'
-                        : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60',
-                    )}
-                  >
-                    {msg.role === 'user' ? msg.text : renderModelText(msg.text)}
-                  </div>
-                  {msg.footer && (
-                    <span className="text-[10px] font-mono text-white/20 px-2 select-none">
-                      {msg.footer}
-                    </span>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-
-            {isQuerying && streamingText && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="flex justify-start"
-              >
-                <div className="max-w-[85%] text-xs font-mono px-3.5 py-2.5 rounded-2xl rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60 leading-relaxed">
-                  {renderModelText(streamingText)}
-                  <span className="animate-pulse text-brand-primary ml-0.5">█</span>
-                </div>
-              </motion.div>
-            )}
-
-            {isQuerying && !streamingText && (
-              <div className="flex justify-start">
-                <div className="text-xs font-mono px-3.5 py-2.5 text-white/30 flex items-center gap-2">
-                  <span className="animate-pulse">●</span>
-                  <span>thinking...</span>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Input */}
-          <div className="border-t border-white/[0.05] px-4 py-3 shrink-0 bg-[#09090b]/80"> {/* tw-allow-hex */}
-            <div className="flex items-center gap-2 px-3.5 py-2 bg-white/[0.02] border border-white/[0.06] rounded-full focus-within:border-brand-primary/30 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_16px_rgba(0,200,180,0.04)] transition-all duration-300">
-              <input
-                ref={inputRef}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                maxLength={AI_AGENT.maxPromptLength}
-                placeholder="Ask about Justin..."
-                disabled={isQuerying || remainingQueries <= 0}
-                className={cn(
-                  'flex-grow bg-transparent text-xs font-mono text-white/80 placeholder:text-white/25',
-                  'outline-none border-none p-0 focus:ring-0 focus:outline-none',
-                  'disabled:opacity-40',
-                )}
-                aria-label="Ask a question"
-              />
-              <button
-                onClick={() => send(input)}
-                disabled={isQuerying || !input.trim() || remainingQueries <= 0}
-                className={cn(
-                  'w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-300 cursor-pointer',
-                  input.trim() && !isQuerying && remainingQueries > 0
-                    ? 'bg-brand-primary text-black hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(0,200,180,0.3)]'
-                    : 'text-white/20 bg-white/[0.02] cursor-not-allowed'
-                )}
-                aria-label="Send message"
-              >
-                <Send size={11} className={cn(input.trim() && !isQuerying && 'translate-x-[0.5px]')} />
-              </button>
-            </div>
-          </div>
-        </motion.div>
+    <motion.div
+      ref={drawerRef}
+      initial={{ y: 20, opacity: 0 }}
+      animate={{
+        y: isOpen ? 0 : 20,
+        opacity: isOpen ? 1 : 0,
+        scale: isOpen ? 1 : 0.95,
+      }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      style={{
+        pointerEvents: isOpen ? 'auto' : 'none',
+        bottom: isOpen && keyboardHeight > 0 ? `${keyboardHeight + 8}px` : undefined,
+      }}
+      className={cn(
+        'fixed bottom-4 md:bottom-24 right-4 md:right-8 z-[99]',
+        'w-[calc(100vw-2rem)] max-w-[400px]',
+        'bg-brand-card/90 backdrop-blur-2xl border border-white/10 rounded-2xl',
+        'shadow-[0_20px_50px_rgba(0,0,0,0.8)]',
+        'flex flex-col overflow-hidden',
+        'max-h-[60vh] md:max-h-[65vh]',
       )}
-    </AnimatePresence>
+      role="dialog"
+      aria-label="AI chat with Justin's portfolio assistant"
+      aria-hidden={!isOpen}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.05] shrink-0 bg-black/20">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand-primary" />
+          </span>
+          <span className="text-brand-primary text-[13px] font-mono font-bold tracking-tight">Ask Justin</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-white/30 text-xs font-mono tabular-nums">
+            {remainingQueries}/{AI_AGENT.maxSessionQueries}
+          </span>
+          <button
+            onClick={onClose}
+            className="w-6 h-6 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] text-white/40 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition-all duration-300 cursor-pointer"
+            aria-label="Close chat"
+            tabIndex={isOpen ? 0 : -1}
+          >
+            <X size={12} />
+          </button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 min-h-0"
+      >
+        {messages.length === 0 && !isQuerying && (
+          <div className="space-y-4 py-4">
+            <p className="text-white/30 text-[11px] font-mono text-center leading-relaxed max-w-[260px] mx-auto">
+              Ask me anything about Justin's work, stack, or availability.
+            </p>
+            <div className="flex flex-wrap gap-2 justify-center px-4">
+              {SUGGESTED_PROMPTS.map(p => (
+                <button
+                  key={p}
+                  onClick={() => send(p)}
+                  tabIndex={isOpen ? 0 : -1}
+                  className="text-[11px] font-mono px-3.5 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] text-white/45 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/[0.04] active:scale-95 transition-all duration-300 cursor-pointer"
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {messages.map((msg, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}
+          >
+            <div className={cn("flex flex-col gap-1.5 max-w-[85%]", msg.role === 'user' ? "items-end" : "items-start")}>
+              <div
+                className={cn(
+                  'text-xs font-mono px-3.5 py-2.5 rounded-2xl leading-relaxed w-fit',
+                  msg.role === 'user'
+                    ? 'rounded-tr-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary/95 shadow-[0_0_12px_rgba(0,200,180,0.05)]'
+                    : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60',
+                )}
+              >
+                {msg.role === 'user' ? msg.text : renderModelText(msg.text)}
+              </div>
+              {msg.footer && (
+                <span className="text-[10px] font-mono text-white/20 px-2 select-none">
+                  {msg.footer}
+                </span>
+              )}
+            </div>
+          </motion.div>
+        ))}
+
+        {isQuerying && streamingText && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-start"
+          >
+            <div className="max-w-[85%] text-xs font-mono px-3.5 py-2.5 rounded-2xl rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60 leading-relaxed">
+              {renderModelText(streamingText)}
+              <span className="animate-pulse text-brand-primary ml-0.5">█</span>
+            </div>
+          </motion.div>
+        )}
+
+        {isQuerying && !streamingText && (
+          <div className="flex justify-start">
+            <div className="text-xs font-mono px-3.5 py-2.5 text-white/30 flex items-center gap-2">
+              <span className="animate-pulse">●</span>
+              <span>thinking...</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Input */}
+      <div className="border-t border-white/[0.05] px-4 py-3 shrink-0 bg-bento-panel/80">
+        <div className="flex items-center gap-2 px-3.5 py-2 bg-white/[0.02] border border-white/[0.06] rounded-full focus-within:border-brand-primary/30 focus-within:bg-white/[0.04] focus-within:shadow-[0_0_16px_rgba(0,200,180,0.04)] transition-all duration-300">
+          <div className="relative flex-grow flex items-center min-w-0">
+            <input
+              id="ai-chat-drawer-input"
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              maxLength={AI_AGENT.maxPromptLength}
+              placeholder="Ask about Justin..."
+              disabled={isQuerying || remainingQueries <= 0}
+              tabIndex={isOpen ? 0 : -1}
+              className={cn(
+                'w-full bg-transparent font-mono text-[16px] md:text-xs text-white/80 placeholder:text-white/25',
+                'outline-none border-none p-0 focus:ring-0 focus:outline-none',
+                'disabled:opacity-40',
+              )}
+              aria-label="Ask a question"
+            />
+          </div>
+          <button
+            onClick={() => send(input)}
+            disabled={isQuerying || !input.trim() || remainingQueries <= 0}
+            tabIndex={isOpen ? 0 : -1}
+            className={cn(
+              'w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-300 cursor-pointer',
+              input.trim() && !isQuerying && remainingQueries > 0
+                ? 'bg-brand-primary text-black hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(0,200,180,0.3)]'
+                : 'text-white/20 bg-white/[0.02] cursor-not-allowed'
+            )}
+            aria-label="Send message"
+          >
+            <Send size={11} className={cn(input.trim() && !isQuerying && 'translate-x-[0.5px]')} />
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 }

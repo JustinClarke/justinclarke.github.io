@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { GAME_COLORS } from '@/config/constants';
 
 type State = 'countdown' | 'playing' | 'paused' | 'over';
 
@@ -145,7 +146,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
       }
 
       // Render
-      ctx.fillStyle = '#111';
+      ctx.fillStyle = GAME_COLORS.pong.bg;
       ctx.fillRect(0, 0, s.width, s.height);
 
       // Center line
@@ -158,9 +159,9 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
       ctx.setLineDash([]);
 
       // Paddles
-      ctx.fillStyle = '#00c8b4'; // Brand color // tw-allow-hex
+      ctx.fillStyle = GAME_COLORS.pong.player;
       ctx.fillRect(0, s.playerY, s.paddleW, s.paddleH);
-      ctx.fillStyle = '#ef4444'; // Red // tw-allow-hex
+      ctx.fillStyle = GAME_COLORS.pong.ai;
       ctx.fillRect(s.width - s.paddleW, s.aiY, s.paddleW, s.paddleH);
 
       // Ball
@@ -192,7 +193,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
     <div className="h-full flex flex-col relative">
       <div className="flex items-center mb-3 font-mono text-[11px] px-2.5 pb-2.5 border-b border-white/5">
         <div className="flex items-center gap-4 text-viz-success">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e]" /> // tw-allow-hex
+          <span className="w-1.5 h-1.5 rounded-full bg-viz-success shadow-[0_0_8px_var(--color-viz-success)]" />
           <span>SCORE: {score.player}</span>
           <span className="text-viz-mac-red">LIVES: {score.lives}</span>
         </div>
@@ -246,6 +247,19 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
         >
           ▼
         </button>
+      </div>
+
+      {/* Keyboard controls for desktop view */}
+      <div className="hidden lg:flex justify-center items-center gap-6 p-4 border-t border-white/5 font-mono text-[10px] text-white/40 select-none">
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▲</kbd> / <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▼</kbd> Move Paddle
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">P</kbd> Pause/Resume
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Esc</kbd> Exit
+        </span>
       </div>
     </div>
   );

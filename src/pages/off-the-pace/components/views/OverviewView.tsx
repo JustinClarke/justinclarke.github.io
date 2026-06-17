@@ -51,7 +51,7 @@ export function OverviewView() {
       {/* ── TOP SECTION: DARK GRAPHITE ── */}
       <div className="bg-graphite-900 text-white pb-16 md:pb-24">
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col gap-24 pt-8">
-          <div className="reveal-element">
+          <div id="f1-narrative" className="reveal-element">
             <NarrativeOpener />
           </div>
 
@@ -60,7 +60,7 @@ export function OverviewView() {
             <TechStackBand />
           </div>
 
-          <div className="reveal-element" style={{ transitionDelay: '70ms' }}>
+          <div id="f1-workflow" className="reveal-element" style={{ transitionDelay: '70ms' }}>
             <WorkflowLayers />
           </div>
         </div>
@@ -74,19 +74,19 @@ export function OverviewView() {
         <div className="absolute bottom-[10%] left-[20%] w-[40vw] h-[40vw] bg-[radial-gradient(closest-side,rgba(139,92,246,0.04),transparent)] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto px-6 md:px-12 flex flex-col relative z-10">
-          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div id="f1-pipeline" className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <ProductPipeline />
           </div>
 
-          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div id="f1-value" className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <BusinessValue />
           </div>
 
-          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div id="f1-insights" className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <InsightCallout />
           </div>
 
-          <div className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
+          <div id="f1-status" className="reveal-element py-16 md:py-24" style={{ transitionDelay: '60ms' }}>
             <HonestyStrip />
           </div>
 

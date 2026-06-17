@@ -14,14 +14,34 @@
  * -----------------------------------------------------------------------------
  */
 import React, { useState, useRef } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { useLastFm } from '@/hooks';
 
 // LEARN: a tiny component defined right here because it's only used in this file.
 //    It takes one optional `className` prop (with a default) and returns the
 //    Spotify logo as inline SVG, so it can be recoloured/resized via classes.
-const SpotifyLogo = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: { className?: string }) => (
+// Official filled Spotify logo
+export const SpotifyLogo = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: { className?: string }) => (
   <svg className={`${className} shrink-0`} viewBox="0 0 24 24" fill="currentColor" preserveAspectRatio="xMidYMid meet">
     <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-12.008-1.5-.479.122-1.023-.179-1.141-.62-.12-.48.179-1.023.621-1.141C9.6 9.9 15.079 10.561 18.679 12.84c.361.22.599.659.3 1.099zm.12-3.36C15.12 8.1 8.077 7.797 4.915 9.773c-.539.3-1.159.077-1.439-.461-.281-.537-.054-1.21.471-1.49C9.057 6.009 17.039 6.362 20.199 11.558c.3.441.077 1.141-.419 1.441-.46.3-1.141.077-1.441-.42z" />
+  </svg>
+);
+
+// Outline Spotify logo matching Lucide icons, for the footer (TheCloser)
+export const SpotifyLogoOutline = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: { className?: string }) => (
+  <svg
+    className={`${className} shrink-0`}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M8 15c2.5-0.8 5.5-0.8 8 0" />
+    <path d="M7 12c3.5-1.2 6.5-1.2 10 0" />
+    <path d="M6 9c4.2-1.7 8.8-1.7 13 0" />
   </svg>
 );
 
@@ -79,7 +99,7 @@ export const NowPlaying: React.FC = () => {
           <SpotifyLogo />
         </span>
         <span className="text-paper font-semibold">{track.artist}</span>
-        <span className="text-term-faint shrink-0"> - </span>
+        <span className="text-term-faint shrink-0"> • </span>
         <span className="text-term-dim">{track.name}</span>
       </div>
 
@@ -88,61 +108,65 @@ export const NowPlaying: React.FC = () => {
           true. This invisible strip covers the gap so the mouse stays "inside". */}
       {isOpen && <div className="absolute top-full left-0 right-0 h-3" />}
 
-      {/* Card */}
-      {isOpen && (
-        <div className="absolute top-[calc(100%+8px)] right-0 z-50">
-          <div
-            className="relative overflow-hidden rounded-2xl shadow-[0_32px_64px_rgba(0,0,0,0.8)] w-[220px]"
-            style={{ animation: 'nowPlayingIn 200ms cubic-bezier(0.16,1,0.3,1) both' }}
-          >
-            {/* Full-bleed album art */}
+      {/* Card Container with smooth fade-out and slide-up/down transitions */}
+      <div
+        className={`absolute top-[calc(100%+8px)] right-0 z-50 transition-all duration-300 ease-out origin-top-right ${
+          isOpen
+            ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
+            : 'opacity-0 -translate-y-2 scale-95 pointer-events-none'
+        }`}
+      >
+        <div className="relative overflow-hidden rounded-2xl shadow-[0_32px_64px_rgba(0,0,0,0.8)] w-[240px] bg-ink/95 backdrop-blur-md border border-white/10">
+          {/* Album art */}
+          <div className="p-3.5 pb-2">
             {track.albumArt ? (
-              <img
-                src={track.albumArt}
-                alt={track.name}
-                className="w-full aspect-square object-cover block"
-              />
+              <div className="w-full aspect-square rounded-xl overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.5)] border border-white/10 group/art relative">
+                <img
+                  src={track.albumArt}
+                  alt={track.name}
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/art:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/10 hover:bg-transparent transition-colors duration-300 pointer-events-none" />
+              </div>
             ) : (
-              <div className="w-full aspect-square bg-[#0d1513] flex items-center justify-center">
-                <SpotifyLogo className="w-10 h-10 text-viz-spotify/30" />
+              <div className="w-full aspect-square bg-[#070b0a] border border-white/5 rounded-xl flex items-center justify-center shadow-inner">
+                <SpotifyLogo className="w-8 h-8 text-viz-spotify/25 animate-pulse" />
               </div>
             )}
+          </div>
 
-            {/* Gradient overlay with info */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
+          {/* Track info & play actions */}
+          <div className="px-3.5 pb-3.5 pt-1.5 flex flex-col">
+            <div className="text-[8px] uppercase tracking-[0.2em] text-viz-spotify font-mono font-bold mb-2 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-viz-spotify animate-pulse inline-block shadow-[0_0_8px_rgba(29,185,84,0.6)]" />
+              {statusText}
+            </div>
+            <div className="text-[13px] font-bold text-white leading-tight truncate" title={track.artist}>{track.artist}</div>
+            <div className="text-[11px] text-white/50 mt-1 mb-2.5 truncate" title={track.name}>{track.name}</div>
 
-            {/* Bottom info */}
-            <div className="absolute bottom-0 left-0 right-0 p-3.5">
-              <div className="text-[9px] uppercase tracking-[0.18em] text-viz-spotify font-mono mb-1.5 flex items-center gap-1.5">
-                <span className="w-1 h-1 rounded-full bg-viz-spotify inline-block" />
-                {statusText}
-              </div>
-              <div className="text-sm font-bold text-white leading-tight">{track.artist}</div>
-              <div className="text-[11px] text-white/60 mt-0.5 mb-3">{track.name}</div>
-
+            <div className="flex flex-col gap-1.5">
               <a
                 href={`https://open.spotify.com/search/${encodeURIComponent(`${track.artist} ${track.name}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-viz-spotify hover:brightness-110 active:scale-95 transition-all duration-150"
+                className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-viz-spotify hover:brightness-110 active:scale-[0.98] transition-all duration-300 shadow-[0_4px_12px_rgba(29,185,84,0.2)]"
               >
-                <SpotifyLogo className="w-3 h-3 text-black" />
-                <span className="text-[10px] font-bold text-black tracking-wide font-mono">open on spotify</span>
+                <SpotifyLogo className="w-3.5 h-3.5 text-black" />
+                <span className="text-[9.5px] font-black text-black tracking-[0.18em] uppercase font-mono pt-[1px]">open track</span>
+              </a>
+              <a
+                href="https://open.spotify.com/user/312fwskwmcipw743yzgnuf4ak6ve?si=51a73edd462e4624"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-transparent border border-white/10 hover:bg-white/[0.04] active:scale-[0.98] transition-all duration-300 text-white/80 hover:text-white group/profile"
+              >
+                <span className="text-[9.5px] font-black tracking-[0.18em] uppercase font-mono pt-[1px]">Ear Candy (and Trash)</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-white/40 group-hover/profile:text-white group-hover/profile:translate-x-0.5 group-hover/profile:-translate-y-0.5 transition-all duration-300" />
               </a>
             </div>
           </div>
         </div>
-      )}
-
-      {/* LEARN: a one-off CSS keyframes animation, scoped here because nothing
-          else uses it (reusable animations live as --animate-* tokens instead).
-          The card's `style={{ animation: 'nowPlayingIn ...' }}` above plays it. */}
-      <style>{`
-        @keyframes nowPlayingIn {
-          from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-          to   { opacity: 1; transform: translateY(0)   scale(1); }
-        }
-      `}</style>
+      </div>
     </div>
   );
 };

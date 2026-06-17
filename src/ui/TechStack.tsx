@@ -97,31 +97,31 @@ export const TechStack: React.FC<TechStackProps> = ({ className, animate = false
             <path fill="url(#if6f791-i)" fillRule="evenodd" d="M5.038 16.086c-2.03.328-2.697 1.673-2.856 2.082a2.817 2.817 0 0 0 2.32 3.796c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.448-5.317z" clipRule="evenodd" />
             <defs>
               <linearGradient id="if6f791-a" x1="6.477" x2="6.477" y1="22.003" y2="14.73" gradientUnits="userSpaceOnUse">
-                <stop offset="0.056" stopColor="#2AAC94" /> // tw-allow-hex
-                <stop offset="0.155" stopColor="#239C87" /> // tw-allow-hex
-                <stop offset="0.372" stopColor="#177E71" /> // tw-allow-hex
-                <stop offset="0.588" stopColor="#0E6961" /> // tw-allow-hex
-                <stop offset="0.799" stopColor="#095D57" /> // tw-allow-hex
-                <stop offset="1" stopColor="#085954" /> // tw-allow-hex
+                <stop offset="0.056" stopColor="var(--color-fabric)" />
+                <stop offset="0.155" stopColor="#239C87" />
+                <stop offset="0.372" stopColor="#177E71" />
+                <stop offset="0.588" stopColor="#0E6961" />
+                <stop offset="0.799" stopColor="#095D57" />
+                <stop offset="1" stopColor="#085954" />
               </linearGradient>
               <linearGradient id="if6f791-b" x1="15.667" x2="8.644" y1="16.726" y2="9.087" gradientUnits="userSpaceOnUse">
-                <stop offset="0.042" stopColor="#ABE88E" /> // tw-allow-hex
-                <stop offset="0.549" stopColor="#2AAA92" /> // tw-allow-hex
-                <stop offset="0.906" stopColor="#117865" /> // tw-allow-hex
+                <stop offset="0.042" stopColor="#ABE88E" />
+                <stop offset="0.549" stopColor="#2AAA92" />
+                <stop offset="0.906" stopColor="#117865" />
               </linearGradient>
               <linearGradient id="if6f791-c" x1="-1.592" x2="5.092" y1="16.354" y2="14.075" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6AD6F9" /> // tw-allow-hex
-                <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} /> // tw-allow-hex
+                <stop stopColor="#6AD6F9" />
+                <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="if6f791-d" x1="3.507" x2="21.297" y1="7.61" y2="7.61" gradientUnits="userSpaceOnUse">
-                <stop offset="0.043" stopColor="#25FFD4" /> // tw-allow-hex
-                <stop offset="0.874" stopColor="#55DDB9" /> // tw-allow-hex
+                <stop offset="0.043" stopColor="#25FFD4" />
+                <stop offset="0.874" stopColor="#55DDB9" />
               </linearGradient>
               <linearGradient id="if6f791-e" x1="3.507" x2="19.532" y1="5.124" y2="12.565" gradientUnits="userSpaceOnUse">
-                <stop stopColor="#6AD6F9" /> // tw-allow-hex
-                <stop offset="0.23" stopColor="#60E9D0" /> // tw-allow-hex
-                <stop offset="0.651" stopColor="#6DE9BB" /> // tw-allow-hex
-                <stop offset="0.994" stopColor="#ABE88E" /> // tw-allow-hex
+                <stop stopColor="#6AD6F9" />
+                <stop offset="0.23" stopColor="#60E9D0" />
+                <stop offset="0.651" stopColor="#6DE9BB" />
+                <stop offset="0.994" stopColor="#ABE88E" />
               </linearGradient>
               <linearGradient id="if6f791-f" x1="4.989" x2="13.703" y1="6.516" y2="8.444" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#fff" stopOpacity={0} />
@@ -129,9 +129,9 @@ export const TechStack: React.FC<TechStackProps> = ({ className, animate = false
                 <stop offset="1" stopColor="#fff" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="if6f791-g" x1="7.879" x2="8.085" y1="13.981" y2="7.87" gradientUnits="userSpaceOnUse">
-                <stop offset="0.205" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
-                <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237} /> // tw-allow-hex
-                <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75} /> // tw-allow-hex
+                <stop offset="0.205" stopColor="#063D3B" stopOpacity={0} />
+                <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237} />
+                <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75} />
               </linearGradient>
               <linearGradient id="if6f791-h" x1="1.405" x2="8.851" y1="13.373" y2="14.774" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#fff" stopOpacity={0} />
@@ -139,11 +139,11 @@ export const TechStack: React.FC<TechStackProps> = ({ className, animate = false
                 <stop offset="1" stopColor="#fff" stopOpacity={0} />
               </linearGradient>
               <linearGradient id="if6f791-i" x1="6.784" x2="5.331" y1="19.988" y2="12.884" gradientUnits="userSpaceOnUse">
-                <stop offset="0.064" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
-                <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135} /> // tw-allow-hex
-                <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599} /> // tw-allow-hex
-                <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9} /> // tw-allow-hex
-                <stop offset="1" stopColor="#063D3B" /> // tw-allow-hex
+                <stop offset="0.064" stopColor="#063D3B" stopOpacity={0} />
+                <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135} />
+                <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599} />
+                <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9} />
+                <stop offset="1" stopColor="#063D3B" />
               </linearGradient>
             </defs>
           </svg>

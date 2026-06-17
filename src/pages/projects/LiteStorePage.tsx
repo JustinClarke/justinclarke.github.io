@@ -19,6 +19,7 @@
  * -----------------------------------------------------------------------------
  */
 import { useRef, useEffect, useState } from 'react';
+import { LITESTORE_BRAND_TOKENS } from '@/config/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
@@ -77,14 +78,7 @@ const METRICS = [
   { value: '3', label: 'Mall locations' },
 ];
 
-const BRAND_TOKENS = [
-  { name: 'LiteStore', hex: '#7e7ca6' }, // tw-allow-hex displayed as a literal swatch label
-  { name: 'MensXP', hex: '#ff5e03' },
-  { name: 'Vitro', hex: '#2c4b35' },
-  { name: 'WOW', hex: '#bc9850' },
-  { name: 'Sleepycat', hex: '#ff6832' },
-  { name: 'JBL', hex: '#ff3200' },
-];
+const BRAND_TOKENS = LITESTORE_BRAND_TOKENS;
 
 const LOGS = [
   '[BUILD] next 12.2.2 · 30 routes prerendered',
@@ -284,8 +278,7 @@ export const LiteStorePage = () => {
               </p>
 
               <div className="relative p-1 bg-gradient-to-br from-litestore/20 to-transparent rounded-[28px]">
-                {/* tw-allow-hex: one-off swatch card colour in the design system demo */}
-                <div className="bg-[#0d0d0d] rounded-[27px] p-6 border border-white/5">
+                <div className="bg-[rgb(13,13,13)] rounded-[27px] p-6 border border-white/5">
                   <div className="flex items-center gap-2 mb-5 opacity-40">
                     <div className="w-2 h-2 rounded-full bg-red-500/60" />
                     <div className="w-2 h-2 rounded-full bg-amber-500/60" />

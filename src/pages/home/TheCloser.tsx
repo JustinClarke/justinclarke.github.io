@@ -23,6 +23,7 @@ import { cn, track } from '@/utils';
 import { smoothScrollTo } from '@/utils/scroll';
 import { Mail, ArrowUpRight, Github, Linkedin, Instagram, Terminal, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { TOOLTIPS } from '@/config/tooltips';
+import { SpotifyLogoOutline } from '@/components/NowPlaying';
 
 export const TheCloser = () => {
   // LEARN: useRef gives a box whose .current React fills with the real DOM
@@ -147,6 +148,7 @@ export const TheCloser = () => {
             <li><FooterSocialLink href='https://github.com/JustinClarke' icon={Github} label='GitHub' /></li>
             <li><FooterSocialLink href='https://linkedin.com/in/justinsavioclarke' icon={Linkedin} label='LinkedIn' /></li>
             <li><FooterSocialLink href='https://www.instagram.com/justiiiinsta' icon={Instagram} label='Instagram' /></li>
+            <li><FooterSocialLink href='https://open.spotify.com/user/312fwskwmcipw743yzgnuf4ak6ve?si=51a73edd462e4624' icon={SpotifyLogoOutline} label='Spotify' /></li>
             <li><FooterSocialLink href={`mailto:${closerMetadata.email}`} icon={Mail} label='Email' /></li>
           </ul>
         </nav>
@@ -317,6 +319,7 @@ const SOCIAL_TOOLTIP: Record<string, string> = {
   GitHub: TOOLTIPS.github,
   LinkedIn: TOOLTIPS.linkedin,
   Instagram: TOOLTIPS.instagram,
+  Spotify: TOOLTIPS.spotify,
   Email: TOOLTIPS.email,
 };
 
@@ -335,6 +338,11 @@ const BRAND_STYLES: Record<string, { default: string; hover: string; shadow: str
     default: 'bg-social-instagram/5 border-social-instagram/20 text-social-instagram',
     hover: 'hover:bg-social-instagram hover:text-ink hover:border-transparent',
     shadow: 'hover:shadow-[0_0_20px_rgba(225,48,108,0.4)]',
+  },
+  Spotify: {
+    default: 'bg-social-spotify/5 border-social-spotify/20 text-social-spotify',
+    hover: 'hover:bg-social-spotify hover:text-ink hover:border-transparent',
+    shadow: 'hover:shadow-[0_0_20px_rgba(29,185,84,0.4)]',
   },
   Email: {
     default: 'bg-social-email/5 border-social-email/20 text-social-email',

@@ -217,8 +217,8 @@ export function ConnectPage() {
                       <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                       AVAILABLE
                     </span>
-                    <span className="hidden md:inline-flex font-mono text-[10px] lg:text-[11px] tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-white/10 bg-white/[0.02] text-white/50">
-                      VISA · SPONSORED
+                    <span className="hidden md:inline-flex font-mono text-[10px] lg:text-[11px] tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-white/10 bg-white/[0.02] text-white/50 cursor-help" data-tooltip="For the UAE">
+                      SPONSORSHIP NOT REQUIRED
                     </span>
                   </div>
 

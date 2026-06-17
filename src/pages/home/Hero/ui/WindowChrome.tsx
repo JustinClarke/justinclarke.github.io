@@ -71,7 +71,7 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
       />
       <button
         type="button"
-        className="w-2.5 h-2.5 rounded-full bg-[#28c840] hover:bg-[#28c840]/80 cursor-pointer relative group-hover/traffic:after:content-['+'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-[8px] after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors" // tw-allow-hex
+        className="w-2.5 h-2.5 rounded-full bg-viz-mac-green hover:bg-viz-mac-green/80 cursor-pointer relative group-hover/traffic:after:content-['+'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-[8px] after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
       />
 
     </div>

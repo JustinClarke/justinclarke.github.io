@@ -407,6 +407,19 @@ export const SnakeGame = ({ onExit }: { onExit: () => void }) => {
           </button>
         </div>
       </div>
+
+      {/* Keyboard controls for desktop view */}
+      <div className="hidden lg:flex justify-center items-center gap-6 p-4 border-t border-white/5 font-mono text-[10px] text-white/40 select-none">
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▲</kbd> <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▼</kbd> <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">◀</kbd> <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▶</kbd> Steer Snake
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">P</kbd> Pause/Resume
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Esc</kbd> Exit
+        </span>
+      </div>
     </div>
   );
 };

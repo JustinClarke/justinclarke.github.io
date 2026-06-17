@@ -82,3 +82,78 @@ export const PRELOADER_TIMELINE = {
   TOTAL_DURATION: 2.0,
   EXIT_DURATION: 1.2,
 };
+
+export const GAME_COLORS = {
+  tetris: {
+    shapes: [
+      '#0ea5e9', // I (cyan-ish)
+      '#3b82f6', // J (blue)
+      '#f97316', // L (orange)
+      '#eab308', // O (yellow)
+      '#22c55e', // S (green)
+      '#a855f7', // T (purple)
+      '#ef4444'  // Z (red)
+    ],
+    bg: '#0a0a0a',
+    grid: '#1a1a1a',
+  },
+  spaceInvaders: {
+    bg: '#0a0a0a',
+    player: '#00c8b4',
+    bullet: '#ef4444',
+    invaders: [
+      '#fbbf24', // type 0
+      '#a855f7', // type 1
+      '#ef4444', // type 2
+    ],
+  },
+  pong: {
+    bg: '#111111',
+    player: '#00c8b4',
+    ai: '#ef4444',
+  },
+} as const;
+
+export const LITESTORE_BRAND_TOKENS = [
+  { name: 'LiteStore', hex: '#7e7ca6' },
+  { name: 'MensXP', hex: '#ff5e03' },
+  { name: 'Vitro', hex: '#2c4b35' },
+  { name: 'WOW', hex: '#bc9850' },
+  { name: 'Sleepycat', hex: '#ff6832' },
+  { name: 'JBL', hex: '#ff3200' },
+] as const;
+
+export const SEO_THEME_COLORS = {
+  dark: '#050505',
+  light: '#ffffff',
+} as const;
+
+export const LINKEDIN_BANNER_COLORS = {
+  dark: {
+    frameBg: '#060608',
+    profileBorder: '#060608',
+    profileBg: 'radial-gradient(circle at 35% 35%, var(--color-term-text), #0d0d0d)',
+    syntax: {
+      keyword: '#c678dd',
+      func: '#61afef',
+      string: '#98c379',
+      tag: '#e06c75',
+      attr: '#d19a66',
+    },
+  },
+  light: {
+    outerBg: 'bg-[#f8fafc]',
+    chartFill: '#e2e8f0',
+    arrowGradEnd: '#0d9488',
+    arrowHead: '#0d9488',
+    titleDevGrad: 'linear-gradient(135deg, #0d9488, #4f46e5)',
+    syntax: {
+      keyword: '#a8229b',
+      func: '#0277bd',
+      string: '#2e7d32',
+      tag: '#d84315',
+      attr: '#ad7b00',
+    },
+  },
+} as const;
+

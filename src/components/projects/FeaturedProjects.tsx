@@ -330,8 +330,8 @@ export function FeaturedProjects() {
  
                 <div className="flex items-center gap-3 relative z-10 shrink-0">
                   {/* Availability Badge */}
-                  <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-md border border-acc-lang/20 bg-acc-lang/5 font-mono text-[8px] text-acc-lang font-black tracking-wider select-none">
-                    VISA · SPONSORED
+                  <span className="hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-md border border-acc-lang/20 bg-acc-lang/5 font-mono text-[8px] text-acc-lang font-black tracking-wider select-none cursor-help" data-tooltip="For the UAE">
+                    SPONSORSHIP NOT REQUIRED
                   </span>
  
                   <ArrowRight size={14} className="text-neutral-500 group-hover:text-acc-lang group-hover:translate-x-1.5 transition-all duration-300 shrink-0" />

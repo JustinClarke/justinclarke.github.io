@@ -17,6 +17,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Schema } from './Schema';
 import { useTheme } from '@/app/providers';
+import { SEO_THEME_COLORS } from '@/config/constants';
 
 const SITE_URL = 'https://justinclarke.github.io';
 const DEFAULT_OG = `${SITE_URL}/og-image.png`;
@@ -41,7 +42,7 @@ export const SEO: React.FC<SEOProps> = ({
   schemaType,
 }) => {
   const { resolvedTheme } = useTheme();
-  const themeColor = resolvedTheme === 'dark' ? '#050505' : '#ffffff'; // tw-allow-hex
+  const themeColor = resolvedTheme === 'dark' ? SEO_THEME_COLORS.dark : SEO_THEME_COLORS.light;
   const siteTitle = title;
   const canonicalUrl = `${SITE_URL}${path}`;
   const ogImage = image

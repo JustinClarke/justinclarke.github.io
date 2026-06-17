@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Code2, Cylinder, Circle } from 'lucide-react';
+import { LINKEDIN_BANNER_COLORS } from '@/config/constants';
 
 /**
  * LinkedinBannerPage – a standalone screenshottable page sized exactly
@@ -23,7 +24,7 @@ export const LinkedinBannerPage: React.FC = () => {
   ];
 
   const theme = isDark ? {
-    frameBg: '#060608', // tw-allow-hex
+    frameBg: LINKEDIN_BANNER_COLORS.dark.frameBg,
     outerBg: 'bg-void',
     dotColor: 'rgba(255, 255, 255, 0.07)',
     lineStroke: 'white',
@@ -41,8 +42,8 @@ export const LinkedinBannerPage: React.FC = () => {
     circuitStroke: 'white',
     circuitOpacity: 'opacity-[0.08]',
     circuitNode: 'rgba(0,200,180,0.4)',
-    profileBorder: '#060608', // tw-allow-hex
-    profileBg: 'radial-gradient(circle at 35% 35%, var(--color-term-text), #0d0d0d)', // tw-allow-hex
+    profileBorder: LINKEDIN_BANNER_COLORS.dark.profileBorder,
+    profileBg: LINKEDIN_BANNER_COLORS.dark.profileBg,
     profileText: 'text-white/15',
     profileShadow: '0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,200,180,0.03)',
     arrowGlow: 'rgba(0,200,180,0.15)',
@@ -65,16 +66,10 @@ export const LinkedinBannerPage: React.FC = () => {
     uiWireframeElement: 'rgba(255,255,255,0.15)',
     uiWireframeGrad: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
     codeSnippetText: 'text-white/30',
-    syntax: {
-      keyword: '#c678dd', // tw-allow-hex
-      func: '#61afef', // tw-allow-hex
-      string: '#98c379', // tw-allow-hex
-      tag: '#e06c75', // tw-allow-hex
-      attr: '#d19a66', // tw-allow-hex
-    }
+    syntax: LINKEDIN_BANNER_COLORS.dark.syntax
   } : {
     frameBg: 'linear-gradient(135deg, var(--color-light-bg) 0%, var(--color-term-white) 100%)',
-    outerBg: 'bg-[#f8fafc]', // tw-allow-hex
+    outerBg: LINKEDIN_BANNER_COLORS.light.outerBg,
     dotColor: 'rgba(15, 23, 42, 0.1)',
     lineStroke: 'rgba(15, 23, 42, 0.08)',
     lineOpacity: 'opacity-100',
@@ -86,7 +81,7 @@ export const LinkedinBannerPage: React.FC = () => {
     glowBlend: 'normal',
     scanlineOpacity: 'opacity-20',
     scanlineColor: 'rgba(6,182,212,0.02)',
-    chartFill: '#e2e8f0', // tw-allow-hex
+    chartFill: LINKEDIN_BANNER_COLORS.light.chartFill,
     chartOpacity: 'opacity-100',
     circuitStroke: 'rgba(15, 23, 42, 0.16)',
     circuitOpacity: 'opacity-100',
@@ -98,10 +93,10 @@ export const LinkedinBannerPage: React.FC = () => {
     arrowGlow: 'rgba(6,182,212,0.25)',
     arrowGradStart: 'rgba(99,102,241,0.2)',
     arrowGradMid: 'rgba(6,182,212,0.6)',
-    arrowGradEnd: '#0d9488', // tw-allow-hex
-    arrowHead: '#0d9488', // tw-allow-hex
+    arrowGradEnd: LINKEDIN_BANNER_COLORS.light.arrowGradEnd,
+    arrowHead: LINKEDIN_BANNER_COLORS.light.arrowHead,
     titleText: 'text-slate-900',
-    titleDevGrad: 'linear-gradient(135deg, #0d9488, #4f46e5)', // tw-allow-hex
+    titleDevGrad: LINKEDIN_BANNER_COLORS.light.titleDevGrad,
     stackBg: 'rgba(255, 255, 255, 0.25)',
     stackBorder: 'border-slate-200/80',
     stackShadow: '0 4px 20px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255,255,255,0.9)',
@@ -115,13 +110,7 @@ export const LinkedinBannerPage: React.FC = () => {
     uiWireframeElement: 'rgba(15, 23, 42, 0.14)',
     uiWireframeGrad: 'linear-gradient(90deg, rgba(15, 23, 42, 0.08) 0%, transparent 100%)',
     codeSnippetText: 'text-slate-700',
-    syntax: {
-      keyword: '#a8229b', // tw-allow-hex
-      func: '#0277bd', // tw-allow-hex
-      string: '#2e7d32', // tw-allow-hex
-      tag: '#d84315', // tw-allow-hex
-      attr: '#ad7b00', // tw-allow-hex
-    }
+    syntax: LINKEDIN_BANNER_COLORS.light.syntax,
   };
 
   return (
@@ -328,9 +317,9 @@ export const LinkedinBannerPage: React.FC = () => {
         >
           {/* Mac window header */}
           <div className="flex items-center gap-1.5 px-3 py-2 border-b transition-colors duration-300" style={{ borderColor: theme.uiWireframeBorder }}>
-            <div className="w-2 h-2 rounded-full bg-[#ff5f56] opacity-80" /> // tw-allow-hex
-            <div className="w-2 h-2 rounded-full bg-[#ffbd2e] opacity-80" /> // tw-allow-hex
-            <div className="w-2 h-2 rounded-full bg-[#27c93f] opacity-80" /> // tw-allow-hex
+            <div className="w-2 h-2 rounded-full bg-viz-mac-red opacity-80" />
+            <div className="w-2 h-2 rounded-full bg-viz-mac-yellow opacity-80" />
+            <div className="w-2 h-2 rounded-full bg-viz-mac-green opacity-80" />
             <span className={`ml-2 font-mono text-[8px] opacity-50 transition-colors duration-300 ${theme.titleText}`}>Analytics.tsx</span>
           </div>
           <div className={`p-3 font-mono text-[9px] leading-[1.6] transition-colors duration-300 ${theme.codeSnippetText} opacity-[0.85] select-none`}>
@@ -518,7 +507,7 @@ export const LinkedinBannerPage: React.FC = () => {
               <span className={`transition-colors duration-300 ${theme.badgeText}`}>dbt</span>
             </span>
             {/* Fabric */}
-            <span className="inline-flex items-center rounded border border-[#2AAC94]/30 bg-[#2AAC94]/[0.06] font-mono font-bold transition-all duration-300" // tw-allow-hex
+            <span className="inline-flex items-center rounded border border-fabric/30 bg-fabric/[0.06] font-mono font-bold transition-all duration-300"
               style={{
                 padding: '0.38cqw 0.63cqw',
                 fontSize: '0.82cqw',
@@ -541,31 +530,31 @@ export const LinkedinBannerPage: React.FC = () => {
                 <path fill="url(#if6f791-i)" fillRule="evenodd" d="M5.038 16.086c-2.03.328-2.697 1.673-2.856 2.082a2.817 2.817 0 0 0 2.32 3.796c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.448-5.317z" clipRule="evenodd" />
                 <defs>
                   <linearGradient id="if6f791-a" x1="6.477" x2="6.477" y1="22.003" y2="14.73" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.056" stopColor="#2AAC94" /> // tw-allow-hex
-                    <stop offset="0.155" stopColor="#239C87" /> // tw-allow-hex
-                    <stop offset="0.372" stopColor="#177E71" /> // tw-allow-hex
-                    <stop offset="0.588" stopColor="#0E6961" /> // tw-allow-hex
-                    <stop offset="0.799" stopColor="#095D57" /> // tw-allow-hex
-                    <stop offset="1" stopColor="#085954" /> // tw-allow-hex
+                    <stop offset="0.056" stopColor="var(--color-fabric)" />
+                    <stop offset="0.155" stopColor="#239C87" />
+                    <stop offset="0.372" stopColor="#177E71" />
+                    <stop offset="0.588" stopColor="#0E6961" />
+                    <stop offset="0.799" stopColor="#095D57" />
+                    <stop offset="1" stopColor="#085954" />
                   </linearGradient>
                   <linearGradient id="if6f791-b" x1="15.667" x2="8.644" y1="16.726" y2="9.087" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.042" stopColor="#ABE88E" /> // tw-allow-hex
-                    <stop offset="0.549" stopColor="#2AAA92" /> // tw-allow-hex
-                    <stop offset="0.906" stopColor="#117865" /> // tw-allow-hex
+                    <stop offset="0.042" stopColor="#ABE88E" />
+                    <stop offset="0.549" stopColor="#2AAA92" />
+                    <stop offset="0.906" stopColor="#117865" />
                   </linearGradient>
                   <linearGradient id="if6f791-c" x1="-1.592" x2="5.092" y1="16.354" y2="14.075" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#6AD6F9" /> // tw-allow-hex
-                    <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} /> // tw-allow-hex
+                    <stop stopColor="#6AD6F9" />
+                    <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="if6f791-d" x1="3.507" x2="21.297" y1="7.61" y2="7.61" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.043" stopColor="#25FFD4" /> // tw-allow-hex
-                    <stop offset="0.874" stopColor="#55DDB9" /> // tw-allow-hex
+                    <stop offset="0.043" stopColor="#25FFD4" />
+                    <stop offset="0.874" stopColor="#55DDB9" />
                   </linearGradient>
                   <linearGradient id="if6f791-e" x1="3.507" x2="19.532" y1="5.124" y2="12.565" gradientUnits="userSpaceOnUse">
-                    <stop stopColor="#6AD6F9" /> // tw-allow-hex
-                    <stop offset="0.23" stopColor="#60E9D0" /> // tw-allow-hex
-                    <stop offset="0.651" stopColor="#6DE9BB" /> // tw-allow-hex
-                    <stop offset="0.994" stopColor="#ABE88E" /> // tw-allow-hex
+                    <stop stopColor="#6AD6F9" />
+                    <stop offset="0.23" stopColor="#60E9D0" />
+                    <stop offset="0.651" stopColor="#6DE9BB" />
+                    <stop offset="0.994" stopColor="#ABE88E" />
                   </linearGradient>
                   <linearGradient id="if6f791-f" x1="4.989" x2="13.703" y1="6.516" y2="8.444" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#fff" stopOpacity={0} />
@@ -573,9 +562,9 @@ export const LinkedinBannerPage: React.FC = () => {
                     <stop offset="1" stopColor="#fff" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="if6f791-g" x1="7.879" x2="8.085" y1="13.981" y2="7.87" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.205" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
-                    <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237} /> // tw-allow-hex
-                    <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75} /> // tw-allow-hex
+                    <stop offset="0.205" stopColor="#063D3B" stopOpacity={0} />
+                    <stop offset="0.586" stopColor="#063D3B" stopOpacity={0.237} />
+                    <stop offset="0.872" stopColor="#063D3B" stopOpacity={0.75} />
                   </linearGradient>
                   <linearGradient id="if6f791-h" x1="1.405" x2="8.851" y1="13.373" y2="14.774" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#fff" stopOpacity={0} />
@@ -583,11 +572,11 @@ export const LinkedinBannerPage: React.FC = () => {
                     <stop offset="1" stopColor="#fff" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="if6f791-i" x1="6.784" x2="5.331" y1="19.988" y2="12.884" gradientUnits="userSpaceOnUse">
-                    <stop offset="0.064" stopColor="#063D3B" stopOpacity={0} /> // tw-allow-hex
-                    <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135} /> // tw-allow-hex
-                    <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599} /> // tw-allow-hex
-                    <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9} /> // tw-allow-hex
-                    <stop offset="1" stopColor="#063D3B" /> // tw-allow-hex
+                    <stop offset="0.064" stopColor="#063D3B" stopOpacity={0} />
+                    <stop offset="0.17" stopColor="#063D3B" stopOpacity={0.135} />
+                    <stop offset="0.562" stopColor="#063D3B" stopOpacity={0.599} />
+                    <stop offset="0.85" stopColor="#063D3B" stopOpacity={0.9} />
+                    <stop offset="1" stopColor="#063D3B" />
                   </linearGradient>
                 </defs>
               </svg>

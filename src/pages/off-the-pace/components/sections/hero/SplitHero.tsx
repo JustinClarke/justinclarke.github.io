@@ -148,7 +148,7 @@ export function SplitHero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen lg:h-screen flex flex-col py-20 lg:py-24 overflow-hidden">
+    <section id="f1-hero" className="relative min-h-screen lg:h-screen flex flex-col py-20 lg:py-24 overflow-hidden">
       <style>{`
         @keyframes slideArrow {
           0% { transform: translateX(-6px); opacity: 0; }

@@ -260,8 +260,7 @@ function LayerCard({ layer, ...rest }: { layer: Layer; [key: string]: any }) {
   );
 }
 
-// tw-allow-hex #ffffff05 is white at 2% opacity in a gradient string, not a tokenisable colour
-const GRID_BG = "pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-40"; // tw-allow-hex
+const GRID_BG = "pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black_70%,transparent_100%)] opacity-40";
 
 export function WorkflowLayers() {
   return (

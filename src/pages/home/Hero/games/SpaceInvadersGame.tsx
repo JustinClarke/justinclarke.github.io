@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { GAME_COLORS } from '@/config/constants';
 
 type State = 'countdown' | 'playing' | 'paused' | 'over' | 'won';
 
@@ -184,11 +185,11 @@ export const SpaceInvadersGame = ({ onExit }: { onExit: () => void }) => {
       }
 
       // Render
-      ctx.fillStyle = '#0a0a0a'; // tw-allow-hex
+      ctx.fillStyle = GAME_COLORS.spaceInvaders.bg;
       ctx.fillRect(0, 0, s.width, s.height);
 
       // Player
-      ctx.fillStyle = '#00c8b4'; // tw-allow-hex
+      ctx.fillStyle = GAME_COLORS.spaceInvaders.player;
       ctx.fillRect(s.playerX, s.playerY + 10, s.playerW, s.playerH - 10);
       ctx.fillRect(s.playerX + 15, s.playerY, 10, 10); // turret
 
@@ -196,12 +197,12 @@ export const SpaceInvadersGame = ({ onExit }: { onExit: () => void }) => {
       ctx.fillStyle = '#fff';
       s.bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 15));
       
-      ctx.fillStyle = '#ef4444'; // tw-allow-hex
+      ctx.fillStyle = GAME_COLORS.spaceInvaders.bullet;
       s.invaderBullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 15));
 
       // Invaders
       s.invaders.filter(inv => inv.alive).forEach(inv => {
-        ctx.fillStyle = inv.type === 0 ? '#fbbf24' : inv.type === 1 ? '#a855f7' : '#ef4444'; // tw-allow-hex
+        ctx.fillStyle = GAME_COLORS.spaceInvaders.invaders[inv.type];
         ctx.fillRect(inv.x, inv.y, 30, 20);
       });
 
@@ -229,7 +230,7 @@ export const SpaceInvadersGame = ({ onExit }: { onExit: () => void }) => {
     <div className="h-full flex flex-col relative">
       <div className="flex items-center mb-3 font-mono text-[11px] px-2.5 pb-2.5 border-b border-white/5">
         <div className="flex items-center gap-4 text-viz-success">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] shadow-[0_0_8px_#22c55e]" /> // tw-allow-hex
+          <span className="w-1.5 h-1.5 rounded-full bg-viz-success shadow-[0_0_8px_var(--color-viz-success)]" />
           <span>SCORE: {score}</span>
         </div>
       </div>
@@ -289,6 +290,22 @@ export const SpaceInvadersGame = ({ onExit }: { onExit: () => void }) => {
         >
           ▶
         </button>
+      </div>
+
+      {/* Keyboard controls for desktop view */}
+      <div className="hidden lg:flex justify-center items-center gap-6 p-4 border-t border-white/5 font-mono text-[10px] text-white/40 select-none">
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">◀</kbd> <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▶</kbd> Move Ship
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-3 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Space</kbd> Fire Weapon
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">P</kbd> Pause/Resume
+        </span>
+        <span className="flex items-center gap-1.5">
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Esc</kbd> Exit
+        </span>
       </div>
     </div>
   );

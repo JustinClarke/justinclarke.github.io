@@ -88,8 +88,7 @@ export const CapitalBudgetingPage = () => {
       {/* ── HERO: QUANTITATIVE COMMAND ──────────────────────────── */}
       <section className="relative h-screen flex flex-col items-center justify-between px-6 md:px-24 overflow-hidden py-12 md:py-20 gap-y-12 bg-brand-bg text-white">
         <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-           {/* tw-allow-hex: one-off dark navy glow hex alpha (#1B3B5A40) inside a gradient expression */}
-           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#1B3B5A40_0%,transparent_70%)]" />
+           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(27,59,90,0.25)_0%,transparent_70%)]" />
            <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
