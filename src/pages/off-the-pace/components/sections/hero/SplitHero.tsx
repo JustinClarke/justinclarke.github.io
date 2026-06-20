@@ -16,53 +16,95 @@
  * instead of jumping, after `e.preventDefault()` stops the default anchor jump.
  * -----------------------------------------------------------------------------
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ScrambleText } from '../../ui/ScrambleText';
 import { STATS, LINKS } from '../../../data/projectStats';
+import { HERO_LAP, toLapClock } from '../../../data/decompositions';
+import { CASE_STUDIES } from '../../../data/caseStudies';
 import { smoothScrollTo } from '@/utils';
 import { ScrollHint } from '@/pages/home/Hero/ScrollHint';
 
-const GROSS_TIME = '1:31.408';
-const TRUE_PACE = '1:29.035';
-const TOTAL_STRIPPED = '2.373';
+// W1  - the living hero decomposition. Real lap from the warehouse
+// (decompositions.ts), animated as a strip-away waterfall. Numbers reconcile to
+// the additive identity by construction: truePace = gross - Σterms.
+const HERO_GROSS = toLapClock(HERO_LAP.grossLapTime_s);   // "1:38.330"
+const HERO_TRUE = toLapClock(HERO_LAP.truePace_s);        // "1:37.058"
+const HERO_TAG = `${HERO_LAP.raceLabel.toUpperCase()} · L${HERO_LAP.lap} · ${HERO_LAP.driver}`;
+const HERO_MAX_ABS = Math.max(...HERO_LAP.terms.map((t) => Math.abs(t.seconds)));
 
-interface DecompositionRow {
-  label: string;
-  delta: string;
-  pct: number;
+function TermRow({ term, index, reduce }: { term: (typeof HERO_LAP.terms)[number]; index: number; reduce: boolean }) {
+  const slower = term.seconds >= 0;                       // positive = slower than baseline
+  const frac = Math.abs(term.seconds) / HERO_MAX_ABS;     // 0..1 of one half-track
+  const value = `${slower ? '+' : '−'}${Math.abs(term.seconds).toFixed(3)}`;
+  const bar = (
+    <motion.span
+      className="block h-full w-full rounded-[2px]"
+      style={{ backgroundColor: term.color, transformOrigin: slower ? 'left center' : 'right center' }}
+      initial={reduce ? false : { scaleX: 0, opacity: 0.4 }}
+      whileInView={reduce ? undefined : { scaleX: 1, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+    />
+  );
+  return (
+    <div className="flex items-center gap-2 sm:gap-2.5 group/row">
+      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: term.color }} />
+      <span className="font-jetbrains text-[9px] sm:text-[10px] uppercase tracking-wide text-white/55 w-[5.25rem] shrink-0 truncate transition-colors duration-300 group-hover/row:text-white/90">
+        {term.label}
+      </span>
+      {/* diverging track: faster (−) grows left toward the axis, slower (+) grows right */}
+      <div className="flex-1 flex items-stretch h-[5px] min-w-0">
+        <div className="w-1/2 flex justify-end pr-px overflow-hidden">
+          <div className="h-full" style={{ width: `${slower ? 0 : frac * 100}%` }}>{!slower && bar}</div>
+        </div>
+        <span className="w-px self-stretch bg-white/15 shrink-0" aria-hidden="true" />
+        <div className="w-1/2 flex justify-start pl-px overflow-hidden">
+          <div className="h-full" style={{ width: `${slower ? frac * 100 : 0}%` }}>{slower && bar}</div>
+        </div>
+      </div>
+      <span
+        className="font-jetbrains text-[10px] sm:text-[11px] tabular-nums w-11 sm:w-12 text-right shrink-0 font-semibold"
+        style={{ color: slower ? 'var(--color-sql-red)' : 'var(--color-emerald)' }}
+      >
+        {value}s
+      </span>
+    </div>
+  );
 }
 
-const DECOMPOSITION: DecompositionRow[] = [
-  { label: 'Fuel load', delta: '0.812', pct: 65 },
-  { label: 'Tyre deg', delta: '1.243', pct: 100 },
-  { label: 'Dirty air', delta: '0.318', pct: 26 },
-];
-
 function DecompositionPanel() {
+  const reduce = useReducedMotion() ?? false;
   return (
-    <div className="relative group overflow-hidden bg-deep/92 border border-white/[0.08] backdrop-blur-sm p-4 sm:p-6 lg:p-8 rounded-xl shadow-2xl transition-all duration-500 hover:bg-deep/95 hover:border-white/[0.12] hover:shadow-[0_0_40px_rgba(225,6,0,0.15)]">
+    <div className="relative group overflow-hidden bg-[#0a0a0c]/70 border border-white/10 backdrop-blur-[24px] saturate-[180%] p-4 sm:p-6 lg:p-7 rounded-2xl shadow-2xl transition-all duration-500 hover:bg-[#0a0a0c]/80 hover:border-white/20 hover:shadow-[0_0_50px_rgba(225,6,0,0.2)]">
       {/* Subtle glowing orb in the background */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-[radial-gradient(closest-side,rgba(225,6,0,0.25),transparent)] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60" />
+      <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full bg-[radial-gradient(closest-side,rgba(225,6,0,0.4),transparent)] pointer-events-none transition-opacity duration-500 group-hover:opacity-100 opacity-60 animate-[pulseGlow_6s_ease-in-out_infinite]" />
 
       {/* Tech corner accents */}
       <div className="absolute top-0 left-0 w-6 h-6 sm:w-8 sm:h-8 border-t-2 border-l-2 border-f1-red/50 rounded-tl-xl transition-colors duration-300 group-hover:border-f1-red" />
       <div className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 border-b-2 border-r-2 border-f1-red/50 rounded-br-xl transition-colors duration-300 group-hover:border-f1-red" />
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-6 pb-2 sm:pb-4 border-b border-white/[0.08] font-jetbrains">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-white/[0.08] font-jetbrains">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-f1-red animate-pulse shadow-[0_0_8px_rgba(225,6,0,0.8)]" />
-          <span className="text-[8px] sm:text-[9px] tracking-[0.35em] sm:tracking-[0.4em] uppercase text-white/70 font-semibold">
+          <span className="text-[8px] sm:text-[9px] tracking-[0.3em] sm:tracking-[0.35em] uppercase text-white/70 font-semibold">
             CAUSAL DECOMPOSITION
           </span>
         </div>
-        <span className="text-[7px] sm:text-[9px] text-white/40 tracking-wider font-medium">SPAIN 2023 · L32 · VER</span>
+        <span className="text-[7px] sm:text-[9px] text-white/40 tracking-wider font-medium">{HERO_TAG}</span>
       </div>
 
-      <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 sm:gap-0 sm:mb-6 font-jetbrains">
+      {/* Honesty label  - kills the "is this fabricated?" ambiguity (plan W1) */}
+      <div className="relative z-10 hidden sm:flex items-center gap-1.5 mb-4 text-[8px] uppercase tracking-[0.2em] text-emerald-400/80 font-jetbrains font-semibold">
+        <span className="inline-block w-1 h-1 rounded-full bg-emerald-400" />
+        Real lap · <span className="text-white/45 normal-case tracking-normal lowercase">fct_lap_residuals</span>
+      </div>
+
+      <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 sm:gap-0 sm:mb-4 font-jetbrains">
         <div className="text-left">
           <div className="text-[7px] sm:text-[9px] uppercase tracking-[0.3em] text-white/40 mb-1 sm:mb-1.5 font-medium">GROSS LAP</div>
           <div className="text-xl sm:text-3xl lg:text-4xl font-black text-white/70 tabular-nums tracking-tight">
-            {GROSS_TIME}
+            {HERO_GROSS}
           </div>
         </div>
 
@@ -73,49 +115,34 @@ function DecompositionPanel() {
         <div className="text-right sm:hidden">
           <div className="text-[7px] sm:text-[9px] uppercase tracking-[0.3em] text-f1-red/80 mb-1 sm:mb-1.5 font-bold">TRUE PACE</div>
           <div className="text-2xl font-black text-white tabular-nums tracking-tight" style={{ textShadow: '0 0 24px rgba(225,6,0,0.6)' }}>
-            {TRUE_PACE}
+            {HERO_TRUE}
           </div>
         </div>
       </div>
 
-      <div className="relative z-10 hidden sm:flex flex-col gap-4 sm:gap-4 mb-3 sm:mb-4">
-        {DECOMPOSITION.map(({ label, delta, pct }) => (
-          <div key={label} className="flex items-center justify-between gap-3 sm:gap-4 group/row">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-white/20 shrink-0 transition-colors duration-300 group-hover/row:bg-white/50" />
-              <span className="font-jetbrains text-[9px] sm:text-[10px] uppercase tracking-wider text-white/50 truncate transition-colors duration-300 group-hover/row:text-white/90">
-                {label}
-              </span>
-            </div>
-            <div className="flex items-center gap-3 sm:gap-3 shrink-0">
-              <div className="w-14 sm:w-20 h-[3px] bg-white/[0.05] rounded-full relative overflow-hidden">
-                <div
-                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-f1-red/40 to-f1-red rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-              <span className="font-jetbrains text-[10px] sm:text-[11px] text-f1-red font-semibold tabular-nums w-12 sm:w-14 text-right drop-shadow-[0_0_8px_rgba(225,6,0,0.4)] transition-all duration-300 group-hover/row:text-[#ff1a0d] group-hover/row:drop-shadow-[0_0_12px_rgba(225,6,0,0.6)]">
-                −{delta}s
-              </span>
-            </div>
-          </div>
+      {/* All 7 signed terms, peeled one-by-one (≤1.2s total; static for reduced-motion) */}
+      <div className="relative z-10 hidden sm:flex flex-col gap-2.5 mb-3 sm:mb-4">
+        {HERO_LAP.terms.map((term, i) => (
+          <TermRow key={term.key} term={term} index={i} reduce={reduce} />
         ))}
       </div>
 
       {/* Total stripped  - makes the math legible */}
-      <div className="relative z-10 hidden sm:flex items-center justify-between gap-3 mb-4 sm:mb-5 pt-3 border-t border-white/[0.06]">
-        <span className="font-jetbrains text-[8px] sm:text-[9px] uppercase tracking-widest text-white/30">Total stripped</span>
-        <span className="font-jetbrains text-[11px] sm:text-[12px] text-white/50 font-bold tabular-nums">−{TOTAL_STRIPPED}s</span>
+      <div className="relative z-10 hidden sm:flex items-center justify-between gap-3 mb-4 pt-3 border-t border-white/[0.06]">
+        <span className="font-jetbrains text-[8px] sm:text-[9px] uppercase tracking-widest text-white/30">Net of 7 causes</span>
+        <span className="font-jetbrains text-[11px] sm:text-[12px] text-white/50 font-bold tabular-nums">
+          {HERO_LAP.totalStripped_s >= 0 ? '+' : '−'}{Math.abs(HERO_LAP.totalStripped_s).toFixed(3)}s
+        </span>
       </div>
 
-      <div className="relative z-10 hidden sm:block border-t border-white/[0.12] pt-4 sm:pt-5 mb-4 sm:mb-5 font-jetbrains">
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.3em] text-f1-red/80 mb-1.5 font-bold">TRUE PACE</div>
+      <div className="relative z-10 hidden sm:block border-t border-white/[0.12] pt-4 mb-4 font-jetbrains">
+        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.3em] text-f1-red/80 mb-1.5 font-bold">TRUE PACE · BASELINE</div>
         <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tabular-nums tracking-tight" style={{ textShadow: '0 0 24px rgba(225,6,0,0.6)' }}>
-          {TRUE_PACE}
+          {HERO_TRUE}
         </div>
       </div>
 
-      <div className="relative z-10 flex items-center justify-between sm:pt-4 sm:border-t border-white/[0.06] font-jetbrains gap-2 mt-4 sm:mt-0">
+      <div className="relative z-10 flex items-center justify-between sm:pt-3 sm:border-t border-white/[0.06] font-jetbrains gap-2 mt-4 sm:mt-0">
         <span className="text-[6px] sm:text-[8px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white/30 font-medium">
           {STATS.races} RACES <span className="hidden sm:inline">// {STATS.seasons} SEASONS</span>
         </span>
@@ -127,11 +154,62 @@ function DecompositionPanel() {
   );
 }
 
+// W2  - one concrete, clickable proof above the fold. Strategy/skill numbers come
+// straight from caseStudies.ts (no new constants); link opens the live finding.
+function ProofLine() {
+  const sp = CASE_STUDIES.find((c) => c.id === 'sao-paulo-2021');
+  if (!sp) return null;
+  const strat = sp.metrics[0]?.value ?? '';
+  const skill = sp.metrics[1]?.value ?? '';
+  return (
+    <a
+      href={sp.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group/proof inline-flex items-center gap-2.5 mb-6 sm:mb-8 px-3.5 py-2 rounded-lg border border-white/10 bg-white/[0.03] hover:border-f1-red/40 hover:bg-f1-red/[0.06] transition-all duration-300 max-w-md mx-auto lg:mx-0"
+    >
+      <span className="font-jetbrains text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-f1-red font-black shrink-0">Proven</span>
+      <span className="font-jetbrains text-[10px] sm:text-[11px] text-white/65 leading-tight text-left">
+        São Paulo 2021: <span className="text-white font-bold tabular-nums">{strat}</span> strategy,{' '}
+        <span className="text-emerald-400 font-bold tabular-nums">{skill}</span> Hamilton  - measured
+      </span>
+      <svg className="w-3 h-3 text-white/30 group-hover/proof:text-f1-red group-hover/proof:translate-x-0.5 transition-all duration-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+    </a>
+  );
+}
+
 export function SplitHero() {
   const [hoverCta, setHoverCta] = useState(false);
   const [hoverSource, setHoverSource] = useState(false);
   const [hoverFindings, setHoverFindings] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // P2  - the hero video no longer competes with the LCP. It ships with
+  // preload="none" + no autoplay (so nothing is fetched up front), and we only
+  // start it AFTER window load, and only on a real desktop viewport with motion
+  // allowed and Save-Data off. Otherwise the cheap AVIF poster is all that
+  // paints  - which keeps the <h1> as the LCP element on mobile/metered/reduced.
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const okViewport = window.matchMedia('(min-width: 769px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    if (!okViewport || reduceMotion || saveData) return; // poster only
+
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      el.play().catch(() => { /* autoplay blocked: poster remains, no error */ });
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', start);
+    };
+  }, []);
 
   // Detect scroll to dismiss the scroll hint when entering other sections
   useEffect(() => {
@@ -160,8 +238,8 @@ export function SplitHero() {
             transform: scale(1);
           }
           50% { 
-            box-shadow: 0 0 40px color-mix(in srgb, var(--color-f1-red) 80%, transparent), 0 0 60px color-mix(in srgb, var(--color-f1-red) 40%, transparent);
-            transform: scale(1.02);
+            box-shadow: 0 0 50px color-mix(in srgb, var(--color-f1-red) 90%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red) 50%, transparent);
+            transform: scale(1.03);
           }
         }
         .cta-arrow {
@@ -182,10 +260,15 @@ export function SplitHero() {
         }
       `}</style>
 
-      {/* Video background  - f1.webm preferred; f1.mp4 fallback */}
+      {/* Video background  - f1.webm preferred; f1.mp4 fallback. Deferred + gated
+          in the effect above (preload=none, started post-load on desktop only);
+          the AVIF poster carries the visual until then. */}
       <video
-        autoPlay loop muted playsInline
-        {...{ fetchpriority: 'high' }}
+        ref={videoRef}
+        loop muted playsInline preload="none"
+        aria-hidden="true"
+        width={1920}
+        height={1080}
         className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
         poster="/assets/audif1.avif"
         style={{ objectFit: 'cover', objectPosition: 'center', willChange: 'transform', transform: 'translate3d(0,0,0)' }}
@@ -232,6 +315,9 @@ export function SplitHero() {
               Seven measurable causes explain every lap. This strips them out.
             </p>
           </div>
+
+          {/* W2  - one concrete proof above the fold. Numbers sourced from caseStudies.ts. */}
+          <ProofLine />
 
           <div className="w-full max-w-sm sm:max-w-xl lg:max-w-[560px] flex flex-col gap-3 mt-3 sm:mt-4">
             <div className="grid grid-cols-2 gap-3 sm:gap-4 w-full">

@@ -16,7 +16,7 @@
  */
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { CommandDock, SEO } from '@/components/layout';
+import { CommandDock, SEO, GlobalSpotlight } from '@/components/layout';
 import { Analytics } from '@/components/analytics';
 import { initTooltips, initScrollAnimations, debug } from '@/utils';
 import { ContactModal } from '@/components/modals';
@@ -279,6 +279,7 @@ export default function App() {
           true. So the Preloader appears only while showPreloader is true. */}
       {showPreloader && <Suspense fallback={null}><Preloader /></Suspense>}
       {/* <CustomCursor /> */}
+      <GlobalSpotlight />
       <CommandDock />
 
       <div

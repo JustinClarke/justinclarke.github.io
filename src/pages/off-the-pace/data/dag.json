@@ -1,0 +1,345 @@
+{
+  "provenance": "off-the-pace transform/target/manifest.json (dbt). Pruned to the upstream lineage of fct_lap_residuals. Verified 2026-06-20.",
+  "totals": {
+    "models": 60,
+    "tests": 435
+  },
+  "nodes": [
+    {
+      "id": "dim_circuits",
+      "label": "dim_circuits",
+      "layer": "dimension",
+      "tests": 6,
+      "depth": 0,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "dim_compounds_season",
+      "label": "dim_compounds_season",
+      "layer": "dimension",
+      "tests": 4,
+      "depth": 0,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "stg_laps",
+      "label": "stg_laps",
+      "layer": "staging",
+      "tests": 9,
+      "depth": 0,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "dim_constructors",
+      "label": "dim_constructors",
+      "layer": "dimension",
+      "tests": 3,
+      "depth": 1,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "dim_drivers",
+      "label": "dim_drivers",
+      "layer": "dimension",
+      "tests": 2,
+      "depth": 1,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_event_corrections",
+      "label": "int_event_corrections",
+      "layer": "intermediate",
+      "tests": 2,
+      "depth": 1,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_stint_geometry",
+      "label": "int_stint_geometry",
+      "layer": "intermediate",
+      "tests": 4,
+      "depth": 1,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "stg_weather",
+      "label": "stg_weather",
+      "layer": "staging",
+      "tests": 1,
+      "depth": 1,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_compound_cliff_predicted",
+      "label": "int_compound_cliff_predicted",
+      "layer": "intermediate",
+      "tests": 2,
+      "depth": 2,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_lap_air_state",
+      "label": "int_lap_air_state",
+      "layer": "intermediate",
+      "tests": 3,
+      "depth": 2,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_lap_fuel_state",
+      "label": "int_lap_fuel_state",
+      "layer": "intermediate",
+      "tests": 3,
+      "depth": 2,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_field_pace_curve",
+      "label": "int_field_pace_curve",
+      "layer": "intermediate",
+      "tests": 4,
+      "depth": 3,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_track_evolution",
+      "label": "int_track_evolution",
+      "layer": "intermediate",
+      "tests": 4,
+      "depth": 4,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_constructor_structural_pace",
+      "label": "int_constructor_structural_pace",
+      "layer": "intermediate",
+      "tests": 16,
+      "depth": 5,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_dirty_air_tax_component",
+      "label": "int_dirty_air_tax_component",
+      "layer": "intermediate",
+      "tests": 10,
+      "depth": 5,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_circuit_x_constructor_interaction",
+      "label": "int_circuit_x_constructor_interaction",
+      "layer": "intermediate",
+      "tests": 3,
+      "depth": 6,
+      "terminal": false,
+      "convergence": false
+    },
+    {
+      "id": "int_lap_residual_decomposed",
+      "label": "int_lap_residual_decomposed",
+      "layer": "intermediate",
+      "tests": 10,
+      "depth": 7,
+      "terminal": false,
+      "convergence": true
+    },
+    {
+      "id": "fct_lap_residuals",
+      "label": "fct_lap_residuals",
+      "layer": "marts",
+      "tests": 19,
+      "depth": 8,
+      "terminal": true,
+      "convergence": false
+    }
+  ],
+  "edges": [
+    {
+      "source": "int_lap_fuel_state",
+      "target": "int_field_pace_curve"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_field_pace_curve"
+    },
+    {
+      "source": "int_lap_air_state",
+      "target": "int_field_pace_curve"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_compound_cliff_predicted"
+    },
+    {
+      "source": "dim_compounds_season",
+      "target": "int_compound_cliff_predicted"
+    },
+    {
+      "source": "stg_weather",
+      "target": "int_compound_cliff_predicted"
+    },
+    {
+      "source": "int_lap_fuel_state",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "int_field_pace_curve",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "stg_laps",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "int_event_corrections",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "int_track_evolution",
+      "target": "int_constructor_structural_pace"
+    },
+    {
+      "source": "int_lap_fuel_state",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_field_pace_curve",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_lap_air_state",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_event_corrections",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_track_evolution",
+      "target": "int_dirty_air_tax_component"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_lap_air_state"
+    },
+    {
+      "source": "int_constructor_structural_pace",
+      "target": "int_circuit_x_constructor_interaction"
+    },
+    {
+      "source": "stg_laps",
+      "target": "dim_constructors"
+    },
+    {
+      "source": "int_lap_residual_decomposed",
+      "target": "fct_lap_residuals"
+    },
+    {
+      "source": "dim_drivers",
+      "target": "fct_lap_residuals"
+    },
+    {
+      "source": "dim_constructors",
+      "target": "fct_lap_residuals"
+    },
+    {
+      "source": "stg_laps",
+      "target": "int_event_corrections"
+    },
+    {
+      "source": "stg_laps",
+      "target": "int_stint_geometry"
+    },
+    {
+      "source": "stg_laps",
+      "target": "dim_drivers"
+    },
+    {
+      "source": "stg_laps",
+      "target": "stg_weather"
+    },
+    {
+      "source": "int_field_pace_curve",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_lap_fuel_state",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "stg_laps",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_compound_cliff_predicted",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_track_evolution",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_constructor_structural_pace",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_circuit_x_constructor_interaction",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_dirty_air_tax_component",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_event_corrections",
+      "target": "int_lap_residual_decomposed"
+    },
+    {
+      "source": "int_field_pace_curve",
+      "target": "int_track_evolution"
+    },
+    {
+      "source": "stg_weather",
+      "target": "int_track_evolution"
+    },
+    {
+      "source": "int_stint_geometry",
+      "target": "int_lap_fuel_state"
+    },
+    {
+      "source": "stg_laps",
+      "target": "int_lap_fuel_state"
+    },
+    {
+      "source": "dim_circuits",
+      "target": "int_lap_fuel_state"
+    }
+  ]
+}

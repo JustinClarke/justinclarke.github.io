@@ -48,7 +48,7 @@ export function ProductPipeline() {
         </div>
 
         {/* 01 Ingest */}
-        <div className="relative flex flex-col p-8 bg-graphite-850 border border-white/5 rounded-[2rem] hover:border-f1-red/30 hover:bg-graphite-800 hover:shadow-[0_12px_40px_rgba(225,6,0,0.15)] transition-all duration-500 group">
+        <div className="relative flex flex-col p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-[2rem] hover:border-f1-red/30 hover:bg-[#131313]/80 hover:shadow-[0_12px_40px_rgba(225,6,0,0.2)] transition-all duration-500 group">
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-f1-red/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-f1-red group-hover:border-f1-red group-hover:shadow-[0_0_20px_rgba(225,6,0,0.4)] transition-all duration-500">
             <Database className="w-8 h-8 text-f1-red group-hover:text-white transition-colors duration-300" />
           </div>
@@ -61,7 +61,7 @@ export function ProductPipeline() {
         </div>
 
         {/* 02 Model */}
-        <div className="relative flex flex-col p-8 bg-graphite-850 border border-white/5 rounded-[2rem] hover:border-emerald-500/30 hover:bg-graphite-800 hover:shadow-[0_12px_40px_rgba(16,185,129,0.15)] transition-all duration-500 group">
+        <div className="relative flex flex-col p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-[2rem] hover:border-emerald-500/30 hover:bg-[#131313]/80 hover:shadow-[0_12px_40px_rgba(16,185,129,0.2)] transition-all duration-500 group">
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-emerald-500/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-emerald-500 group-hover:border-emerald-500 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-500">
             <Network className="w-8 h-8 text-emerald-500 group-hover:text-white transition-colors duration-300" />
           </div>
@@ -74,7 +74,7 @@ export function ProductPipeline() {
         </div>
 
         {/* 03 Output */}
-        <div className="relative flex flex-col p-8 bg-graphite-850 border border-white/5 rounded-[2rem] hover:border-violet-500/30 hover:bg-graphite-800 hover:shadow-[0_12px_40px_rgba(139,92,246,0.15)] transition-all duration-500 group">
+        <div className="relative flex flex-col p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-[2rem] hover:border-violet-500/30 hover:bg-[#131313]/80 hover:shadow-[0_12px_40px_rgba(139,92,246,0.2)] transition-all duration-500 group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/[0.02] blur-[40px] rounded-full pointer-events-none" />
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-violet-500/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-violet-500 group-hover:border-violet-500 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-500 relative z-10">
             <LineChart className="w-8 h-8 text-violet-500 group-hover:text-white transition-colors duration-300" />
@@ -88,7 +88,7 @@ export function ProductPipeline() {
       </div>
 
       {/* Terminal Database Record spec */}
-      <div className="relative border border-white/5 bg-graphite-850 rounded-2xl p-6 overflow-hidden shadow-sm">
+      <div className="relative border border-white/10 bg-brand-card/60 backdrop-blur-xl saturate-150 rounded-2xl p-6 overflow-hidden shadow-sm mt-4">
         {/* Decorative scanline overlay */}
         <div className="absolute inset-0 bg-dots-dark opacity-[0.25] pointer-events-none" />
         

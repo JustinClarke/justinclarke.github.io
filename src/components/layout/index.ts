@@ -11,3 +11,5 @@ export * from './CommandDock';
 export * from './TheCloser';
 export * from './SEO';
 export * from './Schema';
+export * from './GlobalSpotlight';
+

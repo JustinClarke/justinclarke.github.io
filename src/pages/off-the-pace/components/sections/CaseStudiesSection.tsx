@@ -15,6 +15,7 @@
  */
 import { ArrowRight, Calendar } from 'lucide-react';
 import { CASE_STUDIES } from '../../data/caseStudies';
+import { SAO_PAULO_STINT } from '../../data/decompositions';
 
 export function CaseStudiesSection({ id }: { id?: string }) {
   return (
@@ -61,39 +62,55 @@ export function CaseStudiesSection({ id }: { id?: string }) {
               {study.finding}
             </p>
 
-            {/* CSS Teaser Visual (Lap 59 decomposition for Sao Paulo) */}
+            {/* W8  - the full final-stint table (laps 45->71), reconciled with the
+                published finding. The L59 overtake row is highlighted. */}
             {study.id === 'sao-paulo-2021' && (
-              <div className="bg-graphite-950/50 rounded p-4 border border-white/5 flex flex-col gap-3">
-                <div className="flex justify-between items-end mb-1 text-[9px] font-jetbrains uppercase tracking-wider text-white/40">
-                  <span>Lap 59 Overtake Decomposition</span>
-                  <span>Gap: 1.69s</span>
-                </div>
-                
-                {/* HAM Bar */}
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between text-[10px] font-jetbrains text-white/60">
-                    <span className="text-emerald-400">HAM</span>
-                    <span>72.38s</span>
-                  </div>
-                  <div className="h-4 w-full bg-white/5 rounded overflow-hidden flex relative group/bar cursor-default">
-                    <div className="h-full bg-white/20 w-[95%]" title="Structural Pace" />
-                    <div className="h-full bg-emerald-500 w-[5%] -ml-[5%]" title="Driver Skill Residual (-3.11s)" />
-                  </div>
+              <div className="bg-graphite-950/50 rounded-lg p-4 md:p-5 border border-white/5 flex flex-col gap-3">
+                <div className="flex justify-between items-end text-[9px] font-jetbrains uppercase tracking-wider text-white/40">
+                  <span>Final stint · laps 45→71 · fct_lap_residuals</span>
+                  <span>L59 overtake · gap 1.69s</span>
                 </div>
 
-                {/* VER Bar */}
-                <div className="flex flex-col gap-1 mt-2">
-                  <div className="flex justify-between text-[10px] font-jetbrains text-white/60">
-                    <span className="text-f1-red">VER</span>
-                    <span>74.07s</span>
-                  </div>
-                  <div className="h-4 w-full bg-white/5 rounded overflow-hidden flex relative group/bar cursor-default">
-                    <div className="h-full bg-white/20 w-[100%]" title="Structural Pace" />
-                    <div className="h-full bg-f1-red w-[2%] -ml-[2%]" title="Driver Skill Residual (-1.51s)" />
-                  </div>
+                <div className="overflow-x-auto -mx-1 px-1">
+                  <table className="w-full border-collapse font-jetbrains text-[10px] sm:text-[11px] min-w-[440px]">
+                    <thead>
+                      <tr className="text-white/35 uppercase tracking-wider text-[8px] sm:text-[9px]">
+                        <th className="text-left font-medium py-1.5 pr-2">Lap</th>
+                        <th className="text-left font-medium py-1.5 pr-2">Drv</th>
+                        <th className="text-right font-medium py-1.5 px-2">Tyre&nbsp;age</th>
+                        <th className="text-right font-medium py-1.5 px-2">Lap&nbsp;time</th>
+                        <th className="text-right font-medium py-1.5 px-2">Compound</th>
+                        <th className="text-right font-medium py-1.5 px-2">Skill</th>
+                        <th className="text-right font-medium py-1.5 pl-2">Air</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {SAO_PAULO_STINT.map((r) => {
+                        const overtake = r.lap === 59;
+                        return (
+                          <tr key={`${r.lap}-${r.driver}`} className={`border-t border-white/5 ${overtake ? 'bg-f1-red/[0.07]' : ''}`}>
+                            <td className="py-1.5 pr-2 text-white/50 tabular-nums">{r.lap}</td>
+                            <td className={`py-1.5 pr-2 font-bold ${r.driver === 'HAM' ? 'text-emerald-400' : 'text-f1-red'}`}>{r.driver}</td>
+                            <td className="py-1.5 px-2 text-right text-white/55 tabular-nums">{r.tyreAge}</td>
+                            <td className="py-1.5 px-2 text-right text-white/80 tabular-nums">{r.lapTime_s.toFixed(2)}s</td>
+                            <td className="py-1.5 px-2 text-right text-amber-400/90 tabular-nums">+{r.compoundPenalty_s.toFixed(2)}</td>
+                            <td className="py-1.5 px-2 text-right text-emerald-400 tabular-nums">{r.driverSkill_s.toFixed(2)}</td>
+                            <td className="py-1.5 pl-2 text-right text-white/40 tabular-nums">{r.dirtyAir_s.toFixed(2)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mt-3 pt-3 border-t border-white/5">
+                <p className="font-jetbrains text-[9px] text-white/35 leading-relaxed">
+                  Positive = slower than the field baseline. By L71 Verstappen's tyres cost{' '}
+                  <span className="text-amber-400/90">+14.08s</span>; he answered with a{' '}
+                  <span className="text-emerald-400">−12.86s</span> skill residual  - the structural
+                  battle his strategy could not win.
+                </p>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-1 pt-3 border-t border-white/5">
                   {study.metrics.map((metric, i) => (
                     <div key={i} className="flex flex-col gap-1">
                       <span className="text-[9px] font-jetbrains text-white/40 uppercase">{metric.label}</span>

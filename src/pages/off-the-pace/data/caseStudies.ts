@@ -33,7 +33,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     subtitle: 'Was it the driver or the strategy?',
     date: 'Nov 14, 2021',
     finding: "Hamilton's 10.5s win was built on a precise mix of a 2.9s strategic tyre advantage and outdriving his car by 1.6s on the decisive overtake lap.",
-    link: 'https://off-the-pace.onrender.com/attributed-findings/sao-paulo-2021',
+    link: 'https://offthepace.mintlify.app/findings/sao-paulo-2021',
     metrics: [
       { label: 'Strategic Tyre Adv.', value: '-2.91s' },
       { label: 'Overtake Lap Skill Delta', value: '-1.59s', highlight: true },

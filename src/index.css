@@ -194,6 +194,21 @@
   --color-blue-bright: #3b82f6;
   --color-sql-red: #ef4444;
 
+  /* Off-the-Pace 7-term identity palette  - the single source for the
+     decomposition waterfall, DAG, hero panel and DecompositionExplainer.
+     Keys mirror the fct_lap_residuals component columns. compound/dirty-air/
+     driver alias existing tokens (so their hex isn't double-registered by the
+     check-tailwind-tokens gate); fuel/rubber/ambient/constructor are the raw-hex
+     homes. Mirrored as raw hex in src/config/constants.ts (TERM_COLORS) for the
+     d3/canvas/SVG draw calls that can't read CSS vars. */
+  --color-term-fuel: #475569;
+  --color-term-compound: var(--color-emerald-dark);
+  --color-term-rubber: #065f46;
+  --color-term-ambient: #2563eb;
+  --color-term-constructor: #334155;
+  --color-term-dirty-air: var(--color-blue-bright);
+  --color-term-driver: var(--color-f1-red);
+
   /* Semantic surface / text / border tokens (light-adaptive, dark defaults).
      Override blocks below swap them for the light theme. */
   --surface-primary: #050505;
@@ -397,6 +412,10 @@ body {
   --text-tertiary: rgba(255, 255, 255, 0.4);
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.05);
+
+  /* Page-wide spotlight variables */
+  --page-spotlight-color-1: rgba(0, 200, 180, 0.045); /* Subtle Teal */
+  --page-spotlight-color-2: rgba(99, 102, 241, 0.015); /* Subtle Indigo */
 }
 
 :root:not(.dark) {
@@ -408,6 +427,10 @@ body {
   --text-tertiary: rgba(0, 0, 0, 0.4);
   --border-default: rgba(0, 0, 0, 0.08);
   --border-subtle: rgba(0, 0, 0, 0.05);
+
+  /* Page-wide spotlight variables */
+  --page-spotlight-color-1: rgba(0, 200, 180, 0.025); /* Fainter Teal for light backgrounds */
+  --page-spotlight-color-2: rgba(99, 102, 241, 0.008); /* Fainter Indigo for light backgrounds */
 }
 
 [data-theme-lock="dark"] {
@@ -2416,5 +2439,25 @@ body {
     font-size: 12px !important;
     transform: none !important;
     width: 100% !important;
+  }
+}
+
+/* ── GLOBAL REDUCED-MOTION HONOURING (plan §5 P3) ──
+   One catch-all for visitors who ask the OS for less motion. It neutralises the
+   many infinite/decorative loops the project ships (pulseGlow, animate-ping,
+   ScrambleText cycles, idle DAG/sidebar loops, scanlines, parallax-on-scroll)
+   without removing meaning: animations collapse to a single instant frame and
+   transitions become effectively instant, so layout/state still resolve.
+   Framer Motion is handled separately in JS via useReducedMotion(); this covers
+   everything driven by CSS. Only active when the user has opted in, so the blast
+   radius is exactly "they get the static version they requested". */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }

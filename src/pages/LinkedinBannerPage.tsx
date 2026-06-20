@@ -25,7 +25,7 @@ export const LinkedinBannerPage: React.FC = () => {
 
   const theme = isDark ? {
     frameBg: LINKEDIN_BANNER_COLORS.dark.frameBg,
-    outerBg: 'bg-void',
+    outerBg: '',
     dotColor: 'rgba(255, 255, 255, 0.07)',
     lineStroke: 'white',
     lineOpacity: 'opacity-[0.06]',
@@ -69,7 +69,7 @@ export const LinkedinBannerPage: React.FC = () => {
     syntax: LINKEDIN_BANNER_COLORS.dark.syntax
   } : {
     frameBg: 'linear-gradient(135deg, var(--color-light-bg) 0%, var(--color-term-white) 100%)',
-    outerBg: LINKEDIN_BANNER_COLORS.light.outerBg,
+    outerBg: '',
     dotColor: 'rgba(15, 23, 42, 0.1)',
     lineStroke: 'rgba(15, 23, 42, 0.08)',
     lineOpacity: 'opacity-100',
@@ -114,10 +114,13 @@ export const LinkedinBannerPage: React.FC = () => {
   };
 
   return (
-    <div className={`w-full min-h-screen ${theme.outerBg} flex flex-col items-center justify-center px-4 py-8 transition-colors duration-300`}>
+    <div 
+      className={`w-full min-h-screen ${theme.outerBg} flex flex-col items-center justify-center px-4 py-8 transition-colors duration-300 overflow-hidden`}
+      style={{ background: theme.frameBg }}
+    >
 
       {/* ── Helper Control Panel (not part of the screenshotted banner) ── */}
-      <div className="flex items-center gap-4 mb-4 select-none">
+      <div className="absolute top-8 flex items-center gap-4 select-none z-50">
         <p className="text-black/40 dark:text-white/30 font-mono text-[11px] tracking-widest uppercase">
           LinkedIn Banner screenshot the frame below
         </p>
@@ -136,12 +139,12 @@ export const LinkedinBannerPage: React.FC = () => {
 
       {/* ═══ THE BANNER ═══ 1584×396 fixed ratio */}
       <div
-        className="relative w-full max-w-[1584px] overflow-hidden transition-all duration-300 rounded-lg shadow-2xl"
-        style={{ aspectRatio: '1584/396', background: theme.frameBg, containerType: 'inline-size' }}
+        className="relative w-full max-w-[1584px] transition-all duration-300"
+        style={{ aspectRatio: '1584/396', containerType: 'inline-size' }}
       >
         {/* ── BG LAYER 1: Isometric Grid Floor ── */}
         <div
-          className="absolute bottom-0 left-0 right-0 h-[140px] pointer-events-none transition-all duration-300"
+          className="absolute bottom-0 -left-[100%] -right-[100%] h-[140px] pointer-events-none transition-all duration-300"
           style={{
             backgroundImage: `linear-gradient(transparent 95%, ${theme.lineStroke} 100%), linear-gradient(90deg, transparent 95%, ${theme.lineStroke} 100%)`,
             backgroundSize: '40px 40px',
@@ -155,7 +158,7 @@ export const LinkedinBannerPage: React.FC = () => {
 
         {/* ── BG LAYER 2: micro dot grid ── */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-[0.35] transition-all duration-300"
+          className="absolute -inset-[100%] pointer-events-none opacity-[0.35] transition-all duration-300"
           style={{
             backgroundImage: `radial-gradient(${theme.dotColor} 1px, transparent 1px)`,
             backgroundSize: '20px 20px',
@@ -182,7 +185,7 @@ export const LinkedinBannerPage: React.FC = () => {
         />
 
         {/* ── BG LAYER 4: scanline sweep ── */}
-        <div className={`absolute inset-0 pointer-events-none transition-all duration-300 ${theme.scanlineOpacity}`}
+        <div className={`absolute -inset-[100%] pointer-events-none transition-all duration-300 ${theme.scanlineOpacity}`}
           style={{
             backgroundImage: `repeating-linear-gradient(0deg, ${theme.scanlineColor} 0, ${theme.scanlineColor} 1px, transparent 1px, transparent 3px)`,
           }}
@@ -336,30 +339,7 @@ export const LinkedinBannerPage: React.FC = () => {
           </div>
         </div>
 
-        {/* ── Technical Annotations & Connecting Lines ── */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-10 transition-colors duration-300" viewBox="0 0 1584 396" fill="none">
-          <path d="M 230 180 L 230 250 L 140 250" stroke={theme.circuitStroke} strokeWidth="0.5" strokeDasharray="3 3" opacity="0.3" />
-          <path d="M 550 150 L 650 150 L 680 100 L 710 100" stroke={theme.circuitStroke} strokeWidth="0.5" strokeDasharray="3 3" opacity="0.3" />
-          <path d="M 800 350 L 950 350 L 980 320" stroke={theme.circuitStroke} strokeWidth="0.5" opacity="0.2" />
-        </svg>
 
-        <div className={`absolute top-[8%] left-[20%] font-mono text-[8px] tracking-[0.2em] opacity-40 transition-colors duration-300 select-none pointer-events-none ${theme.titleText}`}>
-          SYS.INIT // V.2.4.9
-        </div>
-        <div className={`absolute bottom-[12%] left-[42%] font-mono text-[8px] tracking-[0.2em] opacity-40 transition-colors duration-300 select-none pointer-events-none ${theme.titleText}`}>
-          DATA.STREAM_ACTIVE // {'>_'}
-        </div>
-        <div className={`absolute top-[35%] right-[38%] font-mono text-[8px] tracking-[0.2em] opacity-40 transition-colors duration-300 select-none pointer-events-none ${theme.titleText}`}>
-          LAT: 12.4ms / BAND: 1.2GB/s
-        </div>
-
-        {/* ── CORNER REGISTRATION MARKS (Precision Engineering Aesthetic) ── */}
-        <div className="absolute inset-0 pointer-events-none z-10">
-          <div className={`absolute top-8 left-8 w-4 h-4 border-t border-l transition-colors duration-300`} style={{ borderColor: theme.circuitStroke, opacity: 0.4 }} />
-          <div className={`absolute top-8 right-8 w-4 h-4 border-t border-r transition-colors duration-300`} style={{ borderColor: theme.circuitStroke, opacity: 0.4 }} />
-          <div className={`absolute bottom-8 left-8 w-4 h-4 border-b border-l transition-colors duration-300`} style={{ borderColor: theme.circuitStroke, opacity: 0.4 }} />
-          <div className={`absolute bottom-8 right-8 w-4 h-4 border-b border-r transition-colors duration-300`} style={{ borderColor: theme.circuitStroke, opacity: 0.4 }} />
-        </div>
 
         {/* ════════════════════════════════════════════════════════════════════
             PROFILE PICTURE PLACEHOLDER
@@ -390,7 +370,7 @@ export const LinkedinBannerPage: React.FC = () => {
         >
           {/* glow behind the main arrow */}
           <path
-            d="M 930 145 L 740 145 C 600 145, 470 285, 360 300"
+            d="M 715 180 C 600 180, 470 230, 401 251"
             stroke={theme.arrowGlow}
             strokeWidth="20"
             strokeLinecap="round"
@@ -399,41 +379,42 @@ export const LinkedinBannerPage: React.FC = () => {
 
           {/* Secondary dashed trajectory line (UI/UX detail) */}
           <path
-            d="M 930 130 L 740 130 C 600 130, 450 265, 350 285"
+            d="M 715 168 C 600 168, 470 218, 396 239"
             stroke={theme.arrowHead}
-            strokeWidth="1.5"
+            strokeWidth="2"
             strokeDasharray="4 6"
-            opacity="0.3"
+            opacity="0.25"
           />
 
           {/* Main solid arrow line */}
           <path
-            d="M 930 145 L 740 145 C 600 145, 470 285, 360 300"
+            d="M 715 180 C 600 180, 470 230, 401 251"
             stroke="url(#arrowGrad)"
-            strokeWidth="3"
+            strokeWidth="4.5"
             strokeLinecap="round"
           />
 
-          {/* Data transmission nodes precisely calculated along the bezier curve */}
-          <circle cx="637" cy="167" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="1.5" />
-          <circle cx="539" cy="217" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="1.5" />
-          <circle cx="446" cy="269" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="1.5" />
+          {/* Data transmission nodes along the bezier curve */}
+          <circle cx="625" cy="188" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="2" />
+          <circle cx="535" cy="210" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="2" />
+          <circle cx="445" cy="238" r="3" fill={theme.frameBg} stroke={theme.arrowHead} strokeWidth="2" />
 
-          {/* Tech/Angular arrow head */}
+          {/* Redesigned Arrow head: sharp stealth chevron pointing left-down along curve tangent */}
           <path
-            d="M 380 285 L 358 300 L 380 315"
+            d="M 0 0 L -22 -11 L -14 0 L -22 11 Z"
+            fill={theme.arrowHead}
+            transform="translate(390, 255) rotate(162.6)"
             stroke={theme.arrowHead}
-            strokeWidth="3"
-            strokeLinecap="round"
+            strokeWidth="1"
             strokeLinejoin="round"
           />
 
           {/* Origin/Start Point Indicator */}
-          <circle cx="930" cy="145" r="6" fill="none" stroke={theme.arrowHead} strokeWidth="1.5" opacity="0.6" />
-          <circle cx="930" cy="145" r="2.5" fill={theme.arrowHead} />
+          <circle cx="715" cy="180" r="6" fill="none" stroke={theme.arrowHead} strokeWidth="2" opacity="0.5" />
+          <circle cx="715" cy="180" r="3" fill={theme.arrowHead} />
 
           <defs>
-            <linearGradient id="arrowGrad" x1="930" y1="145" x2="360" y2="300" gradientUnits="userSpaceOnUse">
+            <linearGradient id="arrowGrad" x1="715" y1="180" x2="390" y2="255" gradientUnits="userSpaceOnUse">
               <stop offset="0%" stopColor={theme.arrowGradStart} />
               <stop offset="40%" stopColor={theme.arrowGradMid} />
               <stop offset="100%" stopColor={theme.arrowGradEnd} />
@@ -448,76 +429,73 @@ export const LinkedinBannerPage: React.FC = () => {
 
           {/* Title */}
           <h1
-            className="font-mono font-black tracking-tighter leading-[1.1] text-right transition-colors duration-300"
-            style={{ fontSize: '3.1cqw' }}
+            className="font-black tracking-tighter leading-[1.1] text-right whitespace-nowrap transition-colors duration-300"
+            style={{ fontFamily: '"Outfit", sans-serif', fontSize: '4.8cqw' }}
           >
             <span className={theme.titleText}>data product </span>
             <span className="text-transparent bg-clip-text transition-all duration-300" style={{ backgroundImage: theme.titleDevGrad }}>
-              engineer
+              engineer.
             </span>
           </h1>
 
-          {/* ── Tech Stack ── */}
+          {/* ── Tech Stack – clean pill badges ── */}
           <div
-            className={`flex items-center rounded-md border ${theme.stackBorder} transition-all duration-300`}
+            className="flex items-center flex-wrap justify-end transition-all duration-300"
             style={{
-              background: theme.stackBg,
-              backdropFilter: 'blur(12px)',
-              boxShadow: theme.stackShadow,
-              marginTop: '1.2cqw',
-              marginBottom: '1cqw',
-              gap: '0.6cqw',
-              paddingLeft: '1cqw',
-              paddingRight: '1cqw',
-              paddingTop: '0.63cqw',
-              paddingBottom: '0.63cqw'
+              marginTop: '1.4cqw',
+              gap: '0.8cqw',
             }}
           >
-            <span className={`font-mono shrink-0 mr-1 transition-colors duration-300 ${theme.stackLabel}`} style={{ fontSize: '0.82cqw' }}>
-              └─ stack:
-            </span>
             {/* Python */}
-            <span className="inline-flex items-center rounded border border-python/30 bg-python/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded-full bg-python/[0.12] transition-all duration-300"
               style={{
-                padding: '0.38cqw 0.63cqw',
-                fontSize: '0.82cqw',
-                gap: '0.3cqw'
+                padding: '0.5cqw 1.2cqw',
+                fontSize: '1.2cqw',
+                gap: '0.5cqw',
+                fontFamily: '"Outfit", sans-serif',
+                fontWeight: 600,
               }}>
-              <Code2 style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-python" />
-              <span className={`transition-colors duration-300 ${theme.badgeText}`}>python</span>
+              <Code2 style={{ width: '1.4cqw', height: '1.4cqw' }} className="text-python" />
+              <span className={`transition-colors duration-300 ${theme.badgeText}`}>Python</span>
             </span>
             {/* SQL */}
-            <span className="inline-flex items-center rounded border border-term-dim/30 bg-term-dim/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded-full bg-term-dim/[0.12] transition-all duration-300"
               style={{
-                padding: '0.38cqw 0.63cqw',
-                fontSize: '0.82cqw',
-                gap: '0.3cqw'
+                padding: '0.5cqw 1.2cqw',
+                fontSize: '1.2cqw',
+                gap: '0.5cqw',
+                fontFamily: '"Outfit", sans-serif',
+                fontWeight: 600,
               }}>
-              <Cylinder style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-term-dim" />
-              <span className={`transition-colors duration-300 ${theme.badgeText}`}>sql</span>
+              <Cylinder style={{ width: '1.4cqw', height: '1.4cqw' }} className="text-term-dim" />
+              <span className={`transition-colors duration-300 ${theme.badgeText}`}>SQL</span>
             </span>
             {/* dbt */}
-            <span className="inline-flex items-center rounded border border-dbt/30 bg-dbt/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded-full bg-dbt/[0.12] transition-all duration-300"
               style={{
-                padding: '0.38cqw 0.63cqw',
-                fontSize: '0.82cqw',
-                gap: '0.3cqw'
+                padding: '0.5cqw 1.2cqw',
+                fontSize: '1.2cqw',
+                gap: '0.5cqw',
+                fontFamily: '"Outfit", sans-serif',
+                fontWeight: 600,
               }}>
-              <Circle style={{ width: '0.88cqw', height: '0.88cqw' }} className="text-dbt fill-dbt" />
+              <Circle style={{ width: '1.4cqw', height: '1.4cqw' }} className="text-dbt fill-dbt" />
               <span className={`transition-colors duration-300 ${theme.badgeText}`}>dbt</span>
             </span>
             {/* Fabric */}
-            <span className="inline-flex items-center rounded border border-fabric/30 bg-fabric/[0.06] font-mono font-bold transition-all duration-300"
+            <span className="inline-flex items-center rounded-full bg-fabric/[0.12] transition-all duration-300"
               style={{
-                padding: '0.38cqw 0.63cqw',
-                fontSize: '0.82cqw',
-                gap: '0.3cqw'
+                padding: '0.5cqw 1.2cqw',
+                fontSize: '1.2cqw',
+                gap: '0.5cqw',
+                fontFamily: '"Outfit", sans-serif',
+                fontWeight: 600,
               }}>
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                style={{ width: '0.88cqw', height: '0.88cqw' }}
+                style={{ width: '1.4cqw', height: '1.4cqw' }}
               >
                 <path fill="url(#if6f791-a)" fillRule="evenodd" d="m2.82 15.802-.293 1.072c-.11.343-.262.847-.345 1.295a2.815 2.815 0 0 0 2.32 3.795c.396.057.844.054 1.346-.02l2.307-.318a1.46 1.46 0 0 0 1.21-1.064l1.588-5.832z" clipRule="evenodd" />
                 <path fill="url(#if6f791-b)" d="M5.07 16.078c-2.431.376-2.93 2.211-2.93 2.211l2.328-8.556 12.168-1.646-1.66 6.027a.85 0 0 1-.693.622l-.068.011-9.213 1.342z" />
@@ -542,7 +520,7 @@ export const LinkedinBannerPage: React.FC = () => {
                     <stop offset="0.549" stopColor="#2AAA92" />
                     <stop offset="0.906" stopColor="#117865" />
                   </linearGradient>
-                  <linearGradient id="if6f791-c" x1="-1.592" x2="5.092" y1="16.354" y2="14.075" gradientUnits="userSpaceOnUse">
+                  <linearGradient id="if6f791-c" x1="-1.592" x2="5.092" y1="16.354" y2="9.075" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#6AD6F9" />
                     <stop offset="1" stopColor="#6AD6F9" stopOpacity={0} />
                   </linearGradient>
@@ -580,22 +558,14 @@ export const LinkedinBannerPage: React.FC = () => {
                   </linearGradient>
                 </defs>
               </svg>
-              <span className={`transition-colors duration-300 ${theme.badgeText}`}>fabric</span>
+              <span className={`transition-colors duration-300 ${theme.badgeText}`}>Fabric</span>
             </span>
           </div>
-
-          {/* Tagline */}
-          <p
-            className={`font-mono text-right leading-relaxed tracking-tight transition-colors duration-300 ${theme.taglineText}`}
-            style={{ fontSize: '1.15cqw' }}
-          >
-            Data to decisions <span className={`transition-colors duration-300 ${theme.taglineAmp}`}>&</span> decisions into products
-          </p>
 
         </div>
 
         {/* ── Thin teal accent line along the very bottom ── */}
-        <div className="absolute bottom-0 left-0 right-0 h-[2px] z-30 transition-all duration-300"
+        <div className="absolute bottom-0 -left-[100%] -right-[100%] h-[2px] z-30 transition-all duration-300"
           style={{ background: theme.accentGrad }}
         />
 

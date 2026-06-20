@@ -423,7 +423,7 @@ export function TechStackBand() {
   const getItemByName = (name: string) => stack.find(item => item.name === name)!;
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-5 p-6 sm:p-8 bg-graphite-800/40 border border-white/5 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.2)] mt-6">
+    <div ref={containerRef} className="flex flex-col gap-5 p-6 sm:p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] mt-6">
       <span className="font-jetbrains text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-[0.2em] font-semibold text-center md:text-left">
         Technology Stack
       </span>
@@ -493,7 +493,7 @@ export function TechStackBand() {
           {columns.map((column, colIndex) => (
             <div
               key={column.title}
-              className="flex flex-col gap-4 p-5 bg-ink/30 border border-white/5 rounded-2xl transition-all duration-500 hover:border-white/10 group/col"
+              className="flex flex-col gap-4 p-5 bg-brand-bg/50 border border-white/10 backdrop-blur-sm rounded-2xl transition-all duration-500 hover:border-white/20 group/col"
             >
               {/* Column Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">

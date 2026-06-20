@@ -62,6 +62,20 @@ export const BOOT_LOGS = [
 
 export const PIPELINE_COLORS = ['var(--color-brand-primary)', 'var(--color-acc-cloud)', 'var(--color-acc-bi)'] as const;
 
+// Off-the-Pace 7-term identity palette, raw hex for d3/canvas/SVG draw calls
+// that cannot read CSS vars (the decomposition waterfall + dbt DAG). This is the
+// sanctioned JS home and MUST mirror the --color-term-* tokens in src/index.css.
+// Keys match IDENTITY_TERMS / fct_lap_residuals component columns.
+export const TERM_COLORS = {
+  fuel_component_s: '#475569',        // --color-term-fuel        (slate-600)
+  compound_component_s: '#047857',    // --color-term-compound    (emerald-dark)
+  rubber_component_s: '#065f46',      // --color-term-rubber      (emerald-800)
+  ambient_component_s: '#2563eb',     // --color-term-ambient     (blue-600)
+  constructor_component_s: '#334155', // --color-term-constructor (slate-700)
+  dirty_air_tax_s: '#3b82f6',         // --color-term-dirty-air   (blue-bright)
+  driver_skill_residual_s: '#e10600', // --color-term-driver      (f1-red)
+} as const;
+
 export const GITHUB_USERNAME = 'JustinClarke';
 
 export const AI_AGENT = {

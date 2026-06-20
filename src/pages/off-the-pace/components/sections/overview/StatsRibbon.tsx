@@ -77,13 +77,15 @@ export function StatsRibbon() {
   }, []);
 
   const races = useCounter(STATS.races, 2000, isVisible);
-  const rows = useCounter(90, 2500, isVisible);
+  // Numeric part of STATS.telemetryRowsPerSeason ("90M+") - single source, the
+  // "M+" unit stays in the markup below.
+  const rows = useCounter(parseInt(STATS.telemetryRowsPerSeason, 10), 2500, isVisible);
   const models = useCounter(STATS.dbtModels, 1800, isVisible);
   const tests = useCounter(STATS.tests, 2200, isVisible);
 
   return (
     <div ref={ref} className="flex flex-col gap-4">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 p-6 md:p-8 bg-graphite-800/40 border border-white/5 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.2)]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 p-6 md:p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.4)]">
         <div className="flex flex-col items-center justify-center p-4 text-center">
           <span className="font-noto text-3xl sm:text-4xl md:text-5xl font-black text-white/95 tracking-tighter mb-2">
             {races}

@@ -68,6 +68,26 @@ export const MLImpactSection = forwardRef<HTMLElement, MLImpactSectionProps>(({ 
           ))}
         </div>
       </div>
+
+      {/* W7  - leakage-probe story promoted to a visually distinct callout. */}
+      <div className="mt-6 relative overflow-hidden rounded-2xl border border-amber-500/25 bg-amber-500/[0.04] p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-5">
+        <div className="absolute -right-16 -top-16 w-48 h-48 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+        <div className="shrink-0 flex flex-col items-center md:items-start gap-1 relative z-10">
+          <span className="font-jetbrains text-[9px] uppercase tracking-[0.2em] text-amber-400/80 font-semibold">Adversarial leakage probe</span>
+          <div className="flex items-baseline gap-2 font-jetbrains">
+            <span className="text-3xl md:text-4xl font-black text-amber-400 tabular-nums">{ML_FACTS.leakageProbeAccuracy}</span>
+            <span className="text-white/40 text-sm tabular-nums">vs {ML_FACTS.leakageMajority} majority</span>
+          </div>
+        </div>
+        <p className="font-jetbrains text-[11px] md:text-xs leading-relaxed text-white/65 relative z-10">
+          A classifier trained to recover <code className="text-amber-400">race_year</code> from the
+          feature set hits <span className="text-white/90 font-semibold">{ML_FACTS.leakageProbeAccuracy}</span> accuracy
+          against a <span className="text-white/90 font-semibold">{ML_FACTS.leakageMajority}</span> majority-class
+          floor  - proof the feature would leak the season into the model. So it was{' '}
+          <span className="text-amber-400 font-semibold">excluded</span>. Honest evaluation means
+          catching the shortcut <em>before</em> it inflates the score, not after.
+        </p>
+      </div>
     </section>
   );
 });
@@ -84,12 +104,21 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
   //    and direction chosen by whether the metric is "up good" or "down good".
   const evalStr     = model.eval     < 1 ? model.eval.toFixed(3)      : model.eval.toFixed(2);
   const baselineStr = model.baseline < 1 ? model.baseline.toFixed(3)  : model.baseline.toFixed(2);
-  const beatsPct = model.metric.includes('↑')
+  const higherBetter = model.metric.includes('↑');
+  const beatsPct = higherBetter
     ? `+${((model.eval / model.baseline - 1) * 100).toFixed(0)}%`
     : `−${((1 - model.eval / model.baseline) * 100).toFixed(0)}%`;
 
+  // W7  - beats-baseline bars. Scale each pair to its own max so the comparison
+  // is visible regardless of metric magnitude; eval is emerald (the winner),
+  // baseline muted. For "lower is better" the green bar is visibly shorter; for
+  // "higher is better" it is longer  - direction-aware by construction.
+  const pairMax = Math.max(model.eval, model.baseline);
+  const evalPct = (model.eval / pairMax) * 100;
+  const basePct = (model.baseline / pairMax) * 100;
+
   return (
-    <div className="flex-1 bg-graphite-800/40 border border-white/5 rounded-xl px-4 md:px-6 py-4 md:py-3 lg:py-4 hover:bg-graphite-800/70 hover:border-white/10 transition-all duration-300 relative overflow-hidden group flex items-center gap-3 md:gap-6 min-h-[72px]">
+    <div className="flex-1 bg-graphite-800/40 border border-white/5 rounded-xl px-4 md:px-6 py-4 hover:bg-graphite-800/70 hover:border-white/10 transition-all duration-300 relative overflow-hidden group flex items-center gap-3 md:gap-5 min-h-[72px]">
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-f1-red/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       {/* Model name + desc */}
       <div className="flex-1 min-w-0">
@@ -99,17 +128,29 @@ const ModelCard: React.FC<ModelCardProps> = ({ model }) => {
         </h3>
         <div className="font-jetbrains text-[9px] text-white/35 uppercase tracking-wider truncate">{model.name}</div>
       </div>
-      {/* Metric */}
-      <div className="shrink-0 text-right font-jetbrains">
-        <div className="text-[9px] text-white/30 uppercase tracking-wider mb-1">{model.metric}</div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-sm font-bold text-white/90">{evalStr}</span>
-          <span className="text-[10px] text-white/35">vs {baselineStr}</span>
+      {/* beats-baseline bar chart */}
+      <div className="shrink-0 w-36 sm:w-44 md:w-52 font-jetbrains">
+        <div className="flex items-center justify-between text-[9px] uppercase tracking-wider mb-1.5">
+          <span className="text-white/30">{model.metric}</span>
+          <span className="text-emerald-400 font-bold">{beatsPct}</span>
         </div>
-        <div className="text-[9px] text-emerald-400 font-bold mt-0.5">{beatsPct} vs baseline</div>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-7 text-[8px] text-white/30 uppercase shrink-0">base</span>
+          <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+            <div className="h-full rounded-full bg-white/25 transition-[width] duration-500" style={{ width: `${basePct}%` }} />
+          </div>
+          <span className="w-9 text-[9px] text-white/45 tabular-nums text-right shrink-0">{baselineStr}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-7 text-[8px] text-emerald-400/80 uppercase shrink-0">eval</span>
+          <div className="flex-1 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+            <div className="h-full rounded-full bg-emerald-500 transition-[width] duration-500" style={{ width: `${evalPct}%` }} />
+          </div>
+          <span className="w-9 text-[9px] text-white font-bold tabular-nums text-right shrink-0">{evalStr}</span>
+        </div>
       </div>
       {/* Built chip */}
-      <span className="shrink-0 font-jetbrains text-[9px] uppercase tracking-wider border px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+      <span className="hidden md:inline-flex shrink-0 font-jetbrains text-[9px] uppercase tracking-wider border px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border-emerald-500/20 items-center">
         ✓ Built
       </span>
     </div>

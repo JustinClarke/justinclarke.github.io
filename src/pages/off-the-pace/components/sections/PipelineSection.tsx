@@ -16,6 +16,8 @@
  */
 import React from 'react';
 import { STATS } from '../../data/projectStats';
+import { InvariantWaterfall } from './InvariantWaterfall';
+import { DbtLineageGraph } from './DbtLineageGraph';
 
 interface StageCardProps {
   layer: string;
@@ -92,6 +94,11 @@ export const PipelineSection: React.FC = () => {
           />
         </div>
 
+        {/* W5  - interactive "break the invariant" waterfall (the signature flex). */}
+        <div className="mt-6">
+          <InvariantWaterfall />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 border border-white/10 rounded-xl overflow-hidden bg-white/[0.01] mt-6">
 
           <div className="lg:col-span-4 p-8 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-center">
@@ -148,42 +155,9 @@ export const PipelineSection: React.FC = () => {
             </p>
           </div>
 
-          <div className="lg:col-span-8 p-8 border-t border-white/5 lg:border-r border-white/5 flex flex-col justify-center bg-white/[0.005]">
-            <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/30 block mb-4">
-              Model lineage (simplified DAG path)
-            </span>
-            <div className="font-jetbrains text-[11px] text-white/60 leading-loose flex flex-col gap-1">
-              <div>
-                <span className="text-white/40">stg_laps ──→</span>{' '}
-                <span className="text-blue-400 font-semibold">int_stint_geometry</span>{' '}
-                <span className="text-white/40">──→</span>{' '}
-                <span className="text-blue-400 font-semibold">int_lap_fuel_state</span>
-              </div>
-              <div>
-                <span className="text-white/40">stg_telemetry ──→</span>{' '}
-                <span className="text-pink-400 font-semibold">int_lap_air_state</span>{' '}
-                <span className="text-white/40">──→</span>{' '}
-                <span className="text-pink-400 font-semibold">int_dirty_air_tax_component</span>
-              </div>
-              <div>
-                <span className="text-white/40">stg_race_control ──→</span>{' '}
-                <span className="text-emerald-400 font-semibold">int_race_control_events</span>{' '}
-                <span className="text-white/40">──→</span>{' '}
-                <span className="text-emerald-400 font-semibold">int_event_corrections</span>
-              </div>
-              <div>
-                <span className="text-white/40">stg_weather ──→</span>{' '}
-                <span className="text-orange-400 font-semibold">int_track_evolution</span>{' '}
-                <span className="text-white/40">──→</span>{' '}
-                <span className="text-orange-400 font-semibold">int_constructor_structural_pace</span>
-              </div>
-              <div className="mt-2 text-xs flex items-center gap-2">
-                <span className="text-white">⬇ converge</span>
-                <span className="text-[10px] font-bold bg-f1-red/10 text-f1-red border border-f1-red/20 px-2 py-0.5 rounded uppercase tracking-wider">
-                  int_lap_residual_decomposed ──→ fct_lap_residuals
-                </span>
-              </div>
-            </div>
+          <div className="lg:col-span-8 p-6 md:p-8 border-t border-white/5 lg:border-r border-white/5 flex flex-col justify-center bg-white/[0.005]">
+            {/* W6  - real dbt lineage from the manifest (baked dag.json). */}
+            <DbtLineageGraph />
           </div>
 
           <div className="lg:col-span-4 p-8 border-t border-white/5 flex flex-col justify-between">

@@ -48,6 +48,8 @@ const NAV_ITEMS: TabItem[] = [
 function FloatingNav() {
   const [activeSection, setActiveSection] = useState<string>('');
   const [navVisible, setNavVisible] = useState(true);
+  // W9  - reading progress (0-100) for long-page orientation.
+  const [progress, setProgress] = useState(0);
 
   // LEARN: This effect decides when to show the nav and the "at the top"
   //    state. `ticking` is the rAF throttle guard: while a frame is already
@@ -76,6 +78,9 @@ function FloatingNav() {
         window.requestAnimationFrame(() => {
           const scrollY = window.scrollY;
           const scrollPosition = scrollY + innerHeight;
+
+          const scrollable = docHeight - innerHeight;
+          setProgress(scrollable > 0 ? Math.min(100, Math.max(0, (scrollY / scrollable) * 100)) : 0);
 
           if (scrollY < 50) {
             setActiveSection('');
@@ -143,6 +148,8 @@ function FloatingNav() {
     if (el) smoothScrollTo(el, 2.2, 80);
   }, []);
 
+  const sectionIndex = activeSection ? NAV_ITEMS.findIndex((i) => i.id === activeSection) + 1 : 0;
+
   // LEARN: createPortal(jsx, document.body) renders this nav at the end of
   //    <body> instead of here in the tree, so its fixed positioning is measured
   //    against the whole window and can't be clipped by an ancestor.
@@ -173,6 +180,22 @@ function FloatingNav() {
           </div>
         ) : null;
       })()}
+      {/* W9  - thin reading-progress bar + section count above the pill */}
+      <div
+        className="flex items-center gap-2 px-2.5 py-1 rounded-full transform-gpu"
+        style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(12,17,16,0.6)', border: '1px solid rgba(255,255,255,0.06)', WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}
+        aria-hidden="true"
+      >
+        <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '8px', letterSpacing: '0.15em', color: 'rgba(232,230,224,0.55)', fontWeight: 700 }}>
+          {sectionIndex > 0 ? sectionIndex : '–'}/{NAV_ITEMS.length}
+        </span>
+        <div style={{ width: '64px', height: '2px', background: 'rgba(255,255,255,0.12)', borderRadius: '2px', overflow: 'hidden' }}>
+          <div style={{ width: `${progress}%`, height: '100%', background: 'var(--color-brand-primary)', transition: 'width 0.15s linear' }} />
+        </div>
+        <span className="tabular-nums" style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '8px', color: 'rgba(232,230,224,0.4)' }}>
+          {Math.round(progress)}%
+        </span>
+      </div>
       <ExpandableTabs
         items={NAV_ITEMS}
         activeId={activeSection}

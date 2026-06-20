@@ -1,59 +1,33 @@
 /**
- * DecompositionExplainer the "same lap, seven causes" chart: two drivers, each
- * shown as a single horizontal bar split into coloured segments that sum to 100%.
+ * DecompositionExplainer the "same lap, seven causes" chart: two drivers on the
+ * SAME lap, each a horizontal bar split into coloured segments. Segment widths
+ * are SECONDS-proportional on a single shared scale, so HAM vs VER read true  -
+ * the bigger bar really did have the bigger measured swing.
  *
- * Fits in: the overview, as the visual centrepiece of the thesis.
- * Note:    Segment widths and colours are data (`drivers[].segments`); the bar is
- *          a flex row where each segment's `width: pct%` does the proportioning.
+ * Fits in: the thesis centrepiece, mounted on both the Overview and Architecture
+ *          pages. Data is the real São Paulo 2021 L59 overtake pair from
+ *          decompositions.ts; colours are the --color-term-* tokens.
  *
  * For beginners ----------------------------------------------------------------
- * Each coloured block uses `style={{ width: ... , backgroundColor: ... }}`
- * inline because the value comes from data and changes per segment (the project
- * rule: static styling uses Tailwind classes, JS-computed values use inline
- * `style`). `title={seg.title}` gives the native browser tooltip on hover.
+ * Each segment's `width` is `|seconds| / maxTotal * 100%`, where `maxTotal` is
+ * the larger of the two drivers' total absolute swing. Because both bars share
+ * that denominator, a wider segment literally means more seconds - no arbitrary
+ * percentages. `title` gives the native hover tooltip with the signed value.
  * -----------------------------------------------------------------------------
  */
 import { LINKS } from '../../../data/projectStats';
+import { SAO_PAULO_L59, TERM_ABBR, toLapClock } from '../../../data/decompositions';
 
-const drivers = [
-  {
-    id: 'HAM',
-    lapTime: '88.392s',
-    skill: { value: '−0.198s', positive: false },
-    segments: [
-      { label: 'CAR',  pct: 52, color: '#334155', title: 'Constructor baseline' },
-      { label: 'FUEL', pct: 13, color: '#475569', title: 'Fuel weight penalty' },
-      { label: 'CMP',  pct: 10, color: 'var(--color-emerald-dark)', title: 'Tyre compound stint age' },
-      { label: 'RBR',  pct: 8,  color: '#065F46', title: 'Rubber surface evolution' },
-      { label: 'WX',   pct: 3,  color: '#2563EB', title: 'Weather & air density' },
-      { label: 'SKILL',pct: 14, color: 'var(--color-f1-red)', title: 'Isolated driver skill' },
-    ],
-  },
-  {
-    id: 'VER',
-    lapTime: '88.651s',
-    skill: { value: '+0.074s', positive: true },
-    segments: [
-      { label: 'CAR',  pct: 52, color: '#334155', title: 'Constructor baseline' },
-      { label: 'FUEL', pct: 13, color: '#475569', title: 'Fuel weight penalty' },
-      { label: 'CMP',  pct: 10, color: 'var(--color-emerald-dark)', title: 'Tyre compound stint age' },
-      { label: 'RBR',  pct: 7,  color: '#065F46', title: 'Rubber surface evolution' },
-      { label: 'WX',   pct: 3,  color: '#2563EB', title: 'Weather & air density' },
-      { label: 'AIR',  pct: 7,  color: 'var(--color-blue-bright)', title: 'Turbulent dirty-air tax' },
-      { label: 'SKILL',pct: 8,  color: 'var(--color-f1-red)', title: 'Isolated driver skill' },
-    ],
-  },
-];
+const DRIVERS = [SAO_PAULO_L59.ham, SAO_PAULO_L59.ver];
 
-const legend = [
-  { label: 'Car baseline',   color: '#334155' },
-  { label: 'Fuel weight',    color: '#475569' },
-  { label: 'Tyre compound',  color: 'var(--color-emerald-dark)' },
-  { label: 'Track evolution',color: '#065F46' },
-  { label: 'Weather',        color: '#2563EB' },
-  { label: 'Dirty air',      color: 'var(--color-blue-bright)' },
-  { label: 'Driver residual',color: 'var(--color-f1-red)' },
-];
+// Shared seconds scale: the larger total absolute swing fills the bar; the other
+// driver's bar is shorter in exact proportion. This is what makes it read true.
+const MAX_TOTAL_ABS = Math.max(
+  ...DRIVERS.map((d) => d.terms.reduce((sum, t) => sum + Math.abs(t.seconds), 0)),
+);
+
+// Legend mirrors the identity-term order (label + token colour), single-sourced.
+const LEGEND = SAO_PAULO_L59.ham.terms.map((t) => ({ label: t.label, color: t.color }));
 
 export function DecompositionExplainer() {
   return (
@@ -68,9 +42,9 @@ export function DecompositionExplainer() {
           </h2>
         </div>
         <p className="font-jetbrains text-[11px] text-white/50 max-w-sm leading-relaxed">
-          2021 Abu Dhabi Grand Prix · Lap 14 ·{' '}
+          2021 São Paulo Grand Prix · Lap 59 (the overtake) ·{' '}
           <a
-            href={`${LINKS.docs}/reference/schemas/laps`}
+            href={`${LINKS.docs}/findings/sao-paulo-2021`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-white/40 underline underline-offset-2 hover:text-white/70 transition-colors"
@@ -81,43 +55,52 @@ export function DecompositionExplainer() {
       </div>
 
       <div className="flex flex-col gap-5">
-        {drivers.map((driver) => (
-          <div key={driver.id}>
-            <div className="flex justify-between font-jetbrains text-xs text-white/60 mb-2">
-              <span className="font-bold text-white text-sm">{driver.id}</span>
-              <span>
-                {driver.lapTime} ·{' '}
-                <span className={`font-bold ${driver.skill.positive ? 'text-red-400' : 'text-emerald-400'}`}>
-                  driver_skill: {driver.skill.value}
+        {DRIVERS.map((driver) => {
+          const skill = driver.terms.find((t) => t.key === 'driver_skill_residual_s')!;
+          return (
+            <div key={driver.driver}>
+              <div className="flex justify-between font-jetbrains text-xs text-white/60 mb-2">
+                <span className="font-bold text-white text-sm">{driver.driver}</span>
+                <span>
+                  {toLapClock(driver.grossLapTime_s)} ·{' '}
+                  <span className={`font-bold ${skill.seconds >= 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                    driver_skill: {skill.seconds >= 0 ? '+' : '−'}{Math.abs(skill.seconds).toFixed(3)}s
+                  </span>
                 </span>
-              </span>
+              </div>
+              <div className="h-7 bg-white/[0.04] border border-white/10 rounded-lg flex overflow-hidden">
+                {driver.terms.map((seg) => {
+                  const widthPct = (Math.abs(seg.seconds) / MAX_TOTAL_ABS) * 100;
+                  if (widthPct < 0.4) return null; // skip ~zero terms (e.g. rubber)
+                  const signed = `${seg.seconds >= 0 ? '+' : '−'}${Math.abs(seg.seconds).toFixed(3)}s`;
+                  return (
+                    <div
+                      key={seg.key}
+                      className="h-full flex items-center justify-center font-jetbrains text-[9px] font-bold text-white/80 border-r border-white/5 last:border-r-0 select-none overflow-hidden"
+                      style={{ width: `${widthPct}%`, backgroundColor: seg.color }}
+                      title={`${seg.label} ${signed}`}
+                    >
+                      {widthPct >= 7 ? TERM_ABBR[seg.key] : ''}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="h-7 bg-white/[0.04] border border-white/10 rounded-lg flex overflow-hidden">
-              {driver.segments.map((seg) => (
-                <div
-                  key={seg.label}
-                  className="h-full flex items-center justify-center font-jetbrains text-[9px] font-bold text-white/80 border-r border-white/5 last:border-r-0 select-none"
-                  style={{ width: `${seg.pct}%`, backgroundColor: seg.color }}
-                  title={seg.title}
-                >
-                  {seg.pct >= 6 ? seg.label : ''}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <p className="font-jetbrains text-[11px] text-white/45 leading-relaxed max-w-xl">
-        The red <span className="text-f1-red font-semibold">SKILL</span> segment is the only part
-        the driver controls. Everything else is physics  - and now it's measured.
-        Verstappen's dirty-air tax (<span className="text-blue-400">AIR</span>) cost him{' '}
-        <span className="text-white/70 font-semibold">+0.218s</span> in clean-air equivalent pace
-        on this lap. The stopwatch lumped it into his split.
+        On the overtake lap the red <span className="text-f1-red font-semibold">SKILL</span> segment  -
+        the only part the driver controls  - was{' '}
+        <span className="text-white/70 font-semibold">−3.110s</span> for Hamilton against{' '}
+        <span className="text-white/70 font-semibold">−1.517s</span> for Verstappen: a 1.60s execution
+        edge the stopwatch hid behind near-identical lap times. Everything else is physics  - and now
+        it's measured.
       </p>
 
       <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2 border-t border-white/[0.06]">
-        {legend.map((item) => (
+        {LEGEND.map((item) => (
           <span key={item.label} className="font-jetbrains text-[10px] text-white/45 flex items-center gap-2">
             <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: item.color }} />
             {item.label}
