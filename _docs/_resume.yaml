@@ -66,11 +66,10 @@ tailoring_recipes:
       vns: Analytics Engineer        # (conservative alt: "BI Developer / Analytics Engineer")
     experience_order:
       vns:
-        # lead with pipelines/ETL, push pure-BI bullets down, cut the weakest
-        order: [vns-02, vns-03, vns-06, vns-08, vns-05, vns-09, vns-04]
-        use_variant: true            # vns-02/05/06/08 + vns-04 have AE variants below
-        cut: [vns-10]                # weakest; deployment/release adds little here
-        include_if_room: [vns-07, vns-01, vns-11]
+        order: [vns-02, vns-01, vns-03, vns-04, vns-05]
+        use_variant: false
+        cut: []
+        include_if_room: []
     project_order:
       # Off The Pace goes DIRECTLY under VNS for AE applications — these three
       # bullets are stronger AE signals than most candidates with 3-5 yrs experience
@@ -79,10 +78,8 @@ tailoring_recipes:
       then: [litestore, spotify-engine, sql-disaster, hr-archetype]
     skills_lead: analytics-engineering
     notes: |
-      Rationale: vns-02 first answers ETL/SQL/pipelines/Fabric/Lakehouse in one line.
-      vns-08 (source-to-target validation) is a differentiator — most AE resumes are
-      weak on data quality. vns-04 kept last because AEs do care about dimensional
-      modelling, but it reads BI-first, so use its AE variant.
+      Rationale: For AE applications, we lead with SQL/Data Prep (vns-02) then BI (vns-01).
+      The heavy AE engineering narrative is driven entirely by the Off The Pace project.
 
 # -----------------------------------------------------------------------------
 # Contact / identity (canonical, final)
@@ -163,142 +160,59 @@ experience:
   # ---------------------------------------------------------------------------
   - id: vns
     company: VNS Solutions
-    title: Analytics Engineer
-    start: 2024-01
-    end: 2025-12
-    location: London, UK
+    title: Analytics Consultant
+    start: 2024-04
+    end: 2025-11
+    location: London, England, United Kingdom · Hybrid
     context: |
       Reporting/analytics delivery for ~8-10 clients across retail, F&B and e-commerce.
       Cross-functional team of data engineers + BI developers. Microsoft Fabric stack.
     accomplishments:
       - id: vns-01
         text: >
-          Owned development and maintenance of 12+ Power BI dashboards and KPI reporting
-          solutions for ~8-10 clients across retail, F&B and e-commerce, automating reporting
-          that cut roughly 12 hours/week of manual effort.
+          Assisted in building and modifying 12+ Power BI dashboards for ~8-10 clients, updating
+          layouts and writing foundational DAX measures that automated reporting and saved
+          roughly 12 hours/week of manual effort.
         metric: 12+ dashboards, ~8-10 clients, ~12 hrs/week saved
-        skills: [Power BI, Microsoft Fabric, Python, SQL, KPI reporting]
+        skills: [Power BI, DAX, KPI reporting]
         tags: [data-analyst, bi-developer]
         strength: signature
 
       - id: vns-02
         text: >
-          Designed and maintained ETL pipelines ingesting POS, ERP and e-commerce data into
-          reporting-ready datasets using SQL transformations, Python notebooks and Microsoft
-          Fabric pipelines, standardising workflows and improving reporting reliability.
-        metric: 3+ source-system types (POS/ERP/e-commerce)
-        skills: [ETL, SQL, Python, Microsoft Fabric, Fabric pipelines]
-        tags: [analytics-engineer, bi-developer, data-analyst]
+          Extracted and transformed multi-million-record datasets using standard SQL queries and
+          Power Query, cutting average report refresh times from ~45 minutes to ~20 minutes.
+        metric: ~45 min -> ~20 min refresh, multi-million rows
+        skills: [SQL, Power Query, Data Extraction]
+        tags: [data-analyst, analytics-engineer, bi-developer]
         strength: signature
-        variants:
-          analytics-engineer: >
-            Designed and maintained ETL pipelines ingesting POS, ERP and e-commerce data into a
-            Microsoft Fabric Lakehouse using SQL transformations, Python notebooks and Fabric
-            pipelines, producing reusable analytics datasets and improving reporting reliability.
 
       - id: vns-03
         text: >
-          Cut dataset refresh time from ~45 minutes to ~20 minutes on a multi-million-record
-          reporting workflow by moving transformations from Power Query into SQL and
-          implementing incremental loading.
-        metric: ~45 min -> ~20 min refresh, multi-million rows
-        skills: [SQL, incremental loading, query optimization, Power Query]
-        tags: [analytics-engineer, bi-developer]
-        strength: signature
+          Performed manual data validation and reconciliation, comparing dashboard outputs against
+          raw source data to ensure reporting accuracy across client accounts.
+        metric: cross-client data reconciliation
+        skills: [Data Validation, Excel, Data Quality]
+        tags: [data-analyst, analytics-engineer]
+        strength: strong
 
       - id: vns-04
         text: >
-          Built star-schema models (fact + dimension tables) and authored DAX measures and
-          calculated columns for sales, profitability, inventory and operational KPIs, with
-          row-level security (RLS) providing client-specific report access.
-        metric: star-schema + RLS across multi-client reporting
-        skills: [Power BI, DAX, dimensional modelling, RLS, data modelling]
-        tags: [bi-developer, data-analyst]
-        strength: strong
-        variants:
-          analytics-engineer: >
-            Built dimensional data models and row-level security frameworks supporting
-            multi-client analytical reporting environments.
+          Monitored scheduled report refreshes, logged technical errors for senior team review,
+          and provisioned report access permissions for internal users.
+        metric: system monitoring, user access
+        skills: [Power BI Service, Monitoring]
+        tags: [bi-developer]
+        strength: supporting
 
       - id: vns-05
         text: >
-          Wrote complex SQL queries, stored procedures and transformation logic to enforce
-          consistent KPI definitions across clients.
-        metric: cross-client KPI consistency
-        skills: [SQL, stored procedures, T-SQL]
-        tags: [analytics-engineer, bi-developer, data-analyst]
-        strength: strong
-        variants:
-          analytics-engineer: >
-            Wrote SQL transformation logic and stored procedures to standardize KPI definitions
-            and business logic across reporting domains.
-
-      - id: vns-06
-        text: >
-          Worked within Microsoft Fabric using Lakehouse storage, transformation notebooks and
-          data pipelines to orchestrate data movement and prepare datasets for Power BI.
-        metric: Fabric Lakehouse + notebooks + pipelines
-        skills: [Microsoft Fabric, Lakehouse, PySpark, data pipelines]
-        tags: [analytics-engineer, bi-developer]
-        strength: strong
-        variants:
-          analytics-engineer: >
-            Built and maintained Microsoft Fabric data workflows using Lakehouse storage, 
-            PySpark transformation notebooks and orchestrated pipelines, creating curated 
-            analytics datasets for downstream BI consumption.
-
-      - id: vns-07
-        text: >
-          Managed refresh schedules, monitored pipeline performance and supported reporting
-          SLAs by troubleshooting refresh failures and resolving data-quality issues.
-        metric: SLA-supported refresh reliability
-        skills: [data quality, monitoring, SLA management, Power BI gateways]
-        tags: [bi-developer, analytics-engineer]
-        strength: supporting
-
-      - id: vns-08
-        text: >
-          Built validation and reconciliation checks between source systems and reporting
-          datasets to catch discrepancies, improving reporting accuracy and stakeholder trust
-          in reported metrics.
-        metric: source-to-report reconciliation
-        skills: [data validation, reconciliation, data quality]
-        tags: [analytics-engineer, data-analyst]
-        strength: strong
-        variants:
-          analytics-engineer: >
-            Implemented source-to-target validation and reconciliation checks across ETL
-            workflows, detecting data-quality issues early and improving dataset reliability.
-
-      - id: vns-09
-        text: >
-          Partnered with client stakeholders to gather reporting requirements, define KPI
-          logic, run user acceptance testing (UAT) and present reporting solutions.
-        metric: end-to-end requirements -> UAT -> delivery
-        skills: [stakeholder management, requirements gathering, UAT, communication]
+          Participated in business meetings to capture reporting requirements, and authored data
+          dictionaries and user guides to support internal teams.
+        metric: requirements gathering, documentation
+        skills: [Documentation, Stakeholder Management]
         tags: [data-analyst, bi-developer]
-        strength: signature   # the "translation" bullet — leads Data Analyst resumes
-
-      - id: vns-10
-        text: >
-          Contributed to deployment and release activities for Power BI reports and pipeline
-          updates within a cross-functional team, streamlining delivery and reducing
-          deployment issues.
-        metric: cross-functional release process
-        skills: [release management, deployment, collaboration]
-        tags: [bi-developer, analytics-engineer]
         strength: supporting
-
-      - id: vns-11
-        text: >
-          Delivered a sales-performance dashboard consolidating POS, inventory and ERP data
-          into one model — designed the ETL, built the star schema, authored DAX for revenue,
-          gross margin, average transaction value and inventory turnover, and shipped
-          interactive reports for operational managers and leadership.
-        metric: 1 consolidated multi-source dashboard, 4+ headline KPIs
-        skills: [Power BI, DAX, ETL, dimensional modelling, SQL]
-        tags: [data-analyst, bi-developer]
-        strength: strong   # good as a "selected project" bullet or interview story
 
   # ---------------------------------------------------------------------------
   - id: litestore

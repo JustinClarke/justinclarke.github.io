@@ -34,5 +34,6 @@ yarn-error.log*
 *.sw?
 
 _docs/screenshots
+_docs/misc
 graphify-out/
 .agents

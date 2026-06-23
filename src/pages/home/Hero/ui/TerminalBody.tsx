@@ -50,7 +50,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
     { prefix: 'type ', cmd: 'whoami', suffix: ' to skip the small talk' },
     { prefix: 'try asking ', cmd: 'how much coffee he drinks?', suffix: '' },
     { prefix: 'type ', cmd: 'ls projects', suffix: ' for the good stuff' },
-    { prefix: 'try asking ', cmd: 'why is he studying again?', suffix: '' },
+    { prefix: 'try asking ', cmd: 'what is his favourite framework?', suffix: '' },
     { prefix: 'type ', cmd: 'timeline', suffix: ' to see his origin story' },
     { prefix: 'type ', cmd: 'play', suffix: ' to ruin your productivity' },
     { prefix: 'try asking ', cmd: 'if he actually sleeps', suffix: '' },

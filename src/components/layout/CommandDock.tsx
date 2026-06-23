@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Home } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -6,27 +6,11 @@ import { cn } from '@/utils';
 import { smoothScrollTo } from '@/utils/scroll';
 import { AIChatDrawer } from './AIChatDrawer';
 
-interface PageSection {
-  id: string;
-  name: string;
-}
-
-const SECTIONS_BY_PAGE: Record<string, PageSection[]> = {
-  '/': [
-    { id: 'hero', name: 'Intro' },
-    { id: 'projects', name: 'Projects' },
-    { id: 'expertise', name: 'Expertise' },
-    { id: 'experience', name: 'Experience' },
-    { id: 'contact', name: 'Contact' },
-  ],
-};
-
 export function CommandDock() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
   const [chatOpen, setChatOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const hoverTimeoutRef = useRef<any>(null);
 
@@ -37,42 +21,17 @@ export function CommandDock() {
   const isConnect = pathname === '/connect' || pathname === '/contact';
   const isBanner = pathname === '/linkedin-banner';
 
-  const currentSections = useMemo(() => SECTIONS_BY_PAGE[pathname] || [], [pathname]);
-
   useEffect(() => {
     const onScroll = () => {
       const scrollPx = document.documentElement.scrollTop || document.body.scrollTop;
       const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       setScrollProgress(maxScroll > 0 ? (scrollPx / maxScroll) * 100 : 0);
       setIsAtTop(scrollPx < 20);
-
-      // Scrollspy logic
-      if (currentSections.length > 0) {
-        const viewportHeight = window.innerHeight;
-        const scrollHeight = document.documentElement.scrollHeight;
-        const isNearBottom = scrollPx + viewportHeight >= scrollHeight - 120;
-
-        if (isNearBottom) {
-          setActiveSection(currentSections[currentSections.length - 1].id);
-        } else {
-          let activeId = currentSections[0].id;
-          for (const section of currentSections) {
-            const el = document.getElementById(section.id);
-            if (el) {
-              const rect = el.getBoundingClientRect();
-              if (rect.top <= window.innerHeight * 0.3) {
-                activeId = section.id;
-              }
-            }
-          }
-          setActiveSection(activeId);
-        }
-      }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
-  }, [pathname, currentSections]);
+  }, [pathname]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)');
@@ -134,52 +93,6 @@ export function CommandDock() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Sections Menu */}
-            <AnimatePresence>
-              {!isMobile && isHovered && !chatOpen && currentSections.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                  className={cn(
-                    'flex flex-col gap-1 p-1.5 min-w-[130px]',
-                    'backdrop-blur-xl bg-black/80 border border-white/10',
-                    'rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.6)]',
-                  )}
-                >
-                  {currentSections.map((section) => {
-                    const isActive = activeSection === section.id;
-                    const offset = (section.id === 'f1-narrative' || section.id === 'f1-workflow') ? 100 : 10;
-                    return (
-                      <button
-                        key={section.id}
-                        onClick={() => {
-                          smoothScrollTo(section.id, 1.2, offset);
-                          setIsHovered(false);
-                        }}
-                        className={cn(
-                          'w-full text-left pl-4 pr-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 relative',
-                          isActive
-                            ? 'text-brand-primary bg-brand-primary/10 font-bold'
-                            : 'text-white/60 hover:text-white hover:bg-white/5',
-                        )}
-                      >
-                        <span className="relative z-10">{section.name}</span>
-                        {isActive && (
-                          <motion.span
-                            layoutId="active-section-indicator"
-                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-brand-primary rounded-r-md"
-                            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                          />
-                        )}
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             {/* The main dock bar */}
             <div
               className={cn(
@@ -254,9 +167,9 @@ export function CommandDock() {
                     >
                       <circle cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/5" />
                       <circle
-                        cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5"
-                        strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
-                        strokeLinecap="round" className="text-brand-primary transition-all duration-300"
+                          cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5"
+                          strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
+                          strokeLinecap="round" className="text-brand-primary transition-all duration-300"
                       />
                     </svg>
                     {isHomeIcon ? (

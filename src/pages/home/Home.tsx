@@ -64,14 +64,14 @@ export function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const getTealPulse = (time: number) => {
+  const getTealPulse = (time: number, alpha: number = 1) => {
     // Breathing Teal: Oscillation between deep obsidian and vibrant teal
     // LEARN: Math.sin turns the ever-growing clock into a smooth -1..1 wave,
     //    so lightness and saturation breathe instead of growing forever.
     const pulse = Math.sin(time * 0.01);
-    const lightness = 4 + pulse * 4; // Pulses between 0% and 8%
-    const saturation = 30 + pulse * 15; // Pulses between 15% and 45%
-    return `hsl(174, ${saturation}%, ${lightness}%)`;
+    const lightness = 14 + pulse * 8; // Pulses between 6% and 22%
+    const saturation = 40 + pulse * 15; // Pulses between 25% and 55%
+    return `hsla(174, ${saturation}%, ${lightness}%, ${alpha})`;
   };
 
   return (
@@ -80,7 +80,8 @@ export function Home() {
       //    (the Tailwind contract reserves it for exactly this). The backticks
       //    build a CSS string with ${...} holes filled in by JavaScript.
       style={{
-        background: `radial-gradient(circle at ${50 + Math.sin(gradientHue * 0.005) * 30}% ${50 + Math.cos(gradientHue * 0.003) * 30}%, ${getTealPulse(gradientHue)} 0%, var(--color-brand-bg) 100%)`,
+        backgroundColor: 'var(--color-brand-bg)',
+        backgroundImage: `radial-gradient(circle 1400px at ${50 + Math.sin(gradientHue * 0.005) * 30}% ${50 + Math.cos(gradientHue * 0.003) * 30}%, ${getTealPulse(gradientHue, 1)} 0%, ${getTealPulse(gradientHue, 0.4)} 50%, ${getTealPulse(gradientHue, 0)} 100%)`,
         transition: 'background 100ms ease-out'
       }}
     >
