@@ -64,7 +64,7 @@ export const ENTRIES: Entry[] = [
       { value: '3.0s → 0.6s', label: 'Page load (SSR + caching)' },
     ],
     bullets: [
-      'Sole engineer for a Retail-as-a-Service platform serving 11 retail brands across 3 mall locations — owning frontend architecture, multi-tenant theming, analytics, and client-facing feature delivery end-to-end',
+      'Sole engineer for a Retail-as-a-Service platform serving 11 retail brands across 3 mall locations owning frontend architecture, multi-tenant theming, analytics, and client-facing feature delivery end-to-end',
       'Led the Create React App -> Next.js 12 migration, redesigning around statically pre-rendered routes (Pages Router + getStaticProps) for SEO-friendly storefronts and edge caching, cutting average page load from ~3.0s to 0.6s',
       'Instrumented Google Analytics 4 across the platform with staging/production env isolation, and used the analytics to drive A/B experiments that delivered a 20% conversion uplift',
     ],

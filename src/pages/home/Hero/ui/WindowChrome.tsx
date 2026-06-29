@@ -119,10 +119,9 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
         <div
           data-tooltip={TOOLTIPS.shipping}
           data-tooltip-pos="below"
-          className="flex items-center gap-1.5 bg-transparent sm:bg-brand-primary/[0.04] border-0 sm:border border-brand-primary/15 hover:bg-transparent sm:hover:bg-brand-primary/[0.08] hover:border-transparent sm:hover:border-brand-primary/30 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[9px] sm:text-[10px] text-brand-primary font-bold transition-all duration-300 shadow-[0_0_8px_rgba(0,200,180,0.02)] cursor-pointer select-none"
+          className="flex items-center justify-center bg-transparent sm:bg-brand-primary/[0.04] border-0 sm:border border-brand-primary/15 hover:bg-transparent sm:hover:bg-brand-primary/[0.08] hover:border-transparent sm:hover:border-brand-primary/30 p-1.5 sm:p-2 rounded-full text-[9px] sm:text-[10px] text-brand-primary font-bold transition-all duration-300 shadow-[0_0_8px_rgba(0,200,180,0.02)] cursor-pointer select-none"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_6px_var(--color-brand-primary)] shrink-0" />
-          <span className="hidden sm:inline tracking-wider">shipping</span>
         </div>
       </div>
     )

@@ -73,11 +73,11 @@ The AI terminal assistant (and the floating chat drawer) is powered by a Cloudfl
 worker/system-prompt.js
 ```
 
-`_docs/_resume.yaml` is the single source of truth for all accomplishment data — metrics, bullet points, skills, project stats. When you update your resume, sync the relevant facts into `system-prompt.js`.
+`_docs/_resume.yaml` is the single source of truth for all accomplishment data metrics, bullet points, skills, project stats. When you update your resume, sync the relevant facts into `system-prompt.js`.
 
 ### How to update
 
-1. Edit `worker/system-prompt.js` — add or update the relevant section (EXPERIENCE, PROJECTS, SKILLS, etc.)
+1. Edit `worker/system-prompt.js` add or update the relevant section (EXPERIENCE, PROJECTS, SKILLS, etc.)
 2. Redeploy the worker:
    ```bash
    cd worker
@@ -91,14 +91,14 @@ worker/system-prompt.js
 |:---|:---|
 | IDENTITY | Contact info, location, work auth |
 | EDUCATION | Degrees, distinctions, relevant highlights |
-| SKILLS | Grouped by category — reorder to reflect current focus |
+| SKILLS | Grouped by category reorder to reflect current focus |
 | EXPERIENCE | Role, company, dates, key accomplishment bullets with metrics |
 | PROJECTS | Name, live URL, stack, key stats and accomplishments |
 | INSTRUCTIONS | Tone, response length, off-topic handling, formatting rules |
 
 ### Formatting rule
 
-The terminal renders **plain text only** — no markdown. The system prompt instructs the model not to use `**bold**`, `# headers`, or hyphen bullets. Keep accomplishment bullets as plain prose with numbers inline (e.g. `cut refresh from 45 min to 20 min`).
+The terminal renders **plain text only** no markdown. The system prompt instructs the model not to use `**bold**`, `# headers`, or hyphen bullets. Keep accomplishment bullets as plain prose with numbers inline (e.g. `cut refresh from 45 min to 20 min`).
 
 ### History truncation
 

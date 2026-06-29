@@ -142,6 +142,45 @@ export const SEO_THEME_COLORS = {
   light: '#ffffff',
 } as const;
 
+/**
+ * StrokTalk case-study palette (src/pages/showcase/StrokTalkPage.tsx).
+ * These raw hexes mirror the --color-strok-* tokens in @theme; they live here
+ * (the sanctioned JS-hex home) because the colour-system swatches render each
+ * value as literal on-screen text/swatch fill, so the hex IS the content.
+ */
+export const STROKTALK_PALETTE = [
+  {
+    hex: '#2ECC8F',
+    name: 'Signal Mint',
+    role: 'Primary · CTA',
+    note: 'The brand green. Reserved for the one action that moves a patient forward Training, Complete, Update. One clear next step, never competing with itself.',
+  },
+  {
+    hex: '#16A578',
+    name: 'Deep Mint',
+    role: 'Data · Progress',
+    note: 'A weightier mint for the progress graph line and gradient anchors. It reads as "growth" on the history screen without shouting over the score.',
+  },
+  {
+    hex: '#2D3540',
+    name: 'Slate Ink',
+    role: 'Text · Dark UI',
+    note: 'Body copy and the heavy secondary buttons (Go ahead, I got it). Softer than pure black so long therapy sessions stay easy on tired eyes.',
+  },
+  {
+    hex: '#EF5364',
+    name: 'Coral Cue',
+    role: 'Accent · Focus',
+    note: 'Used on a single word in each prompt the same, Sort, below to point attention exactly where comprehension is being tested. Never decorative.',
+  },
+  {
+    hex: '#F1F3F4',
+    name: 'Cloud',
+    role: 'Surface · Cards',
+    note: 'The near-white card base. Generous neutral space lowers cognitive load and lets the 3D characters and one accent breathe.',
+  },
+] as const;
+
 export const LINKEDIN_BANNER_COLORS = {
   dark: {
     frameBg: '#060608',

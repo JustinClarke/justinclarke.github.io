@@ -49,7 +49,6 @@ role_targets:
   - id: bi-developer        # lead: Power BI, DAX, data modelling, RLS, Fabric
   - id: ml-engineer         # lead: XGBoost->ONNX, feature engineering, calibration, leakage audit
   - id: frontend            # lead: React/TS, data-products, in-browser data apps
-  - id: agentic-ai          # lead: lineage agent, ChromaDB, knowledge-graph tooling
 
 # -----------------------------------------------------------------------------
 # Tailoring recipes. Per-role assembly instructions: title overrides, bullet
@@ -110,9 +109,6 @@ headlines:
   - id: head-frontend
     for: [frontend]
     text: "Front-End Engineer · Data Products — React + TypeScript for Data-Intensive Apps"
-  - id: head-agentic-ai
-    for: [agentic-ai]
-    text: "Data & AI Engineer — Agentic Tooling, Knowledge Graphs & ML Pipelines"
 
 # -----------------------------------------------------------------------------
 # Summary / about variants. Pick ONE.
@@ -145,12 +141,6 @@ summaries:
       Front-end engineer for data products. I build production React + TypeScript apps that
       turn high-volume datasets into fast interactive tools — including a zero-backend F1
       analytics SPA running DuckDB-Wasm SQL and ONNX inference fully client-side at sub-10ms.
-  - id: sum-agentic-ai
-    for: [agentic-ai]
-    text: >
-      Data & AI engineer building agentic tooling over real codebases: a ChromaDB-backed
-      lineage agent and a knowledge-graph generator (6,600+ nodes) that answer
-      "what connects to what" across a 700-file repository, on top of a tested ML pipeline.
 
 # =============================================================================
 # EXPERIENCE
@@ -452,17 +442,30 @@ projects:
         skills: [Mintlify, model cards, ML governance, documentation automation, CI/CD]
         tags: [ml-engineer, analytics-engineer]
         strength: supporting
-    sub_entries:
-      - id: lineage-synth
-        name: lineage-synth / graphify
+
+      - id: otp-09
         text: >
-          Built a ChromaDB-backed lineage agent and a knowledge-graph generator over the
-          codebase (6,607 nodes, 11,150 edges across 658 files) to answer "what connects to
-          what" capability queries via BFS sweeps — a portfolio differentiator for agentic-AI roles.
-        metric: 6,607 nodes / 11,150 edges / 658 files
-        skills: [ChromaDB, knowledge graphs, RAG, agentic AI, Python, embeddings]
-        tags: [agentic-ai, ml-engineer]
-        strength: signature   # for agentic-ai cuts; supporting otherwise
+          Implemented a two-way High-Dimensional Fixed Effects (HDFE) panel regression to separate car quality from driver quality, solving a fundamental confounding problem in F1 analytics.
+        metric: HDFE panel regression de-biasing
+        skills: [econometrics, fixed effects, statistics, PyFixest, Python]
+        tags: [data-analyst, analytics-engineer, ml-engineer]
+        strength: strong
+
+      - id: otp-10
+        text: >
+          Modelled tyre-cliff onset as a right-censored Kaplan-Meier survival problem across 401 groups, and enforced physically monotone tyre degradation envelopes using weighted isotonic regression.
+        metric: Kaplan-Meier survival, isotonic regression
+        skills: [survival analysis, Kaplan-Meier, isotonic regression, statistics, Python]
+        tags: [ml-engineer, data-analyst]
+        strength: strong
+
+      - id: otp-11
+        text: >
+          Developed a 5-step statistical validation harness—including teammate-swap checks, team-change counterfactuals, and leave-one-race-out (LORO) backtests—using bootstrap confidence intervals to rigorously validate structural predictions.
+        metric: 5-step statistical validation gate
+        skills: [statistical validation, bootstrap CIs, Monte Carlo, Python, hypothesis testing]
+        tags: [ml-engineer, data-analyst, analytics-engineer]
+        strength: strong
 
   # ---------------------------------------------------------------------------
   - id: spotify-engine
@@ -632,10 +635,6 @@ skills:
       label: Frontend
       lead_for: [frontend]
       items: [React, TypeScript, JavaScript, "Next.js", "Tailwind CSS", Vite, HTML5, CSS3, "DuckDB-Wasm", "ONNX Runtime Web", "interactive charting", "D3.js"]
-    - id: agentic-ai
-      label: AI / Agentic
-      lead_for: [agentic-ai]
-      items: [ChromaDB, "knowledge graphs", RAG, embeddings, "Gemini 1.5", "agentic tooling"]
     - id: infra
       label: Infra & Tooling
       lead_for: []

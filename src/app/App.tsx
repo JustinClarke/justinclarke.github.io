@@ -49,6 +49,9 @@ const HRArchetypePage = lazy(() => import('@/pages/projects/HRArchetypePage').th
 const OffThePaceOverview = lazy(() => import('@/pages/off-the-pace/OffThePaceOverview').then(m => ({ default: m.OffThePaceOverview })));
 const OffThePaceSource = lazy(() => import('@/pages/off-the-pace/OffThePaceSource').then(m => ({ default: m.OffThePaceSource })));
 const LinkedinBannerPage = lazy(() => import('@/pages/LinkedinBannerPage').then(m => ({ default: m.LinkedinBannerPage })));
+const PortfolioPage = lazy(() => import('@/pages/studio/index').then(m => ({ default: m.PortfolioPage })));
+const CrescendoPage = lazy(() => import('@/pages/studio/CrescendoPage').then(m => ({ default: m.CrescendoPage })));
+const StrokTalkPage = lazy(() => import('@/pages/studio/StrokTalkPage').then(m => ({ default: m.StrokTalkPage })));
 
 // ─── Preloader policy ─────────────────────────────────────────────────────────
 // The intro ("Preloader") should appear at most ONCE per browser tab,
@@ -313,6 +316,9 @@ export default function App() {
               <Route path="/connect" element={<ConnectPage />} />
               <Route path="/contact" element={<ConnectPage />} />
               <Route path="/linkedin-banner" element={<LinkedinBannerPage />} />
+              <Route path="/studio" element={<PortfolioPage />} />
+              <Route path="/studio/crescendo" element={<CrescendoPage />} />
+              <Route path="/studio/stroktalk" element={<StrokTalkPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -48,6 +48,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
     { n: '02', cmd: 'connect', desc: 'get in touch', important: true, hot: false, tooltip: TOOLTIPS.contactme, onClick: () => onCommand('connect', 'sidebar'), mobileOrder: 3 },
     { n: '03', cmd: 'the long version', desc: 'how I got here', important: false, hot: false, tooltip: TOOLTIPS.everythingelse, onClick: () => onCommand('the long version', 'sidebar'), mobileOrder: 4 },
     { n: '04', cmd: 'featured project', desc: 'VIEW OVERVIEW', large: true, badge: <ProjectShowcase project={crownJewelProject} />, hot: false, alignTop: true, tooltip: TOOLTIPS.projects, onClick: () => { track('project-click', { project: crownJewelProject.id }); navigate('/f1'); }, mobileOrder: 1 },
+    { n: '05', cmd: 'studio', desc: 'ui/ux & visuals', important: false, hot: false, tooltip: 'Design Portfolio', onClick: () => { track('studio-click'); navigate('/studio'); }, mobileOrder: 5 },
   ];
 
   return (
@@ -105,7 +106,8 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
               c.mobileOrder === 1 && "order-1 md:order-none",
               c.mobileOrder === 2 && "order-2 md:order-none",
               c.mobileOrder === 3 && "order-3 md:order-none",
-              c.mobileOrder === 4 && "order-4 md:order-none"
+              c.mobileOrder === 4 && "order-4 md:order-none",
+              c.cmd === 'studio' && "hidden md:block"
             )}
           >
             <CommandButton

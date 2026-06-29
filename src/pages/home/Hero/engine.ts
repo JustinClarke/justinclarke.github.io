@@ -183,7 +183,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
   // ── ls projects ────────────────────────────────────────────────────────────
   {
     id: 'ls projects',
-    aliases: ['projects', 'work', 'cases', 'portfolio', 'showcase', 'apps', 'products', 'code', 'repos', 'list'],
+    aliases: ['projects', 'work', 'cases', 'portfolio', 'showcase', 'apps', 'products', 'code', 'repos', 'list', 'studio'],
     summary: 'Featured case studies 6 production projects.',
     category: 'core',
     run: () => ({
@@ -351,7 +351,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
           line('g', '[SYSTEM]: Status report'),
           sp(),
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'UPTIME      ' }, { t: 'viz-success', text: fmtUptime(uptimeMs) }] },
-          { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENV         ' }, { t: 'muted', text: 'portfolio.v4.2 · branch: main' }] },
+          { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENV         ' }, { t: 'muted', text: 'studio.v4.2 · branch: main' }] },
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'MBA         ' }, { t: 'b', text: 'BITS Pilani · active sprint' }] },
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'OTP         ' }, { t: 'viz-mac-yellow', text: 'Off the Pace · sprint 1 active' }] },
           sp(),
@@ -410,7 +410,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     run: () => ({ lines: [], effect: { type: 'download' } }),
   },
 
-  // ── ask (bare usage — query interception happens in resolveCommand) ────────
+  // ── ask (bare usage query interception happens in resolveCommand) ────────
   {
     id: 'ask',
     aliases: ['ai', 'agent', 'gemini'],
@@ -674,7 +674,7 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
     line('muted', "Justin's life choices are root-only. and honestly? fair."),
   ],
   'rm -rf': [
-    line('r', "rm: cannot remove portfolio: target too impressive to delete."),
+    line('r', "rm: cannot remove studio: target too impressive to delete."),
     line('muted', "try 'ls projects' instead. much more productive."),
   ],
   'git blame': [
@@ -707,7 +707,7 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   'play pong': [line('g', "launching pong.exe · paddle to the metal")],
   'play tetris': [line('g', "launching tetris.exe · don't stack overflow")],
   'play space invaders': [line('g', "launching space_invaders.exe · defend the port")],
-  pwd: [line('g', "/home/justin/portfolio · exactly where you should be.")],
+  pwd: [line('g', "/home/justin/studio · exactly where you should be.")],
   exit: [
     line('r', "exit: blocked."),
     line('muted', "you haven't seen the projects yet. scroll first."),
@@ -741,7 +741,7 @@ const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   whoops: [line('o', "it happens. type 'help' and we'll get you back on track.")],
   test: [
     line('viz-success', "test suite: all passing."),
-    line('muted', "dbt tests: green. portfolio: shipped. Justin: operational."),
+    line('muted', "dbt tests: green. studio: shipped. Justin: operational."),
   ],
   mba: [
     line('viz-mac-yellow', "MBA Business Analytics · BITS Pilani, UAE · 2026–2028."),
@@ -951,7 +951,7 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   //    merely CONTAINS a telltale word ("project", "skill"…) we nudge them toward
   //    the right command. `.includes(...)` checks for a substring anywhere in `cmd`.
   const guesses: TerminalLine[] = [];
-  if (cmd.includes('project') || cmd.includes('work') || cmd.includes('case') || cmd.includes('portfolio') || cmd.includes('app') || cmd.includes('showcase')) guesses.push(line('o', "→ try 'ls projects'"));
+  if (cmd.includes('project') || cmd.includes('work') || cmd.includes('case') || cmd.includes('portfolio') || cmd.includes('app') || cmd.includes('showcase') || cmd.includes('studio')) guesses.push(line('o', "→ try 'ls projects'"));
   if (cmd.includes('about') || cmd.includes('justin') || cmd.includes('learn') || cmd.includes('who') || cmd.includes('bio') || cmd.includes('profile')) guesses.push(line('o', "→ try 'about me'"));
   if (cmd.includes('skill') || cmd.includes('tech') || cmd.includes('tool') || cmd.includes('stack') || cmd.includes('language')) guesses.push(line('o', "→ try 'expertise'"));
   if (cmd.includes('job') || cmd.includes('career') || cmd.includes('cv') || cmd.includes('resumé') || cmd.includes('résumé') || cmd.includes('experience') || cmd.includes('education') || cmd.includes('degree') || cmd.includes('study') || cmd.includes('uni')) guesses.push(line('o', "→ try 'timeline' or 'resumé'"));
@@ -1000,7 +1000,7 @@ export function getSidebarFunMessage(cmd: string): string {
     connect: ["Accessing records... Opening communication channel.", "Initiating secure uplink... Ready to connect.", "Routing signal to Dubai headquarters... Standing by."],
     timeline: ["Querying career database... Time-machine active.", "Accessing academic records... Fast-forwarding.", "Loading interactive career timeline... Scroll-lock engaged."],
     'the long version': ["Opening the secret vault... Access granted.", "Loading marginalia & after-hours projects...", "Decoupling core engines... Navigating to the-long-version."],
-    projects: ["Scanning case studies... 6 repositories found.", "Accessing showcase records... Preparing scroll-link.", "Scrolling to featured work... Initiating view-port alignment."],
+    projects: ["Scanning case studies... 6 repositories found.", "Accessing studio records... Preparing scroll-link.", "Scrolling to featured work... Initiating view-port alignment."],
   };
   const list = messages[normalized] ?? ["Taking you there...", "Accessing records...", "Initiating sequence..."];
   return list[Math.floor(Math.random() * list.length)];

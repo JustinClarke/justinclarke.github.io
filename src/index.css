@@ -209,6 +209,18 @@
   --color-term-dirty-air: var(--color-blue-bright);
   --color-term-driver: var(--color-f1-red);
 
+  /* StrokTalk case-study palette  - the aphasia speech-rehab app concept
+     (src/pages/showcase/StrokTalkPage.tsx). mint is the brand/CTA green;
+     mint-deep anchors gradients and the progress graph line; mint-soft is the
+     pale fill behind it; slate is the dark UI/text colour; coral is the
+     attention accent used on training prompts; cloud is the light card base. */
+  --color-strok-mint: #2ecc8f;
+  --color-strok-mint-deep: #16a578;
+  --color-strok-mint-soft: #c9f0de;
+  --color-strok-slate: #2d3540;
+  --color-strok-coral: #ef5364;
+  --color-strok-cloud: #f1f3f4;
+
   /* Semantic surface / text / border tokens (light-adaptive, dark defaults).
      Override blocks below swap them for the light theme. */
   --surface-primary: #050505;
