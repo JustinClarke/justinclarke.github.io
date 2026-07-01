@@ -71,7 +71,7 @@ export function BehaviouralRiskWidget() {
     <div className="flex flex-col h-full justify-between gap-1.5 md:gap-2 min-h-0 text-left select-none">
 
       {/* Header */}
-      <div className="flex flex-col gap-1 w-full border-b border-white/5 pb-2 shrink-0">
+      <div className="flex flex-col gap-1 w-full border-b border-edge-soft pb-2 shrink-0">
         <div className="flex flex-wrap items-center gap-2 pt-0.5">
           <span className="flex h-2 w-2 relative shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-acc-bi" />
@@ -80,16 +80,16 @@ export function BehaviouralRiskWidget() {
           <span className="font-mono text-[8px] sm:text-[9px] font-bold border border-acc-bi/40 text-acc-bi px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 bg-acc-bi/5">
             BEHAVIOURAL AI
           </span>
-          <h3 className="font-noto text-sm xs:text-base sm:text-lg font-black tracking-tight text-white uppercase leading-none">
+          <h3 className="font-noto text-sm xs:text-base sm:text-lg font-black tracking-tight text-fg uppercase leading-none">
             HR ANALYSIS
           </h3>
         </div>
 
         {/* Dynamic Telemetry Subheader */}
-        <div className="hidden lg:flex flex-nowrap items-center gap-x-2 gap-y-0.5 font-mono text-[9px] sm:text-[10px] text-neutral-500 mt-0.5 leading-none select-none pr-16 xs:pr-20 sm:pr-24 whitespace-nowrap">
-          <span className="text-neutral-500 font-medium">FLIGHT RISK DETECTION</span>
+        <div className="hidden lg:flex flex-nowrap items-center gap-x-2 gap-y-0.5 font-mono text-[9px] sm:text-[10px] text-fg-faint mt-0.5 leading-none select-none pr-16 xs:pr-20 sm:pr-24 whitespace-nowrap">
+          <span className="text-fg-faint font-medium">FLIGHT RISK DETECTION</span>
           <span>•</span>
-          <span className="uppercase text-neutral-500 font-medium">8 Archetypes</span>
+          <span className="uppercase text-fg-faint font-medium">8 Archetypes</span>
         </div>
       </div>
 
@@ -97,7 +97,7 @@ export function BehaviouralRiskWidget() {
       <div className="hidden lg:flex flex-col gap-2 grow min-h-0">
 
         {/* Data Pipeline Flow */}
-        <div className="bg-black/40 border border-white/5 rounded-xl p-3 md:p-2.5 lg:p-3 shrink-0">
+        <div className="bg-bento-inset border border-edge-soft rounded-xl p-3 md:p-2.5 lg:p-3 shrink-0">
           <div className="flex items-center justify-between gap-1.5 md:gap-1">
             {/* LEARN: `.map` turns the data array into one element per item the
                 React way to render a list. Each needs a unique `key` so React can
@@ -113,10 +113,10 @@ export function BehaviouralRiskWidget() {
                   className={cn(
                     "w-5 h-5 md:w-6 md:h-6 rounded-full border flex items-center justify-center text-[9px] md:text-[10px] font-bold shrink-0",
                     pipelineStep === i
-                      ? `${stage.color} bg-white/10 border-white/20 animate-pulse`
+                      ? `${stage.color} bg-fg/10 border-edge animate-pulse`
                       : pipelineStep > i
-                        ? `${stage.color} bg-white/5 border-white/10`
-                        : "bg-white/2 border-white/5 text-neutral-600"
+                        ? `${stage.color} bg-fg/[0.06] border-edge`
+                        : "bg-fg/[0.03] border-edge-soft text-fg-faint"
                   )}
                   animate={pipelineStep === i ? { scale: [1, 1.15, 1] } : {}}
                   transition={{ duration: 0.8 }}
@@ -127,14 +127,14 @@ export function BehaviouralRiskWidget() {
                 {/* Stage label */}
                 <span className={cn(
                   "font-mono text-[8px] md:text-[9px] uppercase tracking-tighter text-center leading-tight font-black",
-                  pipelineStep >= i ? "text-white/80" : "text-neutral-500"
+                  pipelineStep >= i ? "text-fg/80" : "text-fg-faint"
                 )}>
                   {stage.label.split(' ')[0]}
                 </span>
 
                 {/* Arrow to next */}
                 {i < pipelineStages.length - 1 && (
-                  <div className="absolute right-0 top-2.5 md:top-3 transform translate-x-1/2 -translate-y-1/2 text-white/10 text-xs md:text-sm">→</div>
+                  <div className="absolute right-0 top-2.5 md:top-3 transform translate-x-1/2 -translate-y-1/2 text-fg/10 text-xs md:text-sm">→</div>
                 )}
               </div>
             ))}
@@ -144,30 +144,30 @@ export function BehaviouralRiskWidget() {
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 gap-2 md:gap-2.5 shrink-0">
           {/* Avg Risk Score */}
-          <div className="bg-black/40 border border-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
+          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
             <div className="flex items-center gap-1.5 w-full">
               <AlertTriangle size={10} className="text-amber-400 shrink-0" />
-              <span className="font-mono text-[9px] md:text-[10px] text-neutral-500 uppercase tracking-wider font-bold">Tracked Metrics</span>
+              <span className="font-mono text-[9px] md:text-[10px] text-fg-faint uppercase tracking-wider font-bold">Tracked Metrics</span>
             </div>
             <span className="font-mono text-sm md:text-base font-black text-amber-400">
-              {codebaseStats.totalMetricsTracked}<span className="text-[9px] md:text-[10px] text-neutral-400 font-bold"> dimensions</span>
+              {codebaseStats.totalMetricsTracked}<span className="text-[9px] md:text-[10px] text-fg-soft font-bold"> dimensions</span>
             </span>
           </div>
 
           {/* Engagement Level */}
-          <div className="bg-black/40 border border-white/5 rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
+          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
             <div className="flex items-center gap-1.5 w-full">
               <Flame size={10} className="text-orange-400 shrink-0" />
-              <span className="font-mono text-[9px] md:text-[10px] text-neutral-500 uppercase tracking-wider font-bold">Avg Engagement</span>
+              <span className="font-mono text-[9px] md:text-[10px] text-fg-faint uppercase tracking-wider font-bold">Avg Engagement</span>
             </div>
             <span className="font-mono text-sm md:text-base font-black text-orange-400">
-              {codebaseStats.avgEngagement}<span className="text-[9px] md:text-[10px] text-neutral-400 font-bold">/10</span>
+              {codebaseStats.avgEngagement}<span className="text-[9px] md:text-[10px] text-fg-soft font-bold">/10</span>
             </span>
           </div>
         </div>
 
         {/* Live Insight from Gemini */}
-        <div className="bg-black/40 border border-white/5 rounded-lg p-2.5 md:p-3 grow min-h-15 md:min-h-0 flex flex-col justify-center">
+        <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 grow min-h-15 md:min-h-0 flex flex-col justify-center">
           {/* LEARN: because the inner key={animationPhase} changes each tick,
               AnimatePresence treats it as "old one left, new one arrived" and
               cross-fades between insights. mode="wait" finishes the exit first. */}
@@ -181,7 +181,7 @@ export function BehaviouralRiskWidget() {
               className="flex items-start gap-1.5"
             >
               <Sparkles size={11} className="text-acc-bi shrink-0 mt-0.5" />
-              <p className="font-mono text-[9px] md:text-[10px] text-neutral-300 leading-tight">
+              <p className="font-mono text-[9px] md:text-[10px] text-fg-soft leading-tight">
                 {insights[animationPhase % insights.length]}
               </p>
             </motion.div>
@@ -190,12 +190,12 @@ export function BehaviouralRiskWidget() {
       </div>
 
       {/* Footer */}
-      <div className="hidden lg:flex flex-wrap gap-x-2.5 gap-y-1 items-center border-t border-white/5 pt-1.5 text-neutral-400 font-mono text-[8px] md:text-[9px] shrink-0">
+      <div className="hidden lg:flex flex-wrap gap-x-2.5 gap-y-1 items-center border-t border-edge-soft pt-1.5 text-fg-soft font-mono text-[8px] md:text-[9px] shrink-0">
         <div className="flex items-center gap-1">
           <Users size={9} className="shrink-0" />
           <span>{codebaseStats.totalResponses} Analyzed</span>
         </div>
-        <span className="text-white/10">•</span>
+        <span className="text-fg/10">•</span>
         <div className="flex items-center gap-1">
           <TrendingDown size={9} className="shrink-0" />
           <span>8 Archetypes • Engagement scoring • Risk modeling</span>

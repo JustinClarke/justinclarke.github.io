@@ -83,7 +83,7 @@ export function SqlDisasterWidget() {
     <div className="flex flex-col h-full justify-between gap-1.5 md:gap-2 min-h-0 text-left select-none">
 
       {/* Header */}
-      <div className="flex flex-col gap-1 w-full border-b border-white/5 pb-2 shrink-0">
+      <div className="flex flex-col gap-1 w-full border-b border-edge-soft pb-2 shrink-0">
         <div className="flex flex-wrap items-center gap-2 pt-0.5">
           <span className="flex h-2 w-2 relative shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-viz-red" />
@@ -92,14 +92,14 @@ export function SqlDisasterWidget() {
           <span className="font-mono text-[8px] sm:text-[9px] font-bold border border-viz-red/40 text-viz-red px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 bg-viz-red/5">
             RELATIONAL DATABASE
           </span>
-          <h3 className="font-noto text-sm xs:text-base sm:text-lg font-black tracking-tight text-white uppercase leading-none">
+          <h3 className="font-noto text-sm xs:text-base sm:text-lg font-black tracking-tight text-fg uppercase leading-none">
             DISASTER RESPONSE
           </h3>
         </div>
 
         {/* Dynamic Telemetry Subheader */}
-        <div className="hidden lg:flex flex-nowrap items-center gap-x-2 gap-y-0.5 font-mono text-[9px] sm:text-[10px] text-neutral-500 mt-0.5 leading-none select-none pr-16 xs:pr-20 sm:pr-24 whitespace-nowrap">
-          <span className="text-neutral-500 font-medium">SCHEMA OPERATIONAL</span>
+        <div className="hidden lg:flex flex-nowrap items-center gap-x-2 gap-y-0.5 font-mono text-[9px] sm:text-[10px] text-fg-faint mt-0.5 leading-none select-none pr-16 xs:pr-20 sm:pr-24 whitespace-nowrap">
+          <span className="text-fg-faint font-medium">SCHEMA OPERATIONAL</span>
           <span>•</span>
           <AnimatePresence mode="wait">
             <motion.span
@@ -108,7 +108,7 @@ export function SqlDisasterWidget() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
               transition={{ duration: 0.2 }}
-              className="uppercase font-medium font-mono text-neutral-500"
+              className="uppercase font-medium font-mono text-fg-faint"
             >
               {activeEntity.label}: {activeEntity.count}
             </motion.span>
@@ -117,19 +117,19 @@ export function SqlDisasterWidget() {
       </div>
 
       {/* Mode Toggle */}
-      <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-white/[0.02] border border-white/5 rounded-xl shrink-0 gap-3">
+      <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-bento-subtle border border-edge-soft rounded-xl shrink-0 gap-3">
         <div className="flex items-center gap-2">
           <Zap size={11} className="text-viz-red animate-pulse" />
-          <span className="font-mono text-[9px] md:text-[10px] font-bold text-neutral-400 tracking-wider uppercase">DIS-REL-PH · Module</span>
+          <span className="font-mono text-[9px] md:text-[10px] font-bold text-fg-soft tracking-wider uppercase">DIS-REL-PH · Module</span>
         </div>
         {/* LEARN: e.stopPropagation() keeps the click from bubbling to the whole
             card's handler, so a toggle switches the panel without navigating. */}
-        <div className="bg-neutral-950 border border-white/5 p-0.5 rounded-lg flex shrink-0">
+        <div className="bg-bento-track border border-edge-soft p-0.5 rounded-lg flex shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); setUiMode('schema'); }}
             className={cn(
               "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'schema' ? "bg-white/10 text-white" : "text-neutral-500 hover:text-neutral-300"
+              uiMode === 'schema' ? "bg-fg/10 text-fg" : "text-fg-faint hover:text-fg-soft"
             )}
           >
             Schema
@@ -138,7 +138,7 @@ export function SqlDisasterWidget() {
             onClick={(e) => { e.stopPropagation(); setUiMode('queries'); }}
             className={cn(
               "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'queries' ? "bg-viz-red/15 border border-viz-red/30 text-viz-red" : "text-neutral-500 hover:text-neutral-300"
+              uiMode === 'queries' ? "bg-viz-red/15 border border-viz-red/30 text-viz-red" : "text-fg-faint hover:text-fg-soft"
             )}
           >
             Queries
@@ -164,7 +164,7 @@ export function SqlDisasterWidget() {
               {/* Entity rail */}
               {/* LEARN: one cell per entity. cn() scales/dims the cell matching the
                   current entityTicker, so the highlight walks the rail on a timer. */}
-              <div className="grid grid-cols-7 gap-1 bg-black/40 border border-white/5 rounded-xl p-2 shrink-0">
+              <div className="grid grid-cols-7 gap-1 bg-bento-inset border border-edge-soft rounded-xl p-2 shrink-0">
                 {ENTITIES.map((e, i) => (
                   <div key={e.id} className="flex flex-col items-center gap-0.5">
                     <span
@@ -176,7 +176,7 @@ export function SqlDisasterWidget() {
                     >
                       {e.count}
                     </span>
-                    <span className="font-mono text-[7px] text-neutral-600 uppercase tracking-tighter text-center leading-tight">
+                    <span className="font-mono text-[7px] text-fg-faint uppercase tracking-tighter text-center leading-tight">
                       {e.id.slice(0, 3)}
                     </span>
                   </div>
@@ -184,8 +184,8 @@ export function SqlDisasterWidget() {
               </div>
 
               {/* Active schema feature */}
-              <div className="bg-black/40 border border-white/5 rounded-xl p-2.5 md:p-3 flex-grow flex flex-col justify-between min-h-[80px]">
-                <span className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest">Schema Feature</span>
+              <div className="bg-bento-inset border border-edge-soft rounded-xl p-2.5 md:p-3 flex-grow flex flex-col justify-between min-h-[80px]">
+                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Schema Feature</span>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeFeature}
@@ -195,10 +195,10 @@ export function SqlDisasterWidget() {
                     transition={{ duration: 0.2 }}
                     className="flex flex-col gap-1 mt-1.5"
                   >
-                    <span className="font-mono text-[11px] md:text-xs font-black text-white">
+                    <span className="font-mono text-[11px] md:text-xs font-black text-fg">
                       {SCHEMA_FEATURES[activeFeature].label}
                     </span>
-                    <span className="font-mono text-[9px] md:text-[10px] text-neutral-400 leading-tight">
+                    <span className="font-mono text-[9px] md:text-[10px] text-fg-soft leading-tight">
                       {SCHEMA_FEATURES[activeFeature].detail}
                     </span>
                   </motion.div>
@@ -209,7 +209,7 @@ export function SqlDisasterWidget() {
                       key={i}
                       className={cn(
                         "h-0.5 flex-1 rounded-full transition-all duration-300",
-                        activeFeature === i ? "bg-viz-red" : "bg-white/10"
+                        activeFeature === i ? "bg-viz-red" : "bg-fg/10"
                       )}
                     />
                   ))}
@@ -226,9 +226,9 @@ export function SqlDisasterWidget() {
               className="flex flex-col gap-2 flex-grow min-h-0"
             >
               {/* Active query card */}
-              <div className="bg-bento-panel border border-white/10 rounded-xl p-2.5 md:p-3 shrink-0">
+              <div className="bg-bento-raised border border-edge rounded-xl p-2.5 md:p-3 shrink-0">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest">Active Query</span>
+                  <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Active Query</span>
                   <AnimatePresence mode="wait">
                     <motion.span
                       key={activeQueryIndex}
@@ -249,20 +249,20 @@ export function SqlDisasterWidget() {
                     exit={{ opacity: 0, y: -3 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="font-mono text-[10px] md:text-xs text-white font-bold truncate mb-1">
+                    <div className="font-mono text-[10px] md:text-xs text-fg font-bold truncate mb-1">
                       {activeQuery.label}
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="font-mono text-sm md:text-base font-black text-viz-red">{activeQuery.latency}</span>
-                      <span className="font-mono text-[9px] text-neutral-500 uppercase">{activeQuery.type}</span>
+                      <span className="font-mono text-[9px] text-fg-faint uppercase">{activeQuery.type}</span>
                     </div>
                   </motion.div>
                 </AnimatePresence>
               </div>
 
               {/* Query queue */}
-              <div className="flex-grow bg-black/40 border border-white/5 rounded-xl p-2 md:p-2.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
-                <span className="font-mono text-[9px] text-neutral-500 uppercase tracking-widest shrink-0">Query Syllabus · 47 total</span>
+              <div className="flex-grow bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
+                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest shrink-0">Query Syllabus · 47 total</span>
                 {QUERY_LOG.map((q, i) => (
                   <div
                     key={q.label}
@@ -273,13 +273,13 @@ export function SqlDisasterWidget() {
                   >
                     <span className={cn(
                       "font-mono text-[9px] truncate",
-                      activeQueryIndex === i ? "text-white font-bold" : "text-neutral-500"
+                      activeQueryIndex === i ? "text-fg font-bold" : "text-fg-faint"
                     )}>
                       {q.label}
                     </span>
                     <span className={cn(
                       "font-mono text-[9px] font-black shrink-0",
-                      activeQueryIndex === i ? "text-viz-red" : "text-neutral-600"
+                      activeQueryIndex === i ? "text-viz-red" : "text-fg-faint"
                     )}>
                       {q.latency}
                     </span>
@@ -293,7 +293,7 @@ export function SqlDisasterWidget() {
       </div>
 
       {/* Footer */}
-      <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-1 justify-between items-center border-t border-white/5 pt-1.5 text-neutral-400 font-mono text-[8px] md:text-[9px] shrink-0">
+      <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-1 justify-between items-center border-t border-edge-soft pt-1.5 text-fg-soft font-mono text-[8px] md:text-[9px] shrink-0">
         <div className="flex items-center gap-1.5">
           <Database size={9} className="shrink-0" />
           <span>11 Entities · 47 Queries</span>

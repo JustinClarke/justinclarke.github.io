@@ -83,7 +83,6 @@ export const TOOLTIPS = {
   everythingelse: "Marginalia and after-hours projects. Essays, beliefs, and hobbies.",
   expertise: "What I'm actually any good at.",
   projects: "The one I'd talk about in an interview.",
-  shipping: "Currently shipping. Touch wood.",
   studio: "Interactive case studies and design work.",
   getintouch: "Reply guaranteed. Within the working week.",
   stepback: "Back the way you came. No harm done.",

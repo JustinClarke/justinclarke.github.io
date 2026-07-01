@@ -58,7 +58,7 @@ export const CapitalBudgetingPage = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-capital/30 overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-surface text-fg font-sans selection:bg-capital/30 overflow-x-hidden">
       <SEO 
         title="Capital Architecture Model" 
         description="Engineering a ₱581M feasibility engine for maritime dredging operations. A comparative study of cost-of-capital versus long-term asset yield. Full DCF model inside."

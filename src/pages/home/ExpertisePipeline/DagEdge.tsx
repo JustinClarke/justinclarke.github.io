@@ -63,7 +63,7 @@ export const DagEdge: React.FC<DagEdgeProps> = ({
     <path
       d={d}
       fill="none"
-      stroke={isActive ? `rgb(${rgb})` : 'rgba(255,255,255,0.5)'}
+      stroke={isActive ? `rgb(${rgb})` : 'var(--color-fg)'}
       strokeWidth={isActive ? 1.5 : 0.8}
       opacity={isActive ? 1 : isInactive ? 0.025 : 0.07}
       style={{

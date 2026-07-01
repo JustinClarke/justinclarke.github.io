@@ -244,7 +244,7 @@ export const HRArchetypePage = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-black/10 overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-surface text-fg font-sans selection:bg-black/10 overflow-x-hidden">
       <SEO
         title="HR Archetype System"
         description="AI-driven HR analytics: an 8-archetype retention engine that predicts employee attrition 90 days out using Gemini, Firestore, and a 13-axis diagnostic."

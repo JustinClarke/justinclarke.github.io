@@ -14,7 +14,7 @@
  * the picture inside (the current page) swaps out as you navigate.
  * -----------------------------------------------------------------------------
  */
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { CommandDock, SEO, GlobalSpotlight } from '@/components/layout';
 import { Analytics } from '@/components/analytics';
@@ -132,6 +132,21 @@ function decideInitialPreloader(isTheLongVersion: boolean, isOffThePace: boolean
 const getNormalizedPathname = (path: string): string => {
   return path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 };
+
+/**
+ * DarkRoute wraps a page that must stay dark regardless of the site theme
+ * (project case studies, the studio, Off The Pace). `data-theme-lock="dark"`
+ * pins the flipping --color-* tokens to their dark values for everything
+ * inside, and `bg-surface` paints the dark page background so the now
+ * theme-aware <body> (which turns white in light mode) never shows through.
+ */
+function DarkRoute({ children }: { children: ReactNode }) {
+  return (
+    <div data-theme-lock="dark" className="min-h-screen bg-surface text-fg">
+      {children}
+    </div>
+  );
+}
 
 /**
  * Main application layout and routing.
@@ -269,7 +284,7 @@ export default function App() {
   }, [location, navigate]);
 
   return (
-    <div className="min-h-screen text-white selection:bg-white/20">
+    <div className="min-h-screen text-fg selection:bg-brand-primary/20">
       {/* LEARN: "Skip to content" link: invisible until keyboard-focused (sr-only =
           screen-reader only). Lets keyboard/screen-reader users jump past the
           nav straight to the page. An accessibility best practice. */}
@@ -305,21 +320,21 @@ export default function App() {
                 `path` matches. `path="*"` is the catch-all 404 at the end. */}
             <Routes location={displayLocation} key={displayLocation.pathname}>
               <Route path="/" element={<Home />} />
-              <Route path="/project/spotify-engine" element={<SpotifyEnginePage />} />
-              <Route path="/project/sql-disaster" element={<SqlDisasterPage />} />
-              <Route path="/project/litestore" element={<LiteStorePage />} />
-              <Route path="/project/capital-budgeting" element={<CapitalBudgetingPage />} />
-              <Route path="/project/hr-archetype" element={<HRArchetypePage />} />
-              <Route path="/the-long-version" element={<TheLongVersionPage />} />
+              <Route path="/project/spotify-engine" element={<DarkRoute><SpotifyEnginePage /></DarkRoute>} />
+              <Route path="/project/sql-disaster" element={<DarkRoute><SqlDisasterPage /></DarkRoute>} />
+              <Route path="/project/litestore" element={<DarkRoute><LiteStorePage /></DarkRoute>} />
+              <Route path="/project/capital-budgeting" element={<DarkRoute><CapitalBudgetingPage /></DarkRoute>} />
+              <Route path="/project/hr-archetype" element={<DarkRoute><HRArchetypePage /></DarkRoute>} />
+              <Route path="/the-long-version" element={<DarkRoute><TheLongVersionPage /></DarkRoute>} />
               <Route path="/f1" element={<OffThePaceOverview />} />
               <Route path="/off-the-pace" element={<OffThePaceSource />} />
               <Route path="/connect" element={<ConnectPage />} />
               <Route path="/contact" element={<ConnectPage />} />
-              <Route path="/linkedin-banner" element={<LinkedinBannerPage />} />
-              <Route path="/studio" element={<PortfolioPage />} />
-              <Route path="/studio/crescendo" element={<CrescendoPage />} />
-              <Route path="/studio/stroktalk" element={<StrokTalkPage />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/linkedin-banner" element={<DarkRoute><LinkedinBannerPage /></DarkRoute>} />
+              <Route path="/studio" element={<DarkRoute><PortfolioPage /></DarkRoute>} />
+              <Route path="/studio/crescendo" element={<DarkRoute><CrescendoPage /></DarkRoute>} />
+              <Route path="/studio/stroktalk" element={<DarkRoute><StrokTalkPage /></DarkRoute>} />
+              <Route path="*" element={<DarkRoute><NotFound /></DarkRoute>} />
             </Routes>
           </Suspense>
         </main>

@@ -252,7 +252,7 @@ export const ExpertisePipeline: React.FC = () => {
   return (
     <section
       id="expertise"
-      className="section-layout text-white scroll-mt-25 border-t border-white/5 relative overflow-hidden"
+      className="section-layout text-fg scroll-mt-25 border-t border-edge-soft relative overflow-hidden"
     >
       {/* Ambient background glows */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden select-none opacity-20">
@@ -263,15 +263,15 @@ export const ExpertisePipeline: React.FC = () => {
       <div className="project-container relative z-10">
 
         {/* Section header */}
-        <div className="narrative-gap border-b border-white/10 pb-12 flex flex-col gap-4">
+        <div className="narrative-gap border-b border-edge pb-12 flex flex-col gap-4">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
-            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30 font-bold whitespace-nowrap">Expertise</span>
-            <div className="flex-1 h-px bg-white/10" />
+            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-fg/30 font-bold whitespace-nowrap">Expertise</span>
+            <div className="flex-1 h-px bg-edge" />
             <InteractiveHint text="TAP TO FOCUS" mobileText="TAP TO FOCUS" icon={MousePointer2} delay={0.25} direction="left" className="md:hidden" />
           </ScrollReveal>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <ScrollReveal delay={0.1}>
-              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-white leading-[0.85]">
+              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-fg leading-[0.85]">
                 What I bring to the{' '}
                 <em className="font-playfair italic font-normal text-brand-primary">stack.</em>
               </h2>
@@ -290,12 +290,12 @@ export const ExpertisePipeline: React.FC = () => {
           <div
             className={cn(
               'hidden md:flex items-center justify-between px-5 py-3.5 rounded-xl border mb-6',
-              'bg-[#090d0c]/60 backdrop-blur-md transition-all duration-300',
-              activeStageObj ? 'border-white/10' : 'border-white/5'
+              'bg-surface-2/60 backdrop-blur-md transition-all duration-300',
+              activeStageObj ? 'border-edge' : 'border-edge-soft'
             )}
             style={{
               '--tech-rgb': activeStageObj ? activeStageObj.rgb : '148, 163, 184',
-              borderColor: activeStageObj ? `rgba(var(--tech-rgb), 0.2)` : 'rgba(255,255,255,0.05)',
+              borderColor: activeStageObj ? `rgba(var(--tech-rgb), 0.2)` : 'var(--color-edge-soft)',
             } as React.CSSProperties}
             aria-live="polite"
           >
@@ -304,10 +304,10 @@ export const ExpertisePipeline: React.FC = () => {
                 {activeStageObj && (
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: `rgb(var(--tech-rgb))` }} />
                 )}
-                <span className="relative inline-flex rounded-full h-2 w-2 transition-colors duration-300" style={{ backgroundColor: activeStageObj ? `rgb(var(--tech-rgb))` : 'rgba(255,255,255,0.25)', boxShadow: activeStageObj ? `0 0 8px rgb(var(--tech-rgb))` : 'none' }} />
+                <span className="relative inline-flex rounded-full h-2 w-2 transition-colors duration-300" style={{ backgroundColor: activeStageObj ? `rgb(var(--tech-rgb))` : 'var(--color-fg-faint)', boxShadow: activeStageObj ? `0 0 8px rgb(var(--tech-rgb))` : 'none' }} />
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 font-bold whitespace-nowrap">Lineage Console</span>
-              <span className="text-white/25 font-mono text-[10px] select-none">|</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-fg/50 font-bold whitespace-nowrap">Lineage Console</span>
+              <span className="text-fg/25 font-mono text-[10px] select-none">|</span>
               <div className="h-4 flex items-center overflow-hidden w-full">
                 {/* LEARN: AnimatePresence lets a component animate OUT before
                     it is removed. mode="wait" plays exit then enter in
@@ -322,7 +322,7 @@ export const ExpertisePipeline: React.FC = () => {
                     transition={{ duration: 0.18, ease: 'easeOut' }}
                     className="flex items-center gap-1.5 w-full"
                   >
-                    <span className={cn('font-mono text-[10.5px] transition-colors duration-300 truncate', activeStageObj ? 'text-white/90' : 'text-white/50')}>
+                    <span className={cn('font-mono text-[10.5px] transition-colors duration-300 truncate', activeStageObj ? 'text-fg/90' : 'text-fg/50')}>
                       {hoveredSkill ? NARRATIVES[hoveredSkill] : 'Awaiting node connection. Hover any skill below to trace pipeline lineage.'}
                     </span>
                     <span
@@ -333,17 +333,17 @@ export const ExpertisePipeline: React.FC = () => {
                 </AnimatePresence>
               </div>
             </div>
-            <div className="flex items-center gap-4 font-mono text-[9px] text-white/40 shrink-0">
+            <div className="flex items-center gap-4 font-mono text-[9px] text-fg/40 shrink-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-white/45">NODE:</span>
-                <span className={cn('font-bold transition-colors duration-300', activeStageObj ? 'text-white' : 'text-white/40')}>
+                <span className="text-fg/45">NODE:</span>
+                <span className={cn('font-bold transition-colors duration-300', activeStageObj ? 'text-fg' : 'text-fg/40')}>
                   {hoveredSkill ? hoveredSkill.toLowerCase().replace(/\s+/g, '_') : 'none'}
                 </span>
               </div>
-              <span className="text-white/20">/</span>
+              <span className="text-fg/20">/</span>
               <div className="flex items-center gap-1.5">
-                <span className="text-white/45">STATUS:</span>
-                <span className={cn('font-bold transition-colors duration-300', activeStageObj ? activeStageObj.color : 'text-white/40')}>
+                <span className="text-fg/45">STATUS:</span>
+                <span className={cn('font-bold transition-colors duration-300', activeStageObj ? activeStageObj.color : 'text-fg/40')}>
                   {activeStageObj ? 'ACTIVE_ROUTING' : 'STANDBY'}
                 </span>
               </div>
@@ -355,7 +355,7 @@ export const ExpertisePipeline: React.FC = () => {
               The motion.div with layoutId="activeTabGlow" is one shared
               element that Framer Motion slides between tabs when the active
               one changes (a "magic motion" layout animation). */}
-          <div className="flex md:hidden items-center justify-between border border-white/5 bg-ink/30 rounded-xl p-1 mb-5 relative z-20">
+          <div className="flex md:hidden items-center justify-between border border-edge-soft bg-surface-2/30 rounded-xl p-1 mb-5 relative z-20">
             {SKILLS.map((stage, i) => {
               const isActive = activeStage === i;
               const shortName = stage.cat.split(' ')[0];
@@ -365,7 +365,7 @@ export const ExpertisePipeline: React.FC = () => {
                   onClick={() => { setActiveStage(i); setExpandedSkill(null); setUserHoveredSkill(null); }}
                   className={cn(
                     'flex-1 py-2 px-3 rounded-lg text-center font-mono transition-all duration-300 relative flex flex-col items-center justify-center gap-0.5',
-                    isActive ? cn('bg-white/[0.04] border border-white/10', stage.color) : 'text-white/40 border border-transparent hover:text-white/70'
+                    isActive ? cn('bg-fg/[0.04] border border-edge', stage.color) : 'text-fg/40 border border-transparent hover:text-fg/70'
                   )}
                 >
                   <span className="text-[9px] font-black tracking-[0.15em] opacity-60">0{i + 1}</span>

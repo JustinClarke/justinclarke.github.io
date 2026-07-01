@@ -102,7 +102,7 @@ export const LiteStorePage = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-litestore/30 overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-surface text-fg font-sans selection:bg-litestore/30 overflow-x-hidden">
       <SEO
         title="LiteStore ⋅ Retail-as-a-Service"
         description="Production Next.js platform: 30+ statically prerendered routes, multi-tenant brand theming, GA4 telemetry, and a Google Sheets pipeline. Shipped solo to litestore.in."

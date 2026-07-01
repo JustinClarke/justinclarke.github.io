@@ -18,6 +18,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NowPlaying } from '@/components/NowPlaying';
+import { ThemeToggle } from '@/ui/ThemeToggle';
 import { TOOLTIPS } from '@/config/tooltips';
 
 interface WindowChromeProps {
@@ -105,7 +106,7 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
           onClick={() => onCommand?.('game')}
           data-tooltip="you got games on your phone??"
           data-tooltip-pos="below"
-          className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/5 text-viz-mac-yellow opacity-80 hover:opacity-100 transition-all cursor-pointer border-none outline-none"
+          className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-fg/5 text-viz-mac-yellow opacity-80 hover:opacity-100 transition-all cursor-pointer border-none outline-none"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="6" x2="10" y1="11" y2="11" />
@@ -116,20 +117,14 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
           </svg>
         </button>
 
-        <div
-          data-tooltip={TOOLTIPS.shipping}
-          data-tooltip-pos="below"
-          className="flex items-center justify-center bg-transparent sm:bg-brand-primary/[0.04] border-0 sm:border border-brand-primary/15 hover:bg-transparent sm:hover:bg-brand-primary/[0.08] hover:border-transparent sm:hover:border-brand-primary/30 p-1.5 sm:p-2 rounded-full text-[9px] sm:text-[10px] text-brand-primary font-bold transition-all duration-300 shadow-[0_0_8px_rgba(0,200,180,0.02)] cursor-pointer select-none"
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_6px_var(--color-brand-primary)] shrink-0" />
-        </div>
+        <ThemeToggle size={14} className="flex" />
       </div>
     )
   );
 
   return (
     <div className="relative">
-      <div className="flex items-center h-10 px-4 border-b border-white/5 bg-white/[0.015] shrink-0">
+      <div className="flex items-center h-10 px-4 border-b border-edge-soft bg-term-chrome shrink-0">
         {showBackOnMobile ? (
           <>
             <div className="relative hidden sm:flex gap-2 group/traffic">

@@ -93,10 +93,25 @@
   --color-term-grey: #64748b;
   --color-term-grey-dim: #94a3b8;
   --color-term-white: #f1f5f9;
-  /* Terminal output palette the three greys used across TerminalBody/Header/SidebarMenu */
+  /* Terminal output palette the three greys used across TerminalBody/Header/SidebarMenu.
+     These FLIP with the theme: dark defaults here, light overrides in :root:not(.dark),
+     re-pinned dark inside [data-theme-lock="dark"] subtrees. */
   --color-term-fg: #f4f4f3;
   --color-term-dim: #8a8a86;
   --color-term-faint: #5a5a57;
+  /* Terminal window surfaces (hero) the floating window bg + its chrome bar.
+     Also flip with the theme. */
+  --color-term-bg: #060608;
+  --color-term-chrome: rgba(255, 255, 255, 0.015);
+
+  /* F1 Telemetry Card Greys & Control UI Colors */
+  --color-f1-grey: #94a3b8;
+  --color-f1-grey-dark: #64748b;
+  --color-control-bg: transparent;
+  --color-control-hover-bg: rgba(0, 200, 180, 0.02);
+  --color-control-hover-border: rgba(0, 200, 180, 0.15);
+  --color-input-bg: #121214;
+  --color-hover-shadow: rgba(0, 0, 0, 0.4);
 
   /* Light Theme Specifics (Experience/Education) */
   --color-light-bg: #ffffff;
@@ -221,16 +236,43 @@
   --color-strok-coral: #ef5364;
   --color-strok-cloud: #f1f3f4;
 
-  /* Semantic surface / text / border tokens (light-adaptive, dark defaults).
-     Override blocks below swap them for the light theme. */
-  --surface-primary: #050505;
-  --surface-secondary: #0c0c0c;
-  --surface-elevated: #111111;
-  --text-base: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.4);
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  /* ── Semantic, theme-flipping tokens ──
+     These carry the `--color-` prefix so Tailwind generates real utilities
+     (bg-surface, text-ink, border-edge, …). Dark values are the defaults here;
+     `:root:not(.dark)` swaps them for light, and `[data-theme-lock="dark"]`
+     re-pins them dark inside subtrees that must stay dark regardless of theme
+     (terminal hero, games, F1 telemetry, project case studies).
+     `--color-fg` is a flat hex so opacity utilities (text-fg/70) work. */
+  --color-surface: #050505;
+  /* page background */
+  --color-surface-2: #0c0c0c;
+  /* cards */
+  --color-surface-3: #111111;
+  /* elevated / modal */
+  --color-fg: #ffffff;
+  /* primary text */
+  --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-faint: rgba(255, 255, 255, 0.4);
+  --color-edge: rgba(255, 255, 255, 0.08);
+  --color-edge-soft: rgba(255, 255, 255, 0.05);
+
+  /* Text-lift shadow for hint pills: a dark glow lifts white text off dark
+     surfaces; the light variant (in :root:not(.dark)) is a soft paper halo. */
+  --hint-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+  /* ── Bento featured-projects surfaces (theme-flipping) ──
+     The homepage project cards used to be hard dark glass. These tokens let the
+     whole section flip light while the F1 telemetry card stays pinned dark (it
+     shares internals with the /f1 page). Dark values are the defaults; the light
+     variant lives in `:root:not(.dark)`, and `[data-theme-lock="dark"]` re-pins
+     them dark inside opted-out subtrees. */
+  --color-bento-card: rgba(23, 23, 23, 0.4);   /* outer card shell */
+  --color-bento-inset: rgba(0, 0, 0, 0.4);     /* inner data panels */
+  --color-bento-raised: #09090b;               /* elevated / active-item panel */
+  --color-bento-subtle: rgba(255, 255, 255, 0.02); /* faint strips (mode toggle bar) */
+  --color-bento-track: #0a0a0a;                /* segmented-control track */
+  --color-bento-film: rgba(5, 5, 5, 0.72);     /* dimming veil over inactive cards */
+  --color-bento-dot: rgba(255, 255, 255, 0.04);/* background dot grid */
 
   /* Production Spacing System */
   --spacing-section-y-mobile: 5rem;
@@ -332,11 +374,18 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--color-brand-bg);
-  color: var(--color-text-primary);
+  background-color: var(--color-surface);
+  color: var(--color-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Safari (iOS) paints a translucent gray box over the whole element on tap
+   for anything clickable, exposing/thickening whatever border it has.
+   Chrome doesn't do this by default, which is why it only shows on Safari. */
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
 @utility smooth-underline {
@@ -416,14 +465,23 @@ body {
    (used for terminal hero, F1 telemetry, Off The Pace, project case studies). */
 
 :root.dark {
-  --surface-primary: #050505;
-  --surface-secondary: #0c0c0c;
-  --surface-elevated: #111111;
-  --text-base: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.4);
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  --color-surface: #050505;
+  --color-surface-2: #0c0c0c;
+  --color-surface-3: #111111;
+  --color-fg: #ffffff;
+  --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-faint: rgba(255, 255, 255, 0.4);
+  --color-edge: rgba(255, 255, 255, 0.08);
+  --color-edge-soft: rgba(255, 255, 255, 0.05);
+
+  /* Bento surfaces pinned dark */
+  --color-bento-card: rgba(23, 23, 23, 0.4);
+  --color-bento-inset: rgba(0, 0, 0, 0.4);
+  --color-bento-raised: #09090b;
+  --color-bento-subtle: rgba(255, 255, 255, 0.02);
+  --color-bento-track: #0a0a0a;
+  --color-bento-film: rgba(5, 5, 5, 0.72);
+  --color-bento-dot: rgba(255, 255, 255, 0.04);
 
   /* Page-wide spotlight variables */
   --page-spotlight-color-1: rgba(0, 200, 180, 0.045); /* Subtle Teal */
@@ -431,29 +489,89 @@ body {
 }
 
 :root:not(.dark) {
-  --surface-primary: #ffffff;
-  --surface-secondary: #f5f5f5;
-  --surface-elevated: #ffffff;
-  --text-base: #000000;
-  --text-secondary: rgba(0, 0, 0, 0.7);
-  --text-tertiary: rgba(0, 0, 0, 0.4);
-  --border-default: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.05);
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f5f5;
+  --color-surface-3: #ffffff;
+  --color-fg: #0a0a0a;
+  --color-fg-soft: rgba(0, 0, 0, 0.7);
+  --color-fg-faint: rgba(0, 0, 0, 0.45);
+  --color-edge: rgba(0, 0, 0, 0.10);
+  --color-edge-soft: rgba(0, 0, 0, 0.025);
+
+  /* Soft paper halo instead of the dark lift — keeps hint labels crisp without
+     the muddy blur a black shadow leaves behind near-black text. */
+  --hint-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+
+  /* Bento surfaces — light variant. Solid-white cards on the pale teal drift,
+     with faint ink-tinted inner panels so the data still reads as layered. */
+  --color-bento-card: #ffffff;
+  --color-bento-inset: rgba(15, 18, 25, 0.04);
+  --color-bento-raised: #f1f3f6;
+  --color-bento-subtle: rgba(15, 18, 25, 0.03);
+  --color-bento-track: #e7e9ee;
+  --color-bento-film: rgba(246, 247, 249, 0.66);
+  --color-bento-dot: rgba(15, 18, 25, 0.05);
+
+  /* Terminal hero light theme: ink-on-paper, softened greys, pale window */
+  --color-term-fg: #1f1f1d;
+  --color-term-dim: #6b6b66;
+  --color-term-faint: #9a9a93;
+  --color-term-bg: #f7f7f4;
+  --color-term-chrome: rgba(0, 0, 0, 0.025);
+  --color-f1-grey: rgba(0, 0, 0, 0.7);
+  --color-f1-grey-dark: rgba(0, 0, 0, 0.45);
+  --color-control-bg: transparent;
+  --color-control-hover-bg: #f2faf9;
+  --color-control-hover-border: rgba(0, 200, 180, 0.3);
+  --color-input-bg: #ffffff;
+  --color-hover-shadow: rgba(0, 0, 0, 0.06);
 
   /* Page-wide spotlight variables */
   --page-spotlight-color-1: rgba(0, 200, 180, 0.025); /* Fainter Teal for light backgrounds */
   --page-spotlight-color-2: rgba(99, 102, 241, 0.008); /* Fainter Indigo for light backgrounds */
 }
 
+/* Pins the flipping tokens to their dark values inside any subtree that opts out
+   of theming (terminal hero, games, F1 telemetry, project case studies). */
 [data-theme-lock="dark"] {
-  --surface-primary: #050505;
-  --surface-secondary: #0c0c0c;
-  --surface-elevated: #111111;
-  --text-base: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.4);
-  --border-default: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.05);
+  --color-surface: #050505;
+  --color-surface-2: #0c0c0c;
+  --color-surface-3: #111111;
+  --color-fg: #ffffff;
+  --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-faint: rgba(255, 255, 255, 0.4);
+  --color-edge: rgba(255, 255, 255, 0.08);
+  --color-edge-soft: rgba(255, 255, 255, 0.05);
+
+  /* Re-pin the dark text-lift for hints inside dark-locked subtrees. */
+  --hint-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+  /* Bento surfaces re-pinned dark (the F1 telemetry card opts out of light).
+     Its shell is OPAQUE here (not the 0.4-alpha the flipping cards use): as the
+     lone dark card on the now-light section, a translucent shell would let the
+     white page bleed through and turn it muddy grey. */
+  --color-bento-card: #161616;
+  --color-bento-inset: rgba(0, 0, 0, 0.4);
+  --color-bento-raised: #09090b;
+  --color-bento-subtle: rgba(255, 255, 255, 0.02);
+  --color-bento-track: #0a0a0a;
+  --color-bento-film: rgba(5, 5, 5, 0.72);
+  --color-bento-dot: rgba(255, 255, 255, 0.04);
+
+  /* Re-pin the flipping terminal tokens dark (F1 telemetry, Connect, banner,
+     ExpertisePipeline, lower home sections all keep their dark terminal look). */
+  --color-term-fg: #f4f4f3;
+  --color-term-dim: #8a8a86;
+  --color-term-faint: #5a5a57;
+  --color-term-bg: #060608;
+  --color-term-chrome: rgba(255, 255, 255, 0.015);
+  --color-f1-grey: #94a3b8;
+  --color-f1-grey-dark: #64748b;
+  --color-control-bg: transparent;
+  --color-control-hover-bg: rgba(0, 200, 180, 0.02);
+  --color-control-hover-border: rgba(0, 200, 180, 0.15);
+  --color-input-bg: #121214;
+  --color-hover-shadow: rgba(0, 0, 0, 0.4);
 }
 
 /* ── TERMINAL THEME SYSTEM ── */
@@ -1781,10 +1899,10 @@ body {
   }
 
   &:hover {
-    background-color: rgba(0, 200, 180, 0.02) !important;
-    border-color: rgba(0, 200, 180, 0.15) !important;
+    background-color: var(--color-control-hover-bg) !important;
+    border-color: var(--color-control-hover-border) !important;
     transform: translateX(2px) !important;
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 200, 180, 0.03);
+    box-shadow: 0 4px 20px -2px var(--color-hover-shadow), 0 0 15px rgba(0, 200, 180, 0.03);
   }
 
   &.important-control:hover {

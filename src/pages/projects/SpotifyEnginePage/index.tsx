@@ -210,7 +210,7 @@ export const SpotifyEnginePage = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-viz-spotify/25 overflow-x-hidden"
+      className="min-h-screen bg-surface text-fg font-sans selection:bg-viz-spotify/25 overflow-x-hidden"
     >
       <SEO
         title="Spotify: Predictive Engine"

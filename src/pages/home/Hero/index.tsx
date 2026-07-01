@@ -247,7 +247,7 @@ export const Hero: React.FC = () => {
   };
 
   return (
-    <section data-theme-lock="dark" className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-12 lg:p-16 overflow-hidden">
+    <section className="relative w-full min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-12 lg:p-16 overflow-hidden">
       <div className={cn(
         "absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,200,180,0.02)_0%,transparent_70%)] pointer-events-none transition-opacity duration-1000",
         showGradients ? "opacity-100" : "opacity-0"
@@ -267,7 +267,7 @@ export const Hero: React.FC = () => {
       )}
 
       <div className={`${getContainerClass()} relative w-full h-[85vh] min-h-[600px] max-w-[1536px] lg:h-[80vh] transition-all duration-300`}>
-        <div className="w-full h-full relative bg-[#060608] border border-white/10 rounded-xl overflow-hidden flex flex-col shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] cursor-text">
+        <div className="w-full h-full relative bg-term-bg border border-edge rounded-xl overflow-hidden flex flex-col shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] cursor-text">
           {/* Ambient Glows (Smooth CSS radial gradients without blur filters to prevent Safari stuttering) */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
             {/* Teal top-right glow (fades in with the sidebar to prevent block clipping) */}

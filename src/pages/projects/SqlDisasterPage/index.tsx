@@ -81,7 +81,7 @@ export const SqlDisasterPage = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-surface-primary text-text-base font-sans selection:bg-red-500/30 overflow-x-hidden"
+      className="min-h-screen bg-surface text-fg font-sans selection:bg-red-500/30 overflow-x-hidden"
     >
       <SEO
         title="SQL Disaster Response System"

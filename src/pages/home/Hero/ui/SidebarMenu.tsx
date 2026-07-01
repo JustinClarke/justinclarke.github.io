@@ -53,7 +53,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
 
   return (
     <div className={cn(
-      "relative flex flex-col gap-4 md:gap-6 pt-6 md:pt-2 shrink-0 md:flex-1 border-t md:border-t-0 border-white/5 md:pl-8 lg:pl-12 min-h-0 transition-opacity duration-1000",
+      "relative flex flex-col gap-4 md:gap-6 pt-6 md:pt-2 shrink-0 md:flex-1 border-t md:border-t-0 border-edge-soft md:pl-8 lg:pl-12 min-h-0 transition-opacity duration-1000",
       isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
     )}>
       {/* Sidebar spine  -  gradient accent on the dividing edge (desktop only) */}

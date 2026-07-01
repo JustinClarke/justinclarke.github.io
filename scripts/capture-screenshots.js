@@ -12,7 +12,7 @@ const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
 const SCREENSHOTS_DIR = path.join(__dirname, '../_docs/screenshots');
 
-const PAGES = [
+const ALL_PAGES = [
   { name: '01_home', path: '/' },
   { name: '02_spotify-engine', path: '/project/spotify-engine' },
   { name: '03_sql-disaster', path: '/project/sql-disaster' },
@@ -23,8 +23,22 @@ const PAGES = [
   { name: '08_f1-telemetry', path: '/f1' },
   { name: '09_f1-source', path: '/off-the-pace' },
   { name: '10_connect', path: '/connect' },
-  { name: '11_not-found', path: '/non-existent-page' }
+  { name: '11_not-found', path: '/non-existent-page' },
+  { name: '12_studio', path: '/studio' },
+  { name: '13_crescendo', path: '/studio/crescendo' },
+  { name: '14_stroktalk', path: '/studio/stroktalk' }
 ];
+
+const filterArg = process.argv[2];
+const PAGES = filterArg
+  ? ALL_PAGES.filter(p => p.name.includes(filterArg) || p.path.includes(filterArg))
+  : ALL_PAGES;
+
+if (PAGES.length === 0) {
+  console.error(`No pages match filter: ${filterArg}`);
+  process.exit(1);
+}
+
 
 function waitForServer(url, timeout = 30000) {
   return new Promise((resolve, reject) => {

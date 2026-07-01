@@ -46,19 +46,19 @@ export const CareerTimeline = () => {
   };
 
   return (
-    <section id="experience" className="section-layout text-white scroll-mt-25 border-t border-white/5 relative overflow-hidden">
+    <section id="experience" className="section-layout text-fg scroll-mt-25 border-t border-fg/5 relative overflow-hidden">
       {/* Subtle background texture */}
       <div className="absolute inset-0 bg-[radial-gradient(rgba(0,200,180,0.02)_1px,transparent_1px)] bg-[length:32px_32px] pointer-events-none" />
 
       <div className="project-container relative z-10">
 
         {/* ── Section Header ── */}
-        <div className="narrative-gap border-b border-white/10 pb-12 flex flex-col gap-4">
+        <div className="narrative-gap border-b border-fg/10 pb-12 flex flex-col gap-4">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
-            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30 font-bold whitespace-nowrap">
+            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-fg/30 font-bold whitespace-nowrap">
               Career Timeline
             </span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-fg/10" />
             <InteractiveHint
               text="SELECT CARDS TO EXPAND DETAILS"
               mobileText="TAP TO EXPAND"
@@ -70,7 +70,7 @@ export const CareerTimeline = () => {
           </ScrollReveal>
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <ScrollReveal delay={0.1}>
-              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-white">
+              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-fg">
                 The full <em className="font-playfair italic font-normal text-brand-primary">record.</em>
               </h2>
             </ScrollReveal>

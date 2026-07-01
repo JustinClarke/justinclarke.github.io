@@ -46,8 +46,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
       <div className={cn(
         "absolute left-0 md:left-2 top-6 w-[23px] h-[23px] md:w-[25px] md:h-[25px] rounded-full flex items-center justify-center z-10 transition-all duration-500",
         isWork
-          ? "bg-brand-bg border-2 border-brand-primary/60 shadow-[0_0_20px_rgba(0,200,180,0.25)]"
-          : "bg-brand-bg border-2 border-amber/60 shadow-[0_0_20px_rgba(245,158,11,0.25)]",
+          ? "bg-surface border-2 border-brand-primary/60 shadow-[0_0_20px_rgba(0,200,180,0.25)]"
+          : "bg-surface border-2 border-amber/60 shadow-[0_0_20px_rgba(245,158,11,0.25)]",
         isExpanded && (isWork
           ? "border-brand-primary shadow-[0_0_30px_rgba(0,200,180,0.5)]"
           : "border-amber shadow-[0_0_30px_rgba(245,158,11,0.5)]")
@@ -70,8 +70,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
         className={cn(
           "group relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-500",
           isWork
-            ? "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.05] hover:border-brand-primary/20"
-            : "bg-white/[0.03] border-white/[0.06] hover:bg-white/[0.04] hover:border-amber/20",
+            ? "bg-fg/[0.03] border-fg/[0.06] hover:bg-fg/[0.05] hover:border-brand-primary/20"
+            : "bg-fg/[0.03] border-fg/[0.06] hover:bg-fg/[0.04] hover:border-amber/20",
           isExpanded && (isWork
             ? "bg-brand-primary/[0.05] border-brand-primary/20 shadow-[0_20px_60px_-15px_rgba(0,200,180,0.12)]"
             : "bg-amber/[0.05] border-amber/20 shadow-[0_20px_60px_-15px_rgba(245,158,11,0.12)]")
@@ -127,7 +127,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                   </span>
                 )}
                 {entry.concurrent && (
-                  <span className="font-mono text-[8px] tracking-wider text-white/25 font-bold uppercase">
+                  <span className="font-mono text-[8px] tracking-wider text-fg/25 font-bold uppercase">
                     ⟷ {entry.concurrent}
                   </span>
                 )}
@@ -135,13 +135,13 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
 
               {/* Title + subtitle */}
               <h3 className={cn(
-                "font-noto text-lg md:text-xl font-black text-white tracking-tight leading-tight transition-colors duration-300",
+                "font-noto text-lg md:text-xl font-black text-fg tracking-tight leading-tight transition-colors duration-300",
                 isWork ? "group-hover:text-brand-primary" : "group-hover:text-amber",
                 isExpanded && (isWork ? "text-brand-primary" : "text-amber")
               )}>
                 {entry.title}
               </h3>
-              <span className="font-mono text-[10px] tracking-tight text-white/35 font-bold uppercase block mt-0.5">
+              <span className="font-mono text-[10px] tracking-tight text-fg/35 font-bold uppercase block mt-0.5">
                 {entry.subtitle}
               </span>
             </div>
@@ -154,7 +154,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
               className={cn(
-                "flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center border border-white/5",
+                "flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center border border-fg/5",
                 isWork
                   ? "bg-brand-primary/5 text-brand-primary/60 group-hover:bg-brand-primary/10 group-hover:text-brand-primary group-hover:border-brand-primary/20"
                   : "bg-amber/5 text-amber/60 group-hover:bg-amber/10 group-hover:text-amber group-hover:border-amber/20",
@@ -168,8 +168,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
           </div>
 
           {/* HUD Accent Brackets */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-white/5 rounded-tl-2xl group-hover:border-white/10 transition-colors pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-white/5 rounded-br-2xl group-hover:border-white/10 transition-colors pointer-events-none" />
+          <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-fg/5 rounded-tl-2xl group-hover:border-fg/10 transition-colors pointer-events-none" />
+          <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-fg/5 rounded-br-2xl group-hover:border-fg/10 transition-colors pointer-events-none" />
 
 
           {/* Inline metrics (always visible for work entries with metrics) */}
@@ -180,10 +180,10 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
               {entry.metrics.map((m, i) => (
                 <div key={i} className="flex items-baseline gap-2">
                   <Zap className="w-2.5 h-2.5 text-brand-primary/50 flex-shrink-0 mt-0.5" />
-                  <span className="font-noto text-sm font-black text-white tabular-nums tracking-tight">
+                  <span className="font-noto text-sm font-black text-fg tabular-nums tracking-tight">
                     {m.value}
                   </span>
-                  <span className="font-mono text-[10px] text-white/30 font-bold uppercase tracking-wider">
+                  <span className="font-mono text-[10px] text-fg/30 font-bold uppercase tracking-wider">
                     {m.label}
                   </span>
                 </div>
@@ -244,7 +244,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                       "mt-[7px] w-3 h-px flex-shrink-0",
                       isWork ? "bg-brand-primary/40" : "bg-amber/30"
                     )} />
-                    <p className="font-mono text-[11px] leading-relaxed text-white/50">
+                    <p className="font-mono text-[11px] leading-relaxed text-fg/50">
                       {b}
                     </p>
                   </div>

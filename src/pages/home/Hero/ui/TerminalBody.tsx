@@ -630,8 +630,8 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
 
           <div
             className={cn(
-              'flex items-center gap-2 md:gap-3 w-full max-w-lg bg-black/40 border rounded-[20px] p-1.5 pl-4 transition-all duration-300 cursor-default',
-              isInputFocused ? 'border-brand-primary/50 shadow-[0_0_15px_rgba(0,200,180,0.15)] bg-black/60' : 'border-white/10 hover:border-white/20 hover:bg-black/50'
+              'flex items-center gap-2 md:gap-3 w-full max-w-lg bg-input-bg border rounded-[20px] p-1.5 pl-4 transition-all duration-300 cursor-default',
+              isInputFocused ? 'border-brand-primary/50 shadow-[0_0_15px_rgba(0,200,180,0.15)] bg-input-bg' : 'border-edge hover:border-fg-faint hover:bg-input-bg/90'
             )}
             onClick={() => textareaRef.current?.focus()}
           >
@@ -655,7 +655,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                 onKeyDown={handleTextareaKeyDown}
                 onFocus={() => setIsInputFocused(true)}
                 onBlur={() => setIsInputFocused(false)}
-                className="w-full bg-transparent border-none outline-none font-mono text-term-fg placeholder-white/30 caret-brand-primary py-[10px] md:py-[11px] resize-none custom-scrollbar max-h-[160px] min-h-[34px] md:min-h-[36px] leading-relaxed relative z-10 cursor-text"
+                className="w-full bg-transparent border-none outline-none font-mono text-term-fg placeholder-fg-faint caret-brand-primary py-[10px] md:py-[11px] resize-none custom-scrollbar max-h-[160px] min-h-[34px] md:min-h-[36px] leading-relaxed relative z-10 cursor-text"
                 spellCheck={false}
                 placeholder=""
                 autoComplete="off"
@@ -678,7 +678,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                   "flex items-center justify-center w-8 h-8 md:w-[34px] md:h-[34px] rounded-[14px] transition-all duration-300",
                   inputValue.trim()
                     ? "bg-brand-primary text-black hover:bg-brand-primary/80 hover:scale-105 cursor-pointer shadow-[0_0_10px_rgba(0,200,180,0.3)]"
-                    : "bg-white/5 text-white/20 cursor-default"
+                    : "bg-fg/5 text-fg-faint cursor-default"
                 )}
                 onClick={(e) => {
                   e.stopPropagation();

@@ -43,6 +43,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
       onClick={onClick}
       data-tooltip={tooltip}
       data-tooltip-pos="below"
+      data-theme-lock={large ? "dark" : undefined}
       className={cn(
         "flex w-full rounded-lg border group/btn text-left relative transition-all duration-500 justify-between",
         large ? "overflow-hidden" : "overflow-hidden",
@@ -50,14 +51,14 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           ? "flex-col items-stretch p-3 md:flex-1 md:min-h-0 md:h-full hover:scale-[1.01] hover:border-f1-red/30"
           : ((large && alignTop) ? "items-start" : "items-center p-3"),
         isLongVersion
-          ? "bg-[rgba(102,14,29,0.06)] border-[rgba(216,207,192,0.18)] hover:border-[rgba(216,207,192,0.55)] hover:bg-[rgba(102,14,29,0.18)] text-f1-white hover:text-white hover:shadow-[0_10px_30px_-10px_rgba(102,14,29,0.12)]"
+          ? "bg-[rgba(102,14,29,0.08)] border-[rgba(102,14,29,0.25)] hover:border-[rgba(102,14,29,0.5)] hover:bg-[rgba(102,14,29,0.15)] text-fg hover:text-fg hover:shadow-[0_10px_30px_-10px_rgba(102,14,29,0.12)]"
           : important
-            ? "bg-brand-primary/10 border-brand-primary text-f1-white shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02] important-control"
+            ? "bg-brand-primary/10 border-brand-primary text-fg shadow-[0_0_20px_rgba(0,200,180,0.1)] scale-[1.02] important-control"
             : hot
-              ? "bg-brand-primary/5 border-brand-primary/30 text-f1-white"
+              ? "bg-brand-primary/5 border-brand-primary/30 text-fg"
               : large
-                ? "bg-transparent border-f1-red/20 md:border-white/5 text-f1-white"
-                : "bg-transparent border-white/5 text-f1-white",
+                ? "bg-surface md:bg-transparent border-f1-red/20 md:border-edge-soft text-fg"
+                : "bg-control-bg border-edge-soft text-fg",
         (!isLongVersion && !large) && "system-control-hover",
         className
       )}
@@ -89,9 +90,9 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
               <div className="flex items-center gap-2">
                 <span className={cn(
                   "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px] md:text-[10px]",
-                  "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
+                  "text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
                 )}>{num}</span>
-                <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-f1-white group-hover/btn:text-f1-red">
+                <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-fg group-hover/btn:text-f1-red">
                   {cmd}
                 </span>
               </div>
@@ -130,7 +131,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border text-[9px] text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
+              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border text-[9px] text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
               <span className="font-playfair italic font-extrabold tracking-tight text-[18px] md:text-[19px] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/btn:translate-x-2.5 group-hover/btn:scale-[1.05] inline-block origin-left">
                 the long version
               </span>
@@ -158,11 +159,11 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
                 "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px]",
                 important
                   ? "text-brand-primary border-brand-primary/40 bg-brand-primary/10"
-                  : "text-f1-grey border-white/5 bg-white/[0.015] group-hover/btn:text-brand-primary group-hover/btn:border-brand-primary/30 group-hover/btn:bg-brand-primary/5"
+                  : "text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-brand-primary group-hover/btn:border-brand-primary/30 group-hover/btn:bg-brand-primary/5"
               )}>{num}</span>
               <span className={cn(
                 "font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300",
-                (hot || important) ? "text-brand-primary" : "text-f1-white group-hover/btn:text-brand-primary"
+                (hot || important) ? "text-brand-primary" : "text-fg group-hover/btn:text-brand-primary"
               )}>
                 {cmd}
               </span>

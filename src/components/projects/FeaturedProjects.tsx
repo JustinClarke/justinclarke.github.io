@@ -69,6 +69,12 @@ function BentoCard({
   const navigate = useNavigate();
   const meta = CARD_META[id];
   const filmVisible = !isActive && !isHovered;
+  // The F1 telemetry card shares its internals with the dark /f1 page, so it opts
+  // out of the light flip and keeps dark bento surfaces regardless of theme.
+  const lockDark = id === 'f1';
+  // On hover every card lights up with its own accent: an outer ring + coloured
+  // glow so it reads as unmistakably clickable, on top of the cycle's film-lift.
+  const hoverGlow = `0 0 0 1.5px ${meta.accent}, 0 0 22px -4px color-mix(in srgb, ${meta.accent} 65%, transparent), 0 18px 50px -12px color-mix(in srgb, ${meta.accent} 55%, transparent)`;
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Check if the click target or any of its ancestors is an interactive element
@@ -87,13 +93,14 @@ function BentoCard({
 
   return (
     <div
+      {...(lockDark ? { 'data-theme-lock': 'dark' } : {})}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
-      className={`rounded-3xl bg-neutral-900/40 border border-white/5 p-3 md:p-4 backdrop-blur-2xl transition-all duration-500 relative flex flex-col justify-between overflow-hidden shadow-2xl group cursor-pointer z-10 w-full h-full flex-grow ${className}`}
+      className={`rounded-3xl bg-bento-card border border-edge-soft p-3 md:p-4 backdrop-blur-2xl transition-all duration-500 relative flex flex-col justify-between overflow-hidden shadow-2xl group cursor-pointer z-10 w-full h-full flex-grow ${className}`}
       style={{
-        boxShadow: isHovered ? boxShadow : 'none',
-        borderColor: isHovered || isActive ? borderColor : 'rgba(255,255,255,0.05)',
+        boxShadow: isHovered ? `${hoverGlow}, ${boxShadow}` : 'none',
+        borderColor: isHovered || isActive ? borderColor : 'var(--color-edge-soft)',
       }}
     >
       <div
@@ -104,6 +111,16 @@ function BentoCard({
         }}
       />
 
+      {/* Whole-card accent wash on hover — sits behind the content (z-10) so it
+          glows the card without dimming the text, reinforcing the box-shadow. */}
+      <div
+        className="absolute inset-0 pointer-events-none rounded-3xl transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(circle at 50% 25%, color-mix(in srgb, ${meta.accent} 22%, transparent) 0%, transparent 72%)`,
+          opacity: isHovered ? 1 : 0,
+        }}
+      />
+
       <div className="relative z-10 flex flex-col h-full min-h-0 w-full flex-grow">
         {children}
       </div>
@@ -111,7 +128,7 @@ function BentoCard({
       <div
         className="absolute inset-0 pointer-events-none transition-opacity duration-700 rounded-3xl hidden lg:block"
         style={{
-          background: 'rgba(5,5,5,0.72)',
+          background: 'var(--color-bento-film)',
           opacity: filmVisible ? 1 : 0,
           zIndex: 20,
         }}
@@ -211,13 +228,13 @@ export function FeaturedProjects() {
     <section
       id="projects"
       ref={containerRef}
-      className="section-layout text-white scroll-mt-25 border-t border-white/5 relative overflow-hidden"
+      className="section-layout text-fg scroll-mt-25 border-t border-edge-soft relative overflow-hidden"
     >
       {/* Background dot grid */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(var(--color-bento-dot) 1px, transparent 1px)',
           backgroundSize: '32px 32px',
           zIndex: 0,
         }}
@@ -234,12 +251,12 @@ export function FeaturedProjects() {
 
       <div className="project-container relative" style={{ zIndex: 10 }}>
         {/* Section Header */}
-        <div className="narrative-gap border-b border-white/10 pb-12 flex flex-col gap-4">
+        <div className="narrative-gap border-b border-edge pb-12 flex flex-col gap-4">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
-            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30 font-bold whitespace-nowrap">
+            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-fg/30 font-bold whitespace-nowrap">
               Manifest
             </span>
-            <div className="flex-1 h-px bg-white/10" />
+            <div className="flex-1 h-px bg-edge" />
             <InteractiveHint
               text="PORTFOLIO DECK // CLICK TO EXPLORE WORK"
               mobileText="TAP TO EXPLORE"
@@ -252,7 +269,7 @@ export function FeaturedProjects() {
  
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <ScrollReveal delay={0.1}>
-              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-white leading-[0.85]">
+              <h2 className="font-noto text-5xl md:text-7xl font-black tracking-tighter text-fg leading-[0.85]">
                 Featured <em className="font-playfair italic font-normal text-brand-primary">projects.</em>
               </h2>
             </ScrollReveal>
@@ -294,7 +311,7 @@ export function FeaturedProjects() {
             >
               <Link
                 to="/connect"
-                className="group relative flex items-center justify-between w-full h-full px-4 sm:px-6 lg:px-4 xl:px-6 bg-gradient-to-r from-neutral-900/80 to-neutral-950/80 backdrop-blur-2xl border border-white/5 rounded-3xl transition-all duration-500 shadow-xl hover:shadow-[0_12px_30px_-10px_rgba(0,200,180,0.3),inset_0_0_20px_rgba(0,200,180,0.05)] hover:border-acc-lang/45 overflow-hidden"
+                className="group relative flex items-center justify-between w-full h-full px-4 sm:px-6 lg:px-4 xl:px-6 bg-gradient-to-r from-bento-card to-bento-raised backdrop-blur-2xl border border-edge-soft rounded-3xl transition-all duration-500 shadow-xl hover:shadow-[0_12px_30px_-10px_rgba(0,200,180,0.3),inset_0_0_20px_rgba(0,200,180,0.05)] hover:border-acc-lang/45 overflow-hidden"
               >
                 {/* Cursor-tracked spotlight sweep */}
                 <div
@@ -317,7 +334,7 @@ export function FeaturedProjects() {
                   <div className="flex flex-col overflow-hidden h-5 relative">
                     <div className="transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) group-hover:-translate-y-5">
                       {/* State 1: Active Protocol */}
-                      <span className="font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm lg:text-[10px] xl:text-[11px] 2xl:text-xs font-black tracking-[0.05em] xs:tracking-[0.12em] sm:tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.1em] xl:tracking-[0.15em] 2xl:tracking-[0.2em] text-neutral-400 group-hover:text-white uppercase transition-colors whitespace-nowrap block h-5 leading-5">
+                      <span className="font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm lg:text-[10px] xl:text-[11px] 2xl:text-xs font-black tracking-[0.05em] xs:tracking-[0.12em] sm:tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.1em] xl:tracking-[0.15em] 2xl:tracking-[0.2em] text-fg-soft group-hover:text-fg uppercase transition-colors whitespace-nowrap block h-5 leading-5">
                         LET'S WORK TOGETHER
                       </span>
                       {/* State 2: Direct Recruiter Callout */}
@@ -334,7 +351,7 @@ export function FeaturedProjects() {
                     SPONSORSHIP NOT REQUIRED
                   </span>
  
-                  <ArrowRight size={14} className="text-neutral-500 group-hover:text-acc-lang group-hover:translate-x-1.5 transition-all duration-300 shrink-0" />
+                  <ArrowRight size={14} className="text-fg-faint group-hover:text-acc-lang group-hover:translate-x-1.5 transition-all duration-300 shrink-0" />
                 </div>
               </Link>
             </motion.div>

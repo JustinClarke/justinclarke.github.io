@@ -30,7 +30,7 @@ export const YearProgressBar: React.FC = () => {
   return (
     <div className="relative mt-6 md:mt-10 mb-10 md:mb-14">
       {/* Background track */}
-      <div className="relative h-[2px] bg-white/5 rounded-full overflow-visible">
+      <div className="relative h-[2px] bg-fg/5 rounded-full overflow-visible">
         {/* Fill */}
         {/* LEARN: whileInView = animate from `initial` to this pose when the
             element scrolls into the viewport; `viewport={{ once: true }}` means
@@ -75,11 +75,11 @@ export const YearProgressBar: React.FC = () => {
             >
               <div className={cn(
                 "w-px h-2 mb-1",
-                isCurrent ? "bg-brand-primary" : isPast ? "bg-white/15" : "bg-white/5"
+                isCurrent ? "bg-brand-primary" : isPast ? "bg-fg/15" : "bg-fg/5"
               )} />
               <span className={cn(
                 "font-mono text-[9px] tabular-nums font-bold",
-                isCurrent ? "text-brand-primary" : isPast ? "text-white/25" : "text-white/10"
+                isCurrent ? "text-brand-primary" : isPast ? "text-fg/25" : "text-fg/10"
               )}>
                 {year}
               </span>

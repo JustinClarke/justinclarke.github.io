@@ -33,7 +33,7 @@
 
 meta:
   schema_version: 1
-  last_updated: 2026-06-17
+  last_updated: 2026-06-30
   owner: Justin Clarke
   source_of_truth_notes: |
     Off The Pace figures here are swept from the repo's compiled manifests
@@ -347,7 +347,7 @@ projects:
       races: "168 ingested (147 fully processed for lap-level analysis)"
       processed_laps: 137447
       dbt_models: 60          # 12 staging / 34 intermediate / 10 marts / 4 reference dims
-      dbt_tests: 424          # CI-enforced; incl. 28 bespoke singular tests
+      dbt_tests: 443          # CI-enforced; incl. 28 bespoke singular tests
       ml_models: 5            # quantile trio (p10/p50/p90) + cliff classifier + stint-life regressor
       ml_features: 42         # v4 feature spine
       ml_tests: 28
@@ -359,7 +359,7 @@ projects:
       onnx_artifacts: 25      # across v1->v4 lineage
       parquet_files: 1674
       tracked_files: 731
-      docs_pages: 92          # 85 .mdx + 7 .md, Mintlify, auto-generated reference
+      docs_pages: 199         # 193 .mdx + 6 .md, Mintlify, auto-generated reference
     accomplishments:
       - id: otp-01
         text: >
@@ -376,8 +376,8 @@ projects:
         text: >
           Engineered the data layer: FastF1 + Jolpica ingestion to Hive-partitioned Parquet,
           transformed through a dbt medallion architecture of 60 models on DuckDB, guarded by
-          424 CI-enforced data-quality tests.
-        metric: 60 dbt models, 424 CI tests
+          443 CI-enforced data-quality tests.
+        metric: 60 dbt models, 443 CI tests
         skills: [dbt, DuckDB, SQL, Hive partitioning, Parquet, FastF1, data testing, medallion architecture]
         tags: [analytics-engineer]
         strength: signature
@@ -435,10 +435,10 @@ projects:
 
       - id: otp-08
         text: >
-          Auto-generated documentation and model governance: a Mintlify docs site (92 pages)
+          Auto-generated documentation and model governance: a Mintlify docs site (199 pages)
           and a model card (metrics, baselines, calibration, feature importance, limitations)
           regenerated from a single source manifest and drift-gated in CI.
-        metric: 92 doc pages, drift-gated, auto-generated
+        metric: 199 doc pages, drift-gated, auto-generated
         skills: [Mintlify, model cards, ML governance, documentation automation, CI/CD]
         tags: [ml-engineer, analytics-engineer]
         strength: supporting
@@ -466,6 +466,49 @@ projects:
         skills: [statistical validation, bootstrap CIs, Monte Carlo, Python, hypothesis testing]
         tags: [ml-engineer, data-analyst, analytics-engineer]
         strength: strong
+
+      - id: otp-12
+        text: >
+          Built a 7-stage CI/CD data pipeline (ingest -> dbt build/test -> data-quality gate ->
+          ml -> export -> publish-to-staging -> verify) running on keyless Workload Identity
+          Federation, with a post-publish verification gate that auto-rolls back staging if the
+          published CDN output diverges from the build.
+        metric: 7-stage CI pipeline, keyless WIF auth, auto-rollback on drift
+        skills: [GitHub Actions, CI/CD, Workload Identity Federation, GCP, data pipeline orchestration]
+        tags: [analytics-engineer, ml-engineer]
+        strength: strong
+
+      - id: otp-13
+        text: >
+          Codified all cloud infrastructure (GCS bucket + lifecycle/versioning, WIF pool/provider,
+          deploy service account, Firebase Hosting, billing budget) as Terraform, replacing a set
+          of ad hoc setup scripts with a single reviewable, reproducible apply.
+        metric: full Terraform IaC, zero manual cloud setup
+        skills: [Terraform, Infrastructure as Code, GCP, IAM, Firebase]
+        tags: [analytics-engineer]
+        strength: strong
+
+      - id: otp-14
+        text: >
+          Hardened the supply chain with CodeQL static analysis, gitleaks blocking secret scanning,
+          pip-audit/pnpm dependency auditing, OSV cross-ecosystem vulnerability scanning, and a
+          CycloneDX SBOM — all gating CI on every PR.
+        metric: 5-layer supply-chain security gate
+        skills: [CodeQL, gitleaks, pip-audit, OSV-Scanner, SBOM, application security, CI/CD]
+        tags: [analytics-engineer]
+        strength: supporting
+
+      - id: otp-15
+        text: >
+          Instrumented production observability end-to-end: an env-gated Sentry facade with Core
+          Web Vitals and custom app-timing RUM (DuckDB init, first query, ONNX warmup), a
+          synthetic monitor running real headless-browser inference every 30 minutes, and a
+          4-spec Playwright E2E suite plus a blocking JS bundle-size budget driving the prod
+          bundle against the live CDN.
+        metric: RUM + synthetic monitoring + E2E against live prod
+        skills: [Sentry, Playwright, RUM, synthetic monitoring, observability, performance budgets]
+        tags: [frontend, analytics-engineer]
+        strength: supporting
 
   # ---------------------------------------------------------------------------
   - id: spotify-engine

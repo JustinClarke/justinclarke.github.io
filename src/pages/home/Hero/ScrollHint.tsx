@@ -47,13 +47,9 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
             color: #2e3033; /* dark grey */
             filter: drop-shadow(0 0 0px transparent);
           }
-          75%, 85% {
+          75%, 100% {
             color: var(--color-light-bg); /* white */
             filter: drop-shadow(0 0 6px rgba(255,255,255,0.45));
-          }
-          95%, 100% {
-            color: var(--scroll-hint-primary, var(--color-brand-primary));
-            filter: drop-shadow(0 0 8px var(--scroll-hint-glow, rgba(0,200,180,0.6)));
           }
         }
         @keyframes scrollBorderIntro {
@@ -65,13 +61,9 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
             border-color: rgba(63, 63, 70, 0.35); /* dark grey */
             box-shadow: inset 0 0 0px transparent;
           }
-          75%, 85% {
+          75%, 100% {
             border-color: rgba(255, 255, 255, 0.5); /* white */
             box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(255,255,255,0.2);
-          }
-          95%, 100% {
-            border-color: var(--scroll-hint-border, rgba(0,200,180,0.65));
-            box-shadow: inset 0 0 8px var(--scroll-hint-glow-dim, rgba(0,200,180,0.1)), 0 0 10px var(--scroll-hint-glow-md, rgba(0,200,180,0.15));
           }
         }
         @keyframes scrollDotIntro {
@@ -83,13 +75,9 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
             background-color: #2e3033;
             box-shadow: 0 0 0px transparent;
           }
-          75%, 85% {
+          75%, 100% {
             background-color: var(--color-light-bg);
             box-shadow: 0 0 8px rgba(255,255,255,0.95);
-          }
-          95%, 100% {
-            background-color: var(--scroll-hint-primary, var(--color-brand-primary));
-            box-shadow: 0 0 12px var(--scroll-hint-glow-bright, rgba(0,200,180,1));
           }
         }
         @keyframes scrollWheel {
@@ -105,19 +93,19 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
         .animate-scroll-text {
           color: transparent;
           opacity: 1;
-          animation: scrollTextIntro 10s ease-in-out forwards;
+          animation: scrollTextIntro 10s ease-in-out 5s forwards;
         }
         .animate-scroll-border {
           border-color: transparent;
-          animation: scrollBorderIntro 10s ease-in-out forwards;
+          animation: scrollBorderIntro 10s ease-in-out 5s forwards;
         }
         .animate-scroll-dot {
           background-color: transparent;
-          animation: scrollDotIntro 10s ease-in-out forwards,
-                     scrollWheel 2.2s cubic-bezier(0.16, 1, 0.3, 1) 5s infinite;
+          animation: scrollDotIntro 10s ease-in-out 5s forwards,
+                     scrollWheel 2.2s cubic-bezier(0.16, 1, 0.3, 1) 10s infinite;
         }
         .animate-scroll-blink {
-          animation: scrollBlink 1.8s ease-in-out infinite 10s;
+          animation: scrollBlink 1.8s ease-in-out infinite 15s;
         }
         .scroll-hint-container {
           transform: translate(-50%, 0);
@@ -158,13 +146,15 @@ export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className =
             : undefined
         }
       >
-        <div className="animate-scroll-blink flex flex-col items-center gap-1.5">
-          <div className="animate-scroll-text flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.25em] pl-[0.25em] whitespace-nowrap">
-            <span className="opacity-45">[</span>
-            <span className="md:hidden opacity-70">↓</span>
-            <span>SCROLL TO EXPLORE</span>
-            <span className="md:hidden opacity-70">↓</span>
-            <span className="opacity-45">]</span>
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="animate-scroll-blink">
+            <div className="animate-scroll-text flex items-center gap-1.5 font-mono text-[9px] font-bold uppercase tracking-[0.25em] pl-[0.25em] whitespace-nowrap">
+              <span className="opacity-45">[</span>
+              <span className="md:hidden opacity-70">↓</span>
+              <span>SCROLL TO EXPLORE</span>
+              <span className="md:hidden opacity-70">↓</span>
+              <span className="opacity-45">]</span>
+            </div>
           </div>
           <div className="animate-scroll-border relative w-[18px] h-[28px] border rounded-full flex justify-center p-[3px] hidden md:flex">
             <div className="animate-scroll-dot w-[3px] h-[5px] rounded-full" />
