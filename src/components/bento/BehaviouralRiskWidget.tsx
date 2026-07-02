@@ -14,14 +14,13 @@
  * -----------------------------------------------------------------------------
  */
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Flame, TrendingDown, AlertTriangle, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Flame, TrendingDown, AlertTriangle, Users } from 'lucide-react';
 import { cn } from '@/utils';
 
 export function BehaviouralRiskWidget() {
-  // LEARN: two counters held in state. Each timer below nudges one of them, and
-  //    every change re-renders the card so the highlighted step / insight moves.
-  const [animationPhase, setAnimationPhase] = useState(0);
+  // LEARN: a counter held in state. The timer below nudges it, and
+  //    every change re-renders the card so the highlighted step moves.
   const [pipelineStep, setPipelineStep] = useState(0);
 
   // LEARN: plain data objects/arrays. Keeping the content here (not buried in the
@@ -44,12 +43,6 @@ export function BehaviouralRiskWidget() {
     { label: 'GENERATE INSIGHTS', icon: '●', color: 'text-emerald-400' }
   ];
 
-  const insights = [
-    `${codebaseStats.silentBurnoutCases} high performers show workload misalignment.`,
-    `Dominant: ${codebaseStats.dominantArchetype} (${codebaseStats.dominantCount} cases).`,
-    `${codebaseStats.burnoutPercent}% of active responses show burnout signals.`
-  ];
-
   // LEARN: useEffect with `[]` runs once on mount. setInterval ticks forever, so
   //    we MUST return a cleanup that clears it otherwise the timer keeps firing
   //    after the card is gone. `% 4` wraps 0→1→2→3→0… in a loop.
@@ -57,13 +50,6 @@ export function BehaviouralRiskWidget() {
     const interval = setInterval(() => {
       setPipelineStep((prev) => (prev + 1) % 4);
     }, 7000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationPhase((prev) => (prev + 1) % insights.length);
-    }, 16000);
     return () => clearInterval(interval);
   }, []);
 
@@ -91,6 +77,13 @@ export function BehaviouralRiskWidget() {
           <span>•</span>
           <span className="uppercase text-fg-faint font-medium">8 Archetypes</span>
         </div>
+      </div>
+
+      {/* Description Block */}
+      <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2 shrink-0">
+        <p className="text-[11px] sm:text-[12.5px] leading-relaxed text-fg-soft">
+          <span className="font-semibold text-fg">Behavioural intelligence pipeline </span> capturing <span className="font-semibold text-fg">richer feedback</span> through <span className="font-semibold text-fg">adaptive questioning</span> and <span className="font-semibold text-acc-bi">AI-insights</span>.
+        </p>
       </div>
 
       {/* Main Content */}
@@ -142,9 +135,9 @@ export function BehaviouralRiskWidget() {
         </div>
 
         {/* Metrics Grid */}
-        <div className="grid grid-cols-2 gap-2 md:gap-2.5 shrink-0">
+        <div className="grid grid-cols-2 gap-2 md:gap-2.5 grow">
           {/* Avg Risk Score */}
-          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
+          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start justify-center gap-1.5">
             <div className="flex items-center gap-1.5 w-full">
               <AlertTriangle size={10} className="text-amber-400 shrink-0" />
               <span className="font-mono text-[9px] md:text-[10px] text-fg-faint uppercase tracking-wider font-bold">Tracked Metrics</span>
@@ -155,7 +148,7 @@ export function BehaviouralRiskWidget() {
           </div>
 
           {/* Engagement Level */}
-          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start gap-1.5">
+          <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col items-start justify-center gap-1.5">
             <div className="flex items-center gap-1.5 w-full">
               <Flame size={10} className="text-orange-400 shrink-0" />
               <span className="font-mono text-[9px] md:text-[10px] text-fg-faint uppercase tracking-wider font-bold">Avg Engagement</span>
@@ -164,28 +157,6 @@ export function BehaviouralRiskWidget() {
               {codebaseStats.avgEngagement}<span className="text-[9px] md:text-[10px] text-fg-soft font-bold">/10</span>
             </span>
           </div>
-        </div>
-
-        {/* Live Insight from Gemini */}
-        <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 grow min-h-15 md:min-h-0 flex flex-col justify-center">
-          {/* LEARN: because the inner key={animationPhase} changes each tick,
-              AnimatePresence treats it as "old one left, new one arrived" and
-              cross-fades between insights. mode="wait" finishes the exit first. */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={animationPhase}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-start gap-1.5"
-            >
-              <Sparkles size={11} className="text-acc-bi shrink-0 mt-0.5" />
-              <p className="font-mono text-[9px] md:text-[10px] text-fg-soft leading-tight">
-                {insights[animationPhase % insights.length]}
-              </p>
-            </motion.div>
-          </AnimatePresence>
         </div>
       </div>
 
@@ -197,8 +168,8 @@ export function BehaviouralRiskWidget() {
         </div>
         <span className="text-fg/10">•</span>
         <div className="flex items-center gap-1">
-          <TrendingDown size={9} className="shrink-0" />
-          <span>8 Archetypes • Engagement scoring • Risk modeling</span>
+          {/* <TrendingDown size={9} className="shrink-0" /> */}
+          <span>Engagement scoring • Risk modeling</span>
         </div>
       </div>
 

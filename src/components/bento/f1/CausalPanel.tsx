@@ -30,9 +30,9 @@ export function CausalPanel({ decomp, fuelWeight }: CausalPanelProps) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 20 }}
       transition={{ duration: 0.2 }}
-      className="bg-black/40 border border-white/5 rounded-2xl p-2.5 lg:p-2 xl:p-2.5 2xl:p-3.5 flex flex-col gap-2 shrink-0 text-left min-h-[110px]"
+      className="bg-black/40 border border-[rgba(255,255,255,0.05)] rounded-2xl p-2.5 lg:p-2 xl:p-2.5 2xl:p-3.5 flex flex-col gap-2 shrink-0 text-left min-h-[110px]"
     >
-      <div className="flex items-center justify-between border-b border-white/5 pb-1">
+      <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.05)] pb-1">
         <span className="font-mono text-[8px] xs:text-[9px] lg:text-[7.5px] xl:text-[8.5px] 2xl:text-[10px] text-neutral-500 uppercase tracking-wider lg:tracking-tight xl:tracking-normal 2xl:tracking-wider whitespace-nowrap shrink-0">CAUSAL DECOMP (ε)</span>
         <span className="font-mono text-[9px] xs:text-[10px] lg:text-[9px] xl:text-[10px] 2xl:text-xs text-white font-bold shrink-0">{decomp.totalLapTime.toFixed(3)}s</span>
       </div>
@@ -68,7 +68,7 @@ export function CausalPanel({ decomp, fuelWeight }: CausalPanelProps) {
         </div>
 
         {/* Isolated Driver Skill */}
-        <div className="flex justify-between items-center border-t border-white/5 pt-1.5 mt-0.5 gap-2 whitespace-nowrap">
+        <div className="flex justify-between items-center border-t border-[rgba(255,255,255,0.05)] pt-1.5 mt-0.5 gap-2 whitespace-nowrap">
           <span className="text-viz-mac-red font-black uppercase flex items-center gap-1 shrink-0">
             <Award size={9} className="shrink-0" /> Driver Coeff ε:
           </span>

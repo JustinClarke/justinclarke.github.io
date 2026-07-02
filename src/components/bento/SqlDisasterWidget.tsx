@@ -1,25 +1,29 @@
 /**
  * SqlDisasterWidget the "Disaster Response" bento card (a relational-database
- * coursework project). A self-running demo that rotates schema entities, schema
- * features, and a query latency log. The values are illustrative, not a live DB.
+ * coursework project). Its signature visual is a live entity-relationship
+ * schema graph: entity nodes wired together by foreign-key edges, with a
+ * cursor walking the graph so data appears to "flow" along the active joins.
+ * The values are illustrative, not a live DB.
  *
  * Fits in: one card in the homepage featured-projects bento grid.
- * Note:    three timers tick three counters (highlighted entity, active query,
- *          active schema feature); a Schema/Queries toggle swaps which panel shows.
+ * Note:    one timer advances a focus node around the graph; the touching FK
+ *          edges light up and a readout below reports that entity's row count
+ *          and how many tables it joins to.
  *
  * For beginners ----------------------------------------------------------------
- * Same shape as the other bento cards: useState holds the counters, useEffect
- * runs the timers, Framer Motion's <AnimatePresence key={...}> cross-fades a
- * panel when its key changes, and cn(...) chooses classes from what's active.
+ * NODES holds x/y coordinates in an SVG viewBox; EDGES lists which entities are
+ * foreign-key related. useState remembers the focused node, useEffect ticks it
+ * forward, and Framer Motion animates the glowing edge + the readout swap. The
+ * SVG draw calls take the entity colour tokens directly (allowed for canvas/SVG).
  * -----------------------------------------------------------------------------
  */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Database, Zap, ShieldCheck } from 'lucide-react';
+import { Database, ShieldCheck, GitFork } from 'lucide-react';
 import { cn } from '@/utils';
 
-// LEARN: the card's content as plain data arrays; the JSX below loops over these
-//    with `.map`, so the markup stays short and the data is easy to edit.
+// LEARN: each entity carries its row count and a colour token; the graph below
+//    positions them by id, so this array is the single source of truth.
 const ENTITIES = [
   { id: 'disaster', label: 'DISASTER', count: 5, color: 'var(--color-sql-disaster)' },
   { id: 'region', label: 'REGION', count: 7, color: 'var(--color-sql-region)' },
@@ -28,56 +32,55 @@ const ENTITIES = [
   { id: 'volunteer', label: 'VOLUNTEER', count: 15, color: 'var(--color-sql-volunteer)' },
   { id: 'shelter', label: 'SHELTER', count: 9, color: 'var(--color-sql-shelter)' },
   { id: 'supply', label: 'SUPPLY', count: 10, color: 'var(--color-sql-supply)' },
-];
+] as const;
 
-const QUERY_LOG = [
-  { label: 'shelter_stress_tier.sql', latency: '142ms', type: 'NTILE', tag: 'Window Fn' },
-  { label: 'relief_allocation_join.sql', latency: '88ms', type: 'JOIN', tag: 'Inner Join' },
-  { label: 'check_constraint_verify.sql', latency: '12ms', type: 'CHECK', tag: 'Constraint' },
-  { label: 'volunteer_assignment_cte.sql', latency: '61ms', type: 'CTE', tag: 'CTE' },
-  { label: 'region_dispatch_rank.sql', latency: '34ms', type: 'RANK', tag: 'Window Fn' },
-];
+// LEARN: node positions in the SVG's 280×130 viewBox, stretched to fill the
+//    panel exactly (preserveAspectRatio="none"), so these coordinates map
+//    directly onto the rendered box with no letterboxing. The caption row is
+//    ~20 real pixels tall regardless of viewBox scale, so only a small y
+//    margin (~18 units) is needed up top  not a large fraction of the range.
+//    Region sits in the middle as the hub because most foreign keys resolve
+//    through it.
+const NODES: Record<string, { x: number; y: number }> = {
+  disaster: { x: 55, y: 30 },
+  region: { x: 140, y: 68 },
+  agency: { x: 225, y: 24 },
+  team: { x: 100, y: 106 },
+  volunteer: { x: 30, y: 74 },
+  shelter: { x: 195, y: 110 },
+  supply: { x: 255, y: 70 },
+};
 
-const SCHEMA_FEATURES = [
-  { label: 'M:N Rel Modeling', detail: '4 junction tables · composite PK setup' },
-  { label: 'Check Invariants', detail: 'occupancy ≤ capacity across 9 shelters' },
-  { label: 'FK Integrity Map', detail: 'Agency → Team → Disaster → Region path' },
-  { label: 'Geographic Zones', detail: 'NDRRMC + PRC · 7 regions · 5 disasters' },
+// LEARN: foreign-key relationships, as [from, to] pairs. An edge lights up when
+//    either endpoint is the focused node.
+const EDGES: [string, string][] = [
+  ['disaster', 'region'],
+  ['region', 'agency'],
+  ['disaster', 'team'],
+  ['team', 'volunteer'],
+  ['region', 'shelter'],
+  ['region', 'supply'],
+  ['agency', 'team'],
 ];
 
 export function SqlDisasterWidget() {
-  // LEARN: `uiMode` is which panel shows; the other three are counters the timers
-  //    advance. Each useState returns [value, setter]; a setter call re-renders.
-  const [uiMode, setUiMode] = useState<'schema' | 'queries'>('schema');
-  const [activeQueryIndex, setActiveQueryIndex] = useState(0);
-  const [entityTicker, setEntityTicker] = useState(0);
-  const [activeFeature, setActiveFeature] = useState(0);
-
-  // LEARN: three near-identical timers, one per counter. `% length` loops the
-  //    index; the returned cleanup clears the timer on unmount. (Same all three.)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveQueryIndex(prev => (prev + 1) % QUERY_LOG.length);
-    }, 11000);
-    return () => clearInterval(interval);
-  }, []);
+  const [focus, setFocus] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setEntityTicker(prev => (prev + 1) % ENTITIES.length);
-    }, 9000);
+      setFocus((prev) => (prev + 1) % ENTITIES.length);
+    }, 2600);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature(prev => (prev + 1) % SCHEMA_FEATURES.length);
-    }, 14000);
-    return () => clearInterval(interval);
-  }, []);
+  const activeEntity = ENTITIES[focus];
+  const activeId = activeEntity.id;
+  const activeColor = activeEntity.color;
 
-  const activeEntity = ENTITIES[entityTicker];
-  const activeQuery = QUERY_LOG[activeQueryIndex];
+  // LEARN: derive which nodes the focused entity joins to, straight from EDGES.
+  const linkedIds = EDGES.flatMap(([a, b]) =>
+    a === activeId ? [b] : b === activeId ? [a] : [],
+  );
 
   return (
     <div className="flex flex-col h-full justify-between gap-1.5 md:gap-2 min-h-0 text-left select-none">
@@ -103,7 +106,7 @@ export function SqlDisasterWidget() {
           <span>•</span>
           <AnimatePresence mode="wait">
             <motion.span
-              key={entityTicker}
+              key={focus}
               initial={{ opacity: 0, y: 3 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -3 }}
@@ -116,180 +119,138 @@ export function SqlDisasterWidget() {
         </div>
       </div>
 
-      {/* Mode Toggle */}
-      <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-bento-subtle border border-edge-soft rounded-xl shrink-0 gap-3">
-        <div className="flex items-center gap-2">
-          <Zap size={11} className="text-viz-red animate-pulse" />
-          <span className="font-mono text-[9px] md:text-[10px] font-bold text-fg-soft tracking-wider uppercase">DIS-REL-PH · Module</span>
-        </div>
-        {/* LEARN: e.stopPropagation() keeps the click from bubbling to the whole
-            card's handler, so a toggle switches the panel without navigating. */}
-        <div className="bg-bento-track border border-edge-soft p-0.5 rounded-lg flex shrink-0">
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('schema'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'schema' ? "bg-fg/10 text-fg" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Schema
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('queries'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'queries' ? "bg-viz-red/15 border border-viz-red/30 text-viz-red" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Queries
-          </button>
-        </div>
+      {/* Description Block */}
+      <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2 shrink-0">
+        <p className="text-[11px] sm:text-[12.5px] leading-relaxed text-fg-soft">
+          PostgreSQL • <span className="font-semibold text-fg">3NF normalization</span>, <span className="font-semibold text-fg">relational modeling</span>, <span className="font-semibold text-fg">indexed analytical queries</span> and <span className="font-semibold text-fg">referential integrity</span>.
+        </p>
       </div>
 
-      {/* Main Panel */}
-      {/* LEARN: the two panels carry different keys, so AnimatePresence slides one
-          out and the other in whenever uiMode flips. */}
-      <div className="hidden lg:flex flex-grow min-h-0 flex-col gap-2.5">
-        <AnimatePresence mode="wait">
+      {/* Main Panel  live entity-relationship schema graph */}
+      <div className="hidden lg:flex flex-grow min-h-0 flex-col gap-2">
 
-          {uiMode === 'schema' ? (
-            <motion.div
-              key="schema-panel"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
-            >
-              {/* Entity rail */}
-              {/* LEARN: one cell per entity. cn() scales/dims the cell matching the
-                  current entityTicker, so the highlight walks the rail on a timer. */}
-              <div className="grid grid-cols-7 gap-1 bg-bento-inset border border-edge-soft rounded-xl p-2 shrink-0">
-                {ENTITIES.map((e, i) => (
-                  <div key={e.id} className="flex flex-col items-center gap-0.5">
-                    <span
-                      className={cn(
-                        "font-mono text-[11px] md:text-xs font-black transition-all duration-300",
-                        entityTicker === i ? "scale-110" : "opacity-60"
-                      )}
-                      style={{ color: e.color }}
-                    >
-                      {e.count}
-                    </span>
-                    <span className="font-mono text-[7px] text-fg-faint uppercase tracking-tighter text-center leading-tight">
-                      {e.id.slice(0, 3)}
-                    </span>
-                  </div>
-                ))}
-              </div>
+        {/* Schema graph */}
+        <div className="relative bg-bento-inset border border-edge-soft rounded-xl overflow-hidden flex-grow min-h-[128px]">
+          {/* faint dotted grid backdrop */}
+          <div
+            className="absolute inset-0 opacity-[0.5] [background-image:radial-gradient(var(--color-edge-soft)_0.75px,transparent_0.75px)] [background-size:12px_12px]"
+            aria-hidden
+          />
 
-              {/* Active schema feature */}
-              <div className="bg-bento-inset border border-edge-soft rounded-xl p-2.5 md:p-3 flex-grow flex flex-col justify-between min-h-[80px]">
-                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Schema Feature</span>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeFeature}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-1 mt-1.5"
-                  >
-                    <span className="font-mono text-[11px] md:text-xs font-black text-fg">
-                      {SCHEMA_FEATURES[activeFeature].label}
-                    </span>
-                    <span className="font-mono text-[9px] md:text-[10px] text-fg-soft leading-tight">
-                      {SCHEMA_FEATURES[activeFeature].detail}
-                    </span>
-                  </motion.div>
-                </AnimatePresence>
-                <div className="flex gap-1 mt-2">
-                  {SCHEMA_FEATURES.map((_, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "h-0.5 flex-1 rounded-full transition-all duration-300",
-                        activeFeature === i ? "bg-viz-red" : "bg-fg/10"
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="queries-panel"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
-            >
-              {/* Active query card */}
-              <div className="bg-bento-raised border border-edge rounded-xl p-2.5 md:p-3 shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Active Query</span>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={activeQueryIndex}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+          <div className="absolute top-2 inset-x-0 flex items-center justify-center gap-1.5 z-10">
+            <GitFork size={9} className="text-fg-faint shrink-0" />
+            <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Schema Graph</span>
+          </div>
+
+          {/* Edges  drawn in a stretched SVG (lines don't distort meaningfully) */}
+          <svg viewBox="0 0 280 130" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+            {EDGES.map(([a, b], i) => {
+              const active = a === activeId || b === activeId;
+              const from = NODES[a];
+              const to = NODES[b];
+              return (
+                <g key={i}>
+                  {/* resting edge */}
+                  <line
+                    x1={from.x} y1={from.y} x2={to.x} y2={to.y}
+                    className="stroke-fg/10"
+                    strokeWidth={0.6}
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {/* active edge  a dash "flows" along the join */}
+                  {active && (
+                    <motion.line
+                      x1={from.x} y1={from.y} x2={to.x} y2={to.y}
+                      style={{ stroke: activeColor }}
+                      strokeWidth={1.2}
+                      strokeLinecap="round"
+                      strokeDasharray="4 8"
+                      vectorEffect="non-scaling-stroke"
+                      initial={{ opacity: 0, strokeDashoffset: 24 }}
+                      animate={{ opacity: 0.9, strokeDashoffset: 0 }}
                       exit={{ opacity: 0 }}
-                      className="font-mono text-[9px] px-1.5 py-0.5 rounded border border-viz-red/30 bg-viz-red/10 text-viz-red font-bold uppercase"
-                    >
-                      {activeQuery.tag}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeQueryIndex}
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -3 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="font-mono text-[10px] md:text-xs text-fg font-bold truncate mb-1">
-                      {activeQuery.label}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm md:text-base font-black text-viz-red">{activeQuery.latency}</span>
-                      <span className="font-mono text-[9px] text-fg-faint uppercase">{activeQuery.type}</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+                      transition={{ strokeDashoffset: { duration: 1.4, repeat: Infinity, ease: 'linear' }, opacity: { duration: 0.3 } }}
+                    />
+                  )}
+                </g>
+              );
+            })}
+          </svg>
 
-              {/* Query queue */}
-              <div className="flex-grow bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
-                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest shrink-0">Query Syllabus · 47 total</span>
-                {QUERY_LOG.map((q, i) => (
-                  <div
-                    key={q.label}
-                    className={cn(
-                      "flex items-center justify-between gap-2 px-2 py-1 rounded-lg transition-all duration-300",
-                      activeQueryIndex === i ? "bg-viz-red/10 border border-viz-red/20" : "border border-transparent"
-                    )}
-                  >
-                    <span className={cn(
-                      "font-mono text-[9px] truncate",
-                      activeQueryIndex === i ? "text-fg font-bold" : "text-fg-faint"
-                    )}>
-                      {q.label}
-                    </span>
-                    <span className={cn(
-                      "font-mono text-[9px] font-black shrink-0",
-                      activeQueryIndex === i ? "text-viz-red" : "text-fg-faint"
-                    )}>
-                      {q.latency}
-                    </span>
-                  </div>
-                ))}
+          {/* Nodes + labels  rendered as HTML overlays so text stays crisp and
+              dots stay perfectly round regardless of the panel's aspect ratio */}
+          {ENTITIES.map((e) => {
+            const pos = NODES[e.id];
+            const isActive = e.id === activeId;
+            const isLinked = linkedIds.includes(e.id);
+            return (
+              <div
+                key={e.id}
+                className="absolute z-[5]"
+                style={{ left: `${(pos.x / 280) * 100}%`, top: `${(pos.y / 130) * 100}%`, transform: 'translate(-50%, -50%)' }}
+              >
+                {/* label, floated above the dot */}
+                <span
+                  className={cn(
+                    'absolute bottom-full left-1/2 -translate-x-1/2 mb-1 font-mono text-[9px] uppercase tracking-wide leading-none whitespace-nowrap transition-colors duration-300',
+                    isActive ? 'text-fg font-bold' : isLinked ? 'text-fg-soft' : 'text-fg-faint',
+                  )}
+                >
+                  {e.label}
+                </span>
+                {/* pulsing halo for the focused node */}
+                {isActive && (
+                  <span
+                    className="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full animate-ping opacity-40"
+                    style={{ backgroundColor: e.color }}
+                  />
+                )}
+                {/* the node dot */}
+                <motion.span
+                  className="relative block rounded-full"
+                  style={{ backgroundColor: e.color }}
+                  animate={{
+                    width: isActive ? 12 : isLinked ? 9 : 7,
+                    height: isActive ? 12 : isLinked ? 9 : 7,
+                    opacity: isActive ? 1 : isLinked ? 0.9 : 0.45,
+                  }}
+                  transition={{ duration: 0.35 }}
+                />
               </div>
+            );
+          })}
+        </div>
+
+        {/* Focused-entity readout */}
+        <div className="bg-bento-inset border border-edge-soft rounded-lg px-3 py-2 flex items-center justify-between gap-2 shrink-0">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeId}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-2 min-w-0"
+            >
+              <span
+                className="h-2 w-2 rounded-full shrink-0"
+                style={{ backgroundColor: activeColor }}
+              />
+              <span
+                className="font-mono text-[11px] md:text-xs font-black uppercase truncate"
+                style={{ color: activeColor }}
+              >
+                {activeEntity.label}
+              </span>
+              <span className="font-mono text-[9px] md:text-[10px] text-fg-soft shrink-0">
+                {activeEntity.count} rows · {linkedIds.length} FK join{linkedIds.length === 1 ? '' : 's'}
+              </span>
             </motion.div>
-          )}
-
-        </AnimatePresence>
+          </AnimatePresence>
+          <span className="font-mono text-[8px] md:text-[9px] text-fg-faint uppercase tracking-widest shrink-0">
+            3NF
+          </span>
+        </div>
       </div>
 
       {/* Footer */}
@@ -306,7 +267,7 @@ export function SqlDisasterWidget() {
 
       {/* Mobile-only Tech Stack */}
       <div className="lg:hidden flex flex-wrap gap-1 mt-1 shrink-0">
-        {['MySQL', 'OLAP', 'Data Model'].map(tech => (
+        {['Postgres', 'OLAP', 'Data Model'].map(tech => (
           <span key={tech} className="font-mono text-[8px] sm:text-[9px] px-2 py-0.5 bg-viz-red/10 border border-viz-red/30 rounded text-viz-red font-bold uppercase tracking-wider">
             {tech}
           </span>

@@ -71,7 +71,8 @@ function BentoCard({
   const filmVisible = !isActive && !isHovered;
   // The F1 telemetry card shares its internals with the dark /f1 page, so it opts
   // out of the light flip and keeps dark bento surfaces regardless of theme.
-  const lockDark = id === 'f1';
+  // In light mode, the focused card (hovered or active in the cycle) turns to the dark mode variant.
+  const lockDark = id === 'f1' || isActive || isHovered;
   // On hover every card lights up with its own accent: an outer ring + coloured
   // glow so it reads as unmistakably clickable, on top of the cycle's film-lift.
   const hoverGlow = `0 0 0 1.5px ${meta.accent}, 0 0 22px -4px color-mix(in srgb, ${meta.accent} 65%, transparent), 0 18px 50px -12px color-mix(in srgb, ${meta.accent} 55%, transparent)`;
@@ -97,14 +98,14 @@ function BentoCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
-      className={`rounded-3xl bg-bento-card border border-edge-soft p-3 md:p-4 backdrop-blur-2xl transition-all duration-500 relative flex flex-col justify-between overflow-hidden shadow-2xl group cursor-pointer z-10 w-full h-full flex-grow ${className}`}
+      className={`rounded-3xl bg-bento-card border border-edge-soft p-3 md:p-4 backdrop-blur-2xl transition-all duration-300 relative flex flex-col justify-between overflow-hidden shadow-2xl group cursor-pointer z-10 w-full h-full flex-grow ${className}`}
       style={{
         boxShadow: isHovered ? `${hoverGlow}, ${boxShadow}` : 'none',
         borderColor: isHovered || isActive ? borderColor : 'var(--color-edge-soft)',
       }}
     >
       <div
-        className="absolute inset-0 pointer-events-none transition-opacity duration-500"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300"
         style={{
           background: `linear-gradient(to bottom right, ${gradientFrom} 0%, transparent 60%)`,
           opacity: isHovered ? 0.5 : 0.3,
@@ -114,7 +115,7 @@ function BentoCard({
       {/* Whole-card accent wash on hover — sits behind the content (z-10) so it
           glows the card without dimming the text, reinforcing the box-shadow. */}
       <div
-        className="absolute inset-0 pointer-events-none rounded-3xl transition-opacity duration-500"
+        className="absolute inset-0 pointer-events-none rounded-3xl transition-opacity duration-300"
         style={{
           background: `radial-gradient(circle at 50% 25%, color-mix(in srgb, ${meta.accent} 22%, transparent) 0%, transparent 72%)`,
           opacity: isHovered ? 1 : 0,
@@ -126,7 +127,7 @@ function BentoCard({
       </div>
 
       <div
-        className="absolute inset-0 pointer-events-none transition-opacity duration-700 rounded-3xl hidden lg:block"
+        className="absolute inset-0 pointer-events-none transition-opacity duration-300 rounded-3xl hidden lg:block"
         style={{
           background: 'var(--color-bento-film)',
           opacity: filmVisible ? 1 : 0,
@@ -258,7 +259,7 @@ export function FeaturedProjects() {
             </span>
             <div className="flex-1 h-px bg-edge" />
             <InteractiveHint
-              text="PORTFOLIO DECK // CLICK TO EXPLORE WORK"
+              text="CLICK TO EXPLORE WORK"
               mobileText="TAP TO EXPLORE"
               icon={MousePointerClick}
               delay={0.25}
@@ -274,7 +275,7 @@ export function FeaturedProjects() {
               </h2>
             </ScrollReveal>
             <InteractiveHint
-              text="PORTFOLIO DECK // CLICK TO EXPLORE WORK"
+              text="CLICK TO EXPLORE WORK"
               mobileText="TAP A PROJECT TO EXPLORE WORK"
               icon={MousePointerClick}
               delay={0.25}
@@ -285,7 +286,7 @@ export function FeaturedProjects() {
         </div>
  
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1.2fr] gap-4 sm:gap-6 lg:gap-2" style={{ minHeight: '520px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1.1fr_1.1fr] gap-4 sm:gap-6 lg:gap-2" style={{ minHeight: '520px' }}>
  
           {/* COLUMN 1: F1 Telemetry + Connect */}
           <div className="lg:col-span-1 flex flex-col gap-4 sm:gap-6 lg:gap-2">
@@ -357,19 +358,19 @@ export function FeaturedProjects() {
             </motion.div>
           </div>
  
-          {/* COLUMN 2: LiteStore + Spotify */}
+          {/* COLUMN 2: Behavioral Risk + Spotify */}
           <div className="lg:col-span-1 grid grid-rows-2 gap-4 sm:gap-6 lg:gap-2 min-h-0">
             <div className="row-span-1 min-h-0 flex flex-col">
               <BentoCard
-                {...cardProps('litestore',
-                  '0 10px 30px -15px rgba(126,124,166,0.15), inset 0 0 20px rgba(126,124,166,0.02)',
-                  'rgba(126,124,166,0.25)',
-                  'rgba(126,124,166,0.05)'
+                {...cardProps('hr',
+                  '0 10px 30px -15px rgba(168,85,247,0.15), inset 0 0 20px rgba(168,85,247,0.02)',
+                  'rgba(168,85,247,0.25)',
+                  'rgba(168,85,247,0.05)'
                 )}
-                to="/project/litestore"
+                to="/project/hr-archetype"
                 className="flex-grow h-full"
               >
-                <LiteStoreWidget />
+                <BehaviouralRiskWidget />
               </BentoCard>
             </div>
  
@@ -388,8 +389,8 @@ export function FeaturedProjects() {
             </div>
           </div>
  
-          {/* COLUMN 3: SQL Disaster + Behavioral Risk */}
-          <div className="lg:col-span-1 grid grid-rows-2 gap-4 sm:gap-6 lg:gap-2">
+          {/* COLUMN 3: SQL Disaster + LiteStore */}
+          <div className="lg:col-span-1 grid grid-rows-2 gap-4 sm:gap-6 lg:gap-2 min-h-0">
             <div className="row-span-1 min-h-0 flex flex-col">
               <BentoCard
                 {...cardProps('sql',
@@ -406,15 +407,15 @@ export function FeaturedProjects() {
  
             <div className="row-span-1 min-h-0 flex flex-col">
               <BentoCard
-                {...cardProps('hr',
-                  '0 10px 30px -15px rgba(168,85,247,0.15), inset 0 0 20px rgba(168,85,247,0.02)',
-                  'rgba(168,85,247,0.25)',
-                  'rgba(168,85,247,0.05)'
+                {...cardProps('litestore',
+                  '0 10px 30px -15px rgba(126,124,166,0.15), inset 0 0 20px rgba(126,124,166,0.02)',
+                  'rgba(126,124,166,0.25)',
+                  'rgba(126,124,166,0.05)'
                 )}
-                to="/project/hr-archetype"
+                to="/project/litestore"
                 className="flex-grow h-full"
               >
-                <BehaviouralRiskWidget />
+                <LiteStoreWidget />
               </BentoCard>
             </div>
           </div>

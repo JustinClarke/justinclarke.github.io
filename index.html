@@ -41,10 +41,22 @@
 
   <!-- Theme: apply before first paint to prevent flash (FOUC guard) -->
   <script>
-    (function(){var s=localStorage.getItem('theme');var d=document.documentElement;var t=s==='light'?'light':s==='dark'?'dark':(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark'){d.classList.add('dark');}d.style.colorScheme=t;})();
+    (function(){
+      var s=localStorage.getItem('theme');
+      var d=document.documentElement;
+      var t=s==='light'?'light':s==='dark'?'dark':(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+      d.classList.toggle('dark',t==='dark');
+      d.style.colorScheme=t;
+      var m=document.querySelector('meta[name="theme-color"]');
+      if(m)m.content=t==='dark'?'#050505':'#ffffff';
+    })();
   </script>
-  <!-- Prevent white flash during JS bootup -->
-  <style>html,body,#root{background:#050505;min-height:100vh}</style>
+  <!-- Prevent flash of wrong background color during JS bootup -->
+  <style>
+    html,body,#root{background:#ffffff;min-height:100vh}
+    html.dark,html.dark body,html.dark #root{background:#050505}
+  </style>
+
 
   <!-- Browser Theme & Icons -->
   <meta name="theme-color" content="#050505">

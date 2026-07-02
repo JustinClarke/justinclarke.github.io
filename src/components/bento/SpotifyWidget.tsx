@@ -1,87 +1,61 @@
 /**
- * SpotifyWidget the "Spotify Engine" bento card (an MSc research project). A
- * self-running demo of a music recommender that rotates through audio-feature
- * "vectors" and nearest-neighbour song recommendations. The values are
- * illustrative, not a live model.
+ * SpotifyWidget the "Spotify Engine" bento card (an MSc research project).
+ * Rather than a live demo, it previews the two things that make this project
+ * distinct: the acoustic feature vector each track is fingerprinted against,
+ * and the 3-model benchmark the recommender was validated against.
  *
  * Fits in: one card in the homepage featured-projects bento grid.
- * Note:    three timers tick three independent counters (highlighted dimension,
- *          active recommendation, active model feature); a Vectors/Recommend
- *          toggle swaps which panel shows.
+ * Note:    every value is static (mirrors the real numbers used on the
+ *          Spotify Engine case-study page); the feature bars fill once on
+ *          scroll into view rather than looping on a timer.
  *
  * For beginners ----------------------------------------------------------------
- * Same shape as the other bento cards: useState holds the counters, useEffect
- * runs the timers, Framer Motion's <AnimatePresence key={...}> cross-fades a
- * panel when its key changes, and cn(...) chooses classes from what's active.
+ * FEATURES/MODELS are plain data arrays rendered with `.map`. FeatureBar's
+ * `whileInView` tells Framer Motion "animate this once, the first time it
+ * scrolls into the viewport" - no useState/useEffect timer required.
  * -----------------------------------------------------------------------------
  */
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Disc3, Zap, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { HardDrive, Sparkles } from 'lucide-react';
 import { cn } from '@/utils';
 
-// LEARN: the card's content as plain data arrays. The JSX further down loops over
-//    these with `.map`, so adding/removing an entry changes the UI automatically.
-const DIMENSIONS = [
-  { id: 'valence', label: 'VALENCE', value: 0.91, color: 'var(--color-viz-spotify)' },
-  { id: 'tempo', label: 'TEMPO', value: 0.65, color: 'var(--color-viz-success)' },
-  { id: 'energy', label: 'ENERGY', value: 0.74, color: 'var(--color-viz-spotify-2)' },
-  { id: 'dance', label: 'DANCEABILITY', value: 0.82, color: 'var(--color-viz-spotify)' },
-  { id: 'acoustic', label: 'ACOUSTICNESS', value: 0.12, color: 'var(--color-viz-spotify-3)' },
-  { id: 'live', label: 'LIVENESS', value: 0.18, color: 'var(--color-viz-spotify-4)' },
+const FEATURES = [
+  { label: 'ENERGY', value: 0.74, tone: 'spotify' as const },
+  { label: 'ACOUSTICNESS', value: 0.12, tone: 'teal' as const },
 ];
 
-const RECOMMENDATIONS = [
-  { name: 'Holocene', artist: 'Bon Iver', cosine: 0.94, genre: 'Folk' },
-  { name: 'Latch', artist: 'Disclosure', cosine: 0.89, genre: 'House' },
-  { name: 'Firestarter', artist: 'The Prodigy', cosine: 0.86, genre: 'Big Beat' },
-  { name: 'Flightless Bird', artist: 'Iron & Wine', cosine: 0.83, genre: 'Indie' },
-  { name: 'One More Time', artist: 'Daft Punk', cosine: 0.81, genre: 'Electronic' },
+const MODELS = [
+  { label: 'HIERARCHICAL', active: true },
+  { label: 'AVG. HYBRID', active: false },
+  { label: 'SPOTIFY BASELINE', active: false },
 ];
 
-const MODEL_FEATURES = [
-  { label: 'TF-IDF Genre Vector', detail: 'Sparse term weighting across 4.2K labels' },
-  { label: 'Cosine Similarity', detail: 'Normalized angular distance in 12D space' },
-  { label: 'Audio Feature Joins', detail: 'Spotify API + MSD acoustic fingerprints' },
-  { label: 'Cold-Start Strategy', detail: 'Genre fallback when listen data sparse' },
-];
+function FeatureBar({ label, value, tone, delay }: { label: string; value: number; tone: 'spotify' | 'teal'; delay: number }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[8px] md:text-[9px] uppercase font-black tracking-wider text-fg-faint">{label}</span>
+        <span className={cn(
+          "font-mono text-[9px] md:text-[10px] font-black tabular-nums",
+          tone === 'spotify' ? 'text-viz-spotify' : 'text-viz-teal'
+        )}>
+          {(value * 100).toFixed(0)}
+        </span>
+      </div>
+      <div className="h-1 w-full bg-fg/[0.06] overflow-hidden rounded-full">
+        <motion.div
+          className={cn("h-full rounded-full", tone === 'spotify' ? 'bg-viz-spotify' : 'bg-viz-teal')}
+          initial={{ width: 0 }}
+          whileInView={{ width: `${value * 100}%` }}
+          transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+          viewport={{ once: true }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export function SpotifyWidget() {
-  // LEARN: `uiMode` is which panel is shown; the other three are counters the
-  //    timers advance. Each useState returns [value, setter]; calling a setter
-  //    re-renders the card with the new value.
-  const [uiMode, setUiMode] = useState<'vectors' | 'recommend'>('vectors');
-  const [activeRec, setActiveRec] = useState(0);
-  const [dimensionTicker, setDimensionTicker] = useState(0);
-  const [activeFeature, setActiveFeature] = useState(0);
-
-  // LEARN: three near-identical timers, one per counter, each on its own cadence.
-  //    `% length` loops the index back to 0; the returned cleanup clears the timer
-  //    when the card unmounts so it can't keep firing. (Same pattern all three.)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveRec(prev => (prev + 1) % RECOMMENDATIONS.length);
-    }, 11000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDimensionTicker(prev => (prev + 1) % DIMENSIONS.length);
-    }, 9000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveFeature(prev => (prev + 1) % MODEL_FEATURES.length);
-    }, 14000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const activeDimension = DIMENSIONS[dimensionTicker];
-  const activeRecommendation = RECOMMENDATIONS[activeRec];
-
   return (
     <div className="flex flex-col h-full justify-between gap-1.5 md:gap-2 min-h-0 text-left select-none">
 
@@ -100,212 +74,60 @@ export function SpotifyWidget() {
           </h3>
         </div>
 
-        {/* Dynamic Telemetry Subheader */}
+        {/* Telemetry Subheader */}
         <div className="hidden lg:flex flex-nowrap items-center gap-x-2 gap-y-0.5 font-mono text-[9px] sm:text-[10px] text-fg-faint mt-0.5 leading-none select-none pr-16 xs:pr-20 sm:pr-24 whitespace-nowrap">
-          <span className="text-fg-faint font-medium">MODEL OPERATIONAL</span>
+          <span className="text-fg-faint font-medium">COLD-START RESOLVED</span>
           <span>•</span>
-          <AnimatePresence mode="wait">
-            <motion.span
-              key={dimensionTicker}
-              initial={{ opacity: 0, y: 3 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
-              transition={{ duration: 0.2 }}
-              className="uppercase font-medium font-mono text-fg-faint"
-            >
-              {activeDimension.label}: {activeDimension.value.toFixed(2)}
-            </motion.span>
-          </AnimatePresence>
+          <span className="uppercase text-fg-faint font-medium">3 Models Benchmarked</span>
         </div>
       </div>
 
-      {/* Mode Toggle */}
-      <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-bento-subtle border border-edge-soft rounded-xl shrink-0 gap-3">
-        <div className="flex items-center gap-2">
-          <Zap size={11} className="text-viz-spotify animate-pulse" />
-          <span className="font-mono text-[9px] md:text-[10px] font-bold text-fg-soft tracking-wider uppercase">MSD-MSC · 12D Space</span>
-        </div>
-        {/* LEARN: e.stopPropagation() stops the click from bubbling up to the
-            whole-card click handler (the bento card is itself a link/button), so
-            tapping a toggle switches the panel WITHOUT navigating away. */}
-        <div className="bg-bento-track border border-edge-soft p-0.5 rounded-lg flex shrink-0">
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('vectors'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'vectors' ? "bg-fg/10 text-fg" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Vectors
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('recommend'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'recommend' ? "bg-viz-spotify/15 border border-viz-spotify/30 text-viz-spotify" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Recommend
-          </button>
-        </div>
+      {/* Description Block */}
+      <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2 shrink-0">
+        <p className="text-[11px] sm:text-[12.5px] leading-relaxed text-fg-soft">
+          End-to-end <span className="font-semibold text-fg">ML workflow</span> for <span className="font-semibold text-fg">feature extraction</span>, <span className="font-semibold text-fg">embedding generation</span>, <span className="font-semibold text-fg">nearest-neighbor retrieval</span>, and <span className="font-semibold text-viz-spotify"> ranking</span>.
+        </p>
       </div>
 
-      {/* Main Panel */}
-      {/* LEARN: the two panels have different keys ("vectors-panel" /
-          "recommend-panel"), so AnimatePresence slides the old one out and the
-          new one in whenever uiMode flips. */}
-      <div className="hidden lg:flex flex-grow min-h-0 flex flex-col gap-2.5">
-        <AnimatePresence mode="wait">
+      {/* Main Content */}
+      <div className="hidden lg:flex flex-col gap-2 grow min-h-0">
 
-          {uiMode === 'vectors' ? (
-            <motion.div
-              key="vectors-panel"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
-            >
-              {/* Dimension rail */}
-              {/* LEARN: one cell per data entry. cn() scales/dims the cell that
-                  matches the current dimensionTicker, so the highlight walks the
-                  rail as the timer ticks. */}
-              <div className="grid grid-cols-6 gap-1 bg-bento-inset border border-edge-soft rounded-xl p-2 shrink-0">
-                {DIMENSIONS.map((d, i) => (
-                  <div key={d.id} className="flex flex-col items-center gap-0.5">
-                    <span
-                      className={cn(
-                        "font-mono text-[11px] md:text-xs font-black transition-all duration-300",
-                        dimensionTicker === i ? "scale-110" : "opacity-60"
-                      )}
-                      style={{ color: d.color }}
-                    >
-                      {(d.value * 100).toFixed(0)}
-                    </span>
-                    <span className="font-mono text-[7px] text-fg-faint uppercase tracking-tighter text-center leading-tight">
-                      {d.id.slice(0, 3)}
-                    </span>
-                  </div>
-                ))}
-              </div>
+        {/* Acoustic Feature Vector */}
+        <div className="bg-bento-inset border border-edge-soft rounded-xl p-2.5 md:p-3 flex flex-col gap-2 shrink-0">
+          <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Acoustic Feature Vector</span>
+          <div className="flex flex-col gap-1.5">
+            {FEATURES.map((f, i) => (
+              <FeatureBar key={f.label} {...f} delay={i * 0.08} />
+            ))}
+          </div>
+        </div>
 
-              {/* Active model feature */}
-              <div className="bg-bento-inset border border-edge-soft rounded-xl p-2.5 md:p-3 flex-grow flex flex-col justify-between min-h-[80px]">
-                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Model Feature</span>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeFeature}
-                    initial={{ opacity: 0, y: 4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex flex-col gap-1 mt-1.5"
-                  >
-                    <span className="font-mono text-[11px] md:text-xs font-black text-fg">
-                      {MODEL_FEATURES[activeFeature].label}
-                    </span>
-                    <span className="font-mono text-[9px] md:text-[10px] text-fg-soft leading-tight">
-                      {MODEL_FEATURES[activeFeature].detail}
-                    </span>
-                  </motion.div>
-                </AnimatePresence>
-                <div className="flex gap-1 mt-2">
-                  {MODEL_FEATURES.map((_, i) => (
-                    <div
-                      key={i}
-                      className={cn(
-                        "h-0.5 flex-1 rounded-full transition-all duration-300",
-                        activeFeature === i ? "bg-viz-spotify" : "bg-fg/10"
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="recommend-panel"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
-            >
-              {/* Active recommendation card */}
-              <div className="bg-bento-raised border border-edge rounded-xl p-2.5 md:p-3 shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Nearest Neighbour</span>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={activeRec}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="font-mono text-[9px] px-1.5 py-0.5 rounded border border-viz-spotify/30 bg-viz-spotify/10 text-viz-spotify font-bold uppercase"
-                    >
-                      {activeRecommendation.genre}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeRec}
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -3 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="font-mono text-[10px] md:text-xs text-fg font-bold truncate mb-0.5">
-                      {activeRecommendation.name}
-                    </div>
-                    <div className="font-mono text-[9px] text-fg-faint truncate mb-1.5">
-                      {activeRecommendation.artist}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm md:text-base font-black text-viz-spotify">{(activeRecommendation.cosine * 100).toFixed(1)}%</span>
-                      <span className="font-mono text-[9px] text-fg-faint uppercase">cos θ</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Recommendation queue */}
-              <div className="flex-grow bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
-                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest shrink-0">Candidate Pool · 1.2M total</span>
-                {RECOMMENDATIONS.map((r, i) => (
-                  <div
-                    key={r.name}
-                    className={cn(
-                      "flex items-center justify-between gap-2 px-2 py-1 rounded-lg transition-all duration-300",
-                      activeRec === i ? "bg-viz-spotify/10 border border-viz-spotify/20" : "border border-transparent"
-                    )}
-                  >
-                    <span className={cn(
-                      "font-mono text-[9px] truncate",
-                      activeRec === i ? "text-fg font-bold" : "text-fg-faint"
-                    )}>
-                      {r.name}
-                    </span>
-                    <span className={cn(
-                      "font-mono text-[9px] font-black shrink-0",
-                      activeRec === i ? "text-viz-spotify" : "text-fg-faint"
-                    )}>
-                      {(r.cosine * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
+        {/* 3-Model Benchmark */}
+        <div className="bg-bento-inset border border-edge-soft rounded-lg p-2.5 md:p-3 flex flex-col gap-1.5 grow justify-center">
+          <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">3-Model Benchmark</span>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {MODELS.map((m) => (
+              <span
+                key={m.label}
+                className={cn(
+                  "font-mono text-[8px] md:text-[9px] font-black uppercase px-2 py-1 rounded-full border",
+                  m.active
+                    ? "text-viz-spotify border-viz-spotify/30 bg-viz-spotify/10"
+                    : "text-fg-faint border-edge-soft"
+                )}
+              >
+                {m.label}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
       <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-1 justify-between items-center border-t border-edge-soft pt-1.5 text-fg-soft font-mono text-[8px] md:text-[9px] shrink-0">
         <div className="flex items-center gap-1.5">
-          <Disc3 size={9} className="shrink-0" />
-          <span>1.2M Tracks · 12D Vector</span>
+          <HardDrive size={9} className="shrink-0" />
+          <span>&lt;200MB Runtime · Live Ingestion</span>
         </div>
         <div className="flex items-center gap-1.5 text-viz-spotify">
           <Sparkles size={9} className="shrink-0" />

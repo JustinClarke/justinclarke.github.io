@@ -1,22 +1,24 @@
 /**
- * LiteStoreWidget the "LiteStore" bento card (a production SaaS storefront). A
- * self-running ops dashboard that rotates Core Web Vitals, Lighthouse scores, and
- * A/B experiment results. The figures are illustrative, not a live feed.
+ * LiteStoreWidget the "LiteStore" bento card (a production SaaS storefront). Its
+ * signature visual is a row of Lighthouse gauge rings the familiar circular
+ * audit dials that sweep up to their score on mount, paired with a live Core
+ * Web Vitals strip that cycles through LCP/FID/CLS/TTFB/INP. Figures are
+ * illustrative, not a live feed.
  *
  * Fits in: one card in the homepage featured-projects bento grid.
- * Note:    two timers tick two counters (highlighted vital, active experiment);
- *          a Lighthouse/Telemetry toggle swaps which panel shows.
+ * Note:    one timer advances the highlighted Core Web Vital; the gauge rings
+ *          animate their stroke-dashoffset from empty to the score once.
  *
  * For beginners ----------------------------------------------------------------
- * Same shape as the other bento cards: useState holds the counters, useEffect
- * runs the timers, Framer Motion's <AnimatePresence key={...}> cross-fades a
- * panel when its key changes, and cn(...) chooses classes from what's active.
+ * A gauge ring is just an SVG <circle> whose dashed outline is one long dash the
+ * length of the circle; shrinking `strokeDashoffset` reveals a fraction of it, so
+ * offset = circumference × (1 − score/100) draws exactly `score` percent. useState
+ * remembers the active vital, useEffect ticks it, and AnimatePresence cross-fades.
  * -----------------------------------------------------------------------------
  */
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gauge, Zap, TrendingUp } from 'lucide-react';
-import { cn } from '@/utils';
+import { Gauge, TrendingUp } from 'lucide-react';
 
 // LEARN: the card's content as plain data arrays; the JSX below loops over these
 //    with `.map`, so the markup stays short and the data is easy to edit.
@@ -29,45 +31,60 @@ const VITALS = [
 ];
 
 const LIGHTHOUSE = [
-  { label: 'Performance', value: 98 },
-  { label: 'Accessibility', value: 92 },
-  { label: 'Best Practices', value: 95 },
-  { label: 'SEO', value: 100 },
+  { label: 'Perf', value: 98, color: 'var(--color-litestore)' },
+  { label: 'A11y', value: 92, color: 'var(--color-litestore-2)' },
+  { label: 'Best Prac', value: 95, color: 'var(--color-litestore-4)' },
+  { label: 'SEO', value: 100, color: 'var(--color-litestore-5)' },
 ];
 
-const EXPERIMENTS = [
-  { label: 'checkout-v3.cta', uplift: '+20.4%', stage: 'Checkout', status: 'WINNER' },
-  { label: 'pdp-gallery-swipe', uplift: '+6.8%', stage: 'Product', status: 'ROLLED OUT' },
-  { label: 'cart-drawer-edge', uplift: '+3.1%', stage: 'Cart', status: 'RAMPING' },
-  { label: 'hero-copy-test-b', uplift: '+1.4%', stage: 'Landing', status: 'MONITOR' },
-  { label: 'pricing-stickyfoot', uplift: '+9.2%', stage: 'Checkout', status: 'WINNER' },
-];
+// LEARN: geometry shared by every ring. r=16 → circumference ≈ 100.53; the dash
+//    is that whole length, and the offset below hides part of it.
+const R = 16;
+const CIRC = 2 * Math.PI * R;
+
+function GaugeRing({ label, value, color, delay }: { label: string; value: number; color: string; delay: number }) {
+  return (
+    <div className="flex flex-col items-center gap-1 min-w-0">
+      <div className="relative w-11 h-11 md:w-12 md:h-12">
+        <svg viewBox="0 0 40 40" className="w-full h-full -rotate-90">
+          <circle cx="20" cy="20" r={R} fill="none" className="stroke-fg/[0.08]" strokeWidth={3} />
+          <motion.circle
+            cx="20" cy="20" r={R}
+            fill="none"
+            style={{ stroke: color }}
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeDasharray={CIRC}
+            initial={{ strokeDashoffset: CIRC }}
+            animate={{ strokeDashoffset: CIRC * (1 - value / 100) }}
+            transition={{ duration: 1.3, delay, ease: [0.16, 1, 0.3, 1] }}
+          />
+        </svg>
+        <span
+          className="absolute inset-0 flex items-center justify-center font-mono text-[11px] md:text-xs font-black"
+          style={{ color }}
+        >
+          {value}
+        </span>
+      </div>
+      <span className="font-mono text-[7px] md:text-[8px] text-fg-faint uppercase tracking-wider leading-none whitespace-nowrap">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export function LiteStoreWidget() {
-  // LEARN: `uiMode` is which panel shows; the other two are counters the timers
-  //    advance. Each useState returns [value, setter]; a setter call re-renders.
-  const [uiMode, setUiMode] = useState<'lighthouse' | 'telemetry'>('lighthouse');
-  const [activeExperiment, setActiveExperiment] = useState(0);
   const [vitalTicker, setVitalTicker] = useState(0);
-
-  // LEARN: two near-identical timers, one per counter. `% length` loops the
-  //    index; the returned cleanup clears the timer on unmount. (Same both.)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveExperiment(prev => (prev + 1) % EXPERIMENTS.length);
-    }, 11000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setVitalTicker(prev => (prev + 1) % VITALS.length);
-    }, 9000);
+    }, 2600);
     return () => clearInterval(interval);
   }, []);
 
   const activeVital = VITALS[vitalTicker];
-  const activeExp = EXPERIMENTS[activeExperiment];
 
   return (
     <div className="flex flex-col h-full justify-between gap-1.5 md:gap-2 min-h-0 text-left select-none">
@@ -106,168 +123,53 @@ export function LiteStoreWidget() {
         </div>
       </div>
 
-      {/* Mode Toggle */}
-      <div className="hidden lg:flex items-center justify-between py-1.5 px-3 bg-bento-subtle border border-edge-soft rounded-xl shrink-0 gap-3">
-        <div className="flex items-center gap-2">
-          <Zap size={11} className="text-litestore animate-pulse" />
-          <span className="font-mono text-[9px] md:text-[10px] font-bold text-fg-soft tracking-wider uppercase">VERCEL EDGE · Next.js</span>
-        </div>
-        {/* LEARN: e.stopPropagation() keeps the click from bubbling to the whole
-            card's handler, so a toggle switches the panel without navigating. */}
-        <div className="bg-bento-track border border-edge-soft p-0.5 rounded-lg flex shrink-0">
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('lighthouse'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'lighthouse' ? "bg-fg/10 text-fg" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Lighthouse
-          </button>
-          <button
-            onClick={(e) => { e.stopPropagation(); setUiMode('telemetry'); }}
-            className={cn(
-              "px-1.5 sm:px-2 py-0.5 rounded font-mono text-[9px] md:text-[10px] uppercase font-bold tracking-wider transition-all",
-              uiMode === 'telemetry' ? "bg-litestore/15 border border-litestore/30 text-litestore" : "text-fg-faint hover:text-fg-soft"
-            )}
-          >
-            Telemetry
-          </button>
-        </div>
+      {/* Description Block */}
+      <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2 shrink-0">
+        <p className="text-[11px] sm:text-[12.5px] leading-relaxed text-fg-soft">
+          Production-ready <span className="font-semibold text-fg">SaaS architecture</span> leveraging <span className="font-semibold text-fg">Next.js</span>, <span className="font-semibold text-fg">Edge Runtime</span>, <span className="font-semibold text-fg">tenant-aware design tokens</span>, <span className="font-semibold text-litestore-2">analytics instrumentation</span> and <span className="font-semibold text-fg">serverless APIs</span>.
+        </p>
       </div>
 
-      {/* Main Panel */}
-      {/* LEARN: the two panels carry different keys, so AnimatePresence slides one
-          out and the other in whenever uiMode flips. */}
-      <div className="hidden lg:flex flex-grow min-h-0 flex flex-col gap-2.5">
-        <AnimatePresence mode="wait">
+      {/* Main Panel  Lighthouse gauge rings + live Core Web Vital */}
+      <div className="hidden lg:flex flex-grow min-h-0 flex-col gap-2">
 
-          {uiMode === 'lighthouse' ? (
+        {/* Lighthouse gauges */}
+        <div className="bg-bento-inset border border-edge-soft rounded-xl px-3 py-2.5 flex flex-col gap-2 flex-grow justify-center min-h-0">
+          <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Lighthouse Audit</span>
+          <div className="flex items-center justify-between gap-1.5">
+            {LIGHTHOUSE.map((s, i) => (
+              <GaugeRing key={s.label} {...s} delay={0.12 * i} />
+            ))}
+          </div>
+        </div>
+
+        {/* Live Core Web Vital */}
+        <div className="bg-bento-inset border border-edge-soft rounded-lg px-3 py-2 flex items-center justify-between gap-2 shrink-0">
+          <AnimatePresence mode="wait">
             <motion.div
-              key="lighthouse-panel"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              key={activeVital.id}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
+              className="flex items-center gap-2 min-w-0"
             >
-              {/* Vitals rail */}
-              {/* LEARN: one cell per vital. cn() scales/dims the cell matching the
-                  current vitalTicker, so the highlight walks the rail on a timer. */}
-              <div className="grid grid-cols-5 gap-1 bg-bento-inset border border-edge-soft rounded-xl p-2 shrink-0">
-                {VITALS.map((v, i) => (
-                  <div key={v.id} className="flex flex-col items-center gap-0.5">
-                    <span
-                      className={cn(
-                        "font-mono text-[11px] md:text-xs font-black transition-all duration-300",
-                        vitalTicker === i ? "scale-110" : "opacity-60"
-                      )}
-                      style={{ color: v.color }}
-                    >
-                      {v.score}
-                    </span>
-                    <span className="font-mono text-[7px] text-fg-faint uppercase tracking-tighter text-center leading-tight">
-                      {v.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Lighthouse score bars */}
-              <div className="bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex-grow flex flex-col justify-between min-h-0">
-                <span className="font-mono text-[7px] text-fg-faint uppercase tracking-widest mb-0.5">Lighthouse Audit</span>
-                <div className="flex flex-col gap-0.5 flex-grow justify-center min-h-0">
-                  {LIGHTHOUSE.map((s, i) => (
-                    <div key={s.label} className="flex items-center gap-1.5 min-h-0">
-                      <span className="font-mono text-[7px] text-fg-soft w-20 shrink-0 leading-none whitespace-nowrap">{s.label}</span>
-                      <div className="flex-grow h-0.5 bg-fg/[0.06] rounded-full overflow-hidden min-w-0">
-                        <motion.div
-                          className="h-full bg-litestore rounded-full"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${s.value}%` }}
-                          transition={{ duration: 1.2, delay: 0.1 * i, ease: [0.16, 1, 0.3, 1] }}
-                        />
-                      </div>
-                      <span className="font-mono text-[8px] font-black text-litestore w-5 text-right shrink-0">{s.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: activeVital.color }} />
+              <span className="font-mono text-[11px] md:text-xs font-black uppercase" style={{ color: activeVital.color }}>
+                {activeVital.label}
+              </span>
+              <span className="font-mono text-[11px] md:text-xs font-black text-fg">
+                {activeVital.value}
+              </span>
+              <span className="font-mono text-[9px] md:text-[10px] text-fg-soft shrink-0 truncate">
+                target {activeVital.target}
+              </span>
             </motion.div>
-          ) : (
-            <motion.div
-              key="telemetry-panel"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 flex-grow min-h-0"
-            >
-              {/* Active experiment card */}
-              <div className="bg-bento-raised border border-edge rounded-xl p-2.5 md:p-3 shrink-0">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest">Active Experiment</span>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={activeExperiment}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="font-mono text-[9px] px-1.5 py-0.5 rounded border border-litestore/30 bg-litestore/10 text-litestore font-bold uppercase"
-                    >
-                      {activeExp.status}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeExperiment}
-                    initial={{ opacity: 0, y: 3 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -3 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="font-mono text-[10px] md:text-xs text-fg font-bold truncate mb-1">
-                      {activeExp.label}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-sm md:text-base font-black text-litestore">{activeExp.uplift}</span>
-                      <span className="font-mono text-[9px] text-fg-faint uppercase">CVR · {activeExp.stage}</span>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Experiment queue */}
-              <div className="flex-grow bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
-                <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest shrink-0">A/B Backlog · 18 shipped</span>
-                {EXPERIMENTS.map((e, i) => (
-                  <div
-                    key={e.label}
-                    className={cn(
-                      "flex items-center justify-between gap-2 px-2 py-1 rounded-lg transition-all duration-300",
-                      activeExperiment === i ? "bg-litestore/10 border border-litestore/20" : "border border-transparent"
-                    )}
-                  >
-                    <span className={cn(
-                      "font-mono text-[9px] truncate",
-                      activeExperiment === i ? "text-fg font-bold" : "text-fg-faint"
-                    )}>
-                      {e.label}
-                    </span>
-                    <span className={cn(
-                      "font-mono text-[9px] font-black shrink-0",
-                      activeExperiment === i ? "text-litestore" : "text-fg-faint"
-                    )}>
-                      {e.uplift}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
+          </AnimatePresence>
+          <span className="font-mono text-[8px] md:text-[9px] text-fg-faint uppercase tracking-widest shrink-0">
+            RUM p75
+          </span>
+        </div>
       </div>
 
       {/* Footer */}

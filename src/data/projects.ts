@@ -98,7 +98,7 @@ export const projectsData: Project[] = [
     projectType: 'behavioural ai',
     title: 'Behavioural Intelligence',
     tech: ['Gemini AI', 'Firestore', 'React'],
-    copy: 'Workforce retention analytics platform detecting flight risk across 8 behavioural archetypes. Real-time risk scoring with Gemini AI-powered retention recommendations.',
+    copy: 'Behavioural intelligence pipeline system capturing richer feedback through adaptive questioning and AI-powered behavioural insights.',
     fullDescription: 'A workforce retention platform that classifies employee flight risk across 8 behavioural archetypes. Built with a 13-axis diagnostic engine, Gemini AI recommendations, and real-time risk prediction scoring.',
     visualDescription: "AI dashboard showing behavioural quadrant mapping and real-time employee retention risk analysis.",
     pageMetrics: [

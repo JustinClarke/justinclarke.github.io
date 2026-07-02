@@ -67,31 +67,6 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
         }}
       />
 
-      {/* Header  -  chip + label + animated rule + breathing dot */}
-      <div className="flex items-center gap-3 group/header">
-        <div className="flex items-center gap-2">
-          <span
-            className="font-mono text-[8px] tracking-[0.2em] font-black uppercase inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border border-brand-primary/35 text-brand-primary bg-brand-primary/6"
-            style={{ boxShadow: 'inset 0 0 8px rgba(0,200,180,0.08)' }}
-          >
-            SYS
-          </span>
-          <div className="font-mono text-[10px] text-term-fg uppercase tracking-[0.3em] font-black transition-opacity">
-            CONTROLS
-          </div>
-        </div>
-        <div className="relative flex-1 h-px overflow-hidden">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(to right, rgba(0,200,180,0.35), rgba(255,255,255,0.06) 60%, transparent)',
-            }}
-          />
-        </div>
-        <span className="font-mono text-[8px] text-term-faint tracking-[0.25em] uppercase hidden md:inline">04 CH</span>
-        <div className="indicator-light bg-brand-primary group-hover/header:shadow-[0_0_10px_var(--color-acc-lang)] animate-pulse" style={{ boxShadow: '0 0 6px rgba(0,200,180,0.55)' }} />
-      </div>
       <div className="grid grid-cols-2 md:flex md:flex-col gap-2 md:flex-1 md:min-h-0">
         {/* LEARN: Render the data. For each menu item we output one wrapper <div> +
               <CommandButton>. `cn(...)` is a helper that joins class names and drops

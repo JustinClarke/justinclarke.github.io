@@ -70,11 +70,11 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
         className={cn(
           "group relative rounded-2xl border overflow-hidden cursor-pointer transition-all duration-500",
           isWork
-            ? "bg-fg/[0.03] border-fg/[0.06] hover:bg-fg/[0.05] hover:border-brand-primary/20"
-            : "bg-fg/[0.03] border-fg/[0.06] hover:bg-fg/[0.04] hover:border-amber/20",
+            ? "bg-fg/[0.03] border-edge-soft hover:bg-fg/[0.05] hover:border-[rgba(0,200,180,0.2)]"
+            : "bg-fg/[0.03] border-edge-soft hover:bg-fg/[0.04] hover:border-[rgba(245,158,11,0.2)]",
           isExpanded && (isWork
-            ? "bg-brand-primary/[0.05] border-brand-primary/20 shadow-[0_20px_60px_-15px_rgba(0,200,180,0.12)]"
-            : "bg-amber/[0.05] border-amber/20 shadow-[0_20px_60px_-15px_rgba(245,158,11,0.12)]")
+            ? "bg-brand-primary/[0.05] border-[rgba(0,200,180,0.2)] shadow-[0_20px_60px_-15px_rgba(0,200,180,0.12)]"
+            : "bg-amber/[0.05] border-[rgba(245,158,11,0.2)] shadow-[0_20px_60px_-15px_rgba(245,158,11,0.12)]")
         )}
         onClick={onToggle}
       >
@@ -201,8 +201,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                   className={cn(
                     "font-mono text-[8px] px-2 py-0.5 rounded-md font-bold tracking-widest uppercase transition-colors duration-300",
                     isWork
-                      ? "bg-brand-primary/5 border border-brand-primary/10 text-brand-primary/40 group-hover:text-brand-primary/60"
-                      : "bg-amber/5 border border-amber/10 text-amber/40 group-hover:text-amber/60"
+                      ? "bg-brand-primary/5 border border-[rgba(0,200,180,0.1)] text-brand-primary/40 group-hover:text-brand-primary/60"
+                      : "bg-amber/5 border border-[rgba(245,158,11,0.1)] text-amber/40 group-hover:text-amber/60"
                   )}
                   data-tooltip={tagTooltip}
                 >
@@ -224,7 +224,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
           <div className="min-h-0">
             <div className={cn(
               "px-5 md:px-6 pb-6 pt-2",
-              isWork ? "border-t border-brand-primary/10" : "border-t border-amber/10"
+              isWork ? "border-t border-[rgba(0,200,180,0.1)]" : "border-t border-[rgba(245,158,11,0.1)]"
             )}>
               <div className="space-y-2.5">
                 {/* LEARN: each bullet gets a JS-computed stagger via a CSS

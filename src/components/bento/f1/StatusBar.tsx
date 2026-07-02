@@ -19,7 +19,7 @@ type StatusBarProps = Pick<F1Telemetry, 'activeSector' | 'thermalSurface' | 'the
 
 export function StatusBar({ activeSector, thermalSurface, thermalBulk }: StatusBarProps) {
   return (
-    <div className="absolute bottom-1.5 left-2 right-2 flex flex-col gap-1.5 items-center justify-center font-mono bg-black/60 backdrop-blur-md px-3 py-2 rounded-xl border border-white/5 select-none leading-none z-10">
+    <div className="absolute bottom-1.5 left-2 right-2 flex flex-col gap-1.5 items-center justify-center font-mono bg-black/60 backdrop-blur-md px-3 py-2 rounded-xl border border-[rgba(255,255,255,0.05)] select-none leading-none z-10">
       {/* Row 1: Sectors */}
       <div className="flex gap-2 items-center justify-center text-[10px]">
         <div className="flex items-center">

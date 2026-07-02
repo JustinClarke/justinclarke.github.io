@@ -12,6 +12,7 @@
  * -----------------------------------------------------------------------------
  */
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { SEO_THEME_COLORS } from '@/config/constants';
 
 export type Theme = 'light' | 'dark';
 
@@ -40,7 +41,13 @@ function applyTheme(theme: Theme) {
   const root = document.documentElement;
   root.classList.toggle('dark', theme === 'dark');
   root.style.colorScheme = theme;
+
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute('content', theme === 'dark' ? SEO_THEME_COLORS.dark : SEO_THEME_COLORS.light);
+  }
 }
+
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(() => {
@@ -53,13 +60,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     applyTheme(theme);
   }, [theme]);
 
-  // Follow OS changes only when the user hasn't made an explicit choice
+  // Follow OS changes live. When the system preference changes,
+  // we align with it and clear any stored manual override.
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        setThemeState(e.matches ? 'dark' : 'light');
-      }
+      localStorage.removeItem(STORAGE_KEY);
+      setThemeState(e.matches ? 'dark' : 'light');
     };
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
