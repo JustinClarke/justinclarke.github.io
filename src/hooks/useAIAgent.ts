@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { AI_AGENT } from '@/config/constants';
+import { SITE, type SiteConfig } from '@/content';
 import type { TerminalLine } from '@/pages/home/Hero/engine';
 
 type LinePart = NonNullable<TerminalLine['parts']>[number];
@@ -106,16 +107,23 @@ export function incrementQueryCount(): void {
 
 /**
  * Core fetch logic extracted for testability. Handles the full SSE streaming
- * cycle and returns finalised terminal lines. Stateless — all state mutation
+ * cycle and returns finalised terminal lines. Stateless all state mutation
  * (React state, history ref) is done by the hook wrapper around this.
+ * `aiChat` is injectable so tests can exercise the degradation contract; the
+ * app always passes the deployment's SITE config via the default.
  */
 export async function callAIAgent(
   query: string,
   history: AIMessage[],
   onToken?: (token: string) => void,
   signal?: AbortSignal,
+  aiChat: SiteConfig['integrations']['aiChat'] = SITE.integrations.aiChat,
 ): Promise<{ lines: TerminalLine[]; fullText: string; timedOut: boolean }> {
   const err = (text: string) => ({ lines: [{ t: 'r' as const, text }], fullText: '', timedOut: false });
+
+  if (!aiChat) {
+    return err('[AGENT]: assistant not configured on this deployment.');
+  }
 
   if (query.length > AI_AGENT.maxPromptLength) {
     return err(`ask: question too long (max ${AI_AGENT.maxPromptLength} characters).`);
@@ -131,7 +139,7 @@ export async function callAIAgent(
   });
 
   try {
-    const res = await fetch(`${AI_AGENT.proxyUrl}/ask`, {
+    const res = await fetch(`${aiChat.workerUrl}/ask`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: query, history }),
@@ -160,7 +168,7 @@ export async function callAIAgent(
           const json = JSON.parse(data);
           const token: string = json.response ?? '';
           if (token) { fullText += token; onToken?.(token); }
-        } catch { /* malformed chunk — skip */ }
+        } catch { /* malformed chunk skip */ }
       }
     }
   } catch (e: any) {
@@ -168,7 +176,7 @@ export async function callAIAgent(
       timedOut = true;
       if (fullText) {
         return {
-          lines: [...parseAIResponseToLines(fullText, buildMeta()), { t: 'r', text: '↳ response timed out — partial answer above.' }],
+          lines: [...parseAIResponseToLines(fullText, buildMeta()), { t: 'r', text: '↳ response timed out partial answer above.' }],
           fullText,
           timedOut,
         };

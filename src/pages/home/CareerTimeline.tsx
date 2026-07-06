@@ -4,44 +4,30 @@
  * Fits in: Home.tsx, lazy-loaded below the fold.
  * Note:    only ONE card can be open at a time across BOTH columns, because
  *          the single `expandedId` lives here in the shared parent.
- *
- * For beginners ----------------------------------------------------------------
- * The actual CV data lives in src/data/timeline.ts; this file filters it into
- * a work column and an education column and stamps out a <TimelineCard> per
- * entry. The key React idea is "lifting state up": the open/closed card is
- * remembered here in the parent, and each card is merely TOLD whether it is
- * the open one via props compare an HTML <details> element, which remembers
- * its own open state and so can't be coordinated with its siblings.
- * -----------------------------------------------------------------------------
  */
 import { useState } from 'react';
 import { ScrollReveal } from '@/ui';
 import { Briefcase, GraduationCap, Hand } from 'lucide-react';
 import { InteractiveHint } from '@/ui/InteractiveHint';
-import { ENTRIES } from '@/data/timeline';
+import { ENTRIES } from '@/content/career';
 import { TimelineCard } from './TimelineCard';
 import { YearProgressBar } from './YearProgressBar';
 import { debug } from '@/utils';
 
-// LEARN: silent-by-default logger. Enable in the browser console with
-//    localStorage.debug = 'timeline'  then refresh (see src/utils/debug.ts).
+// Silent-by-default logger (localStorage.debug = 'timeline'); see utils/debug.ts.
 const log = debug('timeline');
 
 export const CareerTimeline = () => {
-  // LEARN: the id of the one expanded card, or null when all are closed.
-  //    'mba' starts open so the section doesn't look inert on first scroll.
+  // 'mba' starts open so the section doesn't look inert on first scroll.
   const [expandedId, setExpandedId] = useState<string | null>('mba');
 
-  // LEARN: .filter() makes two new arrays from the one data file the same
-  //    entries are never mutated, just dealt into two piles.
   const workEntries = ENTRIES.filter(e => e.type === 'work');
   const eduEntries = ENTRIES.filter(e => e.type === 'edu');
 
   const toggleCard = (id: string) => {
     log('toggle', id);
-    // LEARN: clicking the open card closes it (null); clicking any other card
-    //    opens that one which implicitly closes the previous one, since only
-    //    one id can be stored.
+    // Single-open accordion: clicking the open card closes it; any other card
+    // opens, implicitly closing the previous one since only one id is stored.
     setExpandedId(prev => (prev === id ? null : id));
   };
 
@@ -55,7 +41,7 @@ export const CareerTimeline = () => {
         {/* ── Section Header ── */}
         <div className="narrative-gap border-b border-fg/10 pb-12 flex flex-col gap-4">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
-            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-fg/30 font-bold whitespace-nowrap">
+            <span className="font-mono text-micro tracking-[0.4em] uppercase text-fg-mid font-bold whitespace-nowrap">
               Career Timeline
             </span>
             <div className="flex-1 h-px bg-fg/10" />
@@ -98,22 +84,16 @@ export const CareerTimeline = () => {
             <ScrollReveal distance={8}>
               <div className="flex items-center gap-3 mb-6">
                 <Briefcase className="w-4 h-4 text-brand-primary/50" />
-                <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-brand-primary/40 font-bold">
+                <span className="font-mono text-micro tracking-ultra uppercase text-brand-primary/40 font-bold">
                   Professional
                 </span>
                 <div className="flex-1 h-px bg-brand-primary/10" />
               </div>
             </ScrollReveal>
             <div className="space-y-3">
-              {/* LEARN: .map() turns each data entry into a component the JSX
-                  equivalent of a for-loop that prints one card per item.
-                  `delay={i * 0.08}` staggers the reveal: card 0 at 0s, card 1
-                  at 0.08s, and so on down the column. */}
+              {/* delay={i * 0.08} staggers the reveal down the column. */}
               {workEntries.map((entry, i) => (
                 <ScrollReveal key={entry.id} delay={i * 0.08} distance={14}>
-                  {/* LEARN: `() => toggleCard(entry.id)` wraps the call in a new
-                      function so it runs on click, not during render and each
-                      card's copy remembers its own entry.id (a closure). */}
                   <TimelineCard
                     entry={entry}
                     isExpanded={expandedId === entry.id}
@@ -129,7 +109,7 @@ export const CareerTimeline = () => {
             <ScrollReveal distance={8} delay={0.1}>
               <div className="flex items-center gap-3 mb-6">
                 <GraduationCap className="w-4 h-4 text-amber/50" />
-                <span className="font-mono text-[9px] tracking-[0.3em] uppercase text-amber/40 font-bold">
+                <span className="font-mono text-micro tracking-ultra uppercase text-amber/40 font-bold">
                   Academic
                 </span>
                 <div className="flex-1 h-px bg-amber/10" />

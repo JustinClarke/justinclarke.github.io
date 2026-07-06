@@ -12,7 +12,7 @@ export function ClosingCTA() {
       <h2 className="text-4xl md:text-5xl font-noto font-black text-white uppercase tracking-tighter mb-6 leading-none">
         Lap times lie.<br />You can now know why.
       </h2>
-      <p className="font-jetbrains text-xs md:text-sm text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
+      <p className="font-jetbrains text-xs md:text-sm text-text-tertiary max-w-2xl mx-auto mb-10 leading-relaxed">
         A causal engine built from first principles. {STATS.racesIngested} races ingested. {STATS.seasons} seasons. {STATS.tests} dbt tests + {STATS.mlTests} ML tests. 5 XGBoost models. No cloud required.
       </p>
       <div className="w-full max-w-sm sm:max-w-2xl lg:max-w-3xl flex flex-col gap-3 mx-auto mt-4 items-center">
@@ -29,21 +29,21 @@ export function ClosingCTA() {
             href={LINKS.docs}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/80 hover:text-white font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200"
+            className="inline-flex items-center justify-center gap-2 border border-white/10 text-text-secondary hover:text-white font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200"
           >
             Read the Docs →
           </a>
           {isOverview ? (
             <button
               onClick={() => navigate('/off-the-pace')}
-              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/50 hover:text-white/80 font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-white/10 text-text-tertiary hover:text-text-secondary font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
             >
               See the Architecture ↗
             </button>
           ) : (
             <button
               onClick={() => navigate('/f1')}
-              className="inline-flex items-center justify-center gap-2 border border-white/10 text-white/50 hover:text-white/80 font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 border border-white/10 text-text-tertiary hover:text-text-secondary font-jetbrains text-xs font-semibold uppercase tracking-wider px-4 py-3 rounded hover:border-white/20 hover:bg-white/[0.02] transition-all duration-200 cursor-pointer"
             >
               See the Overview ↗
             </button>

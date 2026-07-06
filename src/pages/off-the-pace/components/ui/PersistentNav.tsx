@@ -5,13 +5,8 @@
  * Fits in: rendered near the top of OffThePaceOverview and OffThePaceSource.
  * Note:    Clicking the tab you are already on scrolls to the top instead of
  *          navigating; clicking the other tab routes to that page.
- *
- * For beginners ----------------------------------------------------------------
- * useLocation/useNavigate come from React Router: the first tells us the
- * current URL (so we know which tab is active), the second changes pages
- * without a full browser reload. Like the preloader, the nav is portalled into
- * document.body so its fixed position is measured against the whole window.
- * -----------------------------------------------------------------------------
+ *          Like the preloader, the nav is portalled into document.body so its
+ *          fixed position is measured against the whole window.
  */
 import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -21,8 +16,6 @@ export function PersistentNav() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // LEARN: derived value, not state - we recompute "are we on the overview
-  //    page?" from the URL on every render, so it can never fall out of sync.
   const isOverview = pathname === '/f1';
 
   const navigateWithTransition = (to: string) => {
@@ -48,7 +41,7 @@ export function PersistentNav() {
       <div className="h-[52px] mt-4 md:mt-6 flex items-center justify-center">
         {/* Consistent dark glass pill */}
         <div
-          className="flex items-center font-jetbrains text-[10px] uppercase tracking-[0.14em] transition-all duration-300"
+          className="flex items-center font-jetbrains text-micro uppercase tracking-[0.14em] transition-all duration-300"
           style={{
             background: 'rgba(12,13,17,0.62)',
             backdropFilter: 'blur(20px)',
@@ -68,7 +61,7 @@ export function PersistentNav() {
               }
             }}
             aria-current={isOverview ? 'page' : undefined}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${isOverview ? 'font-bold text-white' : 'text-white/40 hover:text-white/70'}`}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${isOverview ? 'font-bold text-white' : 'text-text-tertiary hover:text-text-secondary'}`}
             style={isOverview ? {
               background: 'rgba(255,255,255,0.1)',
               boxShadow: '0 1px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.06) inset',
@@ -85,7 +78,7 @@ export function PersistentNav() {
               }
             }}
             aria-current={!isOverview ? 'page' : undefined}
-            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${!isOverview ? 'font-bold text-white' : 'text-white/40 hover:text-white/70'}`}
+            className={`px-4 py-1.5 rounded-full transition-all duration-200 ${!isOverview ? 'font-bold text-white' : 'text-text-tertiary hover:text-text-secondary'}`}
             style={!isOverview ? {
               background: 'rgba(255,255,255,0.1)',
               boxShadow: '0 1px 4px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.06) inset',

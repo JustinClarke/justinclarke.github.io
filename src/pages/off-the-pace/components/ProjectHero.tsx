@@ -7,16 +7,8 @@
  * Note:    The three CTAs hover-animate via direct DOM style writes in the
  *          event handlers (box-shadow/transform), which is why they use inline
  *          `style` rather than Tailwind hover: classes here.
- *
- * For beginners ----------------------------------------------------------------
- * The `<style>{...}</style>` block defines a couple of one-off CSS keyframe
- * animations scoped by class name - fine for animations used only on this page.
- * `color-mix(in srgb, var(--color-f1-red) 40%, transparent)` is plain CSS that
- * blends the brand-red token with transparency, so the glow colour still flows
- * from the design token rather than a hard-coded rgba.
- * -----------------------------------------------------------------------------
  */
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { STATS, LINKS } from '../data/projectStats';
 import { ScrambleText } from './ui/ScrambleText';
 
@@ -30,6 +22,34 @@ export const ProjectHero = () => {
   const [hoverRepo, setHoverRepo] = useState(false);
   const [hoverDocs, setHoverDocs] = useState(false);
   const [hoverOver, setHoverOver] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Keep the ~10MB hero video off the critical path. It ships with
+  // preload="none" and no autoplay (nothing is fetched up front), and only
+  // starts AFTER window load, on a real desktop viewport, with motion allowed
+  // and Save-Data off - otherwise the cheap AVIF poster is all that paints.
+  // (Mirrors SplitHero; previously this <video> autoPlay-ed and pulled the full
+  // mp4 during load on every /off-the-pace visit.)
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+    const okViewport = window.matchMedia('(min-width: 769px)').matches;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    if (!okViewport || reduceMotion || saveData) return; // poster only
+
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      el.play().catch(() => { /* autoplay blocked: poster remains, no error */ });
+    };
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+    return () => {
+      cancelled = true;
+      window.removeEventListener('load', start);
+    };
+  }, []);
 
   return (
     <section className="relative h-screen md:h-dvh flex flex-col items-center justify-between px-6 md:px-24 pt-20 md:pt-24 pb-28 md:pb-32 overflow-hidden">
@@ -58,10 +78,14 @@ export const ProjectHero = () => {
         }
       `}</style>
 
-      {/* Video background */}
+      {/* Video background - f1.webm preferred; f1.mp4 fallback. Deferred + gated
+          in the effect above (preload=none, started post-load on desktop only);
+          the AVIF poster carries the visual until then. */}
       <video
-        autoPlay loop muted playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        ref={videoRef}
+        loop muted playsInline preload="none"
+        aria-hidden="true"
+        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
         poster="/assets/audif1.avif"
         style={{ objectFit: 'cover', objectPosition: 'center' }}
       >
@@ -82,7 +106,7 @@ export const ProjectHero = () => {
         <div className="flex flex-col items-center text-center">
 
           <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 px-3 sm:px-5 py-1 sm:py-1.5 rounded-full border border-f1-red/25 bg-f1-red/10 backdrop-blur-3xl">
-            <span className="font-jetbrains text-[7px] sm:text-[9px] tracking-[0.3em] sm:tracking-[0.4em] uppercase font-black text-f1-red">
+            <span className="font-jetbrains text-micro sm:text-micro tracking-ultra sm:tracking-[0.4em] uppercase font-black text-f1-red">
               F1 TELEMETRY // ARCHITECTURE + SOURCE
             </span>
           </div>
@@ -99,10 +123,10 @@ export const ProjectHero = () => {
 
           {/* Capability statement : 2 lines, cold-entry oriented */}
           <div className="flex flex-col gap-2 mb-4 text-center px-4 max-w-2xl mx-auto">
-            <p className="font-jetbrains text-base sm:text-lg md:text-xl text-white/90 font-bold leading-snug">
+            <p className="font-jetbrains text-base sm:text-lg md:text-xl text-text-primary font-bold leading-snug">
               Seven causes. One <span className="hidden sm:inline">enforced</span> invariant.<br className="hidden sm:block" /> Reproducible locally.
             </p>
-            <p className="font-jetbrains text-[11px] sm:text-xs text-white/50 uppercase tracking-[0.15em] leading-relaxed">
+            <p className="font-jetbrains text-fine sm:text-xs text-text-tertiary uppercase tracking-[0.15em] leading-relaxed">
               FastF1 → dbt → DuckDB → XGBoost
             </p>
           </div>
@@ -115,7 +139,7 @@ export const ProjectHero = () => {
                 className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 bg-white/[0.04] backdrop-blur-sm"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-f1-red shrink-0" />
-                <span className="font-jetbrains text-[9px] sm:text-[10px] uppercase tracking-widest text-white/70 font-semibold whitespace-nowrap">{p.label}</span>
+                <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-widest text-text-secondary font-semibold whitespace-nowrap">{p.label}</span>
               </div>
             ))}
           </div>
@@ -129,7 +153,7 @@ export const ProjectHero = () => {
                 rel="noreferrer"
                 onMouseEnter={(e) => { setHoverRepo(true); e.currentTarget.style.boxShadow = 'color-mix(in srgb, #1D4ED8 80%, transparent) 0 0 35px'; e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.backgroundColor = 'color-mix(in srgb, #1D4ED8 10%, transparent)'; }}
                 onMouseLeave={(e) => { setHoverRepo(false); e.currentTarget.style.boxShadow = 'color-mix(in srgb, #1D4ED8 40%, transparent) 0 0 20px'; e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.backgroundColor = 'transparent'; }}
-                className="cta-button order-1 sm:order-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
+                className="cta-button order-1 sm:order-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-micro sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
                 style={{ backgroundColor: 'transparent', borderColor: '#1D4ED8', borderWidth: '1px', boxShadow: 'color-mix(in srgb, #1D4ED8 40%, transparent) 0 0 20px', opacity: 0.9 }}
               >
                 <ScrambleText text="REPOSITORY" isHovered={hoverRepo} prefix="[" suffix="]" />
@@ -142,7 +166,7 @@ export const ProjectHero = () => {
                 rel="noreferrer"
                 onMouseEnter={(e) => { setHoverOver(true); e.currentTarget.style.boxShadow = '0 0 40px color-mix(in srgb, var(--color-f1-red) 100%, transparent), 0 0 80px color-mix(in srgb, var(--color-f1-red) 60%, transparent)'; e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'scale(1.05) translateY(-2px)'; }}
                 onMouseLeave={(e) => { setHoverOver(false); e.currentTarget.style.boxShadow = ''; e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = ''; }}
-                className="app-launch-btn cta-button order-3 col-span-2 sm:order-2 sm:col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-black whitespace-nowrap transition-all duration-300"
+                className="app-launch-btn cta-button order-3 col-span-2 sm:order-2 sm:col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-micro sm:text-xs uppercase tracking-widest font-black whitespace-nowrap transition-all duration-300"
                 style={{ backgroundColor: 'var(--color-f1-red)', borderColor: 'var(--color-f1-red)', borderWidth: '1px', zIndex: 50 }}
               >
                 <span className="mr-2.5 flex h-2.5 w-2.5 relative">
@@ -159,7 +183,7 @@ export const ProjectHero = () => {
                 rel="noreferrer"
                 onMouseEnter={(e) => { setHoverDocs(true); e.currentTarget.style.boxShadow = 'color-mix(in srgb, #00665E 80%, transparent) 0 0 35px'; e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.backgroundColor = 'color-mix(in srgb, #00665E 15%, transparent)'; }}
                 onMouseLeave={(e) => { setHoverDocs(false); e.currentTarget.style.boxShadow = 'color-mix(in srgb, #00665E 40%, transparent) 0 0 20px'; e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.backgroundColor = 'transparent'; }}
-                className="cta-button order-2 sm:order-3 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
+                className="cta-button order-2 sm:order-3 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-micro sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
                 style={{ backgroundColor: 'transparent', borderColor: '#00665E', borderWidth: '1px', boxShadow: 'color-mix(in srgb, #00665E 40%, transparent) 0 0 20px', opacity: 0.9 }}
               >
                 <ScrambleText text="DOCUMENTATION" isHovered={hoverDocs} prefix="[" suffix="]" />

@@ -10,12 +10,9 @@
  *          is now `--color-capital` in index.css so every `text-capital`,
  *          `bg-capital`, and `border-capital` utility reads from one source.
  *
- * For beginners ----------------------------------------------------------------
  * The rotating "Operational Data Tape" in the hero footer uses the same
- * useState + setInterval ticker pattern as LiteStorePage: a number cycles
- * through DATA_STREAMS every 2 seconds, and AnimatePresence slides in the
- * new string on the x-axis (instead of y-axis) for a horizontal ticker feel.
- * -----------------------------------------------------------------------------
+ * useState + setInterval ticker pattern as LiteStorePage, but AnimatePresence
+ * slides the new string in on the x-axis (instead of y-axis) for a horizontal feel.
  */
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { cn } from '@/utils';
 import { ScrollReveal, MagneticButton } from '@/ui';
 import { TheCloser, SEO } from '@/components/layout';
+import { routeMeta } from '@/content';
 import { RelatedProjects } from '@/components/projects';
 
 const DATA_STREAMS = [
@@ -47,9 +45,6 @@ export const CapitalBudgetingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeStream, setActiveStream] = useState(0);
 
-  // LEARN: Same ticker pattern as LiteStorePage and HRArchetypePage - a counter
-  //    that increments every 2 seconds, wrapping back to 0 with `% length`.
-  //    AnimatePresence in the JSX below animates the text swap on the x-axis.
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveStream(prev => (prev + 1) % DATA_STREAMS.length);
@@ -59,12 +54,7 @@ export const CapitalBudgetingPage = () => {
 
   return (
     <div ref={containerRef} className="min-h-screen bg-surface text-fg font-sans selection:bg-capital/30 overflow-x-hidden">
-      <SEO 
-        title="Capital Architecture Model" 
-        description="Engineering a ₱581M feasibility engine for maritime dredging operations. A comparative study of cost-of-capital versus long-term asset yield. Full DCF model inside."
-        path="/project/capital-budgeting"
-        schemaType="SoftwareApplication"
-      />
+      <SEO {...routeMeta('/project/capital-budgeting')} />
       
 
 
@@ -78,7 +68,7 @@ export const CapitalBudgetingPage = () => {
          <a 
           href="/resources/IDC_Capital_Budgeting_Model.xlsx" 
           download 
-          className="px-6 py-2.5 rounded-full bg-capital text-white font-mono text-[10px] font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all duration-300 border border-white/10"
+          className="px-6 py-2.5 rounded-full bg-capital text-white font-mono text-micro font-black uppercase tracking-widest shadow-2xl hover:scale-105 transition-all duration-300 border border-white/10"
           aria-label="Download Excel financial model"
          >
             Download Model (.XLSX)
@@ -96,7 +86,7 @@ export const CapitalBudgetingPage = () => {
           <ScrollReveal direction="up">
             <div className="flex flex-col items-center text-center">
                <div className="inline-flex items-center gap-4 mb-8 md:mb-10 px-6 py-2 rounded-full border border-capital/20 bg-capital/5 backdrop-blur-2xl">
-                 <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] md:tracking-[0.5em] uppercase font-black text-capital text-center">
+                 <span className="font-mono text-micro md:text-micro tracking-[0.4em] md:tracking-[0.5em] uppercase font-black text-capital text-center">
                    IDC-CAP-99 // CHIQUITA ISLAND PROJECT
                  </span>
                </div>
@@ -107,12 +97,12 @@ export const CapitalBudgetingPage = () => {
                  <span className="text-capital relative italic font-playfair lowercase font-normal">Architecture.</span>
                </div>
                
-               <p className="font-mono text-base md:text-2xl text-white/40 max-w-3xl leading-relaxed font-medium mb-12 md:mb-16 px-4 md:px-0 text-center mx-auto">
+               <p className="font-mono text-base md:text-2xl text-text-tertiary max-w-3xl leading-relaxed font-medium mb-12 md:mb-16 px-4 md:px-0 text-center mx-auto">
                   Engineering a <span className="text-white underline decoration-capital underline-offset-[12px] decoration-2">₱581M feasibility engine</span> for maritime dredging operations. A comparative study of cost-of-capital versus long-term asset yield.
                </p>
 
                <div className="md:hidden w-full px-4 mb-0">
-                  <a href="/resources/IDC_Capital_Budgeting_Model.xlsx" download className="px-8 py-4 rounded-xl bg-capital text-white font-mono text-[11px] font-black uppercase tracking-widest shadow-[0_0_20px_rgba(230,161,0,0.3)] block w-full text-center">
+                  <a href="/resources/IDC_Capital_Budgeting_Model.xlsx" download className="px-8 py-4 rounded-xl bg-capital text-white font-mono text-fine font-black uppercase tracking-widest shadow-[0_0_20px_rgba(230,161,0,0.3)] block w-full text-center">
                      Download XLSX Model
                   </a>
                </div>
@@ -126,7 +116,7 @@ export const CapitalBudgetingPage = () => {
               <div className="flex flex-col gap-6">
                  <div className="flex items-center gap-4">
                     <div className="w-2 h-2 rounded-full bg-capital" />
-                    <span className="font-mono text-[10px] tracking-widest uppercase font-black text-white/20">Operational_Data_Tape</span>
+                    <span className="font-mono text-micro tracking-widest uppercase font-black text-text-tertiary">Operational_Data_Tape</span>
                  </div>
                  <div className="font-mono text-xs text-capital h-6 flex items-center">
                     <AnimatePresence mode="wait">
@@ -144,7 +134,7 @@ export const CapitalBudgetingPage = () => {
               <div className="grid grid-cols-2 md:flex md:flex-wrap gap-8 md:gap-16">
                  {[{ l: 'WACC', v: '11.06%' }, { l: 'CAPEX', v: '₱581.5M' }, { l: 'NPV', v: '₱484M' }].map(stat => (
                     <div key={stat.l} className="flex flex-col gap-1">
-                       <span className="font-mono text-[9px] text-white/20 uppercase font-black tracking-widest">{stat.l}</span>
+                       <span className="font-mono text-micro text-text-tertiary uppercase font-black tracking-widest">{stat.l}</span>
                        <span className="font-noto text-2xl md:text-4xl font-black text-white">{stat.v}</span>
                     </div>
                  ))}
@@ -164,10 +154,10 @@ export const CapitalBudgetingPage = () => {
                 { l: '2-Year NPV', v: '–₱59.6M', s: 'Current SMC Offer', b: 'REJECT', c: 'red-600' },
               ].map(m => (
                 <div key={m.l} className="bg-white p-8 md:p-10 flex flex-col gap-4">
-                   <span className="font-mono text-[10px] uppercase font-black tracking-widest text-black/30">{m.l}</span>
+                   <span className="font-mono text-micro uppercase font-black tracking-widest text-black/30">{m.l}</span>
                    <span className={cn("font-noto text-3xl md:text-4xl font-black", m.c ? `text-${m.c}` : "text-black")}>{m.v}</span>
-                   <span className="font-mono text-[10px] text-black/40">{m.s}</span>
-                   {m.b && <div className={cn("mt-auto self-start px-4 py-1.5 rounded-[1px] text-[9px] font-black tracking-[0.2em] uppercase border", m.b === 'ACCEPT' ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-red-500/10 text-red-600 border-red-500/20")}>{m.b}</div>}
+                   <span className="font-mono text-micro text-black/40">{m.s}</span>
+                   {m.b && <div className={cn("mt-auto self-start px-4 py-1.5 rounded-[1px] text-micro font-black tracking-mega uppercase border", m.b === 'ACCEPT' ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-red-500/10 text-red-600 border-red-500/20")}>{m.b}</div>}
                 </div>
               ))}
            </div>
@@ -179,9 +169,9 @@ export const CapitalBudgetingPage = () => {
           {/* Section Header */}
           <ScrollReveal direction="up">
             <div className="flex flex-col items-center text-center mb-16 md:mb-24 gap-6">
-              <span className="font-mono text-capital text-[11px] tracking-[0.5em] uppercase font-black">Architecture Stack</span>
+              <span className="font-mono text-capital text-fine tracking-[0.5em] uppercase font-black">Architecture Stack</span>
               <h2 className="font-noto text-5xl md:text-[8rem] font-black tracking-tighter uppercase leading-none">
-                Capital<br/><span className="text-white/20">Structure.</span>
+                Capital<br/><span className="text-text-ghost">Structure.</span>
               </h2>
             </div>
           </ScrollReveal>
@@ -191,7 +181,7 @@ export const CapitalBudgetingPage = () => {
            <div className="flex flex-col gap-8 p-8 md:p-12 rounded-[32px] md:rounded-[40px] bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl">
               <div className="flex justify-between items-center border-b border-white/5 pb-8">
                  <h3 className="font-noto text-xl md:text-2xl font-black uppercase tracking-tighter">WACC Build.</h3>
-                 <span className="font-mono text-[9px] text-capital font-black uppercase">CAPM // Hamada</span>
+                 <span className="font-mono text-micro text-capital font-black uppercase">CAPM // Hamada</span>
               </div>
               <div className="space-y-6">
                  {[
@@ -202,7 +192,7 @@ export const CapitalBudgetingPage = () => {
                    { k: 'After-tax cost of debt', v: '6.83%' },
                  ].map(r => (
                    <div key={r.k} className="flex justify-between items-center group">
-                      <span className="font-mono text-xs text-white/40 uppercase group-hover:text-white/60 transition-colors">{r.k}</span>
+                      <span className="font-mono text-xs text-text-tertiary uppercase group-hover:text-text-secondary transition-colors">{r.k}</span>
                       <span className="font-mono text-sm font-bold">{r.v}</span>
                    </div>
                  ))}
@@ -217,7 +207,7 @@ export const CapitalBudgetingPage = () => {
            <div className="flex flex-col gap-8 p-8 md:p-12 rounded-[32px] md:rounded-[40px] bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl">
               <div className="flex justify-between items-center border-b border-white/5 pb-8">
                  <h3 className="font-noto text-xl md:text-2xl font-black uppercase tracking-tighter">Asset Allocation.</h3>
-                 <span className="font-mono text-[9px] text-white/20 font-black uppercase">Y0 Deployment</span>
+                 <span className="font-mono text-micro text-text-tertiary font-black uppercase">Y0 Deployment</span>
               </div>
               <div className="space-y-6">
                  {[
@@ -227,12 +217,12 @@ export const CapitalBudgetingPage = () => {
                    { k: 'Bank loan @ 9.1% / 10-yr', v: '₱102.5M', h: true },
                  ].map(r => (
                    <div key={r.k} className="flex justify-between items-center">
-                      <span className="font-mono text-xs text-white/40 uppercase">{r.k}</span>
+                      <span className="font-mono text-xs text-text-tertiary uppercase">{r.k}</span>
                       <span className={cn("font-mono text-sm font-bold", r.h ? "text-capital" : "text-white")}>{r.v}</span>
                    </div>
                  ))}
                  <div className="pt-6 border-t border-white/5 flex justify-between items-center">
-                    <span className="font-mono text-sm text-white/20 font-black uppercase">Total Equity</span>
+                    <span className="font-mono text-sm text-text-tertiary font-black uppercase">Total Equity</span>
                     <span className="font-noto text-2xl md:text-3xl font-black">₱479.0M</span>
                  </div>
               </div>
@@ -245,21 +235,19 @@ export const CapitalBudgetingPage = () => {
       <section className="py-20 md:py-32 px-6 md:px-12 bg-white text-black relative overflow-hidden">
         <div className="max-w-7xl mx-auto flex flex-col gap-16 md:gap-24">
            <div className="flex flex-col gap-6 max-w-2xl">
-              <span className="font-mono text-black/30 text-[11px] tracking-[0.5em] uppercase font-black">Risk Analysis</span>
+              <span className="font-mono text-black/30 text-fine tracking-[0.5em] uppercase font-black">Risk Analysis</span>
               <h2 className="font-noto text-5xl md:text-8xl font-black tracking-tighter uppercase leading-none">Price Sensitivity.</h2>
               <p className="font-mono text-lg md:text-xl text-black/50 leading-relaxed">
                  Testing the model across a ₱450–₱650 price variance. The base scenario (₱550/T) yields optimal IRR, while any price below ₱525/T triggers a reject signal.
               </p>
            </div>
 
-           {/* LEARN: This is a plain HTML <table> - not a React component. Tables
-               are still the right tool for tabular financial data: screen
-               readers know how to announce row/column headers, and the browser
-               handles column alignment automatically. */}
+           {/* Plain <table>: screen readers announce row/column headers, and
+               tabular financial data gets automatic column alignment for free. */}
            <div className="overflow-x-auto rounded-[24px] md:rounded-[32px] border border-black/10">
               <table className="w-full font-mono text-sm">
                  <thead>
-                    <tr className="bg-black text-white text-[9px] md:text-[10px] font-black uppercase tracking-widest text-left">
+                    <tr className="bg-black text-white text-micro md:text-micro font-black uppercase tracking-widest text-left">
                        <th className="p-4 md:p-8">Price (₱/t)</th>
                        <th className="p-4 md:p-8">vs. Base</th>
                        <th className="p-4 md:p-8">Approx ΔNPV</th>
@@ -287,7 +275,7 @@ export const CapitalBudgetingPage = () => {
            {/* DEPRECIATION SCHEDULE */}
            <div className="flex flex-col gap-10 md:gap-12">
               <div className="flex flex-col gap-6">
-                 <span className="font-mono text-capital text-[11px] tracking-[0.5em] uppercase font-black">Asset Lifecycle</span>
+                 <span className="font-mono text-capital text-fine tracking-[0.5em] uppercase font-black">Asset Lifecycle</span>
                  <h2 className="font-noto text-5xl md:text-5xl font-black uppercase tracking-tighter leading-none">Depreciation<br/>Schedule.</h2>
               </div>
               <div className="space-y-4 p-8 md:p-10 rounded-[32px] bg-white/[0.02] border border-white/5 shadow-2xl">
@@ -299,7 +287,7 @@ export const CapitalBudgetingPage = () => {
                    { l: 'Y10 heavy salvage (12%)', v: '₱45.7M', g: true },
                  ].map(r => (
                    <div key={r.l} className="flex justify-between items-center py-2">
-                      <span className="font-mono text-[10px] md:text-[11px] text-white/40 uppercase">{r.l}</span>
+                      <span className="font-mono text-micro md:text-fine text-text-tertiary uppercase">{r.l}</span>
                       <span className={cn("font-mono text-sm font-bold", r.h ? "text-capital" : (r.r ? "text-red-500" : (r.g ? "text-green-500" : "text-white")))}>{r.v}</span>
                    </div>
                  ))}
@@ -309,18 +297,18 @@ export const CapitalBudgetingPage = () => {
            {/* FINAL DIRECTIVE */}
            <div className="flex flex-col gap-10 md:gap-12">
               <div className="p-8 md:p-12 rounded-[32px] md:rounded-[40px] bg-capital text-black shadow-2xl">
-                 <span className="font-mono text-[10px] font-black uppercase tracking-[0.3em] mb-8 block">Investment Directive // CFO</span>
+                 <span className="font-mono text-micro font-black uppercase tracking-ultra mb-8 block">Investment Directive // CFO</span>
                  <p className="font-noto text-xl md:text-2xl font-black leading-tight uppercase mb-8">
                     "Secure a contract of 5 years or longer. The 2-year offer destroys value at 5.2% IRR. Plan the ₱152.4M rehab from FCF."
                  </p>
                  <div className="space-y-4">
                     <div className="flex gap-4 items-start">
-                       <span className="font-mono text-[10px] font-black">01</span>
-                       <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase opacity-80 leading-relaxed">Proceed ONLY if SMC commits to 5-year minimum.</span>
+                       <span className="font-mono text-micro font-black">01</span>
+                       <span className="font-mono text-micro md:text-fine font-bold uppercase opacity-80 leading-relaxed">Proceed ONLY if SMC commits to 5-year minimum.</span>
                     </div>
                     <div className="flex gap-4 items-start">
-                       <span className="font-mono text-[10px] font-black">02</span>
-                       <span className="font-mono text-[10px] md:text-[11px] font-bold uppercase opacity-80 leading-relaxed">Real-time telemetry on barges is non-negotiable.</span>
+                       <span className="font-mono text-micro font-black">02</span>
+                       <span className="font-mono text-micro md:text-fine font-bold uppercase opacity-80 leading-relaxed">Real-time telemetry on barges is non-negotiable.</span>
                     </div>
                  </div>
               </div>

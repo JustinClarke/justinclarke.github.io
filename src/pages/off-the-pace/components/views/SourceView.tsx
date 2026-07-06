@@ -6,16 +6,6 @@
  * Fits in: lazy-loaded by OffThePaceSource inside a <Suspense> boundary.
  * Note:    FloatingNav is rendered through a React portal into document.body so
  *          its fixed positioning is never trapped by a parent's transform.
- *
- * For beginners ----------------------------------------------------------------
- * Two ideas worth knowing here. (1) createPortal renders JSX into a different
- * DOM node (here document.body) while keeping it part of this component in
- * React - useful for things that must float above everything. (2) A
- * "scroll-spy": an IntersectionObserver watches each section and, as one passes
- * the middle of the screen, stores its id in state so the nav can highlight it.
- * The scroll handler is throttled with requestAnimationFrame so it runs at most
- * once per repaint instead of firing hundreds of times a second.
- * -----------------------------------------------------------------------------
  */
 import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -51,12 +41,9 @@ function FloatingNav() {
   // W9  - reading progress (0-100) for long-page orientation.
   const [progress, setProgress] = useState(0);
 
-  // LEARN: This effect decides when to show the nav and the "at the top"
-  //    state. `ticking` is the rAF throttle guard: while a frame is already
-  //    queued we ignore further scroll events, so the expensive maths runs at
-  //    most once per repaint. The ResizeObserver keeps docHeight fresh when the
-  //    page grows (e.g. lazy sections expanding) so the "near the bottom" check
-  //    that hides the nav stays accurate.
+  // `ticking` throttles the scroll handler to once per rAF. ResizeObserver keeps
+  // docHeight fresh as lazy sections expand, so the "near the bottom" hide check
+  // stays accurate.
   useEffect(() => {
     let ticking = false;
     let innerHeight = window.innerHeight;
@@ -112,11 +99,9 @@ function FloatingNav() {
     };
   }, []);
 
-  // LEARN: This is the scroll-spy. The rootMargin shrinks the "viewport" the
-  //    observer cares about to a thin band across the middle of the screen
-  //    (40% chopped off top and bottom), so a section counts as "active" only
-  //    once it reaches centre-screen. Whichever section is there sets
-  //    activeSection, which the nav pill reads to highlight the right tab.
+  // Scroll-spy: rootMargin shrinks the observed viewport to a thin band across
+  // the middle of the screen, so a section is "active" only once it reaches
+  // centre-screen.
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -138,10 +123,8 @@ function FloatingNav() {
     return () => observer.disconnect();
   }, []);
 
-  // LEARN: useCallback hands back the *same* function instance between renders
-  //    (its deps list is empty, so it never changes). That matters because we
-  //    pass it down to ExpandableTabs as a prop; a stable function lets that
-  //    child skip re-rendering when nothing it depends on actually changed.
+  // Stable reference so ExpandableTabs (which receives this as a prop) can skip
+  // re-rendering when nothing else changed.
   const handleNavChange = useCallback((id: string) => {
     setActiveSection(id);
     const el = document.getElementById(`section-${id}`);
@@ -150,9 +133,8 @@ function FloatingNav() {
 
   const sectionIndex = activeSection ? NAV_ITEMS.findIndex((i) => i.id === activeSection) + 1 : 0;
 
-  // LEARN: createPortal(jsx, document.body) renders this nav at the end of
-  //    <body> instead of here in the tree, so its fixed positioning is measured
-  //    against the whole window and can't be clipped by an ancestor.
+  // Rendered at the end of <body> so fixed positioning is measured against the
+  // whole window and can't be clipped by an ancestor.
   return createPortal(
     <div className="flex flex-col items-center gap-1.5 transform-gpu" style={{ position: 'fixed', bottom: 'calc(clamp(16px, 4vw, 45px) + env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%) translateZ(0)', WebkitTransform: 'translateX(-50%) translateZ(0)', zIndex: 9999, opacity: navVisible ? 1 : 0, pointerEvents: navVisible ? 'auto' : 'none', transition: 'opacity 0.4s ease', maxWidth: 'calc(100vw - 32px)' }}>
       {!activeSection ? (
@@ -244,13 +226,13 @@ export function SourceView() {
         >
           <div id="pipeline">
             <div className="max-w-xl mb-8">
-              <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block">
+              <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block">
                 03 / Transform : DAG & Invariant
               </span>
-              <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter mb-4">
+              <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
                 {STATS.dbtModels} dbt models.<br />One enforced invariant.
               </h2>
-              <p className="text-white/50 text-sm font-jetbrains leading-relaxed">
+              <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed">
                 Every model is a node in a directed acyclic graph. Every edge has a test. The 7-term identity  - components sum to within ±0.0001s of the actual lap time  - runs on CI against every race in the dataset. If it breaks, the build breaks.
               </p>
             </div>
@@ -300,22 +282,22 @@ export function SourceView() {
 
       <ClosingCTA />
 
-      <footer className="relative z-10 border-t border-white/5 bg-graphite-950/80 backdrop-blur-sm py-4 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-[10px] text-white/40 tracking-wider">
+      <footer className="relative z-10 border-t border-white/5 bg-graphite-950/80 backdrop-blur-sm py-4 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-micro text-text-tertiary tracking-wider">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <span className="text-white/30">Built by</span>
-          <span className="text-white/80 font-semibold">Justin Clarke</span>
-          <span className="hidden sm:inline text-white/10">|</span>
-          <span className="text-white/30">Licensed</span>
-          <span className="text-white/80 font-semibold">AGPL-3.0</span>
+          <span className="text-text-tertiary">Built by</span>
+          <span className="text-text-secondary font-semibold">Justin Clarke</span>
+          <span className="hidden sm:inline text-text-muted">|</span>
+          <span className="text-text-tertiary">Licensed</span>
+          <span className="text-text-secondary font-semibold">AGPL-3.0</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <span className="text-f1-red font-black tracking-tighter">OFF THE PACE</span>
-          <span className="hidden sm:inline text-white/10">·</span>
-          <span className="text-white/30">F1 Causal Pace Engine</span>
-          <span className="hidden sm:inline text-white/10">·</span>
-          <span className="text-white/80 font-semibold">{STATS.seasonRange}</span>
+          <span className="hidden sm:inline text-text-muted">·</span>
+          <span className="text-text-tertiary">F1 Causal Pace Engine</span>
+          <span className="hidden sm:inline text-text-muted">·</span>
+          <span className="text-text-secondary font-semibold">{STATS.seasonRange}</span>
         </div>
-        <div className="flex items-center gap-2.5 text-emerald-400 font-bold uppercase tracking-widest text-[9px] bg-emerald-500/5 px-2.5 py-1 rounded border border-emerald-500/10 shrink-0">
+        <div className="flex items-center gap-2.5 text-emerald-400 font-bold uppercase tracking-widest text-micro bg-emerald-500/5 px-2.5 py-1 rounded border border-emerald-500/10 shrink-0">
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>

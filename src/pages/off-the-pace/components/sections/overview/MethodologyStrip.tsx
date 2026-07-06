@@ -5,13 +5,6 @@
  * Fits in: the overview, after the headline numbers.
  * Note:    Each card carries its own Tailwind class strings (`colSpan`, gradient,
  *          hover glow) in its data object, so one block of JSX styles all five.
- *
- * For beginners ----------------------------------------------------------------
- * `'href' in card && card.href` checks whether a card has a link before treating
- * it as one only the Docs card does, so only it renders as an `<a>`. `in` is the
- * JS operator that asks "does this object have this property?". Storing whole
- * Tailwind class strings in data is the project's way to vary styling per item.
- * -----------------------------------------------------------------------------
  */
 import { FlaskConical, TestTube, Box, BookOpen, BarChart2 } from 'lucide-react';
 import { STATS, LINKS } from '../../../data/projectStats';
@@ -84,13 +77,13 @@ export function MethodologyStrip() {
   return (
     <div className="flex flex-col gap-10">
       <div className="max-w-xl">
-        <span className="font-jetbrains text-[10px] text-white/40 uppercase tracking-[0.2em] mb-4 block font-semibold">
+        <span className="font-jetbrains text-micro text-text-tertiary uppercase tracking-mega mb-4 block font-semibold">
           Methodology
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-white uppercase tracking-tighter mb-4">
           Rigour by design.
         </h2>
-        <p className="text-white/55 text-sm font-jetbrains leading-relaxed">
+        <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed">
           The architecture is built around the assumption that someone will try to break it.
         </p>
       </div>
@@ -108,17 +101,17 @@ export function MethodologyStrip() {
                 </div>
 
                 {/* PASS invariant test status light */}
-                <div className="flex items-center gap-1.5 text-[8px] text-emerald-400 font-mono font-bold bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                <div className="flex items-center gap-1.5 text-micro text-emerald-400 font-mono font-bold bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   PASS
                 </div>
               </div>
               <div className="flex flex-col gap-3 flex-1 justify-center">
-                <h3 className="font-noto text-xl font-bold text-white/90 group-hover:text-white transition-colors">{card.title}</h3>
-                <p className="font-jetbrains text-xs text-white/60 leading-relaxed md:leading-loose">{card.body}</p>
+                <h3 className="font-noto text-xl font-bold text-text-primary group-hover:text-white transition-colors">{card.title}</h3>
+                <p className="font-jetbrains text-xs text-text-tertiary leading-relaxed md:leading-loose">{card.body}</p>
               </div>
               {'href' in card && card.href && (
-                <span className={`font-jetbrains text-[10px] ${card.accent} uppercase tracking-wider font-semibold mt-auto flex items-center gap-2 group-hover:translate-x-1 transition-transform`}>
+                <span className={`font-jetbrains text-micro ${card.accent} uppercase tracking-wider font-semibold mt-auto flex items-center gap-2 group-hover:translate-x-1 transition-transform`}>
                   Read the docs <span className="text-lg leading-none">→</span>
                 </span>
               )}

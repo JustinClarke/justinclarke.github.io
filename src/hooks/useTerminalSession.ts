@@ -9,16 +9,6 @@
  *          string into lines of text and a description of an effect. This hook
  *          is the "impure" half that actually touches the page (navigation,
  *          timers, the network). Keeping them apart makes the engine testable.
- *
- * For beginners ----------------------------------------------------------------
- * Think of a command's life in two stages:
- *   1. DECIDE   `resolveCommand('help')` returns { lines: [...], effect: ... }.
- *                 This is pure logic, no page changes. (lives in engine.ts)
- *   2. PERFORM  this hook prints those lines one moment after another (to feel
- *                 like real typing) and then carries out the effect.
- * Splitting "decide" from "perform" is a common, powerful pattern: the hard
- * logic can be unit-tested without a browser.
- * -----------------------------------------------------------------------------
  */
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -32,11 +22,15 @@ import {
   type GitHubEvent,
 } from '../pages/home/Hero/engine';
 import { elevatorScroll } from '@/utils/scroll';
-import { GITHUB_USERNAME } from '@/config/constants';
+import { SITE } from '@/content';
 import { debug, track } from '@/utils';
 import { useAIAgent } from './useAIAgent';
 
 const log = debug('terminal');
+
+// The download attribute wants a bare filename; derive it from the public path
+// so the two can never drift.
+const RESUME_FILENAME = SITE.resumePdf.split('/').pop() ?? 'resume.pdf';
 
 interface UseTerminalSessionOptions {
   onLaunchGame: (game: string) => void;
@@ -50,15 +44,9 @@ function readCmdHistory(): string[] {
 }
 
 /**
- * Fetch Justin's recent public GitHub activity for the `github` command.
- *
- * LEARN: `async`/`await` is how JavaScript waits for slow things (like a network
- *    request) without freezing the page. An `async` function always returns a
- *    Promise a placeholder for "a value that will arrive later." `await`
- *    pauses inside the function until that value is ready.
- *
- * We cache the result in sessionStorage for 5 minutes so repeatedly running the
- * command doesn't hammer GitHub's API (which rate-limits anonymous callers).
+ * Fetch recent public GitHub activity for the `github` command. Cached in
+ * sessionStorage for 5 minutes so repeat runs don't hammer GitHub's API (which
+ * rate-limits anonymous callers).
  */
 async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
   const cacheKey = 'term_gh_activity';
@@ -70,8 +58,6 @@ async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
     if (cached && Date.now() - ts < 5 * 60 * 1000) return JSON.parse(cached);
   } catch { }
 
-  // LEARN: fetch(...) makes an HTTP request and returns a Promise of the
-  //    response. We `await` it to get the actual response object.
   const res = await fetch(`https://api.github.com/users/${username}/events/public`);
   // 403 from GitHub means "too many anonymous requests" surface that specific
   // case so the engine can print a friendly "rate-limited" message.
@@ -81,8 +67,6 @@ async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
   const data: any[] = await res.json();
   // Keep only the event kinds we display, take the 10 newest, and reshape each
   // raw GitHub event into the tidy { type, repo, createdAt, ... } shape we want.
-  // LEARN: .filter() keeps matching items, .slice() takes a sub-range, .map()
-  //    transforms each item chaining them reads like a little pipeline.
   const events: GitHubEvent[] = data
     .filter((e: any) => e.type === 'PushEvent' || e.type === 'CreateEvent' || e.type === 'WatchEvent')
     .slice(0, 10)
@@ -103,8 +87,6 @@ async function fetchGitHubActivity(username: string): Promise<GitHubEvent[]> {
 }
 
 export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) {
-  // LEARN: useNavigate() gives us a function to change pages programmatically
-  //    (the code equivalent of clicking a link).
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState('');           // what's typed in the box
   const [history, setHistory] = useState<TerminalLine[]>([]); // the printed lines above it
@@ -112,16 +94,13 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
   const [lastExitCode, setLastExitCode] = useState<number | null>(null); // 0 = ok, non-zero = error
   const { askAgent, isQuerying } = useAIAgent();
 
-  // LEARN: useRef holds a value that survives re-renders WITHOUT causing one when
-  //    it changes (unlike state). Perfect for bookkeeping the UI doesn't show:
-  //    when the session began, and how many times 'sudo' was typed (an easter egg).
+  // Bookkeeping the UI never shows: when the session began, and how many times
+  // 'sudo' was typed (an easter egg). Refs so updating them doesn't re-render.
   const sessionStartMs = useRef(Date.now());
   const sudoCount = useRef(0);
 
-  // LEARN: useCallback memoises this function so it keeps the SAME identity
-  //    between renders (unless its dependencies change). That matters because
-  //    Hero lists `handleCommand` in effect dependency arrays a fresh function
-  //    every render would make those effects re-run constantly.
+  // Memoised because Hero lists `handleCommand` in effect dependency arrays a
+  // fresh identity every render would make those effects re-run constantly.
   const handleCommand = useCallback(async (
     cmd: string,
     source: 'terminal' | 'sidebar' = 'terminal'
@@ -144,10 +123,6 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     if (source === 'sidebar') {
       setInputValue('');
       const funMsg = getSidebarFunMessage(raw);
-      // LEARN: setHistory(prev => [...prev, newItem]) is the standard React way
-      //    to add to a list in state: make a NEW array containing the old items
-      //    (`...prev` spreads them) plus the new ones. We never edit the old
-      //    array in place React only re-renders when it sees a new array.
       setHistory(prev => [
         ...prev,
         { t: 'prompt', text: `~$ ${raw}` },
@@ -157,8 +132,8 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
       const normalizedCmd = raw.toLowerCase();
       if (normalizedCmd === 'resume' || normalizedCmd === 'resumé') {
         const link = document.createElement('a');
-        link.href = '/resources/JustinClarke_resume.pdf';
-        link.download = 'JustinClarke_resume.pdf';
+        link.href = SITE.resumePdf;
+        link.download = RESUME_FILENAME;
         link.click();
       } else if (normalizedCmd === 'connect') {
         navigate('/connect');
@@ -184,8 +159,6 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     };
 
     const result = resolveCommand(raw, ctx);
-    // LEARN: `result.exitCode ?? 0` means "use exitCode, but if it's null/
-    //    undefined, use 0 instead." `??` is the nullish-coalescing operator.
     setLastExitCode(result.exitCode ?? 0);
 
     setIsTyping(true);   // lock input + show a "typing" cursor
@@ -194,9 +167,6 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
     // Echo the command the user typed, wait a beat, then print the response  
     // the small delays make it feel like a real machine responding.
     setHistory(prev => [...prev, { t: 'prompt', text: `~$ ${raw}` }]);
-    // LEARN: `await new Promise(res => setTimeout(res, 220))` is a one-line way to
-    //    "pause for 220ms." setTimeout calls `res` after the delay, which
-    //    resolves the Promise, which lets the awaited line continue.
     await new Promise(res => setTimeout(res, 220));
 
     const commandEffect = result.effect ?? null;
@@ -228,8 +198,8 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
         navigate('/connect');
       } else if (commandEffect.type === 'download') {
         const link = document.createElement('a');
-        link.href = '/resources/JustinClarke_resume.pdf';
-        link.download = 'JustinClarke_resume.pdf';
+        link.href = SITE.resumePdf;
+        link.download = RESUME_FILENAME;
         link.click();
       } else if (['snake', 'pong', 'tetris', 'space_invaders'].includes(commandEffect.type)) {
         onLaunchGame(commandEffect.type);
@@ -266,7 +236,7 @@ export function useTerminalSession({ onLaunchGame }: UseTerminalSessionOptions) 
         //   2. ask the engine AGAIN, now WITH that data, to format the lines.
         let activity: CommandContext['githubActivity'];
         try {
-          activity = await fetchGitHubActivity(GITHUB_USERNAME);
+          activity = await fetchGitHubActivity(SITE.social.github);
         } catch (err: any) {
           // Turn the error into a value the engine knows how to render nicely.
           activity = err?.code === 'rate-limited' ? 'rate-limited' : 'error';

@@ -6,18 +6,10 @@
  * Note:    purely presentational. It renders TWO layouts a compact mobile one
  *          and a richer desktop one and CSS (`hidden md:flex`) decides which is
  *          visible, rather than JavaScript measuring the screen.
- *
- * For beginners ----------------------------------------------------------------
- * `import type { Project }` pulls in only a TYPE (the shape of a project object),
- * not real code it vanishes at build time and just lets TypeScript check that
- * `project.title`, `project.pageMetrics`, etc. exist.
- * -----------------------------------------------------------------------------
  */
 import type { Project } from '@/types';
 
 export const ProjectShowcase = ({ project }: { project: Project }) => {
-  // LEARN: `?? []` is the "nullish coalescing" fallback: if `pageMetrics` is missing
-  //    (null/undefined) use an empty array, so the `.map` below is always safe.
   const metrics = project.pageMetrics ?? [];
 
   return (
@@ -51,9 +43,6 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
         }}
       />
 
-      {/* LEARN: `{project.id === 'off-the-pace' && (...)}` is conditional rendering:
-            JSX shows the element on the right of `&&` only when the left is true.
-            It's how you say "render this bit only for the F1 project". */}
       {/* ── UNIFIED LAYOUT (Mobile + Desktop) ── */}
       <div className="relative z-10 flex flex-col gap-3 md:gap-5 w-full">
 
@@ -68,7 +57,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
             )}
           </div>
           {project.id === 'off-the-pace' && (
-            <span className="font-mono text-[8px] md:text-[9px] uppercase tracking-[0.18em] text-f1-red/85 font-bold">
+            <span className="font-mono text-micro md:text-micro uppercase tracking-[0.18em] text-f1-red font-bold">
               causal decomposition <span className="md:hidden">project</span>
             </span>
           )}
@@ -91,7 +80,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
                   <span className="font-mono font-bold text-[15px] md:text-[17px] leading-none text-white tabular-nums tracking-tight">
                     {m.val}
                   </span>
-                  <span className="font-mono text-[7px] text-f1-grey-dark uppercase tracking-[0.22em] whitespace-nowrap">
+                  <span className="font-mono text-micro text-f1-grey-dark uppercase tracking-[0.22em] whitespace-nowrap">
                     {m.label}
                   </span>
                 </div>
@@ -102,7 +91,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
 
         {/* Minimal stack mention for mobile view */}
         <div className="flex md:hidden items-center gap-1.5 mt-0.5">
-          <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-term-dim">
+          <span className="font-mono text-micro uppercase tracking-[0.12em] text-term-dim">
             python / dbt / xgboost / react
           </span>
         </div>

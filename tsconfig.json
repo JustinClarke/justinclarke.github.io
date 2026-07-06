@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
+    "strict": true,
     "target": "ES2022",
-    "experimentalDecorators": true,
-    "useDefineForClassFields": false,
     "module": "ESNext",
     "lib": [
       "ES2022",
@@ -17,7 +15,6 @@
     "moduleDetection": "force",
     "allowJs": true,
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
       "@/ui": ["./src/ui/index"],
       "@/ui/*": ["./src/ui/*"],
@@ -33,8 +30,8 @@
       "@/modals/*": ["./src/components/modals/*"],
       "@/providers": ["./src/app/providers"],
       "@/providers/*": ["./src/app/providers/*"],
-      "@/data": ["./src/data/index"],
-      "@/data/*": ["./src/data/*"],
+      "@/content": ["./src/content/index"],
+      "@/content/*": ["./src/content/*"],
       "@/pages": ["./src/pages/index"],
       "@/pages/*": ["./src/pages/*"],
       "@/*": ["./src/*"]

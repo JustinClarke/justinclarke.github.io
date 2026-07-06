@@ -2,10 +2,10 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import {
   OTHER_LANGUAGES,
-  BOOT_LOGS,
   PIPELINE_COLORS,
   PRELOADER_TIMELINE
 } from '@/config/constants';
+import { BOOT_LOGS } from '@/content/terminal';
 import { PRELOADER_EXIT } from '@/config/animations';
 import { useReducedMotion } from '@/hooks';
 
@@ -17,13 +17,6 @@ import { useReducedMotion } from '@/hooks';
  * Note:    when it finishes it fires a `preloaderComplete` window event the rest
  *          of the app listens for that to reveal the page. A "Skip Intro" button
  *          fires the same event early.
- *
- * For beginners ----------------------------------------------------------------
- * The whole thing is choreographed with timers. A chain of setTimeout calls
- * swaps the greeting text at set moments; clearTimeout in the cleanup cancels
- * any still-pending ones if the component leaves early. `progress` is a Framer
- * Motion value animated from 0 to 100, and the bar's width follows it.
- * -----------------------------------------------------------------------------
  */
 export const Preloader = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -32,10 +25,8 @@ export const Preloader = () => {
   const [colorPhase, setColorPhase] = useState(0);
   const prefersReducedMotion = useReducedMotion();
 
-  // LEARN: useMemo runs this once and remembers the result, so the random pick
-  //    of 9 languages stays fixed for the life of the component instead of
-  //    reshuffling on every render. The empty `[]` means "never recompute".
-  // Pick 9 random non-English languages (3 slow + 6 fast)
+  // Memoised so the random pick of 9 languages stays fixed instead of reshuffling
+  // on every render. Pick 9 non-English languages (3 slow + 6 fast).
   const sessionLanguages = useMemo(() => {
     return [...OTHER_LANGUAGES].sort(() => 0.5 - Math.random()).slice(0, 9);
   }, []);
@@ -154,7 +145,7 @@ export const Preloader = () => {
               }}
             >
               {currentText}
-              <span className='text-white/20 ml-1'>.</span>
+              <span className='text-text-dim ml-1'>.</span>
             </motion.div>
           </div>
 
@@ -170,12 +161,12 @@ export const Preloader = () => {
               <div className='flex-grow flex flex-col justify-start max-w-[65%] min-h-[190px]'>
                 <div className='w-fit flex items-center gap-1.5 mb-3 pb-2 border-b border-white/10 shrink-0'>
                   <div className='w-[5px] h-[5px] rounded-full bg-brand-primary animate-pulse' aria-hidden='true' />
-                  <span className='font-mono text-[11px] text-white/60 uppercase tracking-[0.3em]'>
+                  <span className='font-mono text-fine text-text-tertiary uppercase tracking-ultra'>
                     kern.sys.boot_diagnostics
                   </span>
                 </div>
 
-                <div className='flex flex-col gap-2 flex-grow overflow-hidden font-mono text-[12px] md:text-[13px] uppercase tracking-wider leading-relaxed'>
+                <div className='flex flex-col gap-2 flex-grow overflow-hidden font-mono text-caption md:text-label uppercase tracking-wider leading-relaxed'>
                   <AnimatePresence initial={false}>
                     {visibleLogs.map((logIndex) => {
                       const log = BOOT_LOGS[logIndex];

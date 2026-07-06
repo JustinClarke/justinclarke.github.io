@@ -10,46 +10,26 @@
  *          `help`, `man`, and command resolution all read from it, so adding a
  *          command in one place wires it into everything. Behaviour here is under
  *          test change wording freely, but keep the shapes and ids identical.
- *
- * For beginners ----------------------------------------------------------------
- * "Pure" means each function depends only on its inputs and just returns a value;
- * it never reaches out to the screen or the network. That makes it predictable
- * and easy to test. The big idea is a "manifest": instead of a giant switch
- * statement, every command is an object in one array (id, aliases, what to print).
- * resolveCommand() near the bottom walks that array to find a match. Think of it
- * like a lookup table of recipes rather than a long list of if/else branches.
- * -----------------------------------------------------------------------------
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: A string "union" type a value of this type must be EXACTLY one of these
-//    strings. Each one names a colour/style the renderer knows how to paint (the
-//    short ones like 'g', 'b', 'm' are colour shorthands). TypeScript rejects any
-//    other string, so a typo in a command's line can't slip through.
-export type TerminalLineType =
-  | 'muted' | 'success' | 'info' | 'brand' | 'error' | 'obscured' | 'prompt' | 'cmd' | 'edu'
-  | 'viz-mac-red' | 'viz-mac-yellow' | 'viz-success'
-  | 'ai-head' | 'ai-foot'
-  | 'p' | 'g' | 'b' | 'pu' | 'm' | 'o' | 'r' | 't';
+// The line grammar (TerminalLineType/TerminalLine) lives in @/types/terminal so
+// content/terminal.ts can build line blocks without importing the engine.
+// Re-exported here so the engine's consumers (hooks, UI, tests) keep importing
+// from one place.
+import type { TerminalLine, TerminalLineType } from '@/types/terminal';
+import { SITE } from '@/content';
+import {
+  WHOAMI_LINES, CONNECT_LINES, ABOUT_LINES, LS_PROJECTS_LINES, EXPERTISE_LINES,
+  TIMELINE_LINES, OFF_THE_PACE_LINES, ASK_USAGE_LINES, ADVANCED_LINES, PLAY_LINES,
+  LONG_VERSION_LINES, EGG_LINES, SUDO_ESCALATION, FUNNY_ERRORS,
+  SIDEBAR_FUN_MESSAGES, SIDEBAR_FUN_DEFAULT, CONVERSATIONAL_PREAMBLES, PREAMBLE_DEFAULT,
+} from '@/content/terminal';
 
-// LEARN: `interface` describes the shape of one printed line. The `?` marks an
-//    OPTIONAL field a plain line only needs `t` (its style) and `text`, but a
-//    richer line can add `parts` (coloured segments), a link `href`, `chips`
-//    (clickable suggestions), or a `streaming` flag for the typewriter effect.
-export interface TerminalLine {
-  t: TerminalLineType;
-  text: string;
-  parts?: { t: TerminalLineType; text: string; href?: string }[];
-  href?: string;
-  chips?: string[];
-  streaming?: boolean;
-  // When true, the line renders inside the AI response block with a left "│" rail
-  // (used for the streamed agent answer and its parsed body lines).
-  gutter?: boolean;
-}
+export type { TerminalLine, TerminalLineType } from '@/types/terminal';
 
 export type SideEffectType = 'scroll' | 'snake' | 'pong' | 'tetris' | 'space_invaders' | 'theme' | 'download' | 'contact' | 'the-long-version' | 'github' | 'ai';
 
@@ -86,11 +66,8 @@ export interface GitHubEvent {
 // Command manifest
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: This is the recipe card for ONE command. `id` is its canonical name,
-//    `aliases` are other words that trigger it, `category` groups it in `help`,
-//    `hidden` keeps easter eggs out of listings, and `run` is a FUNCTION that,
-//    given the current context, returns what to print. Storing behaviour (`run`)
-//    inside data like this is what lets one loop handle every command.
+// One entry per command: `run` is a function, not static copy, which is what
+// lets a single loop dispatch every command instead of a switch statement.
 export interface CommandSpec {
   id: string;
   aliases: string[];
@@ -101,18 +78,12 @@ export interface CommandSpec {
 }
 
 // helpers
-// LEARN: Tiny factory functions so the manifest below stays readable. `line` builds
-//    a basic styled line, `sp` is a blank spacer line, and `parts` assembles a line
-//    out of several differently-coloured segments. Defining them once keeps the
-//    hundreds of lines that follow short and consistent.
 const line = (t: TerminalLineType, text: string): TerminalLine => ({ t, text });
-const parts = (t: TerminalLineType, text: string, ...rest: TerminalLine['parts']): TerminalLine =>
-  ({ t: 'm' as TerminalLineType, text: '', parts: [{ t, text }, ...(rest ?? [])] });
+const parts = (t: TerminalLineType, text: string, ...rest: NonNullable<TerminalLine['parts']>): TerminalLine =>
+  ({ t: 'm' as TerminalLineType, text: '', parts: [{ t, text }, ...rest] });
 const sp = (): TerminalLine => line('m', ' ');
 
-// LEARN: Whole-days between today and a date. We zero out the time-of-day on both
-//    (`setHours(0,0,0,0)`) so partial days don't skew the result, then divide the
-//    millisecond gap by 86,400,000 (the ms in a day; `_` is just a digit separator).
+// Zero out time-of-day on both dates so partial days don't skew the result.
 function daysUntil(isoDate: string): number {
   const target = new Date(isoDate);
   const now = new Date();
@@ -129,28 +100,16 @@ function fmtUptime(ms: number): string {
   return `${h}:${m}:${sec}`;
 }
 
-// LEARN: The single source of truth. Every command the terminal understands lives
-//    here as one object. To add a command you add an entry; `help`, `man`, Tab
-//    completion and resolveCommand all read this same array, so nothing else needs
-//    touching. Each `run` returns the lines (and any side-effect) to display.
 export const COMMAND_MANIFEST: CommandSpec[] = [
   // ── whoami ─────────────────────────────────────────────────────────────────
   {
     id: 'whoami',
     aliases: ['me', 'who'],
-    summary: 'Identity brief one-screen snapshot of who Justin is.',
+    summary: `Identity brief one-screen snapshot of who ${SITE.firstName} is.`,
     category: 'core',
-    run: () => ({
-      lines: [
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'IDENTITY:  ' }, { t: 'g', text: 'Justin Clarke · Analytics Engineer · Full-Stack' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'FOCUS:     ' }, { t: 'b', text: 'pipelines and the products they power' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOCATION:  ' }, { t: 'pu', text: 'Dubai, UAE · open to relocation · sponsorship not required (UAE)' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:     ' }, { t: 'viz-mac-yellow', text: 'Python ' }, { t: 'viz-mac-red', text: 'SQL ' }, { t: 'b', text: 'dbt ' }, { t: 'pu', text: 'PowerBI' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'IN FLIGHT: ' }, { t: 'muted', text: 'MBA Business Analytics · Off the Pace' }] },
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'TRY NEXT:  ' }, { t: 'muted', text: 'about me · timeline · ls projects' }], chips: ['about me', 'timeline', 'ls projects'] },
-      ],
-    }),
+    // Static copy lives in content/terminal.ts (the 6a exemplar: line blocks
+    // there, logic here).
+    run: () => ({ lines: WHOAMI_LINES }),
   },
 
   // ── about me ───────────────────────────────────────────────────────────────
@@ -159,25 +118,9 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: ['about', 'learn more', 'learnmore', 'identity', 'bio', 'profile', 'introducing', 'discover', 'developer', 'profile.read()', 'profile.read'],
     summary: 'Full background, education, current work, and availability.',
     category: 'core',
-    run: () => ({
-      lines: [
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'NAME       ' }, { t: 'g', text: 'justin clarke' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'ROLE       ' }, { t: 'b', text: 'analytics engineer + creative technologist' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'BASED      ' }, { t: 'pu', text: 'dubai · willing to relocate' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'EDU        ' }, { t: 'muted', text: 'msc computer science · distinction · qmul' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'muted', text: 'mba business analytics · bits pilani · in progress' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'NOW        ' }, { t: 'muted', text: 'building off the pace on microsoft fabric.' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'muted', text: 'isolating driver skill from car performance.' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'SIGNAL     ' }, { t: 'viz-mac-yellow', text: "// i notice patterns before they're named." }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'viz-mac-yellow', text: "// i build applications when i'm bored." }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'AVAIL      ' }, { t: 'viz-success', text: 'available now · contract or full-time' }] },
-        sp(),
-        { t: 'prompt', text: '~$ the long version?' },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: '  → /the-long-version · marginalia after-hours ↗', href: '/the-long-version' }] },
-        sp(),
-      ],
-    }),
+    // Static copy lives in content/terminal.ts (the 6a exemplar: line blocks
+    // there, logic here).
+    run: () => ({ lines: ABOUT_LINES }),
   },
 
   // ── ls projects ────────────────────────────────────────────────────────────
@@ -187,18 +130,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: 'Featured case studies 6 production projects.',
     category: 'core',
     run: () => ({
-      lines: [
-        line('m', 'Accessing case study archive...'),
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '[01] ' }, { t: 'brand', text: 'Retail as a Service ' }, { t: 'muted', text: '- next.js · production saas' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '[02] ' }, { t: 'brand', text: 'Disaster Response System ' }, { t: 'muted', text: '- mysql · relational design' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-success', text: '[03] ' }, { t: 'brand', text: 'Spotify: Predictive Engine ' }, { t: 'muted', text: '- python · scikit-learn · 12D vectors' }] },
-        { t: 'm', text: '', parts: [{ t: 'b', text: '[04] ' }, { t: 'brand', text: 'Behavioural Intelligence System ' }, { t: 'muted', text: '- gemini · behavioural ai' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '[05] ' }, { t: 'brand', text: 'Capital Architecture ' }, { t: 'muted', text: '- dcf · financial engineering' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '[06] ' }, { t: 'brand', text: 'Off the Pace ' }, { t: 'viz-mac-yellow', text: '- f1 · telemetry pipeline · in development' }] },
-        sp(),
-        line('m', '↓ establishing scroll lock...'),
-      ],
+      lines: LS_PROJECTS_LINES,
       effect: { type: 'scroll', payload: 'projects' },
     }),
   },
@@ -209,21 +141,10 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: ['skills', 'stack', 'toolkit', 'technologies', 'languages', 'tech', 'tools'],
     summary: 'Analytics + full-stack skill matrix.',
     category: 'core',
-    run: () => {
-      return {
-        lines: [
-          line('m', 'Retrieving technical skill manifest...'),
-          sp(),
-          { t: 'm', text: '', parts: [{ t: 'pu', text: 'ANALYTICS:   ' }, { t: 'brand', text: 'Microsoft Fabric · Power BI · DAX · KQL · Mixpanel' }] },
-          { t: 'm', text: '', parts: [{ t: 'g', text: 'LANGUAGES:   ' }, { t: 'brand', text: 'Python · SQL · TypeScript · R' }] },
-          { t: 'm', text: '', parts: [{ t: 'b', text: 'DATA:        ' }, { t: 'brand', text: 'data modelling · KPI dev · product analytics · dashboarding' }] },
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: 'INFRA:       ' }, { t: 'brand', text: 'PostgreSQL · AWS · Docker · REST APIs · CI/CD' }] },
-          sp(),
-          line('m', '↓ mapping expertise pipeline...'),
-        ],
-        effect: { type: 'scroll', payload: 'expertise' },
-      };
-    },
+    run: () => ({
+      lines: EXPERTISE_LINES,
+      effect: { type: 'scroll', payload: 'expertise' },
+    }),
   },
 
   // ── timeline ───────────────────────────────────────────────────────────────
@@ -232,26 +153,10 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: ['record', 'experience', 'education', 'career', 'background', 'path', 'jobs', 'journey', 'academics'],
     summary: 'Full career and academic timeline.',
     category: 'core',
-    run: () => {
-      return {
-        lines: [
-          line('m', 'Querying career + academic record...'),
-          sp(),
-          line('brand', '[ PROFESSIONAL ]'),
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '● ' }, { t: 'brand', text: 'BI & Analytics Dev     ' }, { t: 'b', text: 'VNS Solutions           ' }, { t: 'muted', text: '2024–2025' }] },
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'Product & Analytics    ' }, { t: 'b', text: 'LiteStore               ' }, { t: 'muted', text: '2021–2023' }] },
-          { t: 'm', text: '', parts: [{ t: 'viz-success', text: '● ' }, { t: 'brand', text: 'Frontend & Brand Dev   ' }, { t: 'b', text: 'Drop                    ' }, { t: 'muted', text: '2021' }] },
-          sp(),
-          line('brand', '[ ACADEMIC ]'),
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'BITS Pilani, UAE              ' }, { t: 'b', text: 'MBA Business Analytics   ' }, { t: 'viz-mac-red', text: 'IN PROGRESS' }] },
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'Queen Mary, Univ. of London   ' }, { t: 'b', text: 'MSc Computer Science     ' }, { t: 'viz-success', text: 'DISTINCTION' }] },
-          { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'GITAM University, India       ' }, { t: 'b', text: 'BTech CS&E               ' }, { t: 'viz-success', text: 'DISTINCTION' }] },
-          sp(),
-          line('m', '↓ scrolling to full-spectrum timeline...'),
-        ],
-        effect: { type: 'scroll', payload: 'experience' },
-      };
-    },
+    run: () => ({
+      lines: TIMELINE_LINES,
+      effect: { type: 'scroll', payload: 'experience' },
+    }),
   },
 
   // ── help ───────────────────────────────────────────────────────────────────
@@ -261,10 +166,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: 'List available commands.',
     category: 'system',
     run: () => {
-      // LEARN: `help` builds itself from the manifest rather than a hand-typed list,
-      //    so it can never fall out of date. `.filter(...)` keeps only the entries
-      //    matching a condition (e.g. visible "core" commands); `.map(...)` further
-      //    down turns each surviving command into a printable line.
+      // Builds itself from the manifest rather than a hand-typed list, so it can never fall out of date.
       const coreCommands = COMMAND_MANIFEST.filter(c => c.category === 'core' && !c.hidden);
       const systemCommands = COMMAND_MANIFEST.filter(c => c.category === 'system' && !c.hidden && c.id !== 'help');
       const lines: TerminalLine[] = [
@@ -368,19 +270,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: ['otp', 'f1'],
     summary: 'F1 strategy analytics engine full project breakdown.',
     category: 'core',
-    run: () => ({
-      lines: [
-        line('m', 'Accessing project telemetry...'),
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'PROJECT:   ' }, { t: 'g', text: 'Off the Pace Analytics' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'THESIS:    ' }, { t: 'b', text: 'Was every F1 pit stop call actually optimal?' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:     ' }, { t: 'muted', text: 'FastF1 · dbt · DuckDB · XGBoost · Microsoft Fabric' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'DATA:      ' }, { t: 'muted', text: '2021 season · lap times · tyre degradation · stint models' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: 'STATUS:    ' }, { t: 'viz-mac-yellow', text: 'IN DEVELOPMENT · sprint 1 active' }] },
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'REPO:      ' }, { t: 'g', text: 'github.com/justinclarke/off-the-pace ↗' }] },
-      ],
-    }),
+    run: () => ({ lines: OFF_THE_PACE_LINES }),
   },
 
   // ── connect ────────────────────────────────────────────────────────────────
@@ -390,13 +280,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: 'Open contact channel.',
     category: 'core',
     run: () => ({
-      lines: [
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'CHANNEL:       ' }, { t: 'g', text: 'justinsavioclarke@outlook.com' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'LINKEDIN:      ' }, { t: 'g', text: 'linkedin.com/in/justinsavioclarke ↗' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'AVAILABILITY:  ' }, { t: 'viz-success', text: 'OPEN · full-time alongside MBA' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'SPONSORSHIP:   ' }, { t: 'muted', text: 'not required (UAE Family Residence Visa)' }] },
-        { t: 'm', text: '', parts: [{ t: 'brand', text: 'RESPONSE TIME: ' }, { t: 'viz-mac-yellow', text: '< 24h' }] },
-      ],
+      lines: CONNECT_LINES,
       effect: { type: 'contact' },
     }),
   },
@@ -414,22 +298,9 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
   {
     id: 'ask',
     aliases: ['ai', 'agent', 'gemini'],
-    summary: 'Ask the AI assistant about Justin, his projects, or his stack.',
+    summary: `Ask the AI assistant about ${SITE.firstName}, his projects, or his stack.`,
     category: 'core',
-    run: () => ({
-      lines: [
-        line('m', 'usage: ask <question>'),
-        line('muted', "e.g. 'ask does Justin have Fabric experience?'"),
-        sp(),
-        {
-          t: 'm', text: '', parts: [
-            { t: 'muted', text: 'powered by ' },
-            { t: 'brand', text: 'llama-3.3-70b' },
-            { t: 'muted', text: ' · 20 queries per session' },
-          ]
-        },
-      ],
-    }),
+    run: () => ({ lines: ASK_USAGE_LINES }),
   },
 
   // ── advanced ───────────────────────────────────────────────────────────────
@@ -438,19 +309,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: [],
     summary: 'Advanced systems manifest.',
     category: 'system',
-    run: () => ({
-      lines: [
-        line('m', 'Loading Advanced Systems Manifest...'),
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '● ' }, { t: 'brand', text: 'matrix  ' }, { t: 'muted', text: '- establish telemetry' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'coffee  ' }, { t: 'muted', text: '- check fuel levels' }] },
-        { t: 'm', text: '', parts: [{ t: 'viz-success', text: '● ' }, { t: 'brand', text: 'sudo    ' }, { t: 'muted', text: '- root protocols' }] },
-        { t: 'm', text: '', parts: [{ t: 'b', text: '● ' }, { t: 'brand', text: 'dbt     ' }, { t: 'muted', text: '- run transformations' }] },
-        { t: 'm', text: '', parts: [{ t: 'pu', text: '● ' }, { t: 'brand', text: 'fabric  ' }, { t: 'muted', text: '- check the lakehouse' }] },
-        sp(),
-        { t: 'm', text: '', parts: [{ t: 'viz-mac-red', text: '■ ' }, { t: 'viz-mac-yellow', text: '■ ' }, { t: 'viz-success', text: '■ ' }, { t: 'brand', text: '100% SPECTRUM OPTIMIZED' }] },
-      ],
-    }),
+    run: () => ({ lines: ADVANCED_LINES }),
   },
 
   // ── gh / activity ─────────────────────────────────────────────────────────
@@ -462,7 +321,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     run: (ctx) => {
       if (!ctx.githubActivity || ctx.githubActivity === 'loading') {
         return {
-          lines: [line('m', 'fetching activity from github.com/JustinClarke...')],
+          lines: [line('m', `fetching activity from github.com/${SITE.social.github}...`)],
           effect: { type: 'github' },
         };
       }
@@ -511,12 +370,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     aliases: ['game', 'arcade', 'games'],
     summary: 'List available retro arcade games.',
     category: 'system',
-    run: () => ({
-      lines: [
-        line('g', 'Arcade mode: ready.'),
-        { t: 'm', text: 'Select a game to launch:', chips: ['play snake', 'play pong', 'play tetris', 'play space invaders'] },
-      ],
-    }),
+    run: () => ({ lines: PLAY_LINES }),
   },
 
   // ── pong ──────────────────────────────────────────────────────────────────
@@ -556,10 +410,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: 'Navigate to the marginalia & after-hours vault.',
     category: 'core',
     run: () => ({
-      lines: [
-        line('g', 'Accessing marginalia & after-hours records...'),
-        line('muted', 'Ready to route to the-long-version.'),
-      ],
+      lines: LONG_VERSION_LINES,
       effect: { type: 'the-long-version' },
     }),
   },
@@ -581,12 +432,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({
-      lines: [
-        line('viz-mac-yellow', 'brew: running on it since 2018.'),
-        line('muted', 'no REST API available. send the real thing to Dubai.'),
-      ],
-    }),
+    run: () => ({ lines: EGG_LINES.coffee }),
   },
   {
     id: 'matrix',
@@ -594,13 +440,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({
-      lines: [
-        line('g', 'wake up, Neo.'),
-        line('muted', 'the data pipeline was the real matrix all along.'),
-        line('g', 'red pill = dbt. blue pill = Excel. choose wisely.'),
-      ],
-    }),
+    run: () => ({ lines: EGG_LINES.matrix }),
   },
   {
     id: 'life',
@@ -608,7 +448,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({ lines: [line('pu', 'life: undefined. pipelines operational. MBA in progress. send help (or coffee).')] }),
+    run: () => ({ lines: EGG_LINES.life }),
   },
   {
     id: 'secret',
@@ -616,7 +456,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({ lines: [line('r', 'nice try. encrypted dreams require level 10 clearance and a MSc. you might be close.')] }),
+    run: () => ({ lines: EGG_LINES.secret }),
   },
   {
     id: 'salary',
@@ -624,13 +464,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({
-      lines: [
-        line('m', 'connecting to market-rate.io...'),
-        line('viz-success', 'result: whatever you were thinking, add 20%.'),
-        line('muted', '(two distinctions, MBA in progress, no sponsorship required. do the math.)'),
-      ],
-    }),
+    run: () => ({ lines: EGG_LINES.salary }),
   },
   {
     id: 'dbt',
@@ -638,12 +472,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({
-      lines: [
-        line('g', 'models: compiled. tests: passing. lineage: documented.'),
-        line('muted', 'sources freshness: acceptable. Justin: caffeinated. ship it.'),
-      ],
-    }),
+    run: () => ({ lines: EGG_LINES.dbt }),
   },
   {
     id: 'fabric',
@@ -651,119 +480,19 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
     summary: '',
     category: 'egg',
     hidden: true,
-    run: () => ({
-      lines: [
-        line('pu', 'Microsoft Fabric: online.'),
-        line('muted', 'lakehouse: mounted. KQL: sharp. eventstream: flowing.'),
-        line('g', "it's not just a certification. it's a lifestyle."),
-      ],
-    }),
+    run: () => ({ lines: EGG_LINES.fabric }),
   },
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
-// "funny error" commands (canonical errors that aren't real commands)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// LEARN: `Record<string, TerminalLine[]>` is an object used as a dictionary: any
-//    string key maps to an array of lines. These are joke "commands" not real
-//    features, just canned responses resolveCommand looks up by name below.
-const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
-  sudo: [
-    line('r', "sudo: permission denied."),
-    line('muted', "Justin's life choices are root-only. and honestly? fair."),
-  ],
-  'rm -rf': [
-    line('r', "rm: cannot remove studio: target too impressive to delete."),
-    line('muted', "try 'ls projects' instead. much more productive."),
-  ],
-  'git blame': [
-    line('o', "git blame: 100% Justin Clarke."),
-    line('muted', "he commits, he ships, he owns it. no exceptions."),
-  ],
-  'git commit': [
-    line('viz-success', "nothing to commit. working tree clean."),
-    line('muted', "life is shipping."),
-  ],
-  vim: [
-    line('r', "vim: opened successfully."),
-    line('muted', "good luck getting out. we'll be here. (hint: :q!)"),
-  ],
-  emacs: [line('r', "emacs: Justin uses VS Code. this isn't 1991.")],
-  excel: [
-    line('viz-mac-yellow', "Excel: recognised. respected. surpassed."),
-    line('muted', "Power BI, SQL, and Python exist for a reason. type 'expertise'."),
-  ],
-  hire: [
-    line('g', "redirecting to good-decision-making.exe..."),
-    line('b', "→ justinsavioclarke@outlook.com"),
-    line('muted', "no sponsorship required. that's already one less problem."),
-  ],
-  'hire justin': [
-    line('g', "outstanding choice. forwarding CV to your conscience..."),
-    line('viz-success', "→ justinsavioclarke@outlook.com · two distinctions · ships fast"),
-  ],
-  'play snake': [line('g', "launching snake.exe · arrow keys · don't blame us for the lost productivity")],
-  'play pong': [line('g', "launching pong.exe · paddle to the metal")],
-  'play tetris': [line('g', "launching tetris.exe · don't stack overflow")],
-  'play space invaders': [line('g', "launching space_invaders.exe · defend the port")],
-  pwd: [line('g', "/home/justin/studio · exactly where you should be.")],
-  exit: [
-    line('r', "exit: blocked."),
-    line('muted', "you haven't seen the projects yet. scroll first."),
-  ],
-  quit: [
-    line('r', "quit: not yet."),
-    line('muted', "Off the Pace is in development. the good part is coming."),
-  ],
-  hello: [line('g', "hello to you too. type 'help' if you're lost. type 'whoami' if you're curious.")],
-  hi: [line('g', "hey 👋  type 'help' to get oriented. or just start exploring.")],
-  ls: [line('b', "too vague. try 'ls projects' - that's where the interesting stuff lives.")],
-  cat: [line('b', "try 'profile.read()' or just type 'whoami'. same energy, better output.")],
-  'npm install': [
-    line('viz-success', "already installed. Justin ships production-ready, not localhost."),
-    line('muted', "0 vulnerabilities. 0 regrets."),
-  ],
-  'npm run dev': [line('g', "dev server running at justinclarke.github.io ↗")],
-  python: [
-    line('g', "Python 3.11 detected · pandas · numpy · scikit-learn · fastf1 loaded."),
-    line('muted', "currently training an XGBoost model to embarrass F1 strategists."),
-  ],
-  node: [line('g', "Node v20 · TypeScript · Next.js standing by. LiteStore ran on this. it survived.")],
-  curl: [
-    line('b', "curl: (200) OK · 0.6s LCP · SSR + edge caching."),
-    line('muted', "down from 3.0s. Justin did that."),
-  ],
-  power_bi: [
-    line('b', "Power BI dashboards feeding automated Fabric pipelines."),
-    line('muted', "DAX is not a dark art. it's just misunderstood."),
-  ],
-  whoops: [line('o', "it happens. type 'help' and we'll get you back on track.")],
-  test: [
-    line('viz-success', "test suite: all passing."),
-    line('muted', "dbt tests: green. studio: shipped. Justin: operational."),
-  ],
-  mba: [
-    line('viz-mac-yellow', "MBA Business Analytics · BITS Pilani, UAE · 2026–2028."),
-    line('muted', "yes, he's doing it alongside full-time work. yes, he's fine. mostly."),
-  ],
-  dubai: [
-    line('pu', "Dubai, UAE · UTC+4 · sponsorship not required (UAE)."),
-    line('muted', "open to relocation. also open to remote. very flexible. very available."),
-  ],
-  quantum: [
-    line('b', "BTech research: encryption via quantum key generation."),
-    line('muted', "it was 2021. Justin was different back then. the ambition was the same."),
-  ],
-};
+// FUNNY_ERRORS (joke "commands" not real features, canned responses looked up
+// by name in resolveCommand below) now lives in content/terminal.ts it's
+// copy, not logic.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Completion (Phase 1.1)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: Tab-completion support. Given what you've typed so far (`prefix`), collect
-//    every visible command name or alias that STARTS WITH it. `new Set(...)` removes
-//    duplicates and the spread `[...]` turns it back into a sortable array.
+// Every visible command name/alias starting with `prefix`, deduped and sorted.
 function getCompletionCandidates(prefix: string): string[] {
   if (!prefix) return [];
   const p = prefix.toLowerCase();
@@ -778,10 +507,8 @@ function getCompletionCandidates(prefix: string): string[] {
   return [...new Set(candidates)].sort();
 }
 
-// LEARN: Decides what pressing Tab should actually insert. One match → complete the
-//    rest of that word. Several matches → only fill in the part they ALL share (the
-//    "longest common prefix"), exactly like a real shell. `.slice(prefix.length)`
-//    returns just the missing tail so the caller appends it to what's already typed.
+// One match → complete the rest of the word. Several → fill in only the longest
+// common prefix they all share, like a real shell's tab completion.
 export function getCompletion(prefix: string): { completion: string; candidates: string[] } {
   const candidates = getCompletionCandidates(prefix);
   if (candidates.length === 0) return { completion: '', candidates: [] };
@@ -801,10 +528,8 @@ export function getCompletion(prefix: string): { completion: string; candidates:
 // Levenshtein fuzzy match (Phase 1.2)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: "Edit distance" the minimum number of single-character insert/delete/
-//    swap operations to turn string `a` into `b`. It's how we power "did you mean…?":
-//    a small distance means a likely typo. The `dp` grid is the classic dynamic-
-//    programming solution; you don't need to follow the maths to use the result.
+// Edit distance between a and b, used to power "did you mean…?" a small
+// distance means a likely typo.
 export function levenshtein(a: string, b: string): number {
   const m = a.length, n = b.length;
   const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
@@ -820,10 +545,8 @@ export function levenshtein(a: string, b: string): number {
   return dp[m][n];
 }
 
-// LEARN: Walks every visible command/alias and keeps the one with the smallest edit
-//    distance to what the user typed but only if it's within 2 edits (`bestDist`
-//    starts at 3, the first cutoff). Returns `null` (TypeScript's "nothing here")
-//    when nothing is close enough, so the caller can fall back to a generic error.
+// Closest command by edit distance, but only within 2 edits otherwise the
+// suggestion would be more misleading than a plain "not found".
 function findClosestCommand(input: string): string | null {
   let best: string | null = null;
   let bestDist = 3; // threshold: ≤2 edits
@@ -841,14 +564,10 @@ function findClosestCommand(input: string): string | null {
 // resolveCommand
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: The front door. Given the RAW text the user typed, decide what to show.
-//    It tries each possibility in priority order and returns the first that fits:
-//    special cases (clear/man/sudo/hire) → exact manifest match → joke errors →
-//    keyword hints → "did you mean?" → generic not-found. `ctx = {}` is a default,
-//    so callers can omit the context. The early `return`s mean order matters here.
+// The front door: tries each possibility in priority order and returns the first
+// that fits special cases (clear/man/sudo/hire) → exact manifest match → joke
+// errors → keyword hints → "did you mean?" → generic not-found. Order matters.
 export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandResult {
-  // LEARN: Normalise first so matching is forgiving: `.trim()` drops stray spaces,
-  //    `.toLowerCase()` makes "HELP" and "help" the same.
   const cmd = raw.trim().toLowerCase();
 
   if (cmd === 'clear') return { lines: [] };
@@ -885,8 +604,8 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   // ── sudo escalating responses ────────────────────────────────────────────
   if (cmd === 'sudo') {
     const n = ctx.sudoCount ?? 1;
-    if (n === 2) return { lines: [line('r', "sudo: still no."), line('muted', "persistence noted. credentials remain: 0.")] };
-    if (n >= 3) return { lines: [line('r', "sudo: you've been locked out."), line('muted', "root password hint: it's not 'password'. or 'justin'. or 'fabric'."), line('pu', "IT support ticket #8080 has been filed.")] };
+    if (n === 2) return { lines: SUDO_ESCALATION.second };
+    if (n >= 3) return { lines: SUDO_ESCALATION.lockedOut };
     return { lines: FUNNY_ERRORS['sudo'] };
   }
 
@@ -916,9 +635,6 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   }
 
   // ── Manifest lookup (canonical id + aliases) ───────────────────────────────
-  // LEARN: The main path. Scan the manifest; if the typed word equals a command's
-  //    id or any of its aliases, run that command and return its result. `.some(...)`
-  //    is true as soon as ONE name matches, so it stops early.
   for (const spec of COMMAND_MANIFEST) {
     const names = [spec.id, ...spec.aliases];
     if (names.some(n => cmd === n || cmd === n.toLowerCase())) {
@@ -947,9 +663,8 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
   }
 
   // ── Keyword guesses ────────────────────────────────────────────────────────
-  // LEARN: Not an exact command, but maybe we can tell what they MEANT. If the text
-  //    merely CONTAINS a telltale word ("project", "skill"…) we nudge them toward
-  //    the right command. `.includes(...)` checks for a substring anywhere in `cmd`.
+  // Not an exact command, but the text contains a telltale word ("project", "skill"…)
+  // so nudge toward the right command instead of a bare "not found".
   const guesses: TerminalLine[] = [];
   if (cmd.includes('project') || cmd.includes('work') || cmd.includes('case') || cmd.includes('portfolio') || cmd.includes('app') || cmd.includes('showcase') || cmd.includes('studio')) guesses.push(line('o', "→ try 'ls projects'"));
   if (cmd.includes('about') || cmd.includes('justin') || cmd.includes('learn') || cmd.includes('who') || cmd.includes('bio') || cmd.includes('profile')) guesses.push(line('o', "→ try 'about me'"));
@@ -988,33 +703,18 @@ export function resolveCommand(raw: string, ctx: CommandContext = {}): CommandRe
 // Sidebar + conversational helpers (unchanged API)
 // ─────────────────────────────────────────────────────────────────────────────
 
-// LEARN: Flavour text. These two pick a friendly "loading…" line to show while a
-//    command runs, so the terminal feels alive. Each command maps to a few options
-//    and `Math.random()` chooses one; the `?? [...]` supplies a default list for
-//    any command not explicitly listed. Pure cosmetics no logic depends on them.
+// Flavour text picked while a command runs; pure cosmetics, no logic depends on them.
 export function getSidebarFunMessage(cmd: string): string {
   const normalized = cmd.trim().toLowerCase();
-  const messages: Record<string, string[]> = {
-    resume: ["Accessing CV repository... File loaded.", "Preparing PDF transmission... Secure downlink active.", "Pulling up academic + professional resumé..."],
-    'resumé': ["Accessing CV repository... File loaded.", "Preparing PDF transmission... Secure downlink active.", "Pulling up academic + professional resumé..."],
-    connect: ["Accessing records... Opening communication channel.", "Initiating secure uplink... Ready to connect.", "Routing signal to Dubai headquarters... Standing by."],
-    timeline: ["Querying career database... Time-machine active.", "Accessing academic records... Fast-forwarding.", "Loading interactive career timeline... Scroll-lock engaged."],
-    'the long version': ["Opening the secret vault... Access granted.", "Loading marginalia & after-hours projects...", "Decoupling core engines... Navigating to the-long-version."],
-    projects: ["Scanning case studies... 6 repositories found.", "Accessing studio records... Preparing scroll-link.", "Scrolling to featured work... Initiating view-port alignment."],
-  };
-  const list = messages[normalized] ?? ["Taking you there...", "Accessing records...", "Initiating sequence..."];
+  const list = SIDEBAR_FUN_MESSAGES[normalized] ?? SIDEBAR_FUN_DEFAULT;
   return list[Math.floor(Math.random() * list.length)];
 }
 
 export function getConversationalPreamble(cmd: string): string {
   const normalized = cmd.trim().toLowerCase();
-  if (normalized.includes('project') || normalized.includes('ls')) return "Ah, excellent choice! Pulling up the case study archives. Let me display the index:";
-  if (normalized.includes('about') || normalized.includes('whois') || normalized.includes('whoami')) return "Certainly! Querying my identity manifest... Here is a brief profile of who I am:";
-  if (normalized.includes('timeline') || normalized.includes('career') || normalized.includes('experience')) return "Querying database... I have compiled my academic and professional journey here:";
-  if (normalized.includes('connect') || normalized.includes('contact')) return "Initiating secure uplink... Here are the official channels to get in touch with me:";
-  if (normalized.includes('resume') || normalized.includes('cv')) return "Right away! Retrieving the latest PDF version of my CV:";
-  if (normalized.includes('expertise') || normalized.includes('skill')) return "Scanning skill matrix... Here is a summary of my active stack and certifications:";
-  if (normalized.includes('snake')) return "Warning: Retro arcade environment detected! Initiating snake.exe:";
-  return "Processing query... Here is what I found:";
+  for (const { keywords, text } of CONVERSATIONAL_PREAMBLES) {
+    if (keywords.some(k => normalized.includes(k))) return text;
+  }
+  return PREAMBLE_DEFAULT;
 }
 

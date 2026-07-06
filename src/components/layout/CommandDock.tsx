@@ -7,32 +7,14 @@ import { smoothScrollTo } from '@/utils/scroll';
 import { AIChatDrawer } from './AIChatDrawer';
 import { Typewriter } from '@/pages/home/Hero/ui/Typewriter';
 import { ThemeToggle } from '@/ui/ThemeToggle';
+import { ASSISTANT, SITE, type SiteConfig } from '@/content';
 
-const DESKTOP_SUGGESTIONS = [
-  'try asking if he actually sleeps',
-  'type whoami to skip the small talk',
-  'try asking how much coffee he drinks?',
-  'type ls projects for the good stuff',
-  'try asking what is his favourite framework?',
-  'type timeline to see his origin story',
-  'try asking what is his biggest flex?',
-  'type expertise to see his weapon choice',
-  'try asking can he fix my printer?',
-  'type resumé to hire him immediately',
-  'try asking does he know dbt?',
-  'try asking what is Off the Pace?',
-];
+// Widened to the config union so the null branch stays a checked code path
+// even while this deployment has the integration switched on.
+const AI_CHAT: SiteConfig['integrations']['aiChat'] = SITE.integrations.aiChat;
 
-const MOBILE_SUGGESTIONS = [
-  'he sleeps?',
-  'coffee intake?',
-  'his projects?',
-  'his resumé?',
-  'fave framework?',
-  'biggest flex?',
-  'fix my printer?',
-  'need help?',
-];
+const DESKTOP_SUGGESTIONS = ASSISTANT.dockSuggestions.desktop;
+const MOBILE_SUGGESTIONS = ASSISTANT.dockSuggestions.mobile;
 
 export function CommandDock() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -57,7 +39,8 @@ export function CommandDock() {
   const currentSuggestion = suggestions[suggestionIndex % suggestions.length];
 
   useEffect(() => {
-    if (chatOpen) return;
+    // No AI button → no rotating teaser to animate.
+    if (chatOpen || !AI_CHAT) return;
     const interval = setInterval(() => {
       const currentSuggestions = isMobile ? MOBILE_SUGGESTIONS : DESKTOP_SUGGESTIONS;
       setSuggestionIndex((prev) => (prev + 1) % currentSuggestions.length);
@@ -137,7 +120,7 @@ export function CommandDock() {
 
   return (
     <>
-      <AIChatDrawer isOpen={chatOpen} onClose={() => setChatOpen(false)} />
+      {AI_CHAT && <AIChatDrawer isOpen={chatOpen} onClose={() => setChatOpen(false)} />}
 
       <AnimatePresence>
         {isVisible && (
@@ -163,6 +146,7 @@ export function CommandDock() {
                 'rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)]',
               )}
             >
+              {AI_CHAT && (
               <motion.button
                 id="ai-trigger-button"
                 onClick={() => {
@@ -187,7 +171,7 @@ export function CommandDock() {
                   'relative flex items-center justify-center h-10 rounded-full transition-colors overflow-hidden select-none cursor-pointer',
                   chatOpen
                     ? 'text-brand-primary bg-brand-primary/10'
-                    : 'text-white/50 hover:text-brand-primary',
+                    : 'text-text-tertiary hover:text-brand-primary',
                 )}
                 aria-label={isHome ? 'Focus terminal' : 'Open AI chat'}
                 aria-expanded={!isHome ? chatOpen : undefined}
@@ -202,12 +186,12 @@ export function CommandDock() {
                     size={16}
                     className={cn(
                       'transition-all shrink-0',
-                      chatOpen ? 'text-brand-primary' : 'text-white/50',
+                      chatOpen ? 'text-brand-primary' : 'text-text-tertiary',
                       !chatOpen && 'animate-pulse'
                     )}
                   />
                   {!chatOpen && shouldShowText && (
-                    <div className="text-[11px] md:text-[12px] font-mono tracking-tight flex items-center overflow-hidden w-full select-none text-left">
+                    <div className="text-fine md:text-caption font-mono tracking-tight flex items-center overflow-hidden w-full select-none text-left">
                       <AnimatePresence mode="wait">
                         {isHovered ? (
                           <motion.span
@@ -218,7 +202,7 @@ export function CommandDock() {
                             transition={{ duration: 0.15 }}
                             className="font-bold text-brand-primary text-xs"
                           >
-                            Ask Justin
+                            Ask {SITE.firstName}
                           </motion.span>
                         ) : (
                           <motion.div
@@ -227,7 +211,7 @@ export function CommandDock() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -4 }}
                             transition={{ duration: 0.15 }}
-                            className="flex items-center overflow-hidden w-full text-white/50"
+                            className="flex items-center overflow-hidden w-full text-text-tertiary"
                           >
                             <span className="truncate flex items-center">
                               {isMobile && <span className="text-brand-primary font-bold mr-1">Ask:</span>}
@@ -245,6 +229,7 @@ export function CommandDock() {
                   )}
                 </div>
               </motion.button>
+              )}
 
               {isHome && <ThemeToggle size={14} className="md:flex hidden" />}
 
@@ -260,7 +245,7 @@ export function CommandDock() {
                     onClick={isHomeIcon ? () => navigate('/') : scrollToTop}
                     className={cn(
                       'relative flex items-center justify-center w-10 h-10 rounded-full',
-                      'text-white/60 hover:text-brand-primary transition-colors',
+                      'text-text-tertiary hover:text-brand-primary transition-colors',
                     )}
                     aria-label={isHomeIcon ? 'Go home' : 'Back to top'}
                   >
@@ -268,7 +253,7 @@ export function CommandDock() {
                       className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none"
                       viewBox="0 0 52 52"
                     >
-                      <circle cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/5" />
+                      <circle cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-muted" />
                       <circle
                           cx="26" cy="26" r={radius} fill="none" stroke="currentColor" strokeWidth="1.5"
                           strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}

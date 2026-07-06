@@ -26,6 +26,8 @@ import { Link } from 'react-router-dom';
 import { ScrollReveal } from '@/ui';
 import { SEO, TheCloser } from '@/components/layout';
 import { STROKTALK_PALETTE } from '@/config/constants';
+import { routeMeta } from '@/content';
+import { SectionLabel } from './shared';
 
 /* ─────────────────────────── CONSTANTS ─────────────────────────── */
 
@@ -181,16 +183,6 @@ function PhoneFrame({
   );
 }
 
-function SectionLabel({ number, title }: { number: string; title: string }) {
-  return (
-    <div className="flex items-center gap-4 mb-8 md:mb-12">
-      <span className="font-mono text-[10px] md:text-xs font-bold tracking-[0.5em] text-white/20">{number}</span>
-      <div className="h-px flex-grow bg-gradient-to-r from-white/10 to-transparent" />
-      <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] uppercase text-white/30">{title}</span>
-    </div>
-  );
-}
-
 /** Interactive colour swatch with copy-to-clipboard + computed RGB. */
 function DetailedSwatch({ color }: { color: (typeof STROKTALK_PALETTE)[number] }) {
   const [copied, setCopied] = useState(false);
@@ -218,14 +210,14 @@ function DetailedSwatch({ color }: { color: (typeof STROKTALK_PALETTE)[number] }
         <div
           className={`absolute inset-0 flex items-center justify-center bg-black/45 backdrop-blur-sm transition-opacity duration-300 ${copied ? 'opacity-100' : 'opacity-0'}`}
         >
-          <span className="font-mono text-[10px] font-bold text-white tracking-widest uppercase">Copied</span>
+          <span className="font-mono text-micro font-bold text-white tracking-widest uppercase">Copied</span>
         </div>
       </button>
-      <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-strok-mint/80 mb-1">{color.role}</span>
+      <span className="font-mono text-micro uppercase tracking-mega text-strok-mint/80 mb-1">{color.role}</span>
       <span className="font-sans font-bold text-white text-sm tracking-tight">{color.name}</span>
-      <span className="font-mono text-[11px] text-white/40 mt-0.5">{color.hex.toUpperCase()}</span>
-      <span className="font-mono text-[10px] text-white/25">RGB {rgb}</span>
-      <p className="text-white/40 text-[11px] leading-relaxed mt-3">{color.note}</p>
+      <span className="font-mono text-fine text-text-tertiary mt-0.5">{color.hex.toUpperCase()}</span>
+      <span className="font-mono text-micro text-text-tertiary">RGB {rgb}</span>
+      <p className="text-text-tertiary text-fine leading-relaxed mt-3">{color.note}</p>
     </div>
   );
 }
@@ -244,10 +236,10 @@ function PillarsExplorer() {
           <button
             key={p.id}
             onClick={() => setActive(i)}
-            className={`px-4 py-2.5 md:px-5 md:py-3 rounded-full border transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-[0.18em] ${
+            className={`px-4 py-2.5 md:px-5 md:py-3 rounded-full border transition-all duration-300 font-mono text-micro md:text-xs uppercase tracking-[0.18em] ${
               i === active
                 ? 'border-strok-mint bg-strok-mint text-strok-slate font-bold shadow-[0_0_24px_color-mix(in_srgb,var(--color-strok-mint)_45%,transparent)] scale-105'
-                : 'border-white/15 hover:border-white/40 text-white/55 hover:text-white bg-white/[0.02]'
+                : 'border-white/15 hover:border-white/40 text-text-tertiary hover:text-white bg-white/[0.02]'
             }`}
           >
             <span className="opacity-50 mr-1.5">0{i + 1}</span>
@@ -269,16 +261,16 @@ function PillarsExplorer() {
               className="space-y-6"
             >
               <div className="flex items-center gap-3">
-                <span className="font-noto text-5xl md:text-6xl font-black text-white/10 leading-none">0{active + 1}</span>
+                <span className="font-noto text-5xl md:text-6xl font-black text-text-muted leading-none">0{active + 1}</span>
                 <div>
-                  <span className="inline-block px-3 py-1 rounded-full border border-strok-mint/30 bg-strok-mint/10 font-mono text-[9px] tracking-[0.2em] uppercase text-strok-mint mb-2">
+                  <span className="inline-block px-3 py-1 rounded-full border border-strok-mint/30 bg-strok-mint/10 font-mono text-micro tracking-mega uppercase text-strok-mint mb-2">
                     {pillar.tag}
                   </span>
                   <h3 className="font-noto text-3xl md:text-4xl font-black text-white tracking-tight">{pillar.name}</h3>
                 </div>
               </div>
 
-              <p className="text-white/55 text-base md:text-lg leading-relaxed max-w-xl">{pillar.blurb}</p>
+              <p className="text-text-tertiary text-base md:text-lg leading-relaxed max-w-xl">{pillar.blurb}</p>
 
               {/* The drill, as a labelled task chip */}
               <div className="flex items-start gap-3 rounded-2xl border border-white/8 bg-white/[0.02] p-4">
@@ -288,8 +280,8 @@ function PillarsExplorer() {
                   </svg>
                 </span>
                 <div>
-                  <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 mb-1">The drill</span>
-                  <span className="block text-white/80 text-sm font-medium">{pillar.task}</span>
+                  <span className="block font-mono text-micro uppercase tracking-mega text-text-tertiary mb-1">The drill</span>
+                  <span className="block text-text-secondary text-sm font-medium">{pillar.task}</span>
                 </div>
               </div>
 
@@ -390,8 +382,8 @@ function TrainingCarousel() {
             <div className="group">
               <PhoneFrame src={item.src} alt={item.label} className="transition-transform duration-500 group-hover:-translate-y-1.5" />
               <div className="mt-4 flex items-center gap-2 px-1">
-                <span className="font-mono text-[10px] text-strok-mint/70">{String(i + 1).padStart(2, '0')}</span>
-                <span className="font-mono text-[10px] md:text-[11px] tracking-wide uppercase text-white/45 group-hover:text-white/80 transition-colors">
+                <span className="font-mono text-micro text-strok-mint/70">{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-mono text-micro md:text-fine tracking-wide uppercase text-text-tertiary group-hover:text-text-secondary transition-colors">
                   {item.label}
                 </span>
               </div>
@@ -422,11 +414,7 @@ function TrainingCarousel() {
 export const StrokTalkPage = () => {
   return (
     <div className="min-h-screen bg-brand-bg text-white font-sans selection:bg-strok-mint/30 overflow-x-hidden flex flex-col">
-      <SEO
-        title="StrokTalk Speech Rehab App ⋅ Justin Clarke"
-        description="UX case study for StrokTalk an iOS speech-and-language rehabilitation app for stroke survivors with aphasia. Five training pillars, an AI doctor loop and accessibility-first design."
-        path="/studio/stroktalk"
-      />
+      <SEO {...routeMeta('/studio/stroktalk')} />
 
       {/* ══════════════════════════════════════════════
           SECTION 1 HERO
@@ -457,7 +445,7 @@ export const StrokTalkPage = () => {
         {/* back link */}
         <Link
           to="/studio"
-          className="absolute top-24 left-6 md:left-16 z-20 inline-flex items-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase text-white/40 hover:text-white/80 transition-colors"
+          className="absolute top-24 left-6 md:left-16 z-20 inline-flex items-center gap-2 font-mono text-micro tracking-[0.25em] uppercase text-text-tertiary hover:text-text-secondary transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
@@ -472,7 +460,7 @@ export const StrokTalkPage = () => {
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-strok-mint/25 bg-strok-mint/[0.06] shadow-[0_0_30px_color-mix(in_srgb,var(--color-strok-mint)_12%,transparent)] relative group overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                 <span className="w-1.5 h-1.5 rounded-full bg-strok-mint shadow-[0_0_8px_var(--color-strok-mint)] animate-pulse" />
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] uppercase font-bold text-white/90">
+                <span className="font-mono text-micro md:text-micro tracking-ultra uppercase font-bold text-text-primary">
                   UX Case Study · Aphasia Recovery
                 </span>
               </div>
@@ -485,7 +473,7 @@ export const StrokTalkPage = () => {
             </ScrollReveal>
 
             <ScrollReveal direction="up" delay={0.15}>
-              <p className="text-white/50 font-light text-base md:text-lg max-w-md mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-text-tertiary font-light text-base md:text-lg max-w-md mx-auto lg:mx-0 leading-relaxed">
                 A mobile speech-and-language therapy companion for stroke survivors living with aphasia turning slow,
                 clinical rehab into daily, game-like practice with a doctor on call.
               </p>
@@ -495,8 +483,8 @@ export const StrokTalkPage = () => {
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-3 pt-3 border-t border-white/[0.06]">
                 {HERO_META.map((m) => (
                   <div key={m.label} className="flex flex-col items-center lg:items-start">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">{m.label}</span>
-                    <span className="font-sans text-xs md:text-sm text-white/75 font-medium">{m.value}</span>
+                    <span className="font-mono text-micro uppercase tracking-mega text-text-tertiary">{m.label}</span>
+                    <span className="font-sans text-xs md:text-sm text-text-secondary font-medium">{m.value}</span>
                   </div>
                 ))}
               </div>
@@ -543,8 +531,8 @@ export const StrokTalkPage = () => {
           animate={{ opacity: [0.3, 0.7, 0.3], y: [0, 4, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span className="font-mono text-[8px] tracking-[0.3em] uppercase text-white/30">Scroll</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/30">
+          <span className="font-mono text-micro tracking-ultra uppercase text-text-tertiary">Scroll</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-tertiary">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </motion.div>
@@ -563,7 +551,7 @@ export const StrokTalkPage = () => {
               <h2 className="font-noto text-3xl md:text-5xl font-black tracking-tighter mb-6 leading-tight">
                 Designing for the day after a stroke.
               </h2>
-              <div className="space-y-5 text-white/55 text-base md:text-lg leading-relaxed">
+              <div className="space-y-5 text-text-tertiary text-base md:text-lg leading-relaxed">
                 <p>
                   After a stroke, many people live with <span className="text-white">aphasia</span> a loss of the ability to
                   understand or produce language. Recovery is possible, but it leans on repetitive, often dull exercises that
@@ -586,7 +574,7 @@ export const StrokTalkPage = () => {
                     className="rounded-2xl border border-white/8 bg-white/[0.02] p-5 md:p-6 flex flex-col justify-center hover:border-strok-mint/30 transition-colors duration-300"
                   >
                     <span className="font-noto text-3xl md:text-4xl font-black text-strok-mint tracking-tight">{s.k}</span>
-                    <span className="font-mono text-[10px] md:text-[11px] uppercase tracking-wider text-white/45 mt-1">{s.v}</span>
+                    <span className="font-mono text-micro md:text-fine uppercase tracking-wider text-text-tertiary mt-1">{s.v}</span>
                   </div>
                 ))}
               </div>
@@ -606,7 +594,7 @@ export const StrokTalkPage = () => {
               <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter shrink-0">
                 Calm, clear, one accent.
               </h2>
-              <p className="text-white/40 font-mono text-xs md:text-sm max-w-xl md:text-right">
+              <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-xl md:text-right">
                 The system does the opposite of "engaging." For a tired brain relearning language, restraint is the feature: a
                 single mint to follow, ink to read, and one coral cue per screen.
               </p>
@@ -625,15 +613,15 @@ export const StrokTalkPage = () => {
           <ScrollReveal direction="up" delay={0.1}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
               <div className="rounded-2xl md:rounded-3xl border border-white/8 bg-white/[0.02] p-7 md:p-9">
-                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-strok-mint/80">Typography</span>
+                <span className="font-mono text-micro uppercase tracking-[0.25em] text-strok-mint/80">Typography</span>
                 <p className="font-noto text-4xl md:text-5xl font-black tracking-tight mt-3 mb-4">Aa Bb Cc</p>
-                <p className="text-white/50 text-sm md:text-base leading-relaxed">
+                <p className="text-text-tertiary text-sm md:text-base leading-relaxed">
                   A rounded, low-contrast sans set heavy and large. Headings carry the weight; body never drops below a comfortable
                   size. When your reader is relearning to read, legibility isn't a nicety it's the product.
                 </p>
               </div>
               <div className="rounded-2xl md:rounded-3xl border border-white/8 bg-white/[0.02] p-7 md:p-9 flex flex-col justify-center">
-                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-strok-mint/80 mb-4">Tone of voice</span>
+                <span className="font-mono text-micro uppercase tracking-[0.25em] text-strok-mint/80 mb-4">Tone of voice</span>
                 <div className="space-y-3">
                   {[
                     'Short imperative prompts “Select one”, “Read aloud”.',
@@ -642,7 +630,7 @@ export const StrokTalkPage = () => {
                   ].map((t) => (
                     <div key={t} className="flex items-start gap-3">
                       <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-strok-coral flex-shrink-0" />
-                      <span className="text-white/60 text-sm md:text-base leading-relaxed">{t}</span>
+                      <span className="text-text-tertiary text-sm md:text-base leading-relaxed">{t}</span>
                     </div>
                   ))}
                 </div>
@@ -663,7 +651,7 @@ export const StrokTalkPage = () => {
               <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter shrink-0">
                 Five ways back to language.
               </h2>
-              <p className="text-white/40 font-mono text-xs md:text-sm max-w-xl md:text-right">
+              <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-xl md:text-right">
                 The carousel on the home screen is the spine of the app. Each pillar owns its own 3D guide and its own kind of drill.
                 Tap through them.
               </p>
@@ -686,7 +674,7 @@ export const StrokTalkPage = () => {
             <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
               From install to first drill.
             </h2>
-            <p className="text-white/40 font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
+            <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
               Six steps, each stripped to a single decision. Big inputs, generous spacing and a clear forward button no patient gets
               stranded before training even begins.
             </p>
@@ -705,14 +693,14 @@ export const StrokTalkPage = () => {
                 <PhoneFrame src={s.src} alt={s.label} />
                 <div className="mt-4 px-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-mono text-[10px] font-bold text-strok-mint">{s.step}</span>
+                    <span className="font-mono text-micro font-bold text-strok-mint">{s.step}</span>
                     <span className="font-sans text-sm font-bold text-white tracking-tight">{s.label}</span>
                   </div>
-                  <p className="text-white/40 text-[11px] leading-relaxed">{s.caption}</p>
+                  <p className="text-text-tertiary text-fine leading-relaxed">{s.caption}</p>
                 </div>
                 {/* connector arrow */}
                 {i < JOURNEY.length - 1 && (
-                  <div className="hidden md:flex absolute top-[42%] -right-4 z-10 text-white/20">
+                  <div className="hidden md:flex absolute top-[42%] -right-4 z-10 text-text-dim">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />
@@ -735,7 +723,7 @@ export const StrokTalkPage = () => {
             <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
               Every exercise, end to end.
             </h2>
-            <p className="text-white/40 font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
+            <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
               Multiple-choice meaning, sentence sorting, picture description, press-to-speak, image matching and free chat one
               consistent shell, many ways to practise.
             </p>
@@ -775,16 +763,16 @@ export const StrokTalkPage = () => {
                     </div>
                   </div>
                   <div className="lg:col-span-7 [direction:ltr]">
-                    <span className="inline-block px-3 py-1 rounded-full border border-strok-mint/30 bg-strok-mint/10 font-mono text-[9px] tracking-[0.2em] uppercase text-strok-mint mb-4">
+                    <span className="inline-block px-3 py-1 rounded-full border border-strok-mint/30 bg-strok-mint/10 font-mono text-micro tracking-mega uppercase text-strok-mint mb-4">
                       {f.kicker}
                     </span>
                     <h3 className="font-noto text-2xl md:text-4xl font-black tracking-tight mb-4">{f.title}</h3>
-                    <p className="text-white/55 text-base md:text-lg leading-relaxed mb-6 max-w-xl">{f.body}</p>
+                    <p className="text-text-tertiary text-base md:text-lg leading-relaxed mb-6 max-w-xl">{f.body}</p>
                     <div className="flex flex-wrap gap-2.5">
                       {f.points.map((p) => (
                         <span
                           key={p}
-                          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/8 bg-white/[0.03] font-mono text-[10px] md:text-[11px] tracking-wide text-white/60"
+                          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full border border-white/8 bg-white/[0.03] font-mono text-micro md:text-fine tracking-wide text-text-tertiary"
                         >
                           <span className="w-1.5 h-1.5 rounded-full bg-strok-mint" />
                           {p}

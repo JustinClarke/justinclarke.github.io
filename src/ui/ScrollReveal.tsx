@@ -1,20 +1,15 @@
 /**
- * ScrollReveal a pass-through wrapper that just renders its children.
+ * ScrollReveal fades and slides content in as it scrolls into view.
  *
- * Fits in: many call sites wrap content in <ScrollReveal delay=.. direction=..>
- *          expecting an on-scroll fade/slide animation.
- * Note:    this is INTENTIONALLY a no-op right now. It accepts all the animation
- *          props (delay/direction/distance/once/threshold) but ignores them, so
- *          the animation is currently disabled site-wide from one place. Keeping
- *          the props in the type means call sites don't need to change if/when
- *          the real reveal effect is wired back in here.
- *
- * For beginners ----------------------------------------------------------------
- * A component can accept props it doesn't use the extra props are simply left
- * out of the destructuring below, so they're silently accepted and dropped.
- * -----------------------------------------------------------------------------
+ * Fits in: wraps section headers/cards across most content pages (14 call
+ *          sites). `direction` describes the motion of the entrance (e.g.
+ *          "up" rises into place from below), matching the `distance` prop
+ *          in pixels. Honours `useReducedMotion` vestibular-sensitive
+ *          visitors get the content instantly, with no transform.
  */
 import React from 'react';
+import { motion } from 'framer-motion';
+import { useReducedMotion } from '@/hooks';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -24,15 +19,38 @@ interface ScrollRevealProps {
   distance?: number;
   once?: boolean;
   threshold?: number;
+  [dataAttr: `data-${string}`]: string | number | boolean | undefined;
 }
 
 export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
   className = '',
+  delay = 0,
+  direction = 'up',
+  distance = 20,
+  once = true,
+  threshold = 0.2,
+  ...dataAttrs
 }) => {
+  const prefersReducedMotion = useReducedMotion();
+
+  if (prefersReducedMotion) {
+    return <div className={className} {...dataAttrs}>{children}</div>;
+  }
+
+  const axis = direction === 'left' || direction === 'right' ? 'x' : 'y';
+  const sign = direction === 'down' || direction === 'right' ? -1 : 1;
+
   return (
-    <div className={className}>
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, [axis]: sign * distance }}
+      whileInView={{ opacity: 1, [axis]: 0 }}
+      viewport={{ once, amount: threshold }}
+      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+      {...dataAttrs}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 };

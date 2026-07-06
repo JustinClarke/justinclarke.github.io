@@ -10,12 +10,6 @@
  *          autocomplete), and the main `TerminalBody`. The keyboard handler is the
  *          dense part; read it as a list of "if this key, do this".
  *
- * For beginners ----------------------------------------------------------------
- * Most of this is React-specific machinery. `useRef` is used two ways here: to grab
- * real DOM nodes (to auto-scroll, to focus the input) AND as a no-re-render store
- * (the konami progress, the set of already-run commands). State (`useState`) is for
- * values that should repaint the screen; refs are for values that shouldn't.
- * -----------------------------------------------------------------------------
  */
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
@@ -24,6 +18,7 @@ import { Typewriter } from './Typewriter';
 import { cn } from '@/utils';
 import { TechStack } from '@/ui';
 import { TerminalHeader } from './TerminalHeader';
+import { SITE } from '@/content';
 
 interface TerminalBodyProps {
   history: TerminalLine[];
@@ -38,8 +33,7 @@ interface TerminalBodyProps {
   showGradients?: boolean;
 }
 
-// LEARN: The famous "konami code" key sequence. We watch for it being typed in order
-//    (see the handler below) and trigger the `matrix` easter egg when it completes.
+// Konami code sequence; completing it triggers the `matrix` easter egg (see handler below).
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 // ---------------------------------------------------------------------------
@@ -63,8 +57,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
     { prefix: 'try asking ', cmd: 'can he fix my printer?', suffix: '' },
     { prefix: 'type ', cmd: 'help', suffix: ' if you are completely lost' },
   ];
-  // LEARN: `ran` is a Set of commands already used; we drop those from the hints so
-  //    the cycler suggests fresh things. If everything's been tried, fall back to all.
+  // Drop already-run commands so the cycler suggests fresh things; fall back to all once everything's been tried.
   const pool = allSuggestions.filter(s => !ran.has(s.cmd));
   const suggestions = pool.length > 0 ? pool : allSuggestions;
 
@@ -72,9 +65,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   const [key, setKey] = useState(0);
   const [charsDone, setCharsDone] = useState(0);
 
-  // LEARN: `setInterval` runs every 5s to advance to the next hint. `(prev + 1) %
-  //    length` is the wrap-around trick: it counts 0,1,2,… then back to 0. Bumping
-  //    `key` forces the Typewriters to remount and re-type. clearInterval on cleanup.
+  // Bumping `key` forces the Typewriters to remount and re-type each new hint.
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % suggestions.length);
@@ -110,7 +101,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   void charsDone; // used for cursor sync
 
   return (
-    <div className="font-mono text-[11px] md:text-[12px] text-term-fg select-none leading-tight whitespace-pre-wrap opacity-85">
+    <div className="font-mono text-fine md:text-caption text-term-fg select-none leading-tight whitespace-pre-wrap opacity-85">
       <Typewriter key={`prefix-${key}`} text={current.prefix} speed={speed} className="text-term-fg" />
       <Typewriter key={`cmd-${key}`} text={current.cmd} speed={speed} delay={cmdDelay} className="text-brand-primary font-black brightness-110" />
       <Typewriter key={`suffix-${key}`} text={current.suffix} speed={speed} delay={suffixDelay} className="text-term-fg" />
@@ -126,9 +117,7 @@ const InputCursor: React.FC<{ text: string; ghost?: string }> = ({ text, ghost }
   const measureRef = useRef<HTMLSpanElement>(null);
   const [left, setLeft] = useState(0);
 
-  // LEARN: A neat trick to place a fake caret. We render the typed text into a HIDDEN
-  //    span, then measure its pixel width (`offsetWidth`) and position the cursor that
-  //    many pixels from the left. Re-measures whenever the text changes.
+  // Fake caret: render the typed text into a hidden span, measure its pixel width, position the cursor there.
   useEffect(() => {
     if (measureRef.current) setLeft(measureRef.current.offsetWidth);
   }, [text]);
@@ -179,9 +168,6 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
   const inpRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // LEARN: Lazy initializer (the `() => …` form) runs once to load prior commands from
-  //    sessionStorage. The try/catch guards against malformed saved JSON if parsing
-  //    fails we just start with an empty history rather than crashing.
   const [cmdHistory, setCmdHistory] = useState<string[]>(() => {
     try { return JSON.parse(sessionStorage.getItem('term_cmd_history') || '[]'); } catch { return []; }
   });
@@ -201,16 +187,12 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
     textarea.style.height = `${textarea.scrollHeight}px`;
   }, []);
 
-  // LEARN: Listen for window resizes to track mobile vs desktop, and REMOVE the
-  //    listener on cleanup. The `[]` deps mean this wiring happens once on mount.
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // LEARN: Auto-scroll to the bottom whenever new output arrives, so the latest line
-  //    is always visible. Runs every time `history` changes (a new command ran).
   useEffect(() => {
     if (outRef.current) outRef.current.scrollTop = outRef.current.scrollHeight;
   }, [history]);
@@ -237,14 +219,10 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
     setCompletionCandidates(candidates.slice(0, 3));
   }, [inputValue]);
 
-  // LEARN: The keyboard brain of the terminal, wrapped in useCallback so it isn't
-  //    rebuilt every render. It handles, in order: konami tracking, Tab/→ to accept
-  //    the ghost autocomplete, Enter to run + save to history, and ↑/↓ to walk back
-  //    and forth through previous commands (`historyIndex` is the cursor into them).
+  // Handles, in order: konami tracking, Tab/→ to accept the ghost autocomplete,
+  // Enter to run + save to history, and ↑/↓ to walk back and forth through
+  // previous commands (`historyIndex` is the cursor into them).
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Konami code tracker
-    // LEARN: If the pressed key matches the next expected konami key, advance; once the
-    //    whole sequence lands, fire `matrix`. Any wrong key resets progress to 0.
     if (e.key === KONAMI[konamiProgress.current]) {
       konamiProgress.current++;
       if (konamiProgress.current === KONAMI.length) {
@@ -382,16 +360,16 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
               <div className="space-y-1">
                 <div>
                   <h1 className="leading-[0.9] tracking-tighter flex flex-col">
-                    <Typewriter text="justin" speed={20} delay={180} className="font-mono text-3xl font-black text-term-fg" skip={true} />
-                    <Typewriter text="clarke." speed={20} delay={300} className="font-playfair italic text-3xl text-brand-primary font-black" skip={true} />
+                    <Typewriter text={SITE.firstName.toLowerCase()} speed={20} delay={180} className="font-mono text-3xl font-black text-term-fg" skip={true} />
+                    <Typewriter text={`${SITE.lastName.toLowerCase()}.`} speed={20} delay={300} className="font-playfair italic text-3xl text-brand-primary font-black" skip={true} />
                   </h1>
                 </div>
               </div>
               <div className="space-y-1">
                 <div className="space-y-2.5">
-                  <Typewriter text="data product engineer" speed={12} delay={880} className="font-mono text-[11px] sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
-                  <TechStack animate className="!text-[11px]" />
-                  <Typewriter text="Data to decisions & decisions into products" speed={12} delay={1650} className="font-mono text-[11px] sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
+                  <Typewriter text="data product engineer" speed={12} delay={880} className="font-mono text-fine sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
+                  <TechStack animate className="!text-fine" />
+                  <Typewriter text="Data to decisions & decisions into products" speed={12} delay={1650} className="font-mono text-fine sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
                 </div>
               </div>
             </div>
@@ -406,15 +384,12 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
             />
           )}
 
-          {/* Command History */}
-          {/* LEARN: We `.map` over the history array, rendering each line. A line's `t`
-                (type) decides its shape: a `prompt` shows the "~$ command" you typed;
-                everything else is output, which may be plain text, coloured `parts`,
-                clickable `chips`, or a link. `aria-live="polite"` lets screen readers
-                announce new output as it appears. */}
+          {/* Command History a line's `t` (type) decides its shape: a `prompt` shows the
+              "~$ command" you typed; everything else is output, which may be plain text,
+              coloured `parts`, clickable `chips`, or a link. */}
           <div className="space-y-1" aria-live="polite" aria-atomic="false">
             {history.map((line, i) => (
-              <div key={i} className="font-mono text-[11px] md:text-[12px] leading-tight">
+              <div key={i} className="font-mono text-fine md:text-caption leading-tight">
                 {line.t === 'prompt' ? (
                   <div className="flex gap-2 md:gap-4 items-center">
                     <span className="text-brand-primary font-bold shrink-0">~$</span>
@@ -428,8 +403,8 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                     )}
                     style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
                   >
-                    <span className="inline-flex items-center gap-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/10 px-2 py-0.5 text-[10px] font-black tracking-[0.2em] text-brand-primary">
-                      <span className="text-[8px] leading-none" aria-hidden="true">◆</span>{line.text}
+                    <span className="inline-flex items-center gap-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/10 px-2 py-0.5 text-micro font-black tracking-mega text-brand-primary">
+                      <span className="text-micro leading-none" aria-hidden="true">◆</span>{line.text}
                     </span>
                     {line.streaming && <span className="ai-pulse-dot" aria-hidden="true" />}
                   </div>
@@ -442,7 +417,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                     style={{ animationDelay: !isMobile && i > lastPromptIndex ? `${(i - lastPromptIndex - 1) * 35}ms` : undefined }}
                   >
                     <span className="text-brand-primary/40 select-none" aria-hidden="true">└─</span>
-                    <span className="text-[10px] tracking-wide text-term-faint">{line.text}</span>
+                    <span className="text-micro tracking-wide text-term-faint">{line.text}</span>
                   </div>
                 ) : line.gutter ? (
                   <div
@@ -490,7 +465,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                           <div className="flex flex-wrap gap-2 mt-1.5">
                             {line.chips.map((chip, ci) => (
                               <button key={ci} type="button" onClick={() => onCommand(chip)}
-                                className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
+                                className="font-mono text-micro px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
                                 {chip}
                               </button>
                             ))}
@@ -503,7 +478,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                         <div className="flex flex-wrap gap-2 mt-1">
                           {line.chips.map((chip, ci) => (
                             <button key={ci} type="button" onClick={() => onCommand(chip)}
-                              className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
+                              className="font-mono text-micro px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 hover:border-brand-primary/70 transition-colors cursor-pointer">
                               {chip}
                             </button>
                           ))}
@@ -534,15 +509,15 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
               onClick={() => inpRef.current?.focus()}
             >
               {lastExitCode && lastExitCode !== 0 ? (
-                <span className="font-mono text-[11px] md:text-xs shrink-0 flex items-center gap-1">
+                <span className="font-mono text-fine md:text-xs shrink-0 flex items-center gap-1">
                   <span className="text-viz-mac-red font-bold">[{lastExitCode}]</span>
                   <span className="text-viz-mac-red font-bold">~$</span>
                 </span>
               ) : (
-                <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold shrink-0">~$</span>
+                <span className="font-mono text-fine md:text-xs text-brand-primary font-bold shrink-0">~$</span>
               )}
 
-              <div className="relative flex-1 flex items-center min-w-0 font-mono text-[11px] md:text-[12px]">
+              <div className="relative flex-1 flex items-center min-w-0 font-mono text-fine md:text-caption">
                 <input
                   ref={inpRef}
                   type="text"
@@ -586,7 +561,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                     onCommand(cmd);
                   }
                 }}
-                  className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] active:bg-brand-primary/20 transition-colors">
+                  className="font-mono text-micro px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] active:bg-brand-primary/20 transition-colors">
                   {c}
                 </button>
               ))}
@@ -620,7 +595,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                       onCommand(cmd);
                     }
                   }}
-                  className="font-mono text-[10px] px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 transition-colors cursor-pointer"
+                  className="font-mono text-micro px-2 py-0.5 rounded border border-brand-primary/40 text-brand-primary bg-brand-primary/[0.08] hover:bg-brand-primary/20 transition-colors cursor-pointer"
                 >
                   {c}
                 </button>
@@ -637,13 +612,13 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
           >
             <div className="shrink-0 flex items-center h-[34px] md:h-[36px] cursor-default select-none">
               {lastExitCode && lastExitCode !== 0 ? (
-                <span className="font-mono text-[11px] md:text-xs text-viz-mac-red font-bold mr-1">[{lastExitCode}] ~$</span>
+                <span className="font-mono text-fine md:text-xs text-viz-mac-red font-bold mr-1">[{lastExitCode}] ~$</span>
               ) : (
-                <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold mr-1">~$</span>
+                <span className="font-mono text-fine md:text-xs text-brand-primary font-bold mr-1">~$</span>
               )}
             </div>
 
-            <div className="relative flex-1 flex min-w-0 font-mono text-[11px] md:text-[12px] min-h-[34px] md:min-h-[36px]">
+            <div className="relative flex-1 flex min-w-0 font-mono text-fine md:text-caption min-h-[34px] md:min-h-[36px]">
               <textarea
                 ref={textareaRef}
                 id="hero-terminal-input"

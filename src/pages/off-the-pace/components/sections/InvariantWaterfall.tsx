@@ -9,15 +9,10 @@
  * Fits in: rendered by PipelineSection on the architecture page (/off-the-pace).
  * Data:    SAO_PAULO_L59.ham (the published finding lap) from decompositions.ts.
  *          Colours are the --color-term-* tokens via each term's `color`.
- *
- * For beginners ----------------------------------------------------------------
- * A "waterfall" chart starts at a baseline and stacks signed steps to a total.
- * Here the baseline is the structural pace and the 7 steps are the measured
- * causes; they must land exactly on the real lap time. `perturb` adds seconds to
- * one chosen term, so the reconstructed total = lap_time + perturb, and the
- * residual the test checks is simply `perturb`. Everything recomputes from the
- * two state values, so the chart and the verdict can never disagree.
- * -----------------------------------------------------------------------------
+ * Note:    `perturb` adds seconds to one chosen term, so the reconstructed
+ *          total = lap_time + perturb, and the residual the test checks is
+ *          simply `perturb`. Everything recomputes from the two state values,
+ *          so the chart and the verdict can never disagree.
  */
 import { useState } from 'react';
 import { SAO_PAULO_L59, toLapClock, TERM_ABBR as ABBR, type IdentityTermKey } from '../../data/decompositions';
@@ -73,20 +68,20 @@ export function InvariantWaterfall() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3 p-6 md:p-8 border-b border-white/5">
         <div>
-          <span className="font-jetbrains text-[9px] uppercase tracking-widest text-f1-red block mb-2 font-semibold">
+          <span className="font-jetbrains text-micro uppercase tracking-widest text-f1-red block mb-2 font-semibold">
             Transform // The Invariant
           </span>
-          <h3 className="text-lg md:text-xl font-noto font-black text-white/90 uppercase tracking-tight">
+          <h3 className="text-lg md:text-xl font-noto font-black text-text-primary uppercase tracking-tight">
             The additive identity, live
           </h3>
-          <p className="font-jetbrains text-[11px] text-white/50 leading-relaxed mt-2 max-w-xl">
+          <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed mt-2 max-w-xl">
             Every lap, seven measured causes must reconstruct the clock to within{' '}
-            <span className="text-white/80">±0.0001s</span>  - or{' '}
-            <span className="text-white/80 lowercase">assert_additive_identity</span> fails the build.
+            <span className="text-text-secondary">±0.0001s</span>  - or{' '}
+            <span className="text-text-secondary lowercase">assert_additive_identity</span> fails the build.
             Nudge a coefficient and watch it break.
           </p>
         </div>
-        <span className="font-jetbrains text-[9px] text-white/40 tracking-wider font-medium shrink-0">
+        <span className="font-jetbrains text-micro text-text-tertiary tracking-wider font-medium shrink-0">
           {LAP.raceLabel.toUpperCase()} · L{LAP.lap} · {LAP.driver}
         </span>
       </div>
@@ -158,7 +153,7 @@ export function InvariantWaterfall() {
       <div className="px-6 md:px-8 pt-2 pb-5 flex flex-col gap-4">
         <div className="flex items-center gap-3 flex-wrap">
           <span
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md font-jetbrains text-[11px] font-bold uppercase tracking-wider border"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md font-jetbrains text-fine font-bold uppercase tracking-wider border"
             style={{
               color: pass ? 'var(--color-emerald)' : 'var(--color-sql-red)',
               borderColor: pass ? 'color-mix(in srgb, var(--color-emerald) 35%, transparent)' : 'color-mix(in srgb, var(--color-sql-red) 35%, transparent)',
@@ -167,15 +162,15 @@ export function InvariantWaterfall() {
           >
             {pass ? '✓' : '✗'} {pass ? 'identity holds' : 'identity broken'}
           </span>
-          <span className="font-jetbrains text-[11px] text-white/50 tabular-nums">
-            |residual| = <span className="text-white/80">{Math.abs(residual).toFixed(6)}s</span>{' '}
+          <span className="font-jetbrains text-fine text-text-tertiary tabular-nums">
+            |residual| = <span className="text-text-secondary">{Math.abs(residual).toFixed(6)}s</span>{' '}
             {pass ? '≤' : '>'} 1.0e-4
           </span>
         </div>
 
         {/* faux CI output */}
-        <div className="font-jetbrains text-[10px] sm:text-[11px] leading-relaxed bg-black/40 border border-white/5 rounded-lg p-3 sm:p-4 overflow-x-auto">
-          <div className="text-white/40">$ dbt test --select assert_additive_identity</div>
+        <div className="font-jetbrains text-micro sm:text-fine leading-relaxed bg-black/40 border border-white/5 rounded-lg p-3 sm:p-4 overflow-x-auto">
+          <div className="text-text-tertiary">$ dbt test --select assert_additive_identity</div>
           {pass ? (
             <div className="text-emerald-400">
               PASS  assert_additive_identity · {STATS.tests}/{STATS.tests} tests passed
@@ -183,10 +178,10 @@ export function InvariantWaterfall() {
           ) : (
             <>
               <div className="text-red-400">FAIL  assert_additive_identity</div>
-              <div className="text-white/45 pl-4">
+              <div className="text-text-tertiary pl-4">
                 in fct_lap_residuals (race {LAP.raceId}, {LAP.driver}, lap {LAP.lap})
               </div>
-              <div className="text-white/45 pl-4">
+              <div className="text-text-tertiary pl-4">
                 reconstructed {reconstructed.toFixed(4)}s ≠ lap_time {actual.toFixed(4)}s
                 {'  '}(|Δ| = {Math.abs(residual).toFixed(4)}s)
               </div>
@@ -199,7 +194,7 @@ export function InvariantWaterfall() {
       {/* Controls */}
       <div className="px-6 md:px-8 py-5 border-t border-white/5 bg-white/[0.01] flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/40 mr-1">Perturb</span>
+          <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mr-1">Perturb</span>
           {LAP.terms.map((term) => {
             const isSel = term.key === selectedKey;
             return (
@@ -208,7 +203,7 @@ export function InvariantWaterfall() {
                 type="button"
                 onClick={() => setSelectedKey(term.key)}
                 aria-pressed={isSel}
-                className="font-jetbrains text-[9px] uppercase tracking-wider px-2.5 py-1 rounded border transition-colors duration-200 focus-ring"
+                className="font-jetbrains text-micro uppercase tracking-wider px-2.5 py-1 rounded border transition-colors duration-200 focus-ring"
                 style={{
                   color: isSel ? '#fff' : 'rgba(255,255,255,0.5)',
                   borderColor: isSel ? term.color : 'rgba(255,255,255,0.1)',
@@ -236,7 +231,7 @@ export function InvariantWaterfall() {
               aria-label={`Perturb ${selectedTerm.label} coefficient in seconds`}
               aria-valuetext={`${fmtSigned(perturb)} seconds`}
             />
-            <span className="font-jetbrains text-[11px] text-white/70 tabular-nums w-28 shrink-0">
+            <span className="font-jetbrains text-fine text-text-secondary tabular-nums w-28 shrink-0">
               {selectedTerm.label.split(' ')[0]} {fmtSigned(perturb)}s
             </span>
           </label>
@@ -244,7 +239,7 @@ export function InvariantWaterfall() {
             type="button"
             onClick={() => setPerturb(0)}
             disabled={perturb === 0}
-            className="font-jetbrains text-[9px] uppercase tracking-wider px-3 py-1.5 rounded border border-white/10 text-white/60 hover:text-white hover:border-white/25 disabled:opacity-30 disabled:cursor-default transition-colors focus-ring"
+            className="font-jetbrains text-micro uppercase tracking-wider px-3 py-1.5 rounded border border-white/10 text-text-tertiary hover:text-white hover:border-white/25 disabled:opacity-30 disabled:cursor-default transition-colors focus-ring"
           >
             Reset
           </button>

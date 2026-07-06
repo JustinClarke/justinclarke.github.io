@@ -4,12 +4,6 @@
  * Fits in: used by CustomCursor to move the custom cursor dot.
  * Note:    like useSpotlight but page-wide (clientX/clientY straight from the
  *          window), not relative to one element.
- *
- * For beginners ----------------------------------------------------------------
- * Returns Framer Motion values that update without re-rendering React on every
- * mouse move. The effect subscribes to the window's mousemove on mount and
- * unsubscribes on unmount (the returned cleanup function).
- * -----------------------------------------------------------------------------
  */
 import { useEffect } from 'react';
 import { useMotionValue } from 'framer-motion';

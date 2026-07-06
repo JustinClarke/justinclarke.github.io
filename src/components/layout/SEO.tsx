@@ -6,21 +6,13 @@
  *          description, and share image.
  * Note:    it writes into the document <head>, not the visible page react-helmet
  *          handles that. It also renders <Schema> for structured search data.
- *
- * For beginners ----------------------------------------------------------------
- * <Helmet> is a component whose children are <title>/<meta> tags it hoists them
- * into the page's <head> for you. The defaults in the function signature
- * (title = '...', path = '/') are used whenever a page doesn't pass that prop.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Schema } from './Schema';
 import { useTheme } from '@/app/providers';
 import { SEO_THEME_COLORS } from '@/config/constants';
-
-const SITE_URL = 'https://justinclarke.github.io';
-const DEFAULT_OG = `${SITE_URL}/og-image.png`;
+import { SITE } from '@/content';
 
 interface SEOProps {
   title?: string;
@@ -33,10 +25,10 @@ interface SEOProps {
 }
 
 export const SEO: React.FC<SEOProps> = ({
-  title = 'Justin Clarke ⋅ Analytics Engineer ⋅ Full-Stack',
-  description = 'Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React.',
+  title = SITE.defaultTitle,
+  description = SITE.defaultDescription,
   image,
-  imageAlt = 'Justin Clarke - Analytics Engineer portfolio',
+  imageAlt = SITE.ogImageAlt,
   path = '/',
   type = 'website',
   schemaType,
@@ -44,10 +36,10 @@ export const SEO: React.FC<SEOProps> = ({
   const { resolvedTheme } = useTheme();
   const themeColor = resolvedTheme === 'dark' ? SEO_THEME_COLORS.dark : SEO_THEME_COLORS.light;
   const siteTitle = title;
-  const canonicalUrl = `${SITE_URL}${path}`;
+  const canonicalUrl = `${SITE.url}${path}`;
   const ogImage = image
-    ? (image.startsWith('http') ? image : `${SITE_URL}${image}`)
-    : DEFAULT_OG;
+    ? (image.startsWith('http') ? image : `${SITE.url}${image}`)
+    : `${SITE.url}${SITE.ogImage}`;
 
   return (
     <>
@@ -63,12 +55,12 @@ export const SEO: React.FC<SEOProps> = ({
         <title>{siteTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="author" content="Justin Clarke" />
+        <meta name="author" content={SITE.name} />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 
         {/* Open Graph / Facebook */}
         <meta property="og:type" content={type} />
-        <meta property="og:site_name" content="Justin Clarke" />
+        <meta property="og:site_name" content={SITE.name} />
         <meta property="og:locale" content="en_US" />
         <meta property="og:title" content={siteTitle} />
         <meta property="og:description" content={description} />

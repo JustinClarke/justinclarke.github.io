@@ -5,20 +5,18 @@
  * Note:    this component owns the NETWORK side (submit to web3forms + the
  *          idle/loading/success/error status); ContactForm owns the fields and
  *          validation. Splitting them keeps each piece small.
- *
- * For beginners ----------------------------------------------------------------
- * Radix's <Dialog> gives us accessible modal behaviour (focus trapping, Esc to
- * close) for free. `useModal()` reads shared open/close state from a Context, so
- * a button anywhere on the site can open this without prop-drilling.
- * async/await + fetch send the form over the network without freezing the page.
- * -----------------------------------------------------------------------------
  */
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Mail } from 'lucide-react';
 import { useModal } from '@/providers/ModalProvider';
+import { SITE, type SiteConfig } from '@/content';
 import { ContactForm } from './ContactForm';
+
+// Widened to the config union so the null branch stays a checked code path
+// even while this deployment has the integration switched on.
+const CONTACT_FORM: SiteConfig['integrations']['contactForm'] = SITE.integrations.contactForm;
 
 export const ContactModal = () => {
   const { isContactModalOpen, setIsContactModalOpen } = useModal();
@@ -26,10 +24,8 @@ export const ContactModal = () => {
 
   const firstInputRef = useRef<HTMLInputElement>(null);
 
-  // LEARN: when the modal opens, freeze background scrolling and move keyboard
-  //    focus into the first field (after a short delay so it has mounted). The
-  //    cleanup clears that timer; the `else` restores scrolling on close.
-  // Auto-focus first input on open & prevent body scroll
+  // On open: lock body scroll and move focus into the first field (delayed until
+  // it has mounted). Cleanup clears the timer; the `else` restores scroll on close.
   useEffect(() => {
     if (isContactModalOpen) {
       document.body.style.overflow = 'hidden';
@@ -43,12 +39,14 @@ export const ContactModal = () => {
   }, [isContactModalOpen]);
 
   const handleSubmit = async (formData: { name: string; email: string; message: string }) => {
+    if (!CONTACT_FORM) return; // integration off: the form never renders
+
     setStatus('loading');
 
     const payload = {
-      access_key: import.meta.env.VITE_WEB3FORMS_KEY || '',
+      access_key: CONTACT_FORM.web3formsKey,
       subject: `New message from ${formData.name}`,
-      from_name: 'justinclarke.github.io',
+      from_name: SITE.domain,
       ...formData,
       date: new Date().toLocaleString()
     };
@@ -111,22 +109,38 @@ export const ContactModal = () => {
                 <div className="relative z-10 flex flex-col space-y-2 mb-8">
                   <div className="flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse shadow-[0_0_8px_rgba(0,200,180,0.6)]" />
-                    <span className="font-mono text-[9px] tracking-[0.4em] uppercase text-brand-primary/60 font-bold">Contact // Collaboration</span>
+                    <span className="font-mono text-micro tracking-[0.4em] uppercase text-brand-primary/60 font-bold">Contact // Collaboration</span>
                   </div>
                   <Dialog.Title className="text-3xl font-black tracking-tighter font-playfair italic">Let's work together</Dialog.Title>
-                  <Dialog.Description className="text-sm text-white/50 leading-relaxed font-mono mt-1">
+                  <Dialog.Description className="text-sm text-text-tertiary leading-relaxed font-mono mt-1">
                     Send a message and I'll get back to you soon.
-                    <span className="block text-[10px] text-white/30 mt-3 font-bold uppercase tracking-widest italic">// Please fill in all fields</span>
+                    {CONTACT_FORM && (
+                      <span className="block text-micro text-text-tertiary mt-3 font-bold uppercase tracking-widest italic">// Please fill in all fields</span>
+                    )}
                   </Dialog.Description>
                 </div>
 
                 <div className="relative z-10">
-                  <ContactForm
-                    key={isContactModalOpen ? 'open' : 'closed'}
-                    onSubmit={handleSubmit}
-                    status={status}
-                    resetStatus={() => setStatus('idle')}
-                  />
+                  {CONTACT_FORM ? (
+                    <ContactForm
+                      key={isContactModalOpen ? 'open' : 'closed'}
+                      onSubmit={handleSubmit}
+                      status={status}
+                      resetStatus={() => setStatus('idle')}
+                    />
+                  ) : (
+                    /* Degradation: no form backend on this deployment offer email directly. */
+                    <div className="flex flex-col gap-4 py-4">
+                      <p className="font-mono text-sm text-paper break-all select-all">{SITE.email}</p>
+                      <a
+                        href={`mailto:${SITE.email}`}
+                        className="w-full px-4 py-3.5 bg-brand-primary hover:brightness-110 text-black rounded-lg font-mono text-fine font-black tracking-[0.25em] flex items-center justify-center gap-2.5 transition-all cursor-pointer active:scale-95 duration-200"
+                      >
+                        <Mail className="w-4 h-4" />
+                        <span>OPEN EMAIL APP</span>
+                      </a>
+                    </div>
+                  )}
                 </div>
 
                 <Dialog.Close className="absolute right-4 top-4 p-2 rounded-full opacity-40 transition-all hover:bg-white/10 active:bg-white/20 hover:opacity-100 active:scale-95 text-white outline-none focus-ring z-20">

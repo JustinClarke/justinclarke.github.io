@@ -5,12 +5,6 @@
  * Fits in: the overview, after the pipeline explainer.
  * Note:    Purely presentational. All three cards share one block of JSX driven
  *          by the `problems` array edit the data, not the markup.
- *
- * For beginners ----------------------------------------------------------------
- * `problems.map((item) => ...)` renders one card per object in the array. The
- * styling is identical for every card; only the text differs, which is why the
- * content lives in data above and the layout is written once below.
- * -----------------------------------------------------------------------------
  */
 const problems = [
   {
@@ -40,13 +34,13 @@ export function WhatMakesThisHard() {
   return (
     <div className="flex flex-col gap-10">
       <div className="max-w-xl">
-        <span className="font-jetbrains text-[10px] text-white/40 uppercase tracking-[0.2em] mb-4 block font-semibold">
+        <span className="font-jetbrains text-micro text-text-tertiary uppercase tracking-mega mb-4 block font-semibold">
           Complexity
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-white uppercase tracking-tighter mb-4">
           Three Engineering Problems
         </h2>
-        <p className="text-white/55 text-sm font-jetbrains leading-relaxed">
+        <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed">
           Known failure modes in sports analytics, each with an explicit solution in this codebase.
         </p>
       </div>
@@ -60,19 +54,19 @@ export function WhatMakesThisHard() {
             {/* Warning pulse in the top corner */}
             <div className="absolute top-5 right-5 flex items-center gap-1.5 bg-red-500/5 px-2 py-0.5 rounded border border-red-500/10">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.4)]" />
-              <span className="font-mono text-[7px] text-red-400 font-bold tracking-wider">ACTIVE_WARN</span>
+              <span className="font-mono text-micro text-red-400 font-bold tracking-wider">ACTIVE_WARN</span>
             </div>
 
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <span className="font-jetbrains text-[9px] font-bold text-red-500 tracking-widest uppercase">
+                <span className="font-jetbrains text-micro font-bold text-red-500 tracking-widest uppercase">
                   {item.code}
                 </span>
-                <h3 className="font-noto text-lg font-black text-white/90 uppercase tracking-tight">
+                <h3 className="font-noto text-lg font-black text-text-primary uppercase tracking-tight">
                   {item.title}
                 </h3>
               </div>
-              <p className="font-jetbrains text-xs text-white/55 leading-relaxed pr-6">
+              <p className="font-jetbrains text-xs text-text-tertiary leading-relaxed pr-6">
                 {item.problem}
               </p>
             </div>
@@ -80,11 +74,11 @@ export function WhatMakesThisHard() {
             <div className="mt-6 pt-4 border-t border-white/5 flex flex-col gap-2">
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.3)]" />
-                <span className="font-jetbrains text-[8px] uppercase tracking-widest text-emerald-400 font-bold">
+                <span className="font-jetbrains text-micro uppercase tracking-widest text-emerald-400 font-bold">
                   ✓ SYSTEM RESOLUTION
                 </span>
               </div>
-              <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-3 font-mono text-[10px] text-emerald-400 leading-relaxed">
+              <div className="bg-emerald-500/5 border border-emerald-500/10 rounded-lg p-3 font-mono text-micro text-emerald-400 leading-relaxed">
                 <span className="text-emerald-500/40 mr-1">&gt;</span> {item.solution}
               </div>
             </div>

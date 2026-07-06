@@ -13,11 +13,13 @@
  *   6. PDF Viewer embedded, premium-framed magazine viewer
  *   7. Footer TheCloser
  */
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { ScrollReveal } from '@/ui';
 import { SEO, TheCloser } from '@/components/layout';
+import { routeMeta } from '@/content';
+import { SectionLabel } from './shared';
 
 /* ─────────────────────────── CONSTANTS ─────────────────────────── */
 
@@ -89,21 +91,21 @@ const ADOBE_TOOLS = [
 ];
 
 const LOGO_ELEMENT = {
-  src: `${ASSET}/logo/element-c.png`,
+  src: `${ASSET}/logo/element-c.webp`,
   label: 'The "C" Letterform',
   desc: 'I merged a bold serif "C" with a musical crescendo hairpin the arc opens outward, echoing the magazine\'s name and the idea of building momentum.',
 };
 
 const CAROUSEL_ITEMS = [
-  { src: `${ASSET}/posts/mag-mockup.png`, label: 'Magazine Cover Mockup' },
-  { src: `${ASSET}/posts/sections/alumni.png`, label: 'Alumni Section' },
-  { src: `${ASSET}/posts/sections/design.png`, label: 'Design & Art Section' },
-  { src: `${ASSET}/posts/sections/events.png`, label: 'Events Section' },
-  { src: `${ASSET}/posts/sections/gov.png`, label: 'Governance Section' },
-  { src: `${ASSET}/posts/sections/s&c.png`, label: 'Sports & Culture Section' },
-  { src: `${ASSET}/posts/sections/sports.png`, label: 'Sports Section' },
-  { src: `${ASSET}/posts/sections/tech.png`, label: 'Tech Section' },
-  { src: `${ASSET}/posts/back-page.png`, label: 'Back Page' },
+  { src: `${ASSET}/posts/mag-mockup.webp`, label: 'Magazine Cover Mockup' },
+  { src: `${ASSET}/posts/sections/alumni.webp`, label: 'Alumni Section' },
+  { src: `${ASSET}/posts/sections/design.webp`, label: 'Design & Art Section' },
+  { src: `${ASSET}/posts/sections/events.webp`, label: 'Events Section' },
+  { src: `${ASSET}/posts/sections/gov.webp`, label: 'Governance Section' },
+  { src: `${ASSET}/posts/sections/s&c.webp`, label: 'Sports & Culture Section' },
+  { src: `${ASSET}/posts/sections/sports.webp`, label: 'Sports Section' },
+  { src: `${ASSET}/posts/sections/tech.webp`, label: 'Tech Section' },
+  { src: `${ASSET}/posts/back-page.webp`, label: 'Back Page' },
 ];
 
 /* ─────────────────────────── SUB-COMPONENTS ─────────────────────────── */
@@ -135,13 +137,13 @@ function DetailedSwatch({ color }: { color: { hex: string; label: string } }) {
         aria-label={`Copy hex code ${color.hex} for ${color.label}`}
       >
         <div className={`absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${copied ? 'opacity-100' : 'opacity-0'}`}>
-          <span className="font-mono text-[10px] md:text-xs font-bold text-white tracking-widest uppercase">Copied</span>
+          <span className="font-mono text-micro md:text-xs font-bold text-white tracking-widest uppercase">Copied</span>
         </div>
       </button>
       <div className="flex flex-col gap-0.5 px-1">
         <span className="font-sans font-bold text-white text-sm tracking-tight">{color.label}</span>
-        <span className="font-mono text-[11px] text-white/50">{color.hex}</span>
-        <span className="font-mono text-[10px] text-white/30">RGB {rgb}</span>
+        <span className="font-mono text-fine text-text-tertiary">{color.hex}</span>
+        <span className="font-mono text-micro text-text-tertiary">RGB {rgb}</span>
       </div>
     </div>
   );
@@ -160,10 +162,10 @@ function InteractivePalettes() {
           <button
             key={p.name}
             onClick={() => setActiveIndex(i)}
-            className={`px-5 py-2.5 md:px-6 md:py-3 rounded-full border transition-all duration-300 font-mono text-[10px] md:text-xs uppercase tracking-[0.2em] ${
+            className={`px-5 py-2.5 md:px-6 md:py-3 rounded-full border transition-all duration-300 font-mono text-micro md:text-xs uppercase tracking-mega ${
               i === activeIndex
                 ? 'border-white bg-white text-black font-bold shadow-[0_0_20px_rgba(255,255,255,0.3)] scale-105'
-                : 'border-white/20 hover:border-white/50 text-white/60 hover:text-white bg-white/[0.02]'
+                : 'border-white/20 hover:border-white/50 text-text-tertiary hover:text-white bg-white/[0.02]'
             }`}
           >
             {p.name}
@@ -183,14 +185,14 @@ function InteractivePalettes() {
             className="space-y-4"
           >
             <div>
-              <span className="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-[10px] tracking-[0.2em] uppercase text-white/70 mb-4">
+              <span className="inline-block px-3 py-1 rounded-full border border-white/10 bg-white/5 font-mono text-micro tracking-mega uppercase text-text-secondary mb-4">
                 {activePalette.section}
               </span>
               <h3 className="font-noto text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight">
                 {activePalette.name}
               </h3>
             </div>
-            <p className="text-white/60 text-base md:text-lg leading-relaxed max-w-xl font-sans">
+            <p className="text-text-tertiary text-base md:text-lg leading-relaxed max-w-xl font-sans">
               {activePalette.reasoning}
             </p>
           </motion.div>
@@ -314,7 +316,7 @@ function PostsCarousel() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
               <div className="absolute bottom-0 left-0 w-full p-4 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                <span className="font-mono text-[10px] font-bold tracking-widest uppercase text-white drop-shadow-lg">
+                <span className="font-mono text-micro font-bold tracking-widest uppercase text-white drop-shadow-lg">
                   {item.label}
                 </span>
               </div>
@@ -485,6 +487,12 @@ function PDFViewer({ src }: { src: string }) {
     const script = document.createElement('script');
     script.id = 'pdfjs-cdn-script';
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    // SRI-pin the external library: it runs with full page privileges, so a
+    // compromised CDN must not be able to silently ship different code. Hash is
+    // cdnjs's published SRI for this exact version; crossorigin is required for
+    // the browser to verify a cross-origin resource.
+    script.integrity = 'sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==';
+    script.crossOrigin = 'anonymous';
     script.async = true;
     
     script.onload = () => {
@@ -620,7 +628,7 @@ function PDFViewer({ src }: { src: string }) {
       <div className="relative rounded-b-2xl md:rounded-b-3xl border border-t-0 border-white/8 bg-black/60 min-h-[60vh] md:min-h-[80vh] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-white/10 border-t-white/50 rounded-full animate-spin" />
-          <span className="font-mono text-[10px] tracking-widest text-white/30 uppercase">
+          <span className="font-mono text-micro tracking-widest text-text-tertiary uppercase">
             {loadingScript ? 'Initializing Reader…' : 'Loading Publication…'}
           </span>
         </div>
@@ -642,7 +650,7 @@ function PDFViewer({ src }: { src: string }) {
             <span className="w-3 h-3 rounded-full bg-viz-mac-yellow" />
             <span className="w-3 h-3 rounded-full bg-viz-mac-green" />
           </div>
-          <span className="font-mono text-[10px] tracking-widest uppercase text-white/40 ml-2">
+          <span className="font-mono text-micro tracking-widest uppercase text-text-tertiary ml-2">
             Crescendo Volume Two
           </span>
         </div>
@@ -653,7 +661,7 @@ function PDFViewer({ src }: { src: string }) {
             onClick={goToPrev}
             disabled={!hasPrev}
             className={`p-1 rounded transition-all ${
-              hasPrev ? 'text-white/60 hover:text-white hover:bg-white/[0.05]' : 'text-white/10 cursor-not-allowed'
+              hasPrev ? 'text-text-tertiary hover:text-white hover:bg-white/[0.05]' : 'text-text-muted cursor-not-allowed'
             }`}
             title="Previous Page (Left Arrow)"
           >
@@ -661,14 +669,14 @@ function PDFViewer({ src }: { src: string }) {
               <polyline points="15 18 9 12 15 6" />
             </svg>
           </button>
-          <span className="font-mono text-[10px] tracking-widest uppercase text-white/70 min-w-[110px] text-center select-none">
+          <span className="font-mono text-micro tracking-widest uppercase text-text-secondary min-w-[110px] text-center select-none">
             {getPageIndicatorText()}
           </span>
           <button
             onClick={goToNext}
             disabled={!hasNext}
             className={`p-1 rounded transition-all ${
-              hasNext ? 'text-white/60 hover:text-white hover:bg-white/[0.05]' : 'text-white/10 cursor-not-allowed'
+              hasNext ? 'text-text-tertiary hover:text-white hover:bg-white/[0.05]' : 'text-text-muted cursor-not-allowed'
             }`}
             title="Next Page (Right Arrow)"
           >
@@ -683,19 +691,19 @@ function PDFViewer({ src }: { src: string }) {
           <div className="flex items-center gap-2 bg-white/[0.02] border border-white/5 rounded-lg px-2 py-1">
             <button
               onClick={decreaseZoom}
-              className="p-1 text-white/60 hover:text-white hover:bg-white/[0.05] rounded transition-all"
+              className="p-1 text-text-tertiary hover:text-white hover:bg-white/[0.05] rounded transition-all"
               title="Zoom Out"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
             </button>
-            <span className="font-mono text-[9px] text-white/50 w-10 text-center select-none">
+            <span className="font-mono text-micro text-text-tertiary w-10 text-center select-none">
               {Math.round(scale * 100)}%
             </span>
             <button
               onClick={increaseZoom}
-              className="p-1 text-white/60 hover:text-white hover:bg-white/[0.05] rounded transition-all"
+              className="p-1 text-text-tertiary hover:text-white hover:bg-white/[0.05] rounded transition-all"
               title="Zoom In"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -711,7 +719,7 @@ function PDFViewer({ src }: { src: string }) {
               target="_blank"
               rel="noopener noreferrer"
               download
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/30 bg-white/[0.03] hover:bg-white/[0.08] transition-all duration-300 font-mono text-[9px] font-bold tracking-widest uppercase text-white/60 hover:text-white/90"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/30 bg-white/[0.03] hover:bg-white/[0.08] transition-all duration-300 font-mono text-micro font-bold tracking-widest uppercase text-text-tertiary hover:text-text-primary"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
@@ -721,7 +729,7 @@ function PDFViewer({ src }: { src: string }) {
             {/* Fullscreen button */}
             <button
               onClick={toggleFullscreen}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/30 bg-white/[0.03] hover:bg-white/[0.08] transition-all duration-300 font-mono text-[9px] font-bold tracking-widest uppercase text-white/60 hover:text-white/90"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/30 bg-white/[0.03] hover:bg-white/[0.08] transition-all duration-300 font-mono text-micro font-bold tracking-widest uppercase text-text-tertiary hover:text-text-primary"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 {isFullscreen ? (
@@ -778,22 +786,6 @@ function PDFViewer({ src }: { src: string }) {
   );
 }
 
-/* ─────────────────────────── SECTION LABEL ─────────────────────────── */
-
-function SectionLabel({ number, title }: { number: string; title: string }) {
-  return (
-    <div className="flex items-center gap-4 mb-8 md:mb-12">
-      <span className="font-mono text-[10px] md:text-xs font-bold tracking-[0.5em] text-white/20">
-        {number}
-      </span>
-      <div className="h-px flex-grow bg-gradient-to-r from-white/10 to-transparent" />
-      <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] uppercase text-white/30">
-        {title}
-      </span>
-    </div>
-  );
-}
-
 /* ─────────────────────────── TYPOGRAPHY SHOWCASE ─────────────────────────── */
 
 const SHOWCASE_FONTS = [
@@ -830,7 +822,7 @@ const SHOWCASE_FONTS = [
     defaultText: 'editorial system 2022',
     styles: {
       container: 'border-white/10 bg-white/[0.01] hover:bg-white/[0.03]',
-      roleBadge: 'border-white/20 bg-black/40 text-white/50',
+      roleBadge: 'border-white/20 bg-black/40 text-text-tertiary',
       inputWrapper: 'bg-transparent border-l-2 border-white/10 group-hover:border-white/30',
       inputGradient: 'from-white/40 to-white/10',
       textConfig: 'text-4xl md:text-5xl lg:text-6xl font-bold leading-tight',
@@ -873,7 +865,7 @@ const SHOWCASE_FONTS = [
     defaultText: 'Poetry & Literary Spreads',
     styles: {
       container: 'border-[#EDEDED]/10 bg-[#171717] hover:border-white/20 shadow-inner',
-      roleBadge: 'border-white/10 bg-black/50 text-white/50',
+      roleBadge: 'border-white/10 bg-black/50 text-text-tertiary',
       inputWrapper: 'bg-transparent border-l-2 border-white/10 group-hover:border-white/30',
       inputGradient: 'from-white/30 to-transparent',
       textConfig: 'text-4xl md:text-5xl lg:text-6xl italic leading-tight',
@@ -916,7 +908,7 @@ function TypographyShowcase() {
     <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch">
       {/* 30% Left Panel - Font List */}
       <div className="w-full lg:w-[30%] flex flex-col justify-center gap-2">
-        <span className="font-mono text-[9px] md:text-[10px] text-white/40 uppercase tracking-widest mb-2 pl-4">
+        <span className="font-mono text-micro md:text-micro text-text-tertiary uppercase tracking-widest mb-2 pl-4">
           Select Identity
         </span>
         {SHOWCASE_FONTS.map((font, i) => (
@@ -935,12 +927,12 @@ function TypographyShowcase() {
             }`}
           >
             <span 
-              className={`font-bold text-xl md:text-2xl transition-colors ${i === index ? 'text-white' : 'text-white/50'}`}
+              className={`font-bold text-xl md:text-2xl transition-colors ${i === index ? 'text-white' : 'text-text-tertiary'}`}
               style={{ fontFamily: font.fontFamily }}
             >
               {font.name}
             </span>
-            <span className={`font-mono text-[9px] uppercase tracking-widest transition-colors ${i === index ? 'text-white/60' : 'text-white/30'}`}>
+            <span className={`font-mono text-micro uppercase tracking-widest transition-colors ${i === index ? 'text-text-tertiary' : 'text-text-ghost'}`}>
               {font.role}
             </span>
           </button>
@@ -958,7 +950,7 @@ function TypographyShowcase() {
             {/* Header */}
             <div className="flex items-start justify-between h-24 shrink-0">
               <div className="flex flex-col">
-                <span className={`inline-block px-3 py-1 rounded-full border font-mono text-[9px] tracking-[0.2em] uppercase w-fit mb-3 transition-colors duration-700 ${activeFont.styles.roleBadge}`}>
+                <span className={`inline-block px-3 py-1 rounded-full border font-mono text-micro tracking-mega uppercase w-fit mb-3 transition-colors duration-700 ${activeFont.styles.roleBadge}`}>
                   {activeFont.role}
                 </span>
                 <AnimatePresence mode="wait">
@@ -974,7 +966,7 @@ function TypographyShowcase() {
                     {activeFont.name}
                   </motion.h3>
                 </AnimatePresence>
-                <span className="font-mono text-[10px] text-white/40 uppercase tracking-widest transition-opacity duration-700">
+                <span className="font-mono text-micro text-text-tertiary uppercase tracking-widest transition-opacity duration-700">
                   {activeFont.type}
                 </span>
               </div>
@@ -1004,7 +996,7 @@ function TypographyShowcase() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="text-white/50 text-sm md:text-base leading-relaxed max-w-2xl"
+                  className="text-text-tertiary text-sm md:text-base leading-relaxed max-w-2xl"
                 >
                   {activeFont.description}
                 </motion.p>
@@ -1013,6 +1005,57 @@ function TypographyShowcase() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Defers mounting its children until they scroll near the viewport. Used to gate
+ * the PDF viewer: PDFViewer loads pdf.js from a CDN and calls getDocument on the
+ * full ~23MB magazine the moment it mounts, so mounting it eagerly pulled all of
+ * it ~1.6s into every visit to this page (125s simulated-mobile LCP). Now that
+ * work starts only when the reader is about to come into view. The placeholder
+ * reserves the viewer's own min-height so nothing shifts when it swaps in.
+ */
+function DeferUntilVisible({ children }: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  // No IntersectionObserver (very old browsers / some test envs): start visible
+  // so the viewer is never hidden forever. Otherwise start hidden and reveal on
+  // scroll. Using a lazy initial value keeps the fallback out of the effect body.
+  const [visible, setVisible] = useState(() => typeof IntersectionObserver === 'undefined');
+
+  useEffect(() => {
+    if (visible) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      // Start ~a viewport early so the reader is ready as it arrives.
+      // No preload margin: the viewer sits just below a full-height hero, so any
+      // margin would intersect on initial load and pull the ~23MB PDF up front -
+      // exactly what we're avoiding. Load only once it's actually scrolled into view.
+      { rootMargin: '0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [visible]);
+
+  return (
+    <div ref={ref}>
+      {visible ? (
+        children
+      ) : (
+        <div className="relative rounded-2xl md:rounded-3xl border border-white/8 bg-black/60 min-h-[60vh] md:min-h-[80vh] flex items-center justify-center">
+          <span className="font-mono text-micro tracking-widest text-text-tertiary uppercase">
+            Scroll to load the magazine…
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -1030,52 +1073,48 @@ export const CrescendoPage = () => {
       <style dangerouslySetInnerHTML={{ __html: `
         @font-face {
           font-family: 'Alta Caption';
-          src: url('/assets/art/crescendo/fonts/Alta_caption.otf') format('opentype');
+          src: url('/assets/art/crescendo/fonts/Alta_caption.woff2') format('woff2');
           font-weight: normal;
           font-style: normal;
           font-display: swap;
         }
         @font-face {
           font-family: 'Graphik';
-          src: url('/assets/art/crescendo/fonts/GraphikRegular.otf') format('opentype');
+          src: url('/assets/art/crescendo/fonts/GraphikRegular.woff2') format('woff2');
           font-weight: normal;
           font-style: normal;
           font-display: swap;
         }
         @font-face {
           font-family: 'Graphik';
-          src: url('/assets/art/crescendo/fonts/GraphikBold.otf') format('opentype');
+          src: url('/assets/art/crescendo/fonts/GraphikBold.woff2') format('woff2');
           font-weight: bold;
           font-style: normal;
           font-display: swap;
         }
         @font-face {
           font-family: 'Garvis Pro';
-          src: url('/assets/art/crescendo/fonts/Garvis%20Pro%20Italic.ttf') format('truetype');
+          src: url('/assets/art/crescendo/fonts/Garvis%20Pro%20Italic.woff2') format('woff2');
           font-weight: normal;
           font-style: italic;
           font-display: swap;
         }
         @font-face {
           font-family: 'Pluto Sans';
-          src: url('/assets/art/crescendo/fonts/Pluto%20Sans%20W04%20Bold.ttf') format('truetype');
+          src: url('/assets/art/crescendo/fonts/Pluto%20Sans%20W04%20Bold.woff2') format('woff2');
           font-weight: bold;
           font-style: normal;
           font-display: swap;
         }
         @font-face {
           font-family: 'Halingtone William';
-          src: url('/assets/art/crescendo/fonts/Halingtone%20William%20Italic.ttf') format('truetype');
+          src: url('/assets/art/crescendo/fonts/Halingtone%20William%20Italic.woff2') format('woff2');
           font-weight: normal;
           font-style: italic;
           font-display: swap;
         }
       `}} />
-      <SEO
-        title="Crescendo Brand Identity ⋅ Justin Clarke"
-        description="Brand identity and editorial design for Crescendo GITAM University's flagship student magazine. Senior Illustrator across 120+ pages."
-        path="/studio/crescendo"
-      />
+      <SEO {...routeMeta('/studio/crescendo')} />
 
       {/* ══════════════════════════════════════════════
           SECTION 1 HERO (Cinematic Split-Screen)
@@ -1108,7 +1147,7 @@ export const CrescendoPage = () => {
               <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-[#F21170]/25 bg-gradient-to-r from-[#72147E]/15 to-[#F21170]/8 shadow-[0_0_30px_rgba(242,17,112,0.1)] relative group overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/8 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                 <span className="w-1.5 h-1.5 rounded-full bg-[#F21170] shadow-[0_0_8px_#F21170] animate-pulse" />
-                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.35em] uppercase font-bold text-white/90">
+                <span className="font-mono text-micro md:text-micro tracking-[0.35em] uppercase font-bold text-text-primary">
                   Brand Identity & Editorial
                 </span>
               </div>
@@ -1118,7 +1157,7 @@ export const CrescendoPage = () => {
             <ScrollReveal direction="up" delay={0.08}>
               <h1 className="sr-only">Crescendo</h1>
               <img
-                src={`${ASSET}/logo/text-dark-transparent.png`}
+                src={`${ASSET}/logo/text-dark-transparent.webp`}
                 alt="Crescendo"
                 className="w-full max-w-[320px] md:max-w-[480px] lg:max-w-[520px] object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.08)] mx-auto lg:mx-0"
                 loading="eager"
@@ -1127,7 +1166,7 @@ export const CrescendoPage = () => {
 
             {/* Tagline */}
             <ScrollReveal direction="up" delay={0.15}>
-              <p className="text-white/45 font-light text-sm md:text-base lg:text-lg max-w-md mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-text-tertiary font-light text-sm md:text-base lg:text-lg max-w-md mx-auto lg:mx-0 leading-relaxed">
                 Full brand identity for GITAM University's flagship student magazine logo, type system, colour palettes, and every spread across 120+ pages.
               </p>
             </ScrollReveal>
@@ -1158,12 +1197,12 @@ export const CrescendoPage = () => {
                     </div>
                     {/* Tooltip */}
                     <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/badge:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap bg-black/95 px-3 py-2 rounded-lg border border-white/10 shadow-2xl z-50">
-                      <span className="block text-white font-bold text-[10px] mb-0.5">{tool.name}</span>
-                      <span className="block text-white/50 text-[9px] font-mono tracking-wide">{tool.role}</span>
+                      <span className="block text-white font-bold text-micro mb-0.5">{tool.name}</span>
+                      <span className="block text-text-tertiary text-micro font-mono tracking-wide">{tool.role}</span>
                     </div>
                   </motion.div>
                 ))}
-                <span className="ml-1 font-mono text-[9px] text-white/25 tracking-widest uppercase hidden md:inline">Built with</span>
+                <span className="ml-1 font-mono text-micro text-text-ghost tracking-widest uppercase hidden md:inline">Built with</span>
               </div>
             </ScrollReveal>
 
@@ -1176,8 +1215,8 @@ export const CrescendoPage = () => {
                   { label: 'Client', value: 'GITAM University' },
                 ].map((item) => (
                   <div key={item.label} className="flex items-baseline gap-2">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/30">{item.label}</span>
-                    <span className="font-sans text-xs text-white/70 font-medium">{item.value}</span>
+                    <span className="font-mono text-micro uppercase tracking-mega text-text-tertiary">{item.label}</span>
+                    <span className="font-sans text-xs text-text-secondary font-medium">{item.value}</span>
                   </div>
                 ))}
               </div>
@@ -1210,7 +1249,7 @@ export const CrescendoPage = () => {
                 }}
               >
                 <img
-                  src={`${ASSET}/posts/mag-mockup.png`}
+                  src={`${ASSET}/posts/mag-mockup.webp`}
                   alt="Crescendo Magazine Cover Mockup"
                   className="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-105"
                   loading="eager"
@@ -1232,8 +1271,8 @@ export const CrescendoPage = () => {
           animate={{ opacity: [0.3, 0.7, 0.3], y: [0, 4, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <span className="font-mono text-[8px] tracking-[0.3em] uppercase text-white/30">Scroll</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-white/30">
+          <span className="font-mono text-micro tracking-ultra uppercase text-text-tertiary">Scroll</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-text-tertiary">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </motion.div>
@@ -1253,13 +1292,15 @@ export const CrescendoPage = () => {
             <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
               Flip through the pages.
             </h2>
-            <p className="text-white/40 font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
+            <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
               The whole thing, right here. 120+ pages compiled in InDesign flip through at your own pace.
             </p>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.1}>
-            <PDFViewer src={pdfUrl} />
+            <DeferUntilVisible>
+              <PDFViewer src={pdfUrl} />
+            </DeferUntilVisible>
           </ScrollReveal>
         </div>
       </section>
@@ -1274,7 +1315,7 @@ export const CrescendoPage = () => {
             <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
               Anatomy of the mark.
             </h2>
-            <p className="text-white/40 font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
+            <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
               The mark needed to work everywhere from a tiny Instagram avatar to a full-bleed cover. So I built it to hold up at any size.
             </p>
           </ScrollReveal>
@@ -1293,7 +1334,7 @@ export const CrescendoPage = () => {
                 </div>
                 <div className="p-5 md:p-6 border-t border-white/5 bg-white/[0.02]">
                   <h4 className="font-noto text-base md:text-lg font-bold text-white mb-2">{LOGO_ELEMENT.label}</h4>
-                  <p className="text-white/45 text-xs md:text-sm leading-relaxed">{LOGO_ELEMENT.desc}</p>
+                  <p className="text-text-tertiary text-xs md:text-sm leading-relaxed">{LOGO_ELEMENT.desc}</p>
                 </div>
               </div>
             </ScrollReveal>
@@ -1308,20 +1349,20 @@ export const CrescendoPage = () => {
                   <div className="flex items-center gap-1 p-1 rounded-full bg-white/[0.04] border border-white/8">
                     <button
                       onClick={() => setLogoMode('dark')}
-                      className={`px-4 py-1.5 rounded-full font-mono text-[9px] md:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                      className={`px-4 py-1.5 rounded-full font-mono text-micro md:text-micro font-bold tracking-widest uppercase transition-all duration-300 ${
                         logoMode === 'dark'
                           ? 'bg-white text-black'
-                          : 'text-white/40 hover:text-white/70'
+                          : 'text-text-tertiary hover:text-text-secondary'
                       }`}
                     >
                       Dark
                     </button>
                     <button
                       onClick={() => setLogoMode('light')}
-                      className={`px-4 py-1.5 rounded-full font-mono text-[9px] md:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                      className={`px-4 py-1.5 rounded-full font-mono text-micro md:text-micro font-bold tracking-widest uppercase transition-all duration-300 ${
                         logoMode === 'light'
                           ? 'bg-white text-black'
-                          : 'text-white/40 hover:text-white/70'
+                          : 'text-text-tertiary hover:text-text-secondary'
                       }`}
                     >
                       Light
@@ -1340,8 +1381,8 @@ export const CrescendoPage = () => {
                       key={logoMode}
                       src={
                         logoMode === 'dark'
-                          ? `${ASSET}/logo/text-dark-transparent.png`
-                          : `${ASSET}/logo/text-light-transparent.png`
+                          ? `${ASSET}/logo/text-dark-transparent.webp`
+                          : `${ASSET}/logo/text-light-transparent.webp`
                       }
                       alt={`Crescendo wordmark ${logoMode} mode`}
                       className="w-full max-w-[280px] md:max-w-md max-h-24 md:max-h-32 object-contain"
@@ -1353,7 +1394,7 @@ export const CrescendoPage = () => {
                   </AnimatePresence>
                 </div>
                 <div className="px-5 md:px-6 py-4 border-t border-white/5 bg-white/[0.02]">
-                  <p className="text-white/40 text-xs leading-relaxed">
+                  <p className="text-text-tertiary text-xs leading-relaxed">
                     The custom 'C' leads into a clean modern serif. I kept the proportions identical across both modes so switching doesn't shift anything around.
                   </p>
                 </div>
@@ -1375,7 +1416,7 @@ export const CrescendoPage = () => {
                 <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-3">
                   Speaking the language.
                 </h2>
-                <p className="text-white/40 font-mono text-xs md:text-sm max-w-xl">
+                <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-xl">
                   Every section had its own personality, so the type choices needed to match. I paired clean Swiss geometry with high-contrast serifs and a couple of expressive picks to give the magazine some real character. Type something in the box the fonts are live.
                 </p>
               </div>
@@ -1399,7 +1440,7 @@ export const CrescendoPage = () => {
             <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">
               Every section tells a story.
             </h2>
-            <p className="text-white/40 font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
+            <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-2xl mb-10 md:mb-14">
               I treated each section like its own mini-brand different palette, different mood but kept the structure consistent so it all still reads as one magazine.
             </p>
           </ScrollReveal>
@@ -1419,7 +1460,7 @@ export const CrescendoPage = () => {
               <h2 className="font-noto text-3xl md:text-5xl font-black uppercase tracking-tighter shrink-0">
                 Five palettes, one voice.
               </h2>
-              <p className="text-white/40 font-mono text-xs md:text-sm max-w-xl md:text-right">
+              <p className="text-text-tertiary font-mono text-xs md:text-sm max-w-xl md:text-right">
                 Each section got its own colour story built to feel distinct but never disconnected. The shared layout grid keeps everything grounded.
               </p>
             </div>

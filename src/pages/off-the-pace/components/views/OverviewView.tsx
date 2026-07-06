@@ -6,15 +6,6 @@
  * Fits in: lazy-loaded by OffThePaceOverview inside a <Suspense> boundary.
  * Note:    Every child sits in a `.reveal-element` wrapper that starts hidden
  *          (via CSS) and gets a `.visible` class when it scrolls into view.
- *
- * For beginners ----------------------------------------------------------------
- * IntersectionObserver is a browser tool that watches elements and tells you
- * when they enter the viewport, far cheaper than checking on every scroll. The
- * useEffect below builds one observer, points it at every `.reveal-element` on
- * the page, and on first sighting adds `.visible` (which the CSS animates) then
- * calls `unobserve` so each element only animates once. `disconnect()` in the
- * cleanup tears it all down when the page leaves.
- * -----------------------------------------------------------------------------
  */
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion, type Variants } from 'framer-motion';
@@ -160,22 +151,22 @@ export function OverviewView() {
 
       <ClosingCTA />
 
-      <footer className="relative z-10 border-t border-white/10 bg-brand-bg/80 backdrop-blur-md py-6 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-[10px] text-white/40 tracking-wider">
+      <footer className="relative z-10 border-t border-white/10 bg-brand-bg/80 backdrop-blur-md py-6 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left font-jetbrains text-micro text-text-tertiary tracking-wider">
         <div className="flex flex-col sm:flex-row items-center gap-2">
-          <span className="text-white/30">Built by</span>
-          <span className="text-white/90 font-semibold">Justin Clarke</span>
-          <span className="hidden sm:inline text-white/10">|</span>
-          <span className="text-white/30">Licensed</span>
-          <span className="text-white/90 font-semibold">AGPL-3.0</span>
+          <span className="text-text-tertiary">Built by</span>
+          <span className="text-text-primary font-semibold">Justin Clarke</span>
+          <span className="hidden sm:inline text-text-muted">|</span>
+          <span className="text-text-tertiary">Licensed</span>
+          <span className="text-text-primary font-semibold">AGPL-3.0</span>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <span className="text-f1-red font-black tracking-tighter">OFF THE PACE</span>
-          <span className="hidden sm:inline text-white/10">·</span>
-          <span className="text-white/40">F1 Causal Pace Engine</span>
-          <span className="hidden sm:inline text-white/10">·</span>
-          <span className="text-white/90 font-semibold">{STATS.seasonRange}</span>
+          <span className="hidden sm:inline text-text-muted">·</span>
+          <span className="text-text-tertiary">F1 Causal Pace Engine</span>
+          <span className="hidden sm:inline text-text-muted">·</span>
+          <span className="text-text-primary font-semibold">{STATS.seasonRange}</span>
         </div>
-        <div className="flex items-center gap-2.5 text-emerald-400 font-bold uppercase tracking-widest text-[9px] bg-emerald-500/10 px-3 py-1.5 rounded-md border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] shrink-0">
+        <div className="flex items-center gap-2.5 text-emerald-400 font-bold uppercase tracking-widest text-micro bg-emerald-500/10 px-3 py-1.5 rounded-md border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.15)] shrink-0">
           <span className="relative flex h-1.5 w-1.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>

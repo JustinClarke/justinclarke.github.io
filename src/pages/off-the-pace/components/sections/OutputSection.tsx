@@ -6,14 +6,6 @@
  * Fits in: rendered by SourceView's Science & Output block.
  * Note:    DATA_SAMPLES holds illustrative figures; the dropdown picks which
  *          race feeds both the table and the decomposition bars.
- *
- * For beginners ----------------------------------------------------------------
- * Three useState values drive the interactivity: which sample is selected,
- * whether the dropdown is open, and (on mobile) whether the full table is shown.
- * In DecompositionBar each segment's pixel width is a share of the whole:
- * value / totalShown * COMPONENT_SPAN, so the bar visually adds up to 100%.
- * `keyof LapData` lets a segment name the data field it reads in a type-safe way.
- * -----------------------------------------------------------------------------
  */
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -86,18 +78,16 @@ const DATA_SAMPLES: Record<string, { race: string; lap: number; data: LapData[] 
 const COMPONENT_SPAN = 52;
 
 const BAR_SEGMENTS: { key: keyof LapData; label: string; bg: string; text: string; title: string }[] = [
-  { key: 'fuel',     label: 'FUEL', bg: 'bg-slate-700',   text: 'text-white/60', title: 'Fuel Weight Penalty' },
-  { key: 'compound', label: 'CMP',  bg: 'bg-emerald-600', text: 'text-white/90', title: 'Tyre Compound Stint Age' },
-  { key: 'rubber',   label: 'RBR',  bg: 'bg-emerald-800', text: 'text-white/80', title: 'Rubber Track Evolution' },
-  { key: 'ambient',  label: 'WX',   bg: 'bg-blue-600',    text: 'text-white/90', title: 'Weather & Air Density' },
+  { key: 'fuel',     label: 'FUEL', bg: 'bg-slate-700',   text: 'text-text-tertiary', title: 'Fuel Weight Penalty' },
+  { key: 'compound', label: 'CMP',  bg: 'bg-emerald-600', text: 'text-text-primary', title: 'Tyre Compound Stint Age' },
+  { key: 'rubber',   label: 'RBR',  bg: 'bg-emerald-800', text: 'text-text-secondary', title: 'Rubber Track Evolution' },
+  { key: 'ambient',  label: 'WX',   bg: 'bg-blue-600',    text: 'text-text-primary', title: 'Weather & Air Density' },
   { key: 'dirtyAir', label: 'AIR',  bg: 'bg-blue-500/70', text: 'text-white',    title: 'Turbulent Dirty Air Tax' },
 ];
 
 const DecompositionBar = ({ row }: { row: LapData }) => {
-  // LEARN: build the list of visible segments: take each segment's absolute
-  //    value, drop the negligible ones (filter), then `reduce` sums them plus
-  //    the driver-skill slice to get the total. `span()` converts any one value
-  //    into a percentage of COMPONENT_SPAN so all the bars share one scale.
+  // Drop negligible segments, then scale each remaining value (plus the
+  // driver-skill slice) to a shared percentage of COMPONENT_SPAN.
   const comps = BAR_SEGMENTS
     .map((s) => ({ ...s, value: Math.abs(row[s.key] as number) }))
     .filter((s) => s.value > 0.001);
@@ -108,7 +98,7 @@ const DecompositionBar = ({ row }: { row: LapData }) => {
 
   return (
     <div className="mb-6">
-      <div className="flex justify-between font-jetbrains text-xs text-white/60 mb-2">
+      <div className="flex justify-between font-jetbrains text-xs text-text-tertiary mb-2">
         <span className="font-bold text-white">{row.driver}</span>
         <span>
           {row.lapTime.toFixed(3)}s ·{' '}
@@ -119,7 +109,7 @@ const DecompositionBar = ({ row }: { row: LapData }) => {
       </div>
       <div className="h-6 bg-white/[0.03] border border-white/5 rounded flex overflow-hidden">
         <div
-          className="h-full bg-slate-800 flex items-center justify-center font-jetbrains text-[9px] font-bold text-white/60 border-r border-white/5 select-none"
+          className="h-full bg-slate-800 flex items-center justify-center font-jetbrains text-micro font-bold text-text-tertiary border-r border-white/5 select-none"
           style={{ width: `${100 - COMPONENT_SPAN}%` }}
           title="Constructor Baseline"
         >
@@ -128,7 +118,7 @@ const DecompositionBar = ({ row }: { row: LapData }) => {
         {comps.map((s) => (
           <div
             key={s.label}
-            className={`h-full ${s.bg} flex items-center justify-center font-jetbrains text-[9px] font-bold ${s.text} border-r border-white/5 select-none`}
+            className={`h-full ${s.bg} flex items-center justify-center font-jetbrains text-micro font-bold ${s.text} border-r border-white/5 select-none`}
             style={{ width: `${span(s.value)}%` }}
             title={s.title}
           >
@@ -136,7 +126,7 @@ const DecompositionBar = ({ row }: { row: LapData }) => {
           </div>
         ))}
         <div
-          className={`h-full ${skillFaster ? 'bg-f1-red text-white' : 'bg-f1-red/40 text-white/90'} flex items-center justify-center font-jetbrains text-[9px] font-bold select-none`}
+          className={`h-full ${skillFaster ? 'bg-f1-red text-white' : 'bg-f1-red/40 text-text-primary'} flex items-center justify-center font-jetbrains text-micro font-bold select-none`}
           style={{ width: `${span(skillValue)}%` }}
           title={skillFaster ? 'Isolated Driver Skill (Negative = Faster)' : 'Isolated Driver Skill (Positive = Slower)'}
         >
@@ -155,13 +145,13 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
   return (
     <section id={id} className="w-full scroll-mt-32 reveal-element">
       <div className="max-w-6xl mx-auto py-16">
-        <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block">
+        <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block">
           05 / The Output
         </span>
-        <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter mb-4">
+        <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
           A causal decomposition,<br />down to the millisecond.
         </h2>
-        <p className="text-white/55 text-sm max-w-2xl font-jetbrains leading-relaxed mb-8">
+        <p className="text-text-tertiary text-sm max-w-2xl font-jetbrains leading-relaxed mb-8">
           The engine doesn't output a chart. It outputs a pristine, 1-lap grain feature matrix : <code className="text-emerald-400 bg-emerald-400/5 px-1.5 py-0.5 rounded font-bold border border-emerald-400/10">fct_lap_residuals</code>  - where each component is a precisely isolated, physically-grounded additive term in seconds. Seven terms. CI-enforced identity. Positive = slower.
         </p>
 
@@ -170,14 +160,14 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
             <div className="w-2.5 h-2.5 rounded-full bg-viz-mac-red" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
             <div className="w-2.5 h-2.5 rounded-full bg-viz-mac-green" />
-            <span className="ml-2 text-[10px] text-white/40 uppercase tracking-widest">
+            <span className="ml-2 text-micro text-text-tertiary uppercase tracking-widest">
               fct_lap_residuals • DuckDB • data/dev.duckdb
             </span>
-            <span className="ml-auto text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">
+            <span className="ml-auto text-micro text-emerald-400 uppercase tracking-wider font-semibold">
               ● {STATS.tests} tests passing
             </span>
           </div>
-          <div className="p-6 text-xs md:text-sm text-white/80 overflow-x-auto whitespace-pre leading-loose">
+          <div className="p-6 text-xs md:text-sm text-text-secondary overflow-x-auto whitespace-pre leading-loose">
             <div><span className="text-emerald-400">$</span> <span className="text-white">duckdb data/dev.duckdb</span></div>
             <div className="mt-2">
               <span className="text-pink-400">SELECT</span>
@@ -186,7 +176,7 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
             <div><span className="text-white">       fuel_component_s, compound_component_s, rubber_component_s,</span></div>
             <div><span className="text-white">       ambient_component_s, constructor_component_s,</span></div>
             <div><span className="text-white">       dirty_air_tax_s,</span></div>
-            <div><span className="text-white">       </span><span className="text-pink-400">driver_skill_residual_s</span><span className="text-white">,  </span><span className="text-white/30 italic">-- the human element</span></div>
+            <div><span className="text-white">       </span><span className="text-pink-400">driver_skill_residual_s</span><span className="text-white">,  </span><span className="text-text-tertiary italic">-- the human element</span></div>
             <div><span className="text-white">       ml_eligible</span></div>
             <div><span className="text-pink-400">FROM</span> <span className="text-blue-400">fct_lap_residuals</span></div>
             <div><span className="text-pink-400">WHERE</span> <span className="text-white">ml_eligible = </span><span className="text-orange-400">TRUE</span></div>
@@ -198,11 +188,11 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
         <div id="fct-lap-residuals-table" className={`mt-6 border border-white/10 rounded-xl overflow-hidden bg-graphite-850 scroll-mt-32 ${showTable ? '' : 'hidden lg:block'}`}>
           <div className="px-4 py-4 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <span className="font-jetbrains text-[10px] text-white/40 uppercase tracking-widest">View sample:</span>
+              <span className="font-jetbrains text-micro text-text-tertiary uppercase tracking-widest">View sample:</span>
               <div className="relative">
                 <button
                   onClick={() => setShowSampleDropdown(!showSampleDropdown)}
-                  className="flex items-center gap-2 px-4 py-2 border-2 border-f1-red/40 rounded-lg bg-f1-red/5 hover:bg-f1-red/10 hover:border-f1-red/60 transition-all font-jetbrains text-xs text-white/90 uppercase tracking-widest font-bold"
+                  className="flex items-center gap-2 px-4 py-2 border-2 border-f1-red/40 rounded-lg bg-f1-red/5 hover:bg-f1-red/10 hover:border-f1-red/60 transition-all font-jetbrains text-xs text-text-primary uppercase tracking-widest font-bold"
                 >
                   {DATA_SAMPLES[selectedSample]?.race}
                   <ChevronDown className={`w-4 h-4 transition-transform ${showSampleDropdown ? 'rotate-180' : ''}`} />
@@ -216,13 +206,13 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
                           setSelectedSample(key);
                           setShowSampleDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-3 font-jetbrains text-[10px] uppercase tracking-wider hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 ${
-                          key === selectedSample ? 'text-emerald-400 bg-emerald-500/10 border-l-2 border-l-emerald-400' : 'text-white/60'
+                        className={`w-full text-left px-4 py-3 font-jetbrains text-micro uppercase tracking-wider hover:bg-white/10 transition-colors border-b border-white/5 last:border-b-0 ${
+                          key === selectedSample ? 'text-emerald-400 bg-emerald-500/10 border-l-2 border-l-emerald-400' : 'text-text-tertiary'
                         }`}
                       >
                         <div className="flex items-center justify-between">
                           <span>{sample.race}</span>
-                          <span className="text-white/40">Lap {sample.lap}</span>
+                          <span className="text-text-tertiary">Lap {sample.lap}</span>
                         </div>
                       </button>
                     ))}
@@ -230,14 +220,14 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
                 )}
               </div>
             </div>
-            <span className="inline-block text-[9px] font-jetbrains uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+            <span className="inline-block text-micro font-jetbrains uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
               ● Live Result
             </span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left font-jetbrains text-xs border-collapse">
               <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02] text-white/40 uppercase text-[10px] tracking-wider">
+                <tr className="border-b border-white/5 bg-white/[0.02] text-text-tertiary uppercase text-micro tracking-wider">
                   <th className="py-3 px-4 font-normal">driver_id</th>
                   <th className="py-3 px-4 font-normal text-right">lap_time_s</th>
                   <th className="py-3 px-4 font-normal text-right">fuel_comp_s</th>
@@ -253,8 +243,8 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
               <tbody className="divide-y divide-white/5">
                 {DATA_SAMPLES[selectedSample]?.data.map((row) => (
                   <tr key={row.driver} className="hover:bg-white/[0.01] transition-colors duration-150">
-                    <td className="py-3 px-4 font-bold text-white/80">{row.driver}</td>
-                    <td className="py-3 px-4 text-right text-white/70">{row.lapTime.toFixed(3)}</td>
+                    <td className="py-3 px-4 font-bold text-text-secondary">{row.driver}</td>
+                    <td className="py-3 px-4 text-right text-text-secondary">{row.lapTime.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right text-red-400">+{row.fuel.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right text-red-400">+{row.compound.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right text-red-400">+{row.rubber.toFixed(3)}</td>
@@ -277,17 +267,17 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
         </div>
 
         <button
-          className="lg:hidden mt-3 font-jetbrains text-[10px] uppercase tracking-wider text-white/40 border border-white/10 px-4 py-2 rounded hover:text-white/70 hover:border-white/20 transition-colors duration-200"
+          className="lg:hidden mt-3 font-jetbrains text-micro uppercase tracking-wider text-text-tertiary border border-white/10 px-4 py-2 rounded hover:text-text-secondary hover:border-white/20 transition-colors duration-200"
           onClick={() => setShowTable(v => !v)}
         >
           {showTable ? '↑ Hide full matrix' : '↓ Show full matrix (11 columns)'}
         </button>
 
         <div className="mt-12">
-          <div className="font-jetbrains text-[10px] text-white/30 uppercase tracking-wider mb-2">
+          <div className="font-jetbrains text-micro text-text-tertiary uppercase tracking-wider mb-2">
             Lap decomposition · {DATA_SAMPLES[selectedSample]?.race} · Lap {DATA_SAMPLES[selectedSample]?.lap}
           </div>
-          <p className="font-jetbrains text-[11px] text-white/50 mb-6">
+          <p className="font-jetbrains text-fine text-text-tertiary mb-6">
             Same lap, decomposed - the red <span className="text-f1-red font-semibold">SKILL</span> segment is the only part the driver controls.
           </p>
 
@@ -296,31 +286,31 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
           ))}
 
           <div className="flex flex-wrap gap-x-6 gap-y-3 mt-4">
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-slate-800 rounded-sm" />
               Car baseline
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-slate-700 rounded-sm" />
               Fuel weight
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-emerald-600 rounded-sm" />
               Tyre compound
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-emerald-800 rounded-sm" />
               Track evolution
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-blue-600 rounded-sm" />
               Weather
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-blue-500 rounded-sm" />
               Dirty air
             </span>
-            <span className="font-jetbrains text-[10px] text-white/50 flex items-center gap-2">
+            <span className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
               <span className="inline-block w-2.5 h-2.5 bg-f1-red rounded-sm" />
               Driver residual
             </span>

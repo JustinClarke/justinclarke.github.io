@@ -4,12 +4,6 @@
  * Fits in: nudges the visitor toward an interaction (e.g. "scroll to explore").
  * Note:    shows different text on mobile vs desktop via two spans toggled by
  *          Tailwind's `hidden md:inline` / `inline md:hidden` responsive classes.
- *
- * For beginners ----------------------------------------------------------------
- * `icon: Icon` renames the `icon` prop to `Icon` (capital I) so JSX will treat
- * it as a component you can render as <Icon />. Lowercase names are read as
- * plain HTML tags, so the capital letter matters.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { ScrollReveal } from './ScrollReveal';
@@ -46,7 +40,7 @@ export const InteractiveHint: React.FC<InteractiveHintProps> = ({
           <Icon className="w-3.5 h-3.5 md:w-4 md:h-4 text-brand-primary relative transition-transform duration-500 group-hover:-rotate-12" strokeWidth={2.5} />
         </div>
         
-        <span className="font-mono text-[9px] md:text-[10px] sm:text-xs text-fg/80 md:text-fg tracking-[0.2em] md:tracking-[0.25em] uppercase font-bold md:font-black relative z-10 drop-shadow-[var(--hint-shadow)] whitespace-nowrap">
+        <span className="font-mono text-micro md:text-micro sm:text-xs text-fg-soft md:text-fg tracking-mega md:tracking-[0.25em] uppercase font-bold md:font-black relative z-10 drop-shadow-[var(--hint-shadow)] whitespace-nowrap">
           <span className="hidden md:inline">{text}</span>
           <span className="inline md:hidden">{mobileText || text}</span>
         </span>

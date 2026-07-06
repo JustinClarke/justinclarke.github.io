@@ -5,13 +5,6 @@
  * Fits in: rendered by SourceView's Validation block.
  * Note:    Each status maps to its own badge classes, inline colours, and label
  *          prefix via three small Record lookup tables keyed by BuildStatus.
- *
- * For beginners ----------------------------------------------------------------
- * `Record<BuildStatus, ...>` is a typed dictionary: its keys must be exactly the
- * four BuildStatus strings, so if a new status is added TypeScript forces you to
- * fill in every table here. Looking a value up by `table[status]` replaces what
- * would otherwise be a stack of if/else branches in the markup.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { STATS, BUILD_STATUS, type BuildStatus } from '../../data/projectStats';
@@ -51,8 +44,8 @@ interface StatusItemProps {
 
 const StatusItem: React.FC<StatusItemProps> = ({ label, status }) => (
   <div className="flex justify-between items-center py-2.5 border-b border-white/5 last:border-b-0 gap-3">
-    <span className="font-jetbrains text-xs text-white/70">{label}</span>
-    <span className={`font-jetbrains text-[9px] uppercase tracking-wider border ${badgeStyles[status]} shrink-0`} style={badgeStylesInline[status]}>
+    <span className="font-jetbrains text-xs text-text-secondary">{label}</span>
+    <span className={`font-jetbrains text-micro uppercase tracking-wider border ${badgeStyles[status]} shrink-0`} style={badgeStylesInline[status]}>
       {labelPrefix[status]}
     </span>
   </div>
@@ -62,13 +55,13 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
   return (
     <section id={id} className="w-full scroll-mt-32 reveal-element">
       <div className="max-w-6xl mx-auto py-16">
-        <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block">
+        <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block">
           07 / Validation
         </span>
-        <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter mb-4">
+        <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
           Trained 2018–2024.<br />2025 is the holdout.
         </h2>
-        <p className="text-white/55 text-sm max-w-xl font-jetbrains leading-relaxed mb-8">
+        <p className="text-text-tertiary text-sm max-w-xl font-jetbrains leading-relaxed mb-8">
           The 2025 season is a designated reproducible out-of-sample holdout. Until it ingests, headline numbers come from the final TimeSeriesSplit fold (2024). The switch to a true holdout requires no code change.
         </p>
 
@@ -79,19 +72,19 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
               <div className="w-2.5 h-2.5 rounded-full bg-viz-mac-red" />
               <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'var(--color-viz-warning)' }} />
               <div className="w-2.5 h-2.5 rounded-full bg-viz-mac-green" />
-              <span className="ml-2 text-[10px] text-white/40 uppercase tracking-widest">
+              <span className="ml-2 text-micro text-text-tertiary uppercase tracking-widest">
                 make test-all • CI Gate
               </span>
             </div>
-            <div className="p-6 text-xs md:text-sm text-white/80 leading-loose flex-1 overflow-x-auto">
+            <div className="p-6 text-xs md:text-sm text-text-secondary leading-loose flex-1 overflow-x-auto">
               <div><span className="text-[color:var(--color-viz-success)]">$</span> <span className="text-white">make test-all</span></div>
-              <div className="text-white/30 mt-1">cd transform && dbt build --profiles-dir profiles --target ci</div>
+              <div className="text-text-tertiary mt-1">cd transform && dbt build --profiles-dir profiles --target ci</div>
               <div className="mt-4 text-[color:var(--color-viz-success)] font-semibold">✓ {STATS.dbtModels} models complete</div>
               <div className="text-[color:var(--color-viz-success)] font-semibold">✓ {STATS.tests} dbt tests pass</div>
               <div className="text-[color:var(--color-viz-success)] font-semibold">✓ assert_lap_7term_identity .... PASS</div>
               <div className="text-[color:var(--color-viz-success)] font-semibold">✓ fct_lap_residuals row count stable</div>
               <div className="text-[color:var(--color-viz-success)] font-semibold">✓ fct_driver_skill_features contract</div>
-              <div className="mt-2 text-white/30">cd ml && python -m pytest tests/</div>
+              <div className="mt-2 text-text-tertiary">cd ml && python -m pytest tests/</div>
               <div className="text-[color:var(--color-viz-success)] font-semibold">✓ {STATS.mlTests} ML tests pass</div>
               <div className="mt-4 text-[color:var(--color-viz-success)] font-bold">Done. {STATS.dbtModels} models, {STATS.tests} + {STATS.mlTests} tests, 0 failures.</div>
               <span className="t-cursor mt-1" />
@@ -102,7 +95,7 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
             <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-f1-red/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
             <div>
-              <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/30 block mb-4">
+              <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary block mb-4">
                 Project Status  - built vs planned
               </span>
               <div className="flex flex-col">
@@ -110,7 +103,7 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
                   <StatusItem key={item.label} label={item.label} status={item.status} />
                 ))}
               </div>
-              <p className="font-jetbrains text-[10px] text-white/35 mt-5 leading-relaxed">
+              <p className="font-jetbrains text-micro text-text-tertiary mt-5 leading-relaxed">
                 Planned items are designed and specced; not yet implemented. The transform, ML, and frontend stack are fully shipped.
               </p>
             </div>

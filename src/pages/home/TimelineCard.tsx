@@ -4,24 +4,14 @@
  * Fits in: rendered by CareerTimeline, once per entry, in both columns.
  * Note:    work entries are teal (brand-primary), education entries are amber.
  *          Every conditional class below hangs off the single `isWork` switch.
- *
- * For beginners ----------------------------------------------------------------
- * This is a "controlled" component: it keeps NO state of its own. The parent
- * passes in `isExpanded` (am I the open card?) and `onToggle` (call this when
- * clicked), so the card is purely "props in, markup out" the same template
- * stamped out for every entry with different data filled in.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/utils';
 import { Briefcase, GraduationCap, ChevronDown, Zap } from 'lucide-react';
-import { TOOLTIPS, getTooltip } from '@/config/tooltips';
-import { type Entry } from '@/data/timeline';
+import { TOOLTIPS, getTooltip } from '@/utils/tooltipContent';
+import { type Entry } from '@/content/career';
 
-// LEARN: a TypeScript `interface` is the contract for the props this component
-//    accepts misspell a prop or forget one at the call site and the compiler
-//    complains before the browser ever runs it.
 interface TimelineCardProps {
   entry: Entry;
   isExpanded: boolean;
@@ -34,9 +24,8 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
   return (
     <div className="relative pl-10 md:pl-16 pb-2">
       {/* Timeline spine connector */}
-      {/* LEARN: cn() joins class strings and drops falsy ones. The pattern all
-          through this file is: base classes, then a teal-or-amber ternary on
-          `isWork`, then extra classes that apply only while `isExpanded`. */}
+      {/* The class pattern throughout this file: base classes, then a teal-or-amber
+          ternary on `isWork`, then extras that apply only while `isExpanded`. */}
       <div className={cn(
         "absolute left-[11.5px] md:left-[20.5px] top-0 bottom-0 w-px",
         isWork ? "bg-brand-primary/15" : "bg-amber/15"
@@ -88,37 +77,38 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
         )} />
 
         {/* Header (always visible) */}
-        {/* LEARN: data-tooltip is a plain HTML data attribute; a site-wide
-            script (src/utils/tooltips) finds these and shows hover bubbles.
-            `as keyof typeof TOOLTIPS` tells TypeScript the id is a valid key. */}
+        {/* data-tooltip is read by the site-wide tooltip script (utils/tooltips)
+            to show hover bubbles. */}
         <div className="p-5 md:p-6" data-tooltip={TOOLTIPS[entry.id as keyof typeof TOOLTIPS] || ''}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1 min-w-0">
               {/* Period + badges row */}
               <div className="flex flex-wrap items-center gap-2 mb-2">
                 <span className={cn(
-                  "font-mono text-[9px] tracking-[0.2em] uppercase font-bold",
-                  isWork ? "text-brand-primary/70" : "text-amber/70"
+                  "font-mono text-micro tracking-mega uppercase font-bold transition-colors duration-300",
+                  isWork
+                    ? "text-brand-primary/45 group-hover:text-brand-primary/75"
+                    : "text-amber/45 group-hover:text-amber/75"
                 )}>
                   {entry.period}
                 </span>
                 {entry.ongoing && (
                   <span className={cn(
-                    "inline-flex items-center gap-1.5 font-mono text-[8px] tracking-[0.15em] font-bold uppercase px-2 py-0.5 rounded-full",
+                    "inline-flex items-center gap-1.5 font-mono text-micro tracking-[0.15em] font-bold uppercase px-2 py-0.5 rounded-full transition-colors duration-300",
                     isWork
-                      ? "bg-brand-primary/10 text-brand-primary border border-brand-primary/20"
-                      : "bg-amber/10 text-amber border border-amber/20"
+                      ? "bg-brand-primary/[0.04] text-brand-primary/55 border border-brand-primary/10"
+                      : "bg-amber/[0.04] text-amber/55 border border-amber/10"
                   )}>
                     <span className={cn(
                       "w-1 h-1 rounded-full animate-pulse",
-                      isWork ? "bg-brand-primary" : "bg-amber"
+                      isWork ? "bg-brand-primary/50" : "bg-amber/50"
                     )} />
                     Active
                   </span>
                 )}
                 {entry.badge && (
                   <span className={cn(
-                    "font-mono text-[8px] tracking-[0.15em] font-bold uppercase px-2 py-0.5 rounded-full",
+                    "font-mono text-micro tracking-[0.15em] font-bold uppercase px-2 py-0.5 rounded-full",
                     isWork
                       ? "bg-brand-primary/8 text-brand-primary/60 border border-brand-primary/15"
                       : "bg-amber/8 text-amber/70 border border-amber/15"
@@ -127,7 +117,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                   </span>
                 )}
                 {entry.concurrent && (
-                  <span className="font-mono text-[8px] tracking-wider text-fg/25 font-bold uppercase">
+                  <span className="font-mono text-micro tracking-wider text-fg-mid font-bold uppercase">
                     ⟷ {entry.concurrent}
                   </span>
                 )}
@@ -141,15 +131,12 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
               )}>
                 {entry.title}
               </h3>
-              <span className="font-mono text-[10px] tracking-tight text-fg/35 font-bold uppercase block mt-0.5">
+              <span className="font-mono text-micro tracking-tight text-fg-mid font-bold uppercase block mt-0.5">
                 {entry.subtitle}
               </span>
             </div>
 
-            {/* Expand chevron */}
-            {/* LEARN: motion.div is Framer Motion's animated <div>. Setting
-                `animate` tells it the target pose; it tweens there on its own
-                whenever the value changes (here: spin the arrow when opened). */}
+            {/* Expand chevron spins 180° when opened */}
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
@@ -172,9 +159,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
           <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-fg/5 rounded-br-2xl group-hover:border-fg/10 transition-colors pointer-events-none" />
 
 
-          {/* Inline metrics (always visible for work entries with metrics) */}
-          {/* LEARN: `a && b && <Thing />` renders <Thing /> only when both
-              checks pass entries without metrics simply skip this block. */}
+          {/* Inline metrics (only for work entries that have them) */}
           {isWork && entry.metrics && (
             <div className="flex flex-wrap gap-4 mt-4">
               {entry.metrics.map((m, i) => (
@@ -183,7 +168,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                   <span className="font-noto text-sm font-black text-fg tabular-nums tracking-tight">
                     {m.value}
                   </span>
-                  <span className="font-mono text-[10px] text-fg/30 font-bold uppercase tracking-wider">
+                  <span className="font-mono text-micro text-fg-mid font-bold uppercase tracking-wider">
                     {m.label}
                   </span>
                 </div>
@@ -199,10 +184,10 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                 <span
                   key={tag}
                   className={cn(
-                    "font-mono text-[8px] px-2 py-0.5 rounded-md font-bold tracking-widest uppercase transition-colors duration-300",
+                    "font-mono text-[9px] {/* tw-allow-micro */} px-1.5 py-0.5 rounded font-bold tracking-widest uppercase transition-colors duration-300",
                     isWork
-                      ? "bg-brand-primary/5 border border-[rgba(0,200,180,0.1)] text-brand-primary/40 group-hover:text-brand-primary/60"
-                      : "bg-amber/5 border border-[rgba(245,158,11,0.1)] text-amber/40 group-hover:text-amber/60"
+                      ? "bg-brand-primary/[0.03] border border-[rgba(0,200,180,0.06)] text-brand-primary/30 group-hover:bg-brand-primary/[0.06] group-hover:text-brand-primary/50"
+                      : "bg-amber/[0.03] border border-[rgba(245,158,11,0.06)] text-amber/30 group-hover:bg-amber/[0.06] group-hover:text-amber/50"
                   )}
                   data-tooltip={tagTooltip}
                 >
@@ -213,10 +198,9 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
           </div>
         </div>
 
-        {/* Expanded content (CSS Grid Accordion for Safari) */}
-        {/* LEARN: the open/close animation is pure CSS. `.exp-body` (defined in
-            index.css) is a grid whose row height animates between 0fr and 1fr
-            based on the data-open attribute React only flips the attribute. */}
+        {/* Expanded content. The open/close animation is pure CSS: `.exp-body`
+            (index.css) is a grid whose row height tweens 0fr↔1fr off data-open
+            React only flips the attribute. Grid-based so Safari animates it. */}
         <div
           className="exp-body"
           data-open={isExpanded}
@@ -227,10 +211,9 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
               isWork ? "border-t border-[rgba(0,200,180,0.1)]" : "border-t border-[rgba(245,158,11,0.1)]"
             )}>
               <div className="space-y-2.5">
-                {/* LEARN: each bullet gets a JS-computed stagger via a CSS
-                    variable: the inline style sets --delay per bullet, and the
-                    delay-[var(--delay)] utility consumes it (the Tailwind
-                    contract's "dynamic values flow through CSS vars" rule). */}
+                {/* Per-bullet stagger flows through a --delay CSS var consumed by
+                    delay-[var(--delay)] the contract's "dynamic values via CSS
+                    var" rule, not an inline style prop. */}
                 {entry.bullets.map((b, i) => (
                   <div
                     key={i}
@@ -244,7 +227,7 @@ export const TimelineCard: React.FC<TimelineCardProps> = ({ entry, isExpanded, o
                       "mt-[7px] w-3 h-px flex-shrink-0",
                       isWork ? "bg-brand-primary/40" : "bg-amber/30"
                     )} />
-                    <p className="font-mono text-[11px] leading-relaxed text-fg/50">
+                    <p className="font-mono text-fine leading-relaxed text-fg-mid">
                       {b}
                     </p>
                   </div>

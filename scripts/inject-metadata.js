@@ -1,6 +1,20 @@
+/**
+ * inject-metadata.js post-build metadata injection, driven by the
+ * src/content/routes.ts manifest (imported directly — Node 24 strips the
+ * TypeScript types natively).
+ *
+ * For every non-hidden route (aliases included) it stamps a copy of the built
+ * index.html with that route's canonical title/description/og tags, so
+ * scrapers that don't run JS see the same metadata visitors do. It also
+ * injects the manifest's modulepreload/image-preload hints and generates
+ * dist/sitemap.xml from the same manifest (there is deliberately NO committed
+ * sitemap a stale copy can't exist).
+ */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ROUTES } from '../src/content/routes.ts';
+import { SITE } from '../src/content/site.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -8,63 +22,32 @@ const __dirname = path.dirname(__filename);
 const DIST_DIR = path.join(__dirname, '../dist');
 const INDEX_HTML = path.join(DIST_DIR, 'index.html');
 
-const ROUTES = [
-  {
-    path: '/',
-    title: 'Justin Clarke ⋅ Home',
-    description: 'Portfolio of Justin Clarke. Case studies in data product engineering, data architecture, and high-fidelity data systems.'
-  },
-  {
-    path: '/project/spotify-engine',
-    title: 'Spotify: Predictive Engine',
-    description: 'Machine Learning research solving the cold-start problem through 3-dimensional hierarchical similarity.'
-  },
-  {
-    path: '/project/sql-disaster',
-    title: 'SQL Disaster Response System',
-    description: 'An 11-entity relational database modeling Philippine disaster relief logistics with composite keys and live dashboard.'
-  },
-  {
-    path: '/project/litestore',
-    title: 'LiteStore: Retail-as-a-Service',
-    description: 'Production Next.js platform with 30+ statically prerendered routes and GA4 telemetry layer.'
-  },
-  {
-    path: '/project/capital-budgeting',
-    title: 'Capital Architecture Model',
-    description: 'Engineering a ₱581M feasibility engine for maritime dredging operations and capital allocation.'
-  },
-  {
-    path: '/project/hr-archetype',
-    title: 'HR Archetype System',
-    description: 'AI-driven HR analytics engine predicting employee attrition using Gemini and behavioural intelligence.'
-  },
-  {
-    path: '/the-long-version',
-    title: 'Justin Clarke ⋅ the long version',
-    description: 'A collection of non-technical interests, creative writing, and experimental components.'
-  },
-  {
-    path: '/f1',
-    title: 'Overview',
-    description: 'A causal ML engine isolating the true forces behind Formula 1 lap times: fuel mass, tyre degradation, dirty air, and driver skill down to the millisecond.'
-  },
-  {
-    path: '/off-the-pace',
-    title: 'Architecture & Engineering',
-    description: 'The engineering behind the F1 Causal Pace Engine: 46 dbt models, 340 CI tests, XGBoost tyre cliff prediction, and a Frisch-Waugh ghost car simulator.'
-  },
-  {
-    path: '/connect',
-    title: 'Justin Clarke ⋅ Connect',
-    description: 'Get in touch or save contact details for Justin Clarke, Analytics Engineer based in Dubai.'
-  },
-  {
-    path: '/contact',
-    title: 'Justin Clarke ⋅ Connect',
-    description: 'Get in touch or save contact details for Justin Clarke, Analytics Engineer based in Dubai.'
+/** Resolve an alias route to its target's metadata (title/desc/preloads). */
+function metaSource(route) {
+  if (!route.aliasOf) return route;
+  const target = ROUTES.find(r => r.path === route.aliasOf);
+  if (!target) throw new Error(`Route ${route.path} aliases unknown path ${route.aliasOf}`);
+  return target;
+}
+
+function buildPreloads(route) {
+  const assetsDir = path.join(DIST_DIR, 'assets');
+  if (!fs.existsSync(assetsDir)) return '';
+  const files = fs.readdirSync(assetsDir);
+  let preloads = '';
+
+  for (const prefix of route.preloadChunks ?? []) {
+    const chunk = files.find(f => f.startsWith(prefix) && f.endsWith('.js'));
+    if (chunk) {
+      preloads += `\n  <link rel="modulepreload" href="/assets/${chunk}">`;
+    }
   }
-];
+  if (route.preloadImage) {
+    const ext = path.extname(route.preloadImage).slice(1);
+    preloads += `\n  <link rel="preload" href="${route.preloadImage}" as="image" fetchpriority="high" type="image/${ext}">`;
+  }
+  return preloads;
+}
 
 function injectMetadata() {
   if (!fs.existsSync(INDEX_HTML)) {
@@ -74,70 +57,35 @@ function injectMetadata() {
 
   const baseHtml = fs.readFileSync(INDEX_HTML, 'utf8');
 
-  ROUTES.forEach(route => {
+  const injectRoutes = ROUTES.filter(r => !r.hidden);
+
+  injectRoutes.forEach(route => {
+    const meta = metaSource(route);
+    if (!meta.title || !meta.description) {
+      throw new Error(`Route ${route.path} is missing title/description in the manifest`);
+    }
     let html = baseHtml;
 
     // Replace Title
-    html = html.replace(/<title>(.*?)<\/title>/, `<title>${route.title}</title>`);
+    html = html.replace(/<title>(.*?)<\/title>/, `<title>${meta.title}</title>`);
 
     // Replace Description
-    html = html.replace(/<meta name="description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta name="description" content="${route.description}" />`);
+    html = html.replace(/<meta name="description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta name="description" content="${meta.description}" />`);
 
     // Replace OG Tags
-    html = html.replace(/<meta property="og:title"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:title" content="${route.title}" />`);
-    html = html.replace(/<meta property="og:description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:description" content="${route.description}" />`);
-    html = html.replace(/<meta property="og:url"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:url" content="https://justinclarke.github.io${route.path}" />`);
+    html = html.replace(/<meta property="og:title"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:title" content="${meta.title}" />`);
+    html = html.replace(/<meta property="og:description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:description" content="${meta.description}" />`);
+    html = html.replace(/<meta property="og:url"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="og:url" content="${SITE.url}${route.path}" />`);
 
     // Replace Twitter Tags
-    html = html.replace(/<meta property="twitter:title"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:title" content="${route.title}" />`);
-    html = html.replace(/<meta property="twitter:description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:description" content="${route.description}" />`);
-    html = html.replace(/<meta property="twitter:url"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:url" content="https://justinclarke.github.io${route.path}" />`);
+    html = html.replace(/<meta property="twitter:title"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:title" content="${meta.title}" />`);
+    html = html.replace(/<meta property="twitter:description"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:description" content="${meta.description}" />`);
+    html = html.replace(/<meta property="twitter:url"([\s\S]*?)content="(.*?)"([\s\S]*?)\/?>/, `<meta property="twitter:url" content="${SITE.url}${route.path}" />`);
 
-    // Inject Performance Preloads for F1 routes
-    if (route.path === '/f1' || route.path === '/off-the-pace') {
-      const assetsDir = path.join(DIST_DIR, 'assets');
-      let preloads = '';
-
-      if (fs.existsSync(assetsDir)) {
-        const files = fs.readdirSync(assetsDir);
-
-        if (route.path === '/f1') {
-          // Find F1 Overview lazy chunks
-          const f1OverviewChunk = files.find(f => f.startsWith('OffThePaceOverview-') && f.endsWith('.js'));
-          const overviewViewChunk = files.find(f => f.startsWith('OverviewView-') && f.endsWith('.js'));
-          const featuredProjectsChunk = files.find(f => f.startsWith('FeaturedProjects-') && f.endsWith('.js'));
-
-          if (f1OverviewChunk) {
-            preloads += `\n  <link rel="modulepreload" href="/assets/${f1OverviewChunk}">`;
-          }
-          if (overviewViewChunk) {
-            preloads += `\n  <link rel="modulepreload" href="/assets/${overviewViewChunk}">`;
-          }
-          if (featuredProjectsChunk) {
-            preloads += `\n  <link rel="modulepreload" href="/assets/${featuredProjectsChunk}">`;
-          }
-          // Preload high-priority AVIF poster image
-          preloads += `\n  <link rel="preload" href="/assets/audif1.avif" as="image" fetchpriority="high" type="image/avif">`;
-
-        } else if (route.path === '/off-the-pace') {
-          // Find F1 Source engineering lazy chunks
-          const f1SourceChunk = files.find(f => f.startsWith('OffThePaceSource-') && f.endsWith('.js'));
-          const sourceViewChunk = files.find(f => f.startsWith('SourceView-') && f.endsWith('.js'));
-
-          if (f1SourceChunk) {
-            preloads += `\n  <link rel="modulepreload" href="/assets/${f1SourceChunk}">`;
-          }
-          if (sourceViewChunk) {
-            preloads += `\n  <link rel="modulepreload" href="/assets/${sourceViewChunk}">`;
-          }
-          // Preload high-priority AVIF poster image
-          preloads += `\n  <link rel="preload" href="/assets/audif1.avif" as="image" fetchpriority="high" type="image/avif">`;
-        }
-      }
-
-      if (preloads) {
-        html = html.replace('</head>', `${preloads}\n</head>`);
-      }
+    // Inject the manifest's performance preloads (modulepreload chunks + poster image)
+    const preloads = buildPreloads(meta);
+    if (preloads) {
+      html = html.replace('</head>', `${preloads}\n</head>`);
     }
 
     if (route.path === '/') {
@@ -152,4 +100,34 @@ function injectMetadata() {
   });
 }
 
+function generateSitemap() {
+  const sitemapRoutes = ROUTES.filter(r => !r.hidden && !r.aliasOf);
+
+  const urls = sitemapRoutes.map(route => {
+    if (!route.sitemap) {
+      throw new Error(`Route ${route.path} is missing sitemap data in the manifest`);
+    }
+    const loc = route.path === '/' ? `${SITE.url}/` : `${SITE.url}${route.path}`;
+    return [
+      '  <url>',
+      `    <loc>${loc}</loc>`,
+      `    <lastmod>${route.sitemap.lastmod}</lastmod>`,
+      `    <priority>${route.sitemap.priority.toFixed(1)}</priority>`,
+      '  </url>',
+    ].join('\n');
+  });
+
+  const xml = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...urls,
+    '</urlset>',
+    '',
+  ].join('\n');
+
+  fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), xml);
+  console.log(`✓ Generated sitemap.xml (${sitemapRoutes.length} URLs)`);
+}
+
 injectMetadata();
+generateSitemap();

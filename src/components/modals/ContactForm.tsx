@@ -6,13 +6,6 @@
  * Note:    two anti-spam guards live here a hidden "honeypot" field (bots fill
  *          it, humans can't see it) and a 3-minute cooldown stored in
  *          localStorage so the same device can't spam submissions.
- *
- * For beginners ----------------------------------------------------------------
- * This is a "controlled form": every input's value comes from React state
- * (formData) and every keystroke updates that state via onChange. `touched`
- * tracks which fields the user has left, so we only show an error AFTER they've
- * interacted not the instant the form appears.
- * -----------------------------------------------------------------------------
  */
 import React, { useState } from 'react';
 import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
@@ -46,8 +39,6 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // LEARN: e.preventDefault() stops the browser's default form behaviour
-    //    (a full-page reload) so React can handle the submit itself.
     // 1. Honeypot check (silently drop bot submissions)
     if (botField) {
       console.warn("Spam attempt neutralized.");
@@ -82,7 +73,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         <div className="text-center">
           <h3 className="text-xl font-bold text-white mb-2">Message Sent!</h3>
           <p className="text-gray-400 text-sm">Thank you for reaching out.</p>
-          <p className="font-mono text-[10px] text-brand-primary/70 uppercase tracking-widest mt-3 flex items-center justify-center gap-1.5">
+          <p className="font-mono text-micro text-brand-primary/70 uppercase tracking-widest mt-3 flex items-center justify-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-brand-primary/70 animate-pulse" />
             You'll hear back within 24 hours.
           </p>
@@ -110,10 +101,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         {/* Name Field */}
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
-            <label htmlFor="name" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+            <label htmlFor="name" className="font-mono text-micro uppercase tracking-mega text-text-tertiary group-focus-within:text-brand-primary transition-colors">
               [NAME]
             </label>
-            {touched.name && errors.name && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_VAL</span>}
+            {touched.name && errors.name && <span className="text-micro text-red-400/80 font-mono uppercase">ERR_VAL</span>}
           </div>
           <div className="relative">
             <input
@@ -126,7 +117,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
               onBlur={() => handleBlur('name')}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className={cn(
-                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-[16px] md:text-[14px] tracking-wide placeholder:text-white/20 transition-all duration-300 outline-none",
+                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-base md:text-sm tracking-wide placeholder:text-text-ghost transition-all duration-300 outline-none",
                 touched.name 
                   ? errors.name 
                     ? 'border-red-500/30 focus:border-red-500/60' 
@@ -140,10 +131,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         {/* Email Field */}
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
-            <label htmlFor="email" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+            <label htmlFor="email" className="font-mono text-micro uppercase tracking-mega text-text-tertiary group-focus-within:text-brand-primary transition-colors">
               [EMAIL]
             </label>
-            {touched.email && errors.email && <span className="text-[9px] text-red-400/80 font-mono uppercase">ERR_FMT</span>}
+            {touched.email && errors.email && <span className="text-micro text-red-400/80 font-mono uppercase">ERR_FMT</span>}
           </div>
           <div className="relative">
             <input
@@ -156,7 +147,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
               onBlur={() => handleBlur('email')}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className={cn(
-                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-[16px] md:text-[14px] tracking-wide placeholder:text-white/20 transition-all duration-300 outline-none",
+                "flex h-14 w-full rounded-xl border bg-white/[0.03] px-5 py-2 font-mono text-base md:text-sm tracking-wide placeholder:text-text-ghost transition-all duration-300 outline-none",
                 touched.email 
                   ? errors.email 
                     ? 'border-red-500/30 focus:border-red-500/60' 
@@ -170,10 +161,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         {/* Message Field */}
         <div className="relative group">
           <div className="flex justify-between items-center mb-1.5 px-1">
-            <label htmlFor="message" className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/40 group-focus-within:text-brand-primary transition-colors">
+            <label htmlFor="message" className="font-mono text-micro uppercase tracking-mega text-text-tertiary group-focus-within:text-brand-primary transition-colors">
               [MESSAGE]
             </label>
-            <span className="text-[9px] text-white/20 font-mono">{formData.message.length} / 500 CHARS</span>
+            <span className="text-micro text-text-tertiary font-mono">{formData.message.length} / 500 CHARS</span>
           </div>
           <div className="relative">
             <textarea
@@ -186,7 +177,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
               onBlur={() => handleBlur('message')}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               className={cn(
-                "flex w-full rounded-xl border bg-white/[0.03] px-5 py-4 font-mono text-[16px] md:text-[14px] tracking-wide placeholder:text-white/20 resize-none transition-all duration-300 outline-none",
+                "flex w-full rounded-xl border bg-white/[0.03] px-5 py-4 font-mono text-base md:text-sm tracking-wide placeholder:text-text-ghost resize-none transition-all duration-300 outline-none",
                 touched.message 
                   ? errors.message 
                     ? 'border-red-500/30 focus:border-red-500/60' 
@@ -218,7 +209,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
                 setCooldownError(false);
                 resetStatus();
               }}
-              className="w-full text-[10px] text-white/30 hover:text-white transition-colors font-mono uppercase tracking-[0.3em]"
+              className="w-full text-micro text-text-tertiary hover:text-white transition-colors font-mono uppercase tracking-ultra"
             >
               [ TRY AGAIN ]
             </button>
@@ -228,10 +219,10 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
             type="submit"
             disabled={status === 'loading' || !isFormValid || cooldownError}
             className={cn(
-              "group relative flex w-full items-center justify-center gap-4 rounded-xl px-8 py-5 text-[11px] font-bold uppercase tracking-[0.3em] font-mono transition-all duration-500 overflow-hidden",
+              "group relative flex w-full items-center justify-center gap-4 rounded-xl px-8 py-5 text-fine font-bold uppercase tracking-ultra font-mono transition-all duration-500 overflow-hidden",
               isFormValid && status !== 'loading' && !cooldownError
                 ? "bg-brand-primary text-black shadow-[0_0_40px_rgba(0,200,180,0.3)] hover:scale-[1.02] active:scale-[0.98]"
-                : "bg-white/5 text-white/20 border border-white/10 cursor-not-allowed"
+                : "bg-white/5 text-text-ghost border border-white/10 cursor-not-allowed"
             )}
           >
             {status === 'loading' ? (
@@ -254,7 +245,7 @@ export const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, status, rese
         )}
 
         {/* GDPR & UAE PDPL Privacy Consent Micro-Copy */}
-        <p className="font-mono text-[8px] md:text-[9px] text-white/30 text-center leading-normal mt-4 max-w-xs mx-auto uppercase tracking-wide">
+        <p className="font-mono text-micro md:text-micro text-text-tertiary text-center leading-normal mt-4 max-w-xs mx-auto uppercase tracking-wide">
           By submitting this form, you consent to the secure collection of your details strictly for responding to your inquiry (UAE PDPL & GDPR).
         </p>
       </div>

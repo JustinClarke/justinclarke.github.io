@@ -7,17 +7,11 @@
  * Note:    the staggered fade-ins are pure CSS (the `fadeIn` helper just sets an
  *          animation-delay); the only real logic is one timer that advances the
  *          boot sequence after the header has finished animating.
- *
- * For beginners ----------------------------------------------------------------
- * `memo(...)` wraps the component so React skips re-rendering it when its props
- * haven't changed a small speed-up for a header that rarely updates. The
- * component "talks back" to its parent by calling the `onStepComplete` function
- * it was handed, the same way an HTML button calls an onclick.
- * -----------------------------------------------------------------------------
  */
 import React, { memo, useEffect } from 'react';
 import { TechStack } from '@/ui';
 import { cn } from '@/utils';
+import { SITE } from '@/content';
 
 interface TerminalHeaderProps {
   bootStep: number;
@@ -25,26 +19,21 @@ interface TerminalHeaderProps {
   showGradients?: boolean;
 }
 
-// LEARN: A helper that returns an inline-style object. `React.CSSProperties` is the
-//    type for "a bag of CSS properties". Each element calls fadeIn(<ms>) to start
-//    its entrance animation a little later, producing the staggered reveal.
+// Each element calls fadeIn(<ms>) to start its entrance a little later, producing
+// the staggered boot reveal.
 const fadeIn = (delay: number): React.CSSProperties => ({
   animation: `terminal-fade-in 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) ${delay}ms both`,
 });
 
 export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, onStepComplete, showGradients = false }) => {
-  // LEARN: When this is the first boot step (0), wait 1.7s for the animation to play,
-  //    then tell the parent to advance to step 7. The cleanup `clearTimeout` cancels
-  //    the timer if the component unmounts or `bootStep` changes before it fires  
-  //    otherwise we could call onStepComplete on a component that's already gone.
+  // At boot step 0, wait 1.7s for the animation then advance the parent to step 7.
   useEffect(() => {
     if (bootStep !== 0) return;
     const timer = setTimeout(() => onStepComplete(7), 1700);
     return () => clearTimeout(timer);
   }, [bootStep, onStepComplete]);
 
-  // LEARN: Returning `null` from a component renders nothing. Here a negative bootStep
-  //    means "not ready yet", so the header stays hidden until the boot reaches it.
+  // Negative bootStep means "not ready yet" keep the header hidden until boot reaches it.
   if (bootStep < 0) return null;
 
   return (
@@ -72,16 +61,16 @@ export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, o
       </div>
 
       <div className="flex items-baseline gap-2 md:gap-3">
-        <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold shrink-0 select-none" style={fadeIn(100)}>~$</span>
+        <span className="font-mono text-fine md:text-xs text-brand-primary font-bold shrink-0 select-none" style={fadeIn(100)}>~$</span>
         <h1 className="leading-[0.9] tracking-tighter flex flex-col">
-          <span className="font-mono text-3xl md:text-5xl lg:text-6xl font-black text-term-fg" style={fadeIn(300)}>justin</span>
-          <span className="font-playfair italic text-3xl md:text-5xl lg:text-6xl text-brand-primary font-black" style={fadeIn(450)}>clarke.</span>
+          <span className="font-mono text-3xl md:text-5xl lg:text-6xl font-black text-term-fg" style={fadeIn(300)}>{SITE.firstName.toLowerCase()}</span>
+          <span className="font-playfair italic text-3xl md:text-5xl lg:text-6xl text-brand-primary font-black" style={fadeIn(450)}>{SITE.lastName.toLowerCase()}.</span>
         </h1>
       </div>
 
       <div className="space-y-2 md:space-y-3">
         <div className="flex items-baseline gap-2 md:gap-3">
-          <span className="font-mono text-[11px] md:text-xs text-brand-primary font-bold shrink-0 select-none" style={fadeIn(650)}>~$</span>
+          <span className="font-mono text-fine md:text-xs text-brand-primary font-bold shrink-0 select-none" style={fadeIn(650)}>~$</span>
           <span className="font-mono text-xs md:text-sm text-term-fg leading-relaxed block font-bold" style={fadeIn(850)}>data product engineer</span>
         </div>
         <div className="pl-4 md:pl-6 border-l border-edge-soft space-y-3.5 md:space-y-4">

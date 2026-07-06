@@ -6,13 +6,7 @@
  *          while the real page fades in behind it.
  * Note:    Rendered through a portal into document.body so it sits above all
  *          page content regardless of where it is mounted in the tree.
- *
- * For beginners ----------------------------------------------------------------
- * The whole thing is a tiny timeline. `phase` is a state machine string; four
- * stacked setTimeouts move it red -> glow -> red -> fading, then call
- * onComplete at 2.8s. The cleanup function clears every timer if the component
- * unmounts early, so no timer ever fires against a gone component.
- * -----------------------------------------------------------------------------
+ *          Phase timeline: red -> glow -> red -> fading, onComplete at 2.8s.
  */
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';

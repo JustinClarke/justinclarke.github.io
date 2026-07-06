@@ -191,7 +191,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
 
   return (
     <div className="h-full flex flex-col relative">
-      <div className="flex items-center mb-3 font-mono text-[11px] px-2.5 pb-2.5 border-b border-white/5">
+      <div className="flex items-center mb-3 font-mono text-fine px-2.5 pb-2.5 border-b border-white/5">
         <div className="flex items-center gap-4 text-viz-success">
           <span className="w-1.5 h-1.5 rounded-full bg-viz-success shadow-[0_0_8px_var(--color-viz-success)]" />
           <span>SCORE: {score.player}</span>
@@ -209,14 +209,14 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
 
         {phase === 'countdown' && (
           <div className="absolute inset-0 z-[150] flex flex-col items-center justify-center p-5 pointer-events-none">
-            <div className="text-[80px] font-bold text-white font-mono">{cd > 0 ? cd : 'GO!'}</div>
+            <div className="text-display font-bold text-white font-mono">{cd > 0 ? cd : 'GO!'}</div>
           </div>
         )}
 
         {phase === 'paused' && (
           <div className="absolute inset-0 bg-black/80 backdrop-blur-[2px] z-[150] flex flex-col items-center justify-center p-5">
             <h2 className="font-mono text-3xl font-extrabold text-brand-primary mb-1">PONG PAUSED</h2>
-            <p className="font-mono text-[10px] text-white/50 mb-5">Press "P" to resume.</p>
+            <p className="font-mono text-micro text-text-tertiary mb-5">Press "P" to resume.</p>
             <button className="px-8 py-3 bg-viz-success font-extrabold rounded cursor-pointer transition-all hover:scale-105 active:scale-95 text-sm text-black" onClick={resume}>RESUME</button>
           </div>
         )}
@@ -224,7 +224,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
         {phase === 'over' && (
           <div className="absolute inset-0 bg-black/90 backdrop-blur-[4px] z-[150] flex flex-col items-center justify-center p-8 text-center">
             <h2 className="font-mono text-2xl font-black text-white mb-2 tracking-tighter uppercase">{deathMsg}</h2>
-            <p className="font-mono text-sm text-white/50 mb-6">Final Score: <span className="text-viz-success font-bold">{score.player}</span></p>
+            <p className="font-mono text-sm text-text-tertiary mb-6">Final Score: <span className="text-viz-success font-bold">{score.player}</span></p>
             <button className="px-10 py-3 bg-brand-primary text-black font-black rounded-sm cursor-pointer transition-all hover:scale-105 active:scale-95 text-xs tracking-widest uppercase" onClick={restart}>PLAY AGAIN</button>
           </div>
         )}
@@ -232,7 +232,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
 
       <div className="flex justify-center gap-4 p-4 lg:hidden border-t border-white/5">
         <button
-          className="w-16 h-16 bg-white/5 active:bg-white/10 rounded-full flex items-center justify-center text-white/50 touch-manipulation"
+          className="w-16 h-16 bg-white/5 active:bg-white/10 rounded-full flex items-center justify-center text-text-tertiary touch-manipulation"
           onPointerDown={() => { gameState.current.keys.ArrowUp = true; }}
           onPointerUp={() => { gameState.current.keys.ArrowUp = false; }}
           onPointerLeave={() => { gameState.current.keys.ArrowUp = false; }}
@@ -240,7 +240,7 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
           ▲
         </button>
         <button
-          className="w-16 h-16 bg-white/5 active:bg-white/10 rounded-full flex items-center justify-center text-white/50 touch-manipulation"
+          className="w-16 h-16 bg-white/5 active:bg-white/10 rounded-full flex items-center justify-center text-text-tertiary touch-manipulation"
           onPointerDown={() => { gameState.current.keys.ArrowDown = true; }}
           onPointerUp={() => { gameState.current.keys.ArrowDown = false; }}
           onPointerLeave={() => { gameState.current.keys.ArrowDown = false; }}
@@ -250,15 +250,15 @@ export const PongGame = ({ onExit }: { onExit: () => void }) => {
       </div>
 
       {/* Keyboard controls for desktop view */}
-      <div className="hidden lg:flex justify-center items-center gap-6 p-4 border-t border-white/5 font-mono text-[10px] text-white/40 select-none">
+      <div className="hidden lg:flex justify-center items-center gap-6 p-4 border-t border-white/5 font-mono text-micro text-text-tertiary select-none">
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▲</kbd> / <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▼</kbd> Move Paddle
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-text-secondary font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▲</kbd> / <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-text-secondary font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">▼</kbd> Move Paddle
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">P</kbd> Pause/Resume
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-text-secondary font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">P</kbd> Pause/Resume
         </span>
         <span className="flex items-center gap-1.5">
-          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-white/70 font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Esc</kbd> Exit
+          <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-text-secondary font-semibold shadow-[0_1.5px_0_rgba(255,255,255,0.05)]">Esc</kbd> Exit
         </span>
       </div>
     </div>

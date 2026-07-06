@@ -7,14 +7,6 @@
  * Note:    it uses ONE shared floating <div> for every tooltip and listens at
  *          the document level ("event delegation") instead of attaching a
  *          listener per element far cheaper with hundreds of targets.
- *
- * For beginners ----------------------------------------------------------------
- * This is plain DOM code, not a React component. It creates a div, positions it
- * near the cursor, and shows/hides it on mousemove. Timers add a small delay so
- * a quick mouse pass doesn't flash the tooltip; scroll/resize/blur force-hide it
- * so it never gets "stuck" on screen. The `__TOOLTIPS_INITIALIZED__` flag guards
- * against wiring up the listeners twice.
- * -----------------------------------------------------------------------------
  */
 
 interface TooltipState {

@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@/utils';
 import { useAIAgent, type AIMessage } from '@/hooks/useAIAgent';
 import { AI_AGENT } from '@/config/constants';
+import { SITE, type RoutePath } from '@/content';
 
+// `path` typed against RoutePath so deleting a route in content/routes.ts is
+// a compile error here too, not just in App.tsx's ROUTE_COMPONENTS map.
 const NAV_ROUTES = [
   { keywords: ['home', 'start', 'main'], path: '/', label: 'Home' },
   { keywords: ['spotify', 'spotify engine'], path: '/project/spotify-engine', label: 'Spotify Engine' },
@@ -16,7 +19,7 @@ const NAV_ROUTES = [
   { keywords: ['long version', 'resume', 'cv', 'full resume'], path: '/the-long-version', label: 'The Long Version' },
   { keywords: ['f1', 'formula 1', 'off the pace', 'racing', 'pace'], path: '/f1', label: 'Off The Pace' },
   { keywords: ['connect', 'contact', 'reach out', 'get in touch'], path: '/connect', label: 'Connect' },
-] as const;
+] as const satisfies readonly { keywords: readonly string[]; path: RoutePath; label: string }[];
 
 const NAV_TRIGGERS = ['go to', 'take me to', 'open', 'show me', 'navigate to', 'visit', 'head to', 'bring me to'];
 
@@ -65,7 +68,7 @@ interface AIChatDrawerProps {
 }
 
 const SUGGESTED_PROMPTS = [
-  'Does Justin know dbt?',
+  `Does ${SITE.firstName} know dbt?`,
   "What's Off the Pace?",
   'Is he open to relocation?',
 ];
@@ -199,6 +202,10 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
     if (e.key === 'Escape') onClose();
   };
 
+  // Defensive: CommandDock already hides both trigger and drawer when the
+  // integration is off; this keeps any other mount point from showing a dead UI.
+  if (!SITE.integrations.aiChat) return null;
+
   return (
     <motion.div
       ref={drawerRef}
@@ -222,7 +229,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
         'max-h-[60vh] md:max-h-[65vh]',
       )}
       role="dialog"
-      aria-label="AI chat with Justin's portfolio assistant"
+      aria-label={`AI chat with ${SITE.firstName}'s portfolio assistant`}
       aria-hidden={!isOpen}
     >
       {/* Header */}
@@ -232,15 +239,15 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-brand-primary" />
           </span>
-          <span className="text-brand-primary text-[13px] font-mono font-bold tracking-tight">Ask Justin</span>
+          <span className="text-brand-primary text-label font-mono font-bold tracking-tight">Ask {SITE.firstName}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-white/30 text-xs font-mono tabular-nums">
+          <span className="text-text-tertiary text-xs font-mono tabular-nums">
             {remainingQueries}/{AI_AGENT.maxSessionQueries}
           </span>
           <button
             onClick={onClose}
-            className="w-6 h-6 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] text-white/40 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition-all duration-300 cursor-pointer"
+            className="w-6 h-6 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/[0.08] text-text-tertiary hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition-all duration-300 cursor-pointer"
             aria-label="Close chat"
             tabIndex={isOpen ? 0 : -1}
           >
@@ -256,8 +263,8 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
       >
         {messages.length === 0 && !isQuerying && (
           <div className="space-y-4 py-4">
-            <p className="text-white/30 text-[11px] font-mono text-center leading-relaxed max-w-[260px] mx-auto">
-              Ask me anything about Justin's work, stack, or availability.
+            <p className="text-text-tertiary text-fine font-mono text-center leading-relaxed max-w-[260px] mx-auto">
+              Ask me anything about {SITE.firstName}'s work, stack, or availability.
             </p>
             <div className="flex flex-wrap gap-2 justify-center px-4">
               {SUGGESTED_PROMPTS.map(p => (
@@ -265,7 +272,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
                   key={p}
                   onClick={() => send(p)}
                   tabIndex={isOpen ? 0 : -1}
-                  className="text-[11px] font-mono px-3.5 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] text-white/45 hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/[0.04] active:scale-95 transition-all duration-300 cursor-pointer"
+                  className="text-fine font-mono px-3.5 py-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] text-text-tertiary hover:text-brand-primary hover:border-brand-primary/30 hover:bg-brand-primary/[0.04] active:scale-95 transition-all duration-300 cursor-pointer"
                 >
                   {p}
                 </button>
@@ -287,13 +294,13 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
                   'text-xs font-mono px-3.5 py-2.5 rounded-2xl leading-relaxed w-fit',
                   msg.role === 'user'
                     ? 'rounded-tr-none bg-brand-primary/10 border border-brand-primary/20 text-brand-primary/95 shadow-[0_0_12px_rgba(0,200,180,0.05)]'
-                    : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60',
+                    : 'rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-text-tertiary',
                 )}
               >
                 {msg.role === 'user' ? msg.text : renderModelText(msg.text)}
               </div>
               {msg.footer && (
-                <span className="text-[10px] font-mono text-white/20 px-2 select-none">
+                <span className="text-micro font-mono text-text-dim px-2 select-none">
                   {msg.footer}
                 </span>
               )}
@@ -307,7 +314,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
             animate={{ opacity: 1, y: 0 }}
             className="flex justify-start"
           >
-            <div className="max-w-[85%] text-xs font-mono px-3.5 py-2.5 rounded-2xl rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-white/60 leading-relaxed">
+            <div className="max-w-[85%] text-xs font-mono px-3.5 py-2.5 rounded-2xl rounded-tl-none bg-white/[0.02] border border-white/[0.05] text-text-tertiary leading-relaxed">
               {renderModelText(streamingText)}
               <span className="animate-pulse text-brand-primary ml-0.5">█</span>
             </div>
@@ -316,7 +323,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
 
         {isQuerying && !streamingText && (
           <div className="flex justify-start">
-            <div className="text-xs font-mono px-3.5 py-2.5 text-white/30 flex items-center gap-2">
+            <div className="text-xs font-mono px-3.5 py-2.5 text-text-tertiary flex items-center gap-2">
               <span className="animate-pulse">●</span>
               <span>thinking...</span>
             </div>
@@ -335,11 +342,11 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               maxLength={AI_AGENT.maxPromptLength}
-              placeholder="Ask about Justin..."
+              placeholder={`Ask about ${SITE.firstName}...`}
               disabled={isQuerying || remainingQueries <= 0}
               tabIndex={isOpen ? 0 : -1}
               className={cn(
-                'w-full bg-transparent font-mono text-[16px] md:text-xs text-white/80 placeholder:text-white/25',
+                'w-full bg-transparent font-mono text-base md:text-xs text-text-secondary placeholder:text-text-ghost',
                 'outline-none border-none p-0 focus:ring-0 focus:outline-none',
                 'disabled:opacity-40',
               )}
@@ -354,7 +361,7 @@ export function AIChatDrawer({ isOpen, onClose }: AIChatDrawerProps) {
               'w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center transition-all duration-300 cursor-pointer',
               input.trim() && !isQuerying && remainingQueries > 0
                 ? 'bg-brand-primary text-black hover:scale-105 active:scale-95 shadow-[0_0_12px_rgba(0,200,180,0.3)]'
-                : 'text-white/20 bg-white/[0.02] cursor-not-allowed'
+                : 'text-text-ghost bg-white/[0.02] cursor-not-allowed'
             )}
             aria-label="Send message"
           >

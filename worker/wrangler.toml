@@ -6,6 +6,8 @@ compatibility_date = "2025-01-01"
 binding = "AI"
 
 [vars]
+# Keep in sync with SITE.url in src/content/site.ts — no build step touches
+# worker config, so a fork editing site.ts must update this by hand too.
 ALLOWED_ORIGINS = "https://justinclarke.github.io,http://localhost:3000"
 
 # Account-coordinated rate limiting — free, no external store, survives isolate recycling.

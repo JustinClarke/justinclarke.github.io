@@ -4,13 +4,8 @@
  * Fits in: under headings/hero copy to show the tools at a glance.
  * Note:    each badge keeps its brand colour. When `animate` is true the badges
  *          fade in one after another, staggered by the per-badge `animationDelay`.
- *
- * For beginners ----------------------------------------------------------------
- * `getAnimStyles` returns an inline style object only when `animate` is on the
- * delay has to be an inline style because it's a per-badge value (100ms, 250ms,
- * ...), not a fixed class. That matches the project rule: JS-varying values go
- * through `style`, fixed styling goes through Tailwind classes.
- * -----------------------------------------------------------------------------
+ * Note:    the delay is a per-badge value, so it stays inline style rather
+ *          than a Tailwind class per this project's JS-varying-value rule.
  */
 import React from 'react';
 import { Code2, Cylinder, Circle } from 'lucide-react';
@@ -28,7 +23,7 @@ export const TechStack: React.FC<TechStackProps> = ({ className, animate = false
   };
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-x-1.5 gap-y-2 py-0.5 select-none font-mono text-[11px] md:text-xs leading-none", className)}>
+    <div className={cn("flex flex-wrap items-center gap-x-1.5 gap-y-2 py-0.5 select-none font-mono text-fine md:text-xs leading-none", className)}>
       <span 
         className={cn("hidden md:inline text-term-fg/40 mr-1 shrink-0", animate && "tech-badge-anim")}
         style={getAnimStyles('100ms')}

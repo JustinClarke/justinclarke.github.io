@@ -4,13 +4,6 @@
  * Fits in: CareerTimeline, just under the section header.
  * Note:    `currentYear` is hardcoded on purpose the bar narrates the CV's
  *          time span, it is not a live clock. Bump it with the content.
- *
- * For beginners ----------------------------------------------------------------
- * Pure percentage maths + absolute positioning: each year tick sits at
- * `left: N%` of the track, and the teal fill animates from 0 to the current
- * year's percentage the first time the bar scrolls into view (Framer Motion's
- * whileInView). No state, no events render once and let CSS/Motion play.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -21,8 +14,6 @@ const YEAR_END = 2028;
 
 export const YearProgressBar: React.FC = () => {
   const currentYear = 2026;
-  // LEARN: 2026 across a 2018..2028 span = (2026-2018)/10 = 80% these plain
-  //    consts are recomputed on every render, which is fine for cheap maths.
   const totalSpan = YEAR_END - YEAR_START;
   const progressPercent = ((currentYear - YEAR_START) / totalSpan) * 100;
   const ticks = [2018, 2020, 2022, 2024, 2026, 2028];
@@ -32,9 +23,6 @@ export const YearProgressBar: React.FC = () => {
       {/* Background track */}
       <div className="relative h-[2px] bg-fg/5 rounded-full overflow-visible">
         {/* Fill */}
-        {/* LEARN: whileInView = animate from `initial` to this pose when the
-            element scrolls into the viewport; `viewport={{ once: true }}` means
-            play it the first time only, not on every scroll past. */}
         <motion.div
           className="absolute top-0 left-0 h-full bg-gradient-to-r from-brand-primary/60 via-brand-primary to-brand-primary/80 rounded-full"
           initial={{ width: 0 }}
@@ -65,9 +53,7 @@ export const YearProgressBar: React.FC = () => {
           const isCurrent = year === currentYear;
           const isPast = year < currentYear;
           return (
-            // LEARN: each tick is absolutely positioned at its percentage and
-            //    pulled back by half its own width (translateX(-50%)) so the
-            //    label is centred on the spot rather than starting there.
+            // Centre each tick on its percentage point (translateX(-50%)).
             <div
               key={year}
               className="flex flex-col items-center"
@@ -78,13 +64,13 @@ export const YearProgressBar: React.FC = () => {
                 isCurrent ? "bg-brand-primary" : isPast ? "bg-fg/15" : "bg-fg/5"
               )} />
               <span className={cn(
-                "font-mono text-[9px] tabular-nums font-bold",
-                isCurrent ? "text-brand-primary" : isPast ? "text-fg/25" : "text-fg/10"
+                "font-mono text-micro tabular-nums font-bold",
+                isCurrent ? "text-brand-primary" : isPast ? "text-fg/25" : "text-fg/10" // tw-allow-contrast
               )}>
                 {year}
               </span>
               {isCurrent && (
-                <span className="font-mono text-[7px] tracking-[0.2em] uppercase text-brand-primary/60 font-bold mt-0.5">
+                <span className="font-mono text-micro tracking-mega uppercase text-brand-primary/60 font-bold mt-0.5">
                   Now
                 </span>
               )}

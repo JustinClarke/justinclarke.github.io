@@ -4,23 +4,14 @@
  *
  * Fits in: a small pill placed in the page chrome; data comes from useLastFm.
  * Note:    while loading or with no track, it renders nothing (returns null), so
- *          it simply isn't there until there's something to show.
- *
- * For beginners ----------------------------------------------------------------
- * Two pieces of React used here: `useState` remembers whether the hover card is
- * open, and `useRef` holds a timer handle for the small delay before it closes
- * (so moving the mouse through the tiny gap doesn't snap it shut). The exported
- * `formatTimeAgo` is a plain pure function it has its own unit tests.
- * -----------------------------------------------------------------------------
+ *          it simply isn't there until there's something to show a clean
+ *          degradation path when a forker has no Last.fm configured.
  */
 import React, { useState, useRef } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useLastFm } from '@/hooks';
 
-// LEARN: a tiny component defined right here because it's only used in this file.
-//    It takes one optional `className` prop (with a default) and returns the
-//    Spotify logo as inline SVG, so it can be recoloured/resized via classes.
-// Official filled Spotify logo
+// Official filled Spotify logo inline SVG so it recolours/resizes via classes.
 export const SpotifyLogo = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: { className?: string }) => (
   <svg className={`${className} shrink-0`} viewBox="0 0 24 24" fill="currentColor" preserveAspectRatio="xMidYMid meet">
     <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-12.008-1.5-.479.122-1.023-.179-1.141-.62-.12-.48.179-1.023.621-1.141C9.6 9.9 15.079 10.561 18.679 12.84c.361.22.599.659.3 1.099zm.12-3.36C15.12 8.1 8.077 7.797 4.915 9.773c-.539.3-1.159.077-1.439-.461-.281-.537-.054-1.21.471-1.49C9.057 6.009 17.039 6.362 20.199 11.558c.3.441.077 1.141-.419 1.441-.46.3-1.141.077-1.441-.42z" />
@@ -45,10 +36,8 @@ export const SpotifyLogoOutline = ({ className = "w-2 h-2 sm:w-2.5 sm:h-2.5" }: 
   </svg>
 );
 
-// LEARN: a pure helper same input always gives the same output, no React, no
-//    side effects. That's exactly what makes it easy to unit-test (see
-//    NowPlaying.test.ts). It turns a minutes count into "just now" / "5m ago" /
-//    "2h ago" / "3d ago", choosing the unit by size.
+// Turns a minutes count into "just now" / "5m ago" / "2h ago" / "3d ago".
+// Kept pure and exported so it can be unit-tested (see NowPlaying.test.ts).
 export const formatTimeAgo = (minutes: number | undefined): string => {
   if (minutes === undefined) return '';
   if (minutes === 0) return 'just now';
@@ -61,28 +50,22 @@ export const formatTimeAgo = (minutes: number | undefined): string => {
 
 export const NowPlaying: React.FC = () => {
   const { track, loading } = useLastFm();
-  // LEARN: `isOpen` is the hover card's open/closed memory. `closeTimer` is a ref
-  //    holding the pending "close after a delay" timeout, so we can cancel it.
   const [isOpen, setIsOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // LEARN: an early return. Until there's a track to show, this component renders
-  //    nothing at all cleaner than wrapping the whole body in a condition.
   if (loading || !track) return null;
 
   const statusText = track.isNowPlaying
     ? 'now playing'
     : formatTimeAgo(track.lastPlayedMinutesAgo);
 
-  // LEARN: entering cancels any scheduled close and opens immediately...
   const handleMouseEnter = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setIsOpen(true);
   };
 
-  // LEARN: ...leaving doesn't close at once it waits 120ms. That grace period
-  //    lets the cursor cross the small gap between pill and card without it
-  //    flickering shut. A re-enter (above) cancels this pending close.
+  // Leaving waits 120ms before closing a grace period so the cursor can cross the
+  // gap between pill and card without it flickering shut; re-entering cancels it.
   const handleMouseLeave = () => {
     closeTimer.current = setTimeout(() => setIsOpen(false), 120);
   };
@@ -94,7 +77,7 @@ export const NowPlaying: React.FC = () => {
       onMouseLeave={handleMouseLeave}
     >
       {/* Pill */}
-      <div className={`flex items-center gap-1 font-mono text-[9px] sm:text-[10px] text-term-dim border px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md max-w-sm transition-all duration-200 select-none cursor-default ${isOpen ? 'border-viz-spotify/30 bg-viz-spotify/[0.06]' : 'border-brand-primary/10 bg-brand-primary/[0.02]'}`}>
+      <div className={`flex items-center gap-1 font-mono text-micro sm:text-micro text-term-dim border px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-md max-w-sm transition-all duration-200 select-none cursor-default ${isOpen ? 'border-viz-spotify/30 bg-viz-spotify/[0.06]' : 'border-brand-primary/10 bg-brand-primary/[0.02]'}`}>
         <span className="text-viz-spotify flex items-center shrink-0">
           <SpotifyLogo />
         </span>
@@ -103,9 +86,7 @@ export const NowPlaying: React.FC = () => {
         <span className="text-term-dim">{track.name}</span>
       </div>
 
-      {/* Invisible bridge to prevent gap mouseout */}
-      {/* LEARN: `{isOpen && <div .../>}` renders the element only when isOpen is
-          true. This invisible strip covers the gap so the mouse stays "inside". */}
+      {/* Invisible strip bridging the pill→card gap so the mouse stays "inside". */}
       {isOpen && <div className="absolute top-full left-0 right-0 h-3" />}
 
       {/* Card Container with smooth fade-out and slide-up/down transitions */}
@@ -137,12 +118,12 @@ export const NowPlaying: React.FC = () => {
 
           {/* Track info & play actions */}
           <div className="px-3.5 pb-3.5 pt-1.5 flex flex-col">
-            <div className="text-[8px] uppercase tracking-[0.2em] text-viz-spotify font-mono font-bold mb-2 flex items-center gap-1.5">
+            <div className="text-micro uppercase tracking-mega text-viz-spotify font-mono font-bold mb-2 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-viz-spotify animate-pulse inline-block shadow-[0_0_8px_rgba(29,185,84,0.6)]" />
               {statusText}
             </div>
-            <div className="text-[13px] font-bold text-white leading-tight truncate" title={track.artist}>{track.artist}</div>
-            <div className="text-[11px] text-white/50 mt-1 mb-2.5 truncate" title={track.name}>{track.name}</div>
+            <div className="text-label font-bold text-white leading-tight truncate" title={track.artist}>{track.artist}</div>
+            <div className="text-fine text-text-tertiary mt-1 mb-2.5 truncate" title={track.name}>{track.name}</div>
 
             <div className="flex flex-col gap-1.5">
               <a
@@ -152,16 +133,16 @@ export const NowPlaying: React.FC = () => {
                 className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-viz-spotify hover:brightness-110 active:scale-[0.98] transition-all duration-300 shadow-[0_4px_12px_rgba(29,185,84,0.2)]"
               >
                 <SpotifyLogo className="w-3.5 h-3.5 text-black" />
-                <span className="text-[9.5px] font-black text-black tracking-[0.18em] uppercase font-mono pt-[1px]">open track</span>
+                <span className="text-micro font-black text-black tracking-[0.18em] uppercase font-mono pt-[1px]">open track</span>
               </a>
               <a
                 href="https://open.spotify.com/user/312fwskwmcipw743yzgnuf4ak6ve?si=51a73edd462e4624"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-transparent border border-white/10 hover:bg-white/[0.04] active:scale-[0.98] transition-all duration-300 text-white/80 hover:text-white group/profile"
+                className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-transparent border border-white/10 hover:bg-white/[0.04] active:scale-[0.98] transition-all duration-300 text-text-secondary hover:text-white group/profile"
               >
-                <span className="text-[9.5px] font-black tracking-[0.18em] uppercase font-mono pt-[1px]">Ear Candy (and Trash)</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-white/40 group-hover/profile:text-white group-hover/profile:translate-x-0.5 group-hover/profile:-translate-y-0.5 transition-all duration-300" />
+                <span className="text-micro font-black tracking-[0.18em] uppercase font-mono pt-[1px]">Ear Candy (and Trash)</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-text-tertiary group-hover/profile:text-white group-hover/profile:translate-x-0.5 group-hover/profile:-translate-y-0.5 transition-all duration-300" />
               </a>
             </div>
           </div>

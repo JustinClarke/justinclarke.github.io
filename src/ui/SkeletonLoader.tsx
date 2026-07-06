@@ -4,11 +4,6 @@
  * Fits in: rendered as the `fallback` for lazy-loaded pages/sections so the
  *          layout doesn't jump when the real content arrives.
  * Note:    `variant` picks a preset size (text line, card, hero, project grid).
- *
- * For beginners ----------------------------------------------------------------
- * It's pure CSS the `animate-pulse` class fades it in and out, and the inner
- * gradient div sweeps a "shimmer" across it. No data, no logic, just a shape.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { cn } from '@/utils';

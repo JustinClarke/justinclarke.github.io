@@ -5,13 +5,6 @@
  * Fits in: the overview, explaining how the data flows.
  * Note:    The connecting line between stages is an inline `<svg>` with an
  *          animated gradient stroke (`.sb-flow-dash`), purely decorative.
- *
- * For beginners ----------------------------------------------------------------
- * The `<svg>` here is just more markup like HTML, but for drawing. A `<path>`'s
- * `d` attribute is the line's geometry; a `<linearGradient>` defined in `<defs>`
- * is referenced by `stroke="url(#pipeline-grad)"`. Colours come from CSS vars
- * (`var(--color-f1-red)`) so they stay in sync with the design tokens.
- * -----------------------------------------------------------------------------
  */
 import { Database, Network, LineChart } from 'lucide-react';
 import { STATS } from '../../../data/projectStats';
@@ -20,13 +13,13 @@ export function ProductPipeline() {
   return (
     <div className="flex flex-col gap-10">
       <div className="max-w-xl">
-        <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block font-semibold">
+        <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block font-semibold">
           Architecture
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-white uppercase tracking-tighter mb-4">
           The Data Pipeline.
         </h2>
-        <p className="text-white/55 text-sm font-jetbrains leading-relaxed">
+        <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed">
           A headless physics engine transforming raw telemetry into clean, causal features.
         </p>
       </div>
@@ -52,9 +45,9 @@ export function ProductPipeline() {
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-f1-red/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-f1-red group-hover:border-f1-red group-hover:shadow-[0_0_20px_rgba(225,6,0,0.4)] transition-all duration-500">
             <Database className="w-8 h-8 text-f1-red group-hover:text-white transition-colors duration-300" />
           </div>
-          <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/40 mb-2 font-mono">01 / Ingest</span>
-          <h3 className="font-noto text-xl font-bold text-white/90 mb-3 group-hover:text-white transition-colors">FastF1 Telemetry</h3>
-          <p className="text-xs text-white/55 leading-relaxed font-jetbrains">
+          <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mb-2 font-mono">01 / Ingest</span>
+          <h3 className="font-noto text-xl font-bold text-text-primary mb-3 group-hover:text-white transition-colors">FastF1 Telemetry</h3>
+          <p className="text-xs text-text-tertiary leading-relaxed font-jetbrains">
             {STATS.races} races × 4 datasets  - laps, weather, race control, and {STATS.telemetryHz}Hz
             car telemetry  - extracted locally into Hive-partitioned Parquet.
           </p>
@@ -65,9 +58,9 @@ export function ProductPipeline() {
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-emerald-500/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-emerald-500 group-hover:border-emerald-500 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all duration-500">
             <Network className="w-8 h-8 text-emerald-500 group-hover:text-white transition-colors duration-300" />
           </div>
-          <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/40 mb-2 font-mono">02 / Model</span>
-          <h3 className="font-noto text-xl font-bold text-white/90 mb-3 group-hover:text-white transition-colors">dbt DAG</h3>
-          <p className="text-xs text-white/55 leading-relaxed font-jetbrains">
+          <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mb-2 font-mono">02 / Model</span>
+          <h3 className="font-noto text-xl font-bold text-text-primary mb-3 group-hover:text-white transition-colors">dbt DAG</h3>
+          <p className="text-xs text-text-tertiary leading-relaxed font-jetbrains">
             {STATS.dbtModels} models in DuckDB applying physics invariants to isolate car
             performance from tyre degradation, traffic, and fuel load.
           </p>
@@ -79,9 +72,9 @@ export function ProductPipeline() {
           <div className="w-16 h-16 rounded-2xl bg-transparent border-2 border-violet-500/60 flex items-center justify-center mb-6 shadow-sm group-hover:scale-105 group-hover:bg-violet-500 group-hover:border-violet-500 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all duration-500 relative z-10">
             <LineChart className="w-8 h-8 text-violet-500 group-hover:text-white transition-colors duration-300" />
           </div>
-          <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/40 mb-2 relative z-10 font-mono">03 / Output</span>
-          <h3 className="font-noto text-xl font-bold text-white/90 mb-3 relative z-10 group-hover:text-white transition-colors">Causal Predictors</h3>
-          <p className="text-xs text-white/55 leading-relaxed font-jetbrains relative z-10">
+          <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mb-2 relative z-10 font-mono">03 / Output</span>
+          <h3 className="font-noto text-xl font-bold text-text-primary mb-3 relative z-10 group-hover:text-white transition-colors">Causal Predictors</h3>
+          <p className="text-xs text-text-tertiary leading-relaxed font-jetbrains relative z-10">
             Clean, counterfactual pace metrics ready for XGBoost models and simulation engines.
           </p>
         </div>
@@ -98,9 +91,9 @@ export function ProductPipeline() {
             <span className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/10" />
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/10" />
             <span className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/10" />
-            <span className="text-[10px] font-mono text-white/40 ml-2 uppercase tracking-wider">schema // mart/fct_lap_residuals.sql</span>
+            <span className="text-micro font-mono text-text-tertiary ml-2 uppercase tracking-wider">schema // mart/fct_lap_residuals.sql</span>
           </div>
-          <div className="flex items-center gap-2 text-[9px] text-emerald-400 font-mono font-bold bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded">
+          <div className="flex items-center gap-2 text-micro text-emerald-400 font-mono font-bold bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             COMPILE_SUCCESS
           </div>
@@ -109,17 +102,17 @@ export function ProductPipeline() {
         {/* Terminal Body */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center relative z-10">
           <div className="lg:col-span-2 flex flex-col gap-3">
-            <p className="font-jetbrains text-xs text-white/70 leading-relaxed">
+            <p className="font-jetbrains text-xs text-text-secondary leading-relaxed">
               The pipeline compiles into <span className="font-semibold text-white font-mono bg-white/[0.04] border border-white/10 px-1.5 py-0.5 rounded">fct_lap_residuals</span>  - a 1-lap-grain partition matrix where each of the 8 additive telemetry residuals is independently verified and CI-guarded.
             </p>
-            <p className="font-jetbrains text-[10px] text-white/40">
+            <p className="font-jetbrains text-micro text-text-tertiary">
               Downstream consumers: XGBoost Regression, Survival Modeling, Monte Carlo Race Simulator.
             </p>
           </div>
           
           {/* Visual Column Schema Spec */}
-          <div className="bg-graphite-900/50 border border-white/5 rounded-xl p-4 font-mono text-[9px] text-white/40 flex flex-col gap-2 shadow-[inset_0_1.5px_4px_rgba(0,0,0,0.02)]">
-            <div className="flex justify-between border-b border-white/5 pb-1.5 font-bold text-white/60">
+          <div className="bg-graphite-900/50 border border-white/5 rounded-xl p-4 font-mono text-micro text-text-tertiary flex flex-col gap-2 shadow-[inset_0_1.5px_4px_rgba(0,0,0,0.02)]">
+            <div className="flex justify-between border-b border-white/5 pb-1.5 font-bold text-text-tertiary">
               <span>COLUMN</span>
               <span>TYPE</span>
             </div>

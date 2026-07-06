@@ -5,13 +5,6 @@
  * Fits in: animation-heavy components call this and skip/shorten motion when true.
  * Note:    it also LISTENS for changes, so toggling the OS setting updates the
  *          app live without a refresh.
- *
- * For beginners ----------------------------------------------------------------
- * window.matchMedia checks a CSS media query from JavaScript here the
- * accessibility "reduce motion" setting. The `() => {...}` passed to useState is
- * a "lazy initialiser": it computes the first value once, and guards against
- * `window` being missing during server-side rendering.
- * -----------------------------------------------------------------------------
  */
 import { useState, useEffect } from 'react';
 

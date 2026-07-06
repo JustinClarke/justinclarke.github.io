@@ -7,14 +7,6 @@
  * Note:    Like ProjectHero, the CTAs animate via direct DOM style writes in
  *          their mouse handlers, so those colours live in inline `style`, and
  *          one-off keyframes live in the scoped <style> block.
- *
- * For beginners ----------------------------------------------------------------
- * DecompositionPanel is a private presentational sub-component: it takes no
- * props and just renders the DECOMPOSITION data array as labelled bars. The
- * three `hover*` useState booleans only feed ScrambleText so each button's label
- * "decodes" when you point at it. The "Findings" link calls smoothScrollTo
- * instead of jumping, after `e.preventDefault()` stops the default anchor jump.
- * -----------------------------------------------------------------------------
  */
 import { useState, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -50,7 +42,7 @@ function TermRow({ term, index, reduce }: { term: (typeof HERO_LAP.terms)[number
   return (
     <div className="flex items-center gap-2 sm:gap-2.5 group/row">
       <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: term.color }} />
-      <span className="font-jetbrains text-[9px] sm:text-[10px] uppercase tracking-wide text-white/55 w-[5.25rem] shrink-0 truncate transition-colors duration-300 group-hover/row:text-white/90">
+      <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-wide text-text-tertiary w-[5.25rem] shrink-0 truncate transition-colors duration-300 group-hover/row:text-text-primary">
         {term.label}
       </span>
       {/* diverging track: faster (−) grows left toward the axis, slower (+) grows right */}
@@ -64,7 +56,7 @@ function TermRow({ term, index, reduce }: { term: (typeof HERO_LAP.terms)[number
         </div>
       </div>
       <span
-        className="font-jetbrains text-[10px] sm:text-[11px] tabular-nums w-11 sm:w-12 text-right shrink-0 font-semibold"
+        className="font-jetbrains text-micro sm:text-fine tabular-nums w-11 sm:w-12 text-right shrink-0 font-semibold"
         style={{ color: slower ? 'var(--color-sql-red)' : 'var(--color-emerald)' }}
       >
         {value}s
@@ -87,23 +79,23 @@ function DecompositionPanel() {
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-4 pb-2 sm:pb-3 border-b border-white/[0.08] font-jetbrains">
         <div className="flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-f1-red animate-pulse shadow-[0_0_8px_rgba(225,6,0,0.8)]" />
-          <span className="text-[8px] sm:text-[9px] tracking-[0.3em] sm:tracking-[0.35em] uppercase text-white/70 font-semibold">
+          <span className="text-micro sm:text-micro tracking-ultra sm:tracking-[0.35em] uppercase text-text-secondary font-semibold">
             CAUSAL DECOMPOSITION
           </span>
         </div>
-        <span className="text-[7px] sm:text-[9px] text-white/40 tracking-wider font-medium">{HERO_TAG}</span>
+        <span className="text-micro sm:text-micro text-text-tertiary tracking-wider font-medium">{HERO_TAG}</span>
       </div>
 
       {/* Honesty label  - kills the "is this fabricated?" ambiguity (plan W1) */}
-      <div className="relative z-10 hidden sm:flex items-center gap-1.5 mb-4 text-[8px] uppercase tracking-[0.2em] text-emerald-400/80 font-jetbrains font-semibold">
+      <div className="relative z-10 hidden sm:flex items-center gap-1.5 mb-4 text-micro uppercase tracking-mega text-emerald-400/80 font-jetbrains font-semibold">
         <span className="inline-block w-1 h-1 rounded-full bg-emerald-400" />
-        Real lap · <span className="text-white/45 normal-case tracking-normal lowercase">fct_lap_residuals</span>
+        Real lap · <span className="text-text-tertiary normal-case tracking-normal lowercase">fct_lap_residuals</span>
       </div>
 
       <div className="relative z-10 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start gap-2 sm:gap-0 sm:mb-4 font-jetbrains">
         <div className="text-left">
-          <div className="text-[7px] sm:text-[9px] uppercase tracking-[0.3em] text-white/40 mb-1 sm:mb-1.5 font-medium">GROSS LAP</div>
-          <div className="text-xl sm:text-3xl lg:text-4xl font-black text-white/70 tabular-nums tracking-tight">
+          <div className="text-micro sm:text-micro uppercase tracking-ultra text-text-tertiary mb-1 sm:mb-1.5 font-medium">GROSS LAP</div>
+          <div className="text-xl sm:text-3xl lg:text-4xl font-black text-text-secondary tabular-nums tracking-tight">
             {HERO_GROSS}
           </div>
         </div>
@@ -113,7 +105,7 @@ function DecompositionPanel() {
         </div>
 
         <div className="text-right sm:hidden">
-          <div className="text-[7px] sm:text-[9px] uppercase tracking-[0.3em] text-f1-red/80 mb-1 sm:mb-1.5 font-bold">TRUE PACE</div>
+          <div className="text-micro sm:text-micro uppercase tracking-ultra text-f1-red/80 mb-1 sm:mb-1.5 font-bold">TRUE PACE</div>
           <div className="text-2xl font-black text-white tabular-nums tracking-tight" style={{ textShadow: '0 0 24px rgba(225,6,0,0.6)' }}>
             {HERO_TRUE}
           </div>
@@ -129,24 +121,24 @@ function DecompositionPanel() {
 
       {/* Total stripped  - makes the math legible */}
       <div className="relative z-10 hidden sm:flex items-center justify-between gap-3 mb-4 pt-3 border-t border-white/[0.06]">
-        <span className="font-jetbrains text-[8px] sm:text-[9px] uppercase tracking-widest text-white/30">Net of 7 causes</span>
-        <span className="font-jetbrains text-[11px] sm:text-[12px] text-white/50 font-bold tabular-nums">
+        <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-widest text-text-tertiary">Net of 7 causes</span>
+        <span className="font-jetbrains text-fine sm:text-caption text-text-tertiary font-bold tabular-nums">
           {HERO_LAP.totalStripped_s >= 0 ? '+' : '−'}{Math.abs(HERO_LAP.totalStripped_s).toFixed(3)}s
         </span>
       </div>
 
       <div className="relative z-10 hidden sm:block border-t border-white/[0.12] pt-4 mb-4 font-jetbrains">
-        <div className="text-[8px] sm:text-[9px] uppercase tracking-[0.3em] text-f1-red/80 mb-1.5 font-bold">TRUE PACE · BASELINE</div>
+        <div className="text-micro sm:text-micro uppercase tracking-ultra text-f1-red/80 mb-1.5 font-bold">TRUE PACE · BASELINE</div>
         <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tabular-nums tracking-tight" style={{ textShadow: '0 0 24px rgba(225,6,0,0.6)' }}>
           {HERO_TRUE}
         </div>
       </div>
 
       <div className="relative z-10 flex items-center justify-between sm:pt-3 sm:border-t border-white/[0.06] font-jetbrains gap-2 mt-4 sm:mt-0">
-        <span className="text-[6px] sm:text-[8px] uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white/30 font-medium">
+        <span className="text-micro sm:text-micro uppercase tracking-mega sm:tracking-[0.25em] text-text-tertiary font-medium">
           {STATS.races} RACES <span className="hidden sm:inline">// {STATS.seasons} SEASONS</span>
         </span>
-        <span className="sm:hidden text-[6px] text-f1-red/60 tracking-widest uppercase font-bold">
+        <span className="sm:hidden text-micro text-f1-red/60 tracking-widest uppercase font-bold">
           PACE ISOLATED
         </span>
       </div>
@@ -168,12 +160,12 @@ function ProofLine() {
       rel="noopener noreferrer"
       className="group/proof inline-flex items-center gap-2.5 mb-6 sm:mb-8 px-3.5 py-2 rounded-lg border border-white/10 bg-white/[0.03] hover:border-f1-red/40 hover:bg-f1-red/[0.06] transition-all duration-300 max-w-md mx-auto lg:mx-0"
     >
-      <span className="font-jetbrains text-[7px] sm:text-[8px] uppercase tracking-[0.2em] text-f1-red font-black shrink-0">Proven</span>
-      <span className="font-jetbrains text-[10px] sm:text-[11px] text-white/65 leading-tight text-left">
+      <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-mega text-f1-red font-black shrink-0">Proven</span>
+      <span className="font-jetbrains text-micro sm:text-fine text-text-secondary leading-tight text-left">
         São Paulo 2021: <span className="text-white font-bold tabular-nums">{strat}</span> strategy,{' '}
         <span className="text-emerald-400 font-bold tabular-nums">{skill}</span> Hamilton  - measured
       </span>
-      <svg className="w-3 h-3 text-white/30 group-hover/proof:text-f1-red group-hover/proof:translate-x-0.5 transition-all duration-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+      <svg className="w-3 h-3 text-text-ghost group-hover/proof:text-f1-red group-hover/proof:translate-x-0.5 transition-all duration-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
     </a>
   );
 }
@@ -290,7 +282,7 @@ export function SplitHero() {
 
         <div className="flex flex-col items-center lg:items-start">
           <div className="inline-flex items-center gap-2 sm:gap-3 mb-5 sm:mb-8 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full border border-f1-red/25 bg-[#2E0100]/90">
-            <span className="font-jetbrains text-[7px] sm:text-[9px] tracking-[0.3em] sm:tracking-[0.4em] uppercase font-black text-f1-red">
+            <span className="font-jetbrains text-micro sm:text-micro tracking-ultra sm:tracking-[0.4em] uppercase font-black text-f1-red">
               F1 TELEMETRY // CAUSAL DECOMPOSITION
             </span>
           </div>
@@ -308,10 +300,10 @@ export function SplitHero() {
           </h1>
 
           <div className="flex flex-col gap-1.5 sm:gap-2 mb-6 sm:mb-8 text-center lg:text-left">
-            <p className="font-jetbrains text-base sm:text-lg md:text-xl text-white/90 font-bold">
+            <p className="font-jetbrains text-base sm:text-lg md:text-xl text-text-primary font-bold">
               Lap times lie.
             </p>
-            <p className="font-jetbrains text-[11px] sm:text-xs text-white/45 uppercase tracking-[0.12em] sm:tracking-[0.2em] leading-relaxed max-w-md mx-auto lg:mx-0">
+            <p className="font-jetbrains text-fine sm:text-xs text-text-tertiary uppercase tracking-[0.12em] sm:tracking-mega leading-relaxed max-w-md mx-auto lg:mx-0">
               Seven measurable causes explain every lap. This strips them out.
             </p>
           </div>
@@ -338,7 +330,7 @@ export function SplitHero() {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.backgroundColor = 'transparent';
                 }}
-                className="cta-button order-3 col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
+                className="cta-button order-3 col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-micro sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
                 style={{ backgroundColor: 'transparent', borderColor: '#1D4ED8', borderWidth: '1px', boxShadow: 'color-mix(in srgb, #1D4ED8 40%, transparent) 0 0 20px', opacity: 0.9 }}
               >
                 <ScrambleText text="ARCHITECTURE" isHovered={hoverSource} prefix="[" suffix="]" />
@@ -381,7 +373,7 @@ export function SplitHero() {
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-f1-red shadow-[0_0_6px_rgba(225,6,0,0.8)]" />
                     </span>
 
-                    <span className="font-jetbrains text-[10px] sm:text-xs uppercase tracking-[0.2em] font-black text-white group-hover:text-white transition-colors">
+                    <span className="font-jetbrains text-micro sm:text-xs uppercase tracking-mega font-black text-white group-hover:text-white transition-colors">
                       <ScrambleText text="LAUNCH PLATFORM" isHovered={hoverCta} prefix="[" suffix="]" />
                     </span>
 
@@ -391,7 +383,7 @@ export function SplitHero() {
                         <span className="group-hover:animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" />
                         <span className="relative inline-flex rounded-full h-1 w-1 bg-emerald-400" />
                       </span>
-                      <span className="font-jetbrains text-[7px] sm:text-[8px] uppercase tracking-[0.15em] text-emerald-400/90 font-semibold group-hover:text-emerald-300 transition-colors">
+                      <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-[0.15em] text-emerald-400/90 font-semibold group-hover:text-emerald-300 transition-colors">
                         Live · {"<"}10ms
                       </span>
                     </span>
@@ -402,7 +394,7 @@ export function SplitHero() {
                     {['Ghost Car Standings', 'Tyre Cliff Survival', 'ONNX Simulators'].map((feat, i) => (
                       <span
                         key={feat}
-                        className={`font-jetbrains text-[7px] sm:text-[8px] tracking-wider uppercase px-2 py-[3px] rounded-[3px] border transition-colors duration-300 ${
+                        className={`font-jetbrains text-micro sm:text-micro tracking-wider uppercase px-2 py-[3px] rounded-[3px] border transition-colors duration-300 ${
                           feat === 'ONNX Simulators' ? 'hidden sm:inline-block' : 'inline-block'
                         }`}
                         style={{
@@ -420,7 +412,7 @@ export function SplitHero() {
                 {/* Right arrow affordance */}
                 <div className="flex items-center pr-4 sm:pr-5 shrink-0 relative z-10">
                   <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-white/25 group-hover:text-f1-red group-hover:translate-x-0.5 transition-all duration-300"
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-text-ghost group-hover:text-f1-red group-hover:translate-x-0.5 transition-all duration-300"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
@@ -447,7 +439,7 @@ export function SplitHero() {
                   e.currentTarget.style.transform = 'translateY(0)';
                   e.currentTarget.style.backgroundColor = 'transparent';
                 }}
-                className="cta-button order-2 col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-[10px] sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
+                className="cta-button order-2 col-span-1 inline-flex items-center justify-center px-4 py-2.5 sm:py-3 text-white font-jetbrains text-micro sm:text-xs uppercase tracking-widest font-bold whitespace-nowrap transition-all duration-200"
                 style={{ backgroundColor: 'transparent', borderColor: '#00665E', borderWidth: '1px', boxShadow: 'color-mix(in srgb, #00665E 40%, transparent) 0 0 20px', opacity: 0.9 }}
               >
                 <ScrambleText text="DOCUMENTATION" isHovered={hoverFindings} prefix="[" suffix="]" />

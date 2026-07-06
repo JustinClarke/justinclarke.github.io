@@ -12,18 +12,11 @@
  *          (1) font injection (runs once), (2) live clock + elapsed timer,
  *          (3) scroll-progress bar. The STYLES block (lines 8-541) is a
  *          complete self-contained stylesheet injected once at mount.
- *
- * For beginners ----------------------------------------------------------------
- * Most of this app uses Tailwind utility classes. This page uses a different
- * approach: a large string of plain CSS is placed inside a <style> tag at
- * render time, scoped under the `.ee-root` class so it cannot affect other
- * pages. This is like writing a stylesheet in a <style> tag in a normal HTML
- * file - React lets you insert that tag into the document the same way.
- * -----------------------------------------------------------------------------
  */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SEO } from "@/components/layout";
+import { routeMeta } from "@/content";
 
 /* ────────────────────────────────────────────────────────────────────────── *
  *  STYLES. All scoped under .ee-root
@@ -581,10 +574,9 @@ export default function TheLongVersion({
   const [elapsed, setElapsed] = useState(0);
   const [progress, setProgress] = useState(0);
 
-  // LEARN: Effect 1 - font injection. This page uses Newsreader and JetBrains
-  //    Mono, which are not loaded by the main app. We imperatively create a
-  //    <link> element and append it to <head> once. The `id` guard prevents
-  //    duplicating it if React's Strict Mode mounts twice in development.
+  // Effect 1 font injection. This page uses Newsreader + JetBrains Mono, which
+  // the main app doesn't load, so inject the <link> once. The id guard stops a
+  // duplicate under StrictMode's double-mount.
   useEffect(() => {
     const id = "ee-fonts";
     if (typeof document === "undefined" || document.getElementById(id)) return;
@@ -595,10 +587,8 @@ export default function TheLongVersion({
     document.head.appendChild(link);
   }, []);
 
-  // LEARN: Effect 2 - the live clock and read-time counter. We capture
-  //    Date.now() at mount as `start`, then every second compute how many
-  //    whole seconds have elapsed since then. `now` is set once so the date
-  //    label doesn't flicker on the first server-render, then stays stable.
+  // Effect 2 live clock + read-time counter. `now` is set once on mount so the
+  // date label doesn't flicker against the prerender snapshot.
   useEffect(() => {
     setNow(new Date());
     const start = Date.now();
@@ -607,11 +597,8 @@ export default function TheLongVersion({
     return () => clearInterval(t);
   }, []);
 
-  // LEARN: Effect 3 - scroll progress bar. scrollY / (totalHeight - viewport)
-  //    gives a 0-1 fraction of how far the visitor has scrolled; we multiply
-  //    by 100 for a percentage, clamp to 100, and store it in state. The
-  //    { passive: true } flag lets the browser scroll without waiting for
-  //    our handler to finish - important for smooth scrolling performance.
+  // Effect 3 scroll progress bar. Listener is { passive: true } so the browser
+  // never waits on our handler before scrolling (keeps scroll smooth).
   useEffect(() => {
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
@@ -631,11 +618,7 @@ export default function TheLongVersion({
 
   return (
     <div className="ee-root">
-      <SEO
-        title="Justin Clarke ⋅ the long version"
-        description="What's left when the work is done. A short paper on noticing things, building when bored, and why one obsession leads to another."
-        path="/the-long-version"
-      />
+      <SEO {...routeMeta('/the-long-version')} />
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
 
       <div className="progress">

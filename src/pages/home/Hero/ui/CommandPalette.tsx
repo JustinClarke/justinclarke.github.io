@@ -6,13 +6,6 @@
  *          command calls back to the parent via `onClose` / `onCommand`.
  * Note:    the keyboard model is the fiddly part `activeIndex` tracks the
  *          highlighted row, and arrow keys move it within the filtered list.
- *
- * For beginners ----------------------------------------------------------------
- * The search box is a "controlled input": React state (`query`) IS the value, and
- * every keystroke calls `setQuery` to update it the DOM never holds its own copy.
- * `useRef` here points at real DOM nodes (the <input>, the list) so we can focus
- * the box or scroll a row into view imperatively, which CSS alone can't do.
- * -----------------------------------------------------------------------------
  */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { COMMAND_MANIFEST } from '../engine';
@@ -24,14 +17,12 @@ interface CommandPaletteProps {
   onCommand: (cmd: string) => void;
 }
 
-// LEARN: Computed once at module load (not per render): the commands we'll show,
-//    minus the hidden easter eggs.
+// The commands the palette shows, minus the hidden easter eggs.
 const VISIBLE_SPECS = COMMAND_MANIFEST.filter(s => !s.hidden);
 
-// LEARN: "Fuzzy" matching the query characters must appear in `target` IN ORDER
-//    but not necessarily next to each other, so "exp" matches "expertise". We walk
-//    target, advancing `qi` each time the next query char lines up; a full match is
-//    when we consumed the whole query.
+// Fuzzy match: query chars must appear in `target` in order but not adjacent, so
+// "exp" matches "expertise". Walk target, advancing `qi` on each lined-up char;
+// full match once the whole query is consumed.
 function fuzzyMatch(query: string, target: string): boolean {
   if (!query) return true;
   let qi = 0;
@@ -47,16 +38,14 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // LEARN: Recomputed every render from the current `query`: keep a command if its
-  //    id, any alias, or (for longer queries) its summary matches. This drives the list.
+  // Keep a command if its id, any alias, or (for longer queries) its summary matches.
   const filtered = VISIBLE_SPECS.filter(s =>
     fuzzyMatch(query, s.id) ||
     s.aliases.some(a => fuzzyMatch(query, a)) ||
     (query.length > 1 && s.summary.toLowerCase().includes(query.toLowerCase()))
   );
 
-  // LEARN: When the palette opens, reset it and focus the input. The tiny setTimeout
-  //    waits for the element to actually be on screen before `.focus()` is called.
+  // On open, reset and focus the input (delayed until it's on screen).
   useEffect(() => {
     if (isOpen) {
       setQuery('');
@@ -65,7 +54,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     }
   }, [isOpen]);
 
-  // LEARN: Whenever the search text changes, jump the highlight back to the top.
+  // Jump the highlight back to the top whenever the search text changes.
   useEffect(() => { setActiveIndex(0); }, [query]);
 
   const run = useCallback((cmd: string) => {
@@ -73,10 +62,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     onCommand(cmd);
   }, [onCommand]);
 
-  // LEARN: Keyboard navigation. `Math.min/Math.max` clamp the index so arrows can't
-  //    run off either end of the list. `setActiveIndex(prev => ...)` uses the updater
-  //    form, which is the safe way to compute new state from the previous value.
-  //    `e.preventDefault()` stops the arrows from also scrolling the page.
+  // Arrow keys move the highlight (clamped to the list); Enter runs, Escape closes.
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -91,9 +77,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
     }
   };
 
-  // Scroll active item into view
-  // LEARN: Reaches into the real DOM (via the list ref) to keep the highlighted row
-  //    visible as you arrow past the edge of the scroll area re-runs on every move.
+  // Keep the highlighted row visible as you arrow past the edge of the scroll area.
   useEffect(() => {
     const el = listRef.current?.children[activeIndex] as HTMLElement | undefined;
     el?.scrollIntoView({ block: 'nearest' });
@@ -104,9 +88,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
   const categoryLabel = (cat: string) =>
     cat === 'core' ? 'CORE' : cat === 'system' ? 'SYSTEM' : 'EGG';
 
-  // LEARN: The classic "click outside to close" trick. The full-screen wrapper closes
-  //    the palette on click, but the inner box calls `e.stopPropagation()` so clicks
-  //    INSIDE it don't bubble up to that wrapper and accidentally close it.
+  // Click-outside-to-close: the full-screen wrapper closes on click; the inner
+  // box stops propagation so clicks inside it don't reach the wrapper.
   return (
     <div
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[15vh] px-4"
@@ -122,9 +105,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
       >
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-studio">
-          <span className="font-mono text-term-faint text-[10px] shrink-0">⌘K</span>
-          {/* LEARN: A controlled input `value` comes from state and `onChange` writes
-                it back, so React is the single source of truth for what's typed. */}
+          <span className="font-mono text-term-faint text-micro shrink-0">⌘K</span>
           <input
             ref={inputRef}
             type="text"
@@ -132,17 +113,17 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="search commands..."
-            className="flex-1 bg-transparent border-none outline-none font-mono text-[16px] md:text-[12px] text-term-fg placeholder:text-term-faint caret-brand-primary"
+            className="flex-1 bg-transparent border-none outline-none font-mono text-base md:text-caption text-term-fg placeholder:text-term-faint caret-brand-primary"
             spellCheck={false}
             autoComplete="off"
           />
-          <kbd className="font-mono text-[9px] text-term-faint border border-white/10 rounded px-1.5 py-0.5">ESC</kbd>
+          <kbd className="font-mono text-micro text-term-faint border border-white/10 rounded px-1.5 py-0.5">ESC</kbd>
         </div>
 
         {/* Results */}
         <div ref={listRef} className="max-h-[320px] overflow-y-auto custom-scrollbar py-1">
           {filtered.length === 0 ? (
-            <div className="px-4 py-3 font-mono text-[11px] text-term-faint">no commands match.</div>
+            <div className="px-4 py-3 font-mono text-fine text-term-faint">no commands match.</div>
           ) : (
             filtered.map((spec, i) => (
               <button
@@ -155,16 +136,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
                 )}
               >
                 <span className={cn(
-                  'font-mono text-[11px] font-bold w-28 shrink-0',
+                  'font-mono text-fine font-bold w-28 shrink-0',
                   i === activeIndex ? 'text-brand-primary' : 'text-term-fg'
                 )}>
                   {spec.id}
                 </span>
-                <span className="font-mono text-[10px] text-term-dim truncate flex-1">
+                <span className="font-mono text-micro text-term-dim truncate flex-1">
                   {spec.summary}
                 </span>
                 <span className={cn(
-                  'font-mono text-[8px] tracking-[0.15em] uppercase shrink-0',
+                  'font-mono text-micro tracking-[0.15em] uppercase shrink-0',
                   spec.category === 'core' ? 'text-brand-primary/60' :
                   spec.category === 'system' ? 'text-blue-400/50' : 'text-viz-mac-yellow/50'
                 )}>
@@ -176,7 +157,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
         </div>
 
         {/* Footer hint */}
-        <div className="px-4 py-2 border-t border-studio flex items-center gap-4 font-mono text-[9px] text-term-faint">
+        <div className="px-4 py-2 border-t border-studio flex items-center gap-4 font-mono text-micro text-term-faint">
           <span><kbd className="border border-white/10 rounded px-1">↑↓</kbd> navigate</span>
           <span><kbd className="border border-white/10 rounded px-1">↵</kbd> run</span>
           <span><kbd className="border border-white/10 rounded px-1">esc</kbd> close</span>

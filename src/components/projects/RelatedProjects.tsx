@@ -7,13 +7,6 @@
  * Note:    the shuffle is wrapped in useMemo so it only runs once per mount.
  *          Without that, every re-render would re-shuffle and React would
  *          throw away and recreate the cards unnecessarily.
- *
- * For beginners ----------------------------------------------------------------
- * Think of useMemo as "remember this result and only recalculate it when the
- * input changes." The input here is currentProjectId. As long as the same
- * project page is open, the two related cards stay the same even if the
- * rest of the page re-renders.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -21,18 +14,15 @@ import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/utils';
 import { ScrollReveal, SectionContainer } from '@/ui';
-import { projectsData } from '@/data/projects';
+import { projectsData } from '@/content/projects';
 
 interface RelatedProjectsProps {
   currentProjectId: string;
 }
 
 export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProjectId }) => {
-  // LEARN: useMemo runs the function once and caches the result. It only
-  //    re-runs when currentProjectId changes (listed in the dependency array).
-  //    The sort trick `() => 0.5 - Math.random()` randomly shuffles the array
-  //    (a common-but-imperfect Fisher-Yates shortcut) then slice(0, 2) takes
-  //    the first two - giving us two different related projects each visit.
+  // Shuffle-and-take-two so each visit surfaces two different related projects;
+  // memoised on currentProjectId so it only reshuffles when the project changes.
   const related = React.useMemo(() => {
     return projectsData
       .filter(p => p.id !== currentProjectId)
@@ -49,7 +39,7 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
       <div className="flex flex-col gap-16">
         <div className="flex flex-col gap-6">
           <ScrollReveal direction="right" distance={12} className="flex items-center gap-6">
-            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] uppercase text-white/30 font-bold whitespace-nowrap">
+            <span className="font-mono text-micro md:text-micro tracking-[0.4em] uppercase text-text-tertiary font-bold whitespace-nowrap">
               Project Navigation
             </span>
             <div className="flex-1 h-px bg-white/10" />
@@ -57,7 +47,7 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
           <ScrollReveal direction="up" delay={0.1}>
             <h2 className="font-noto text-4xl md:text-5xl font-black tracking-tighter text-white uppercase leading-none">
               Explore Other <br className="md:hidden" />
-              <span className="text-white/30 italic font-playfair lowercase font-normal">Records.</span>
+              <span className="text-text-ghost italic font-playfair lowercase font-normal">Records.</span>
             </h2>
           </ScrollReveal>
         </div>
@@ -84,8 +74,8 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
                 
                 <div className="flex items-start justify-between mb-8 relative z-10">
                   <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] text-white/20 tracking-[0.3em] uppercase">Asset_Module</span>
-                    <span className="font-mono text-[11px] text-white/60 font-bold uppercase tracking-widest">
+                    <span className="font-mono text-micro text-text-ghost tracking-ultra uppercase">Asset_Module</span>
+                    <span className="font-mono text-fine text-text-tertiary font-bold uppercase tracking-widest">
                       [ {project.id.toUpperCase()} ]
                     </span>
                   </div>
@@ -98,14 +88,14 @@ export const RelatedProjects: React.FC<RelatedProjectsProps> = ({ currentProject
                   <h3 className="font-mono text-2xl font-black text-white uppercase tracking-tighter group-hover:translate-x-2 transition-transform duration-700">
                     {project.title}
                   </h3>
-                  <p className="font-mono text-[13px] text-white/40 leading-relaxed max-w-sm line-clamp-2">
+                  <p className="font-mono text-label text-text-tertiary leading-relaxed max-w-sm line-clamp-2">
                     {project.copy}
                   </p>
                 </div>
 
                 <div className="mt-10 flex items-center gap-4 relative z-10">
                   <div className="flex-1 h-px bg-white/5 group-hover:bg-white/20 transition-colors duration-700" />
-                  <span className="font-mono text-[8px] font-black tracking-[0.3em] uppercase text-white/20 group-hover:text-white/60 transition-colors duration-700">
+                  <span className="font-mono text-micro font-black tracking-ultra uppercase text-text-ghost group-hover:text-text-tertiary transition-colors duration-700">
                     Load_Dataset
                   </span>
                 </div>

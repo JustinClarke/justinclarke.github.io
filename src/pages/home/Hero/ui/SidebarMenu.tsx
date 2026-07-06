@@ -7,19 +7,13 @@
  * Note:    the buttons are DATA, not hand-written markup one `menuItems` array
  *          describes them and a single `.map` renders them. Add a button by adding
  *          an object, not by copy-pasting JSX.
- *
- * For beginners ----------------------------------------------------------------
- * The "list of data → map to elements" pattern is the React way of building
- * repeated UI (like a server-side loop printing rows). Each item carries its own
- * label, tooltip, and onClick, so the rendering code at the bottom stays generic.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { cn, track } from '@/utils';
-import { TOOLTIPS } from '@/config/tooltips';
+import { TOOLTIPS } from '@/utils/tooltipContent';
 import { useNavigate } from 'react-router-dom';
 import { ProjectShowcase } from './ProjectShowcase';
-import { projectsData } from '@/data/projects';
+import { projectsData } from '@/content/projects';
 import { CommandButton, CommandButtonProps } from './CommandButton';
 
 interface SidebarMenuProps {
@@ -27,20 +21,16 @@ interface SidebarMenuProps {
   isVisible?: boolean;
 }
 
-// LEARN: `Omit<CommandButtonProps, 'num'>` builds a new type = all of a button's
-//    props EXCEPT `num` (we supply that ourselves as `n`). Reusing the button's own
-//    prop type this way means MenuItem can never drift out of sync with the button.
+// Extends the button's own prop type (minus `num`, supplied here as `n`) so
+// MenuItem can't drift out of sync with CommandButton.
 interface MenuItem extends Omit<CommandButtonProps, 'num'> {
   n: string;
   mobileOrder: number;
 }
 
 export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible = true }) => {
-  // LEARN: `useNavigate` is React Router's hook for changing pages from code (rather
-  //    than via a clicked <Link>). We call `navigate('/f1')` inside an onClick below.
   const navigate = useNavigate();
-  // LEARN: `.find(...)` returns the first matching item, or `undefined`; the `|| ...`
-  //    falls back to the first project so we always have something to feature.
+  // Fall back to the first project so there's always something to feature.
   const crownJewelProject = projectsData.find(p => p.id === 'off-the-pace') || projectsData[0];
 
   const menuItems: MenuItem[] = [
@@ -68,10 +58,6 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
       />
 
       <div className="grid grid-cols-2 md:flex md:flex-col gap-2 md:flex-1 md:min-h-0">
-        {/* LEARN: Render the data. For each menu item we output one wrapper <div> +
-              <CommandButton>. `cn(...)` is a helper that joins class names and drops
-              any that are false, so the `condition && "class"` bits add a class only
-              when their condition holds. `key={c.cmd}` gives React a stable id per row. */}
         {menuItems.map((c) => (
           <div
             key={c.cmd}

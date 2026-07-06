@@ -1,5 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { formatTimeAgo } from './NowPlaying';
+import { fetchLastFmTrack } from '../hooks/useLastFm';
+
+// ── degradation contract ───────────────────────────────────────────────────────
+// SITE.integrations.lastFm: null must mean "no fetch, no track" useLastFm then
+// settles with loading=false/track=null and NowPlaying's early return hides the badge.
+describe('fetchLastFmTrack with a null integration', () => {
+  it('resolves null without touching the network', async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    await expect(fetchLastFmTrack(null)).resolves.toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+  });
+});
 
 describe('formatTimeAgo', () => {
   it('returns empty string for undefined minutes', () => {

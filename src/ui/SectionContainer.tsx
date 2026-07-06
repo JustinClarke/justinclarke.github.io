@@ -6,12 +6,6 @@
  * Note:    `containerVariant` swaps the inner max-width preset ('site' wide,
  *          'project' narrower, 'none' for full-bleed). Change spacing here once,
  *          and every section updates.
- *
- * For beginners ----------------------------------------------------------------
- * `forwardRef` passes a parent's ref down to the real <section> element, so a
- * parent can scroll to or measure this section. `cn(...)` just joins class
- * strings together (and drops empty ones) see src/utils/cn.ts.
- * -----------------------------------------------------------------------------
  */
 import React, { ReactNode, forwardRef } from 'react';
 import { cn } from '@/utils';

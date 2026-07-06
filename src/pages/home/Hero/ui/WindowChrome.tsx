@@ -7,19 +7,13 @@
  *          everything is configurable through props.
  * Note:    the traffic lights are real buttons red reloads (or asks the parent
  *          to confirm a close), yellow minimises. The green one is decorative.
- *
- * For beginners ----------------------------------------------------------------
- * Note how many props end in `?` and have `= default` values: that's how one
- * component flexes to many situations without the caller wiring up everything.
- * `React.ReactNode` means "anything renderable" text, an element, or nothing  
- * which lets a parent inject custom content into the `right` slot.
- * -----------------------------------------------------------------------------
  */
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NowPlaying } from '@/components/NowPlaying';
 import { ThemeToggle } from '@/ui/ThemeToggle';
-import { TOOLTIPS } from '@/config/tooltips';
+import { TOOLTIPS } from '@/utils/tooltipContent';
+import { SITE } from '@/content';
 
 interface WindowChromeProps {
   url?: string;
@@ -32,7 +26,7 @@ interface WindowChromeProps {
 }
 
 export const WindowChrome: React.FC<WindowChromeProps> = ({
-  url = 'justinclarke@portfolio: ~',
+  url = `${SITE.social.github.toLowerCase()}@portfolio: ~`,
   right,
   showBackOnMobile = false,
   onMinimize,
@@ -40,13 +34,8 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
   onCloseConfirm,
   onCommand
 }) => {
-  // LEARN: A tiny piece of local state for the "EMAIL COPIED" toast true while it
-  //    shows, flipped back to false by a timer after a couple of seconds.
   const [copiedToast, setCopiedToast] = useState(false);
 
-  // LEARN: `onMinimize?.()` calls the handler only if the parent supplied one.
-  //    Red either asks the parent to confirm a close (if given) or, as a fallback,
-  //    reloads the page after a short delay so the click feels deliberate.
   const handleYellowClick = () => { onMinimize?.(); };
   const handleRedClick = () => {
     if (onCloseConfirm) {
@@ -58,21 +47,28 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
 
   const trafficLights = (
     <div className="relative flex gap-2 group/traffic">
+      {/* The 10px traffic-light dots keep the macOS-chrome look; `before:-inset-1.5`
+          adds an invisible hit-slop so the real tap target is ~22px without resizing
+          the visual dot (a full 44px is impossible in this tight row see AUDIT §12.3). */}
       <button
         type="button"
         onClick={handleRedClick}
-        className="w-2.5 h-2.5 rounded-full bg-viz-mac-red hover:bg-viz-mac-red/80 cursor-pointer relative group-hover/traffic:after:content-['×'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-[8px] after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
+        aria-label="Close terminal window"
+        className="w-2.5 h-2.5 rounded-full bg-viz-mac-red hover:bg-viz-mac-red/80 cursor-pointer relative before:absolute before:-inset-1.5 before:content-[''] group-hover/traffic:after:content-['×'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-micro after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
       />
       <button
         type="button"
         onClick={handleYellowClick}
+        aria-label="Minimize terminal window"
         data-tooltip={TOOLTIPS.yellowbutton}
         data-tooltip-pos="below"
-        className="w-2.5 h-2.5 rounded-full bg-viz-mac-yellow hover:bg-viz-mac-yellow/80 cursor-pointer relative group-hover/traffic:after:content-['−'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-[8px] after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
+        className="w-2.5 h-2.5 rounded-full bg-viz-mac-yellow hover:bg-viz-mac-yellow/80 cursor-pointer relative before:absolute before:-inset-1.5 before:content-[''] group-hover/traffic:after:content-['−'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-micro after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
       />
-      <button
-        type="button"
-        className="w-2.5 h-2.5 rounded-full bg-viz-mac-green hover:bg-viz-mac-green/80 cursor-pointer relative group-hover/traffic:after:content-['+'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-[8px] after:text-black/40 after:font-bold after:opacity-0 hover:after:opacity-100 transition-colors"
+      {/* Green is purely decorative (no handler) a span, not a button, so it stays
+          out of the a11y tree and tab order instead of being a nameless control. */}
+      <span
+        aria-hidden="true"
+        className="w-2.5 h-2.5 rounded-full bg-viz-mac-green relative group-hover/traffic:after:content-['+'] after:absolute after:inset-0 after:flex after:items-center after:justify-center after:text-micro after:text-black/40 after:font-bold after:opacity-0 transition-colors"
       />
 
     </div>
@@ -81,12 +77,12 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
   const renderedRight = right !== undefined ? right : (
     !isMinimized && (
       <div className="flex items-center gap-3 sm:gap-4">
-        <div className="hidden sm:flex items-center gap-4 text-term-dim font-mono text-[10px]">
+        <div className="hidden sm:flex items-center gap-4 text-term-dim font-mono text-micro">
           <button
             type="button"
             onClick={(e) => {
               e.preventDefault();
-              navigator.clipboard.writeText('justinsavioclarke@outlook.com');
+              navigator.clipboard.writeText(SITE.email);
               setCopiedToast(true);
               setTimeout(() => setCopiedToast(false), 2000);
             }}
@@ -95,8 +91,8 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
           >
             <span className="premium-target">email</span>
           </button>
-          <a href="https://linkedin.com/in/justinsavioclarke" target="_blank" rel="noopener noreferrer" data-tooltip={TOOLTIPS.linkedin} className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary premium-text-hover"><span className="premium-target">linkedin</span></a>
-          <a href="https://github.com/JustinClarke" target="_blank" rel="noopener noreferrer" data-tooltip={TOOLTIPS.github} className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary premium-text-hover"><span className="premium-target">github</span></a>
+          <a href={`https://linkedin.com/in/${SITE.social.linkedin}`} target="_blank" rel="noopener noreferrer" data-tooltip={TOOLTIPS.linkedin} className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary premium-text-hover"><span className="premium-target">linkedin</span></a>
+          <a href={`https://github.com/${SITE.social.github}`} target="_blank" rel="noopener noreferrer" data-tooltip={TOOLTIPS.github} className="hover:text-brand-primary transition-colors smooth-underline after:h-[1px] after:bg-brand-primary premium-text-hover"><span className="premium-target">github</span></a>
         </div>
 
         <div className="hidden sm:block flex items-center"><NowPlaying /></div>
@@ -104,11 +100,12 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
         <button
           type="button"
           onClick={() => onCommand?.('game')}
+          aria-label="Play arcade games"
           data-tooltip="you got games on your phone??"
           data-tooltip-pos="below"
           className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-fg/5 text-viz-mac-yellow opacity-80 hover:opacity-100 transition-all cursor-pointer border-none outline-none"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="6" x2="10" y1="11" y2="11" />
             <line x1="8" x2="8" y1="9" y2="13" />
             <line x1="15" x2="15.01" y1="12" y2="12" />
@@ -132,7 +129,7 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
             </div>
             <Link
               to="/"
-              className="sm:hidden flex items-center gap-1.5 font-mono text-[10px] tracking-wider text-term-fg/60 hover:text-brand-primary active:scale-95 transition-all select-none no-underline cursor-pointer"
+              className="sm:hidden flex items-center gap-1.5 font-mono text-micro tracking-wider text-term-fg/60 hover:text-brand-primary active:scale-95 transition-all select-none no-underline cursor-pointer"
             >
               <span className="text-viz-mac-red font-bold">←</span>
               <span>back</span>
@@ -142,10 +139,10 @@ export const WindowChrome: React.FC<WindowChromeProps> = ({
           trafficLights
         )}
 
-        <div className="flex-1 text-center font-mono text-[8px] md:text-[9px] text-term-faint tracking-[0.2em] uppercase opacity-60 truncate px-2">
+        <div className="flex-1 text-center font-mono text-micro md:text-micro text-term-faint tracking-mega uppercase opacity-60 truncate px-2">
           {url}
         </div>
-        <div className="flex items-center gap-2 md:gap-4 text-term-dim font-mono text-[10px] shrink-0">
+        <div className="flex items-center gap-2 md:gap-4 text-term-dim font-mono text-micro shrink-0">
           {renderedRight}
         </div>
       </div>

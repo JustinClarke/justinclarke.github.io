@@ -7,14 +7,6 @@
  *          looks a `large` tile, the special `the long version` row, and the
  *          plain default chosen by the boolean props. There's barely any logic;
  *          the length comes from the three className/markup branches.
- *
- * For beginners ----------------------------------------------------------------
- * `cn(...)` is a helper that stitches class names together and quietly drops any
- * that are false. So `important && "highlight"` adds "highlight" ONLY when
- * `important` is true that's how a prop toggles a look. Reading these blocks,
- * focus on which branch runs (`large` ? … : `isLongVersion` ? … : default); the
- * Tailwind strings inside are just CSS.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { cn } from '@/utils';
@@ -26,7 +18,7 @@ export interface CommandButtonProps {
   hot?: boolean;
   important?: boolean;
   large?: boolean;
-  badge?: React.ReactNode;  // LEARN: ReactNode = any renderable content; here, ProjectShowcase
+  badge?: React.ReactNode;  // e.g. a ProjectShowcase preview
   alignTop?: boolean;
   tooltip?: string;
   onClick?: () => void;
@@ -34,8 +26,6 @@ export interface CommandButtonProps {
 }
 
 export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, large, badge, alignTop, tooltip, onClick, className }) => {
-  // LEARN: One flag computed up front; the markup below picks its variant from this
-  //    plus the `large` prop. Naming it once keeps the JSX conditions readable.
   const isLongVersion = cmd === 'the long version';
 
   return (
@@ -75,9 +65,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
         <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.05)_50%,transparent_75%)] bg-[length:250%_250%] animate-[shimmer_3s_infinite]" />
       )}
 
-      {/* LEARN: The three-way variant switch. `large ? (…) : isLongVersion ? (…) : (…)`
-            renders exactly ONE of the three layouts. This nested-ternary-in-JSX is a
-            common React idiom for "pick one of N templates". */}
+      {/* Picks one of three layouts: large / long-version / standard. */}
       {large ? (
         <div className="flex flex-col md:h-full w-full relative z-10 gap-3">
           {/* Header row consistent with other items, floating elegantly on the top vignette */}
@@ -89,10 +77,10 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
 
               <div className="flex items-center gap-2">
                 <span className={cn(
-                  "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px] md:text-[10px]",
+                  "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-micro md:text-micro",
                   "text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
                 )}>{num}</span>
-                <span className="font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300 text-fg group-hover/btn:text-f1-red">
+                <span className="font-noto font-black tracking-tight text-label uppercase transition-colors duration-300 text-fg group-hover/btn:text-f1-red">
                   {cmd}
                 </span>
               </div>
@@ -100,10 +88,10 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
 
             {desc && (
               <div className="hidden md:flex ml-auto items-center gap-2 relative z-10">
-                <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
+                <div className="font-mono tracking-tight whitespace-nowrap text-right text-micro uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
                   {desc}
                 </div>
-                <span className="font-mono text-[13px] leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
+                <span className="font-mono text-label leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
                   →
                 </span>
               </div>
@@ -131,7 +119,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border text-[9px] text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
+              <span className="font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border text-micro text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-[oklch(96.5%_0.012_78)] group-hover/btn:border-[oklch(96.5%_0.012_78)]/40 group-hover/btn:bg-[oklch(96.5%_0.012_78)]/10 transition-colors duration-300">{num}</span>
               <span className="font-playfair italic font-extrabold tracking-tight text-[18px] md:text-[19px] transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover/btn:translate-x-2.5 group-hover/btn:scale-[1.05] inline-block origin-left">
                 the long version
               </span>
@@ -139,10 +127,10 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
-            <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
+            <div className="font-mono tracking-tight whitespace-nowrap text-right text-micro text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
               {desc}
             </div>
-            <span className="font-mono text-[13px] leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
+            <span className="font-mono text-label leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block opacity-0 group-hover/btn:opacity-100 -translate-x-3 group-hover/btn:translate-x-0">
               →
             </span>
           </div>
@@ -156,13 +144,13 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
 
             <div className="flex items-center gap-2">
               <span className={cn(
-                "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-[9px]",
+                "font-mono font-bold hidden md:inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-micro",
                 important
                   ? "text-brand-primary border-brand-primary/40 bg-brand-primary/10"
                   : "text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-brand-primary group-hover/btn:border-brand-primary/30 group-hover/btn:bg-brand-primary/5"
               )}>{num}</span>
               <span className={cn(
-                "font-noto font-black tracking-tight text-[13px] uppercase transition-colors duration-300",
+                "font-noto font-black tracking-tight text-label uppercase transition-colors duration-300",
                 (hot || important) ? "text-brand-primary" : "text-fg group-hover/btn:text-brand-primary"
               )}>
                 {cmd}
@@ -171,11 +159,11 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
           </div>
 
           <div className="ml-auto hidden md:flex items-center gap-2 relative z-10">
-            <div className="font-mono tracking-tight whitespace-nowrap text-right text-[9px] uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
+            <div className="font-mono tracking-tight whitespace-nowrap text-right text-micro uppercase text-f1-grey-dark group-hover/btn:text-f1-grey transition-colors duration-300">
               {desc}
             </div>
             <span className={cn(
-              "font-mono text-[13px] leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block",
+              "font-mono text-label leading-none text-brand-primary transition-all duration-400 ease-[cubic-bezier(0.34,1.56,0.64,1)] inline-block",
               "opacity-0 group-hover/btn:opacity-100",
               num === '01'
                 ? "-translate-y-2 group-hover/btn:translate-y-0"

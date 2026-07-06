@@ -10,17 +10,9 @@
  *          curves stay glued to the cards through resizes (hence the ResizeObserver
  *          + `setTick` re-render nudge).
  *
- * For beginners ----------------------------------------------------------------
- * Several React concepts share this file:
- *  - A ref (`useRef`) is a box that survives re-renders without causing them. We
- *    use refs for DOM nodes (`nodeRefs`, `svgRef`) and for timer handles we need
- *    to cancel later (`idleTimeoutRef`).
- *  - `useState` values DO cause a re-render when changed; `hoveredTech` etc.
- *    drive which cards light up.
- *  - `--tech-color` / `--tech-rgb` are CSS custom properties set inline per card,
- *    then read by Tailwind arbitrary values like `bg-[rgba(var(--tech-rgb),0.03)]`
- *    the project's pattern for "one styled block, many colours".
- * -----------------------------------------------------------------------------
+ * `--tech-color` / `--tech-rgb` are CSS custom properties set inline per card,
+ * then read by Tailwind arbitrary values like `bg-[rgba(var(--tech-rgb),0.03)]`
+ * the project's pattern for "one styled block, many colours".
  */
 import React, { useRef, useState, useEffect } from 'react';
 import { cn } from '@/utils';
@@ -278,10 +270,8 @@ export function TechStackBand() {
     return () => observer.disconnect();
   }, []);
 
-  // LEARN: Idle auto-demo. When the section is on screen and nobody is hovering,
-  //    wait 0.9s of no activity, then start cycling a random tool every 3s so the
-  //    DAG animates itself. Any real interaction (mousemove, scroll, key) resets
-  //    the wait via `resetIdleTimer`, so the demo only runs when truly idle.
+  // Idle auto-demo: after 0.9s with no hover/interaction, cycle a random tool
+  // every 3s so the DAG animates itself. Any activity resets the idle timer.
   useEffect(() => {
     if (!isIntersecting || hoveredTech) {
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
@@ -336,10 +326,9 @@ export function TechStackBand() {
     };
   }, [isIntersecting, hoveredTech, allTechNames]);
 
-  // LEARN: The edges are computed from live `getBoundingClientRect()` positions,
-  //    which are only known AFTER layout. `setTick` increments a throwaway counter
-  //    purely to force one extra render once positions exist, and a ResizeObserver
-  //    re-forces it whenever the grid changes size so the curves never drift.
+  // Edges are drawn from live getBoundingClientRect() positions, known only after
+  // layout. `setTick` forces a render once positions exist; ResizeObserver re-forces
+  // it on grid resize so the curves never drift from the cards.
   useEffect(() => {
     setTick(t => t + 1);
     const el = gridRef.current;
@@ -370,16 +359,14 @@ export function TechStackBand() {
     };
   }, []);
 
-  // LEARN: Given the hovered tool, find everything connected to it. `walk` does a
-  //    breadth-first search over the edge list one direction at a time: "up"
-  //    follows edges backwards (ancestors / what feeds this), "down" follows them
-  //    forwards (descendants / what this feeds). The union is the lit-up lineage.
+  // BFS over TECH_EDGES from the hovered tool: "up" follows edges backwards
+  // (ancestors), "down" follows forwards (descendants). Union is the lit-up lineage.
   const getActiveLineage = (hovered: string | null) => {
     if (!hovered) return { nodes: [] as string[], edges: [] as [string, string][] };
 
     const walk = (start: string, direction: 'up' | 'down') => {
       const visited = new Set<string>();
-      let queue = [start];
+      const queue = [start];
       while (queue.length > 0) {
         const cur = queue.shift()!;
         for (const [from, to] of TECH_EDGES) {
@@ -405,9 +392,7 @@ export function TechStackBand() {
     return { nodes: activeNodes, edges: activeEdges };
   };
 
-  // LEARN: `activeTech` is derived, not stored a real hover wins, otherwise the
-  //    idle auto-demo's pick. Computing it during render (instead of in another
-  //    useState) keeps the two sources from drifting out of sync.
+  // Derived, not stored: real hover wins, otherwise the idle auto-demo's pick.
   const activeTech = hoveredTech || activeIdleTech;
   const activeLineage = activeTech ? getActiveLineage(activeTech) : null;
   const isEdgeActive = (from: string, to: string) =>
@@ -424,7 +409,7 @@ export function TechStackBand() {
 
   return (
     <div ref={containerRef} className="flex flex-col gap-5 p-6 sm:p-8 bg-brand-card/60 backdrop-blur-xl saturate-150 border border-white/10 rounded-3xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] mt-6">
-      <span className="font-jetbrains text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-[0.2em] font-semibold text-center md:text-left">
+      <span className="font-jetbrains text-micro sm:text-micro text-slate-400 uppercase tracking-mega font-semibold text-center md:text-left">
         Technology Stack
       </span>
 
@@ -446,14 +431,14 @@ export function TechStackBand() {
               {item.icon}
             </div>
             <div className="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between min-w-0 w-full gap-1.5 sm:gap-2">
-              <span className="font-jetbrains text-xs sm:text-sm font-extrabold text-white/95 group-hover:text-[var(--tech-color)] transition-colors duration-200 truncate tracking-tight">
+              <span className="font-jetbrains text-xs sm:text-sm font-extrabold text-text-primary group-hover:text-[var(--tech-color)] transition-colors duration-200 truncate tracking-tight">
                 {item.name}
               </span>
               <div className="hidden sm:flex items-center gap-2 shrink-0">
-                <span className="font-jetbrains text-[7.5px] text-[var(--tech-color)]/90 bg-[rgba(var(--tech-rgb),0.07)] border border-[rgba(var(--tech-rgb),0.15)] px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold group-hover:bg-[rgba(var(--tech-rgb),0.15)] group-hover:text-[var(--tech-color)] transition-all duration-200 truncate">
+                <span className="font-jetbrains text-micro text-[var(--tech-color)]/90 bg-[rgba(var(--tech-rgb),0.07)] border border-[rgba(var(--tech-rgb),0.15)] px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold group-hover:bg-[rgba(var(--tech-rgb),0.15)] group-hover:text-[var(--tech-color)] transition-all duration-200 truncate">
                   {item.sub}
                 </span>
-                <span className="font-mono text-[7px] text-white/20 group-hover:text-[var(--tech-color)]/50 transition-colors duration-200 shrink-0">
+                <span className="font-mono text-micro text-text-ghost group-hover:text-[var(--tech-color)]/50 transition-colors duration-200 shrink-0">
                   {item.step}
                 </span>
               </div>
@@ -497,10 +482,10 @@ export function TechStackBand() {
             >
               {/* Column Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                <span className="font-mono text-[9px] font-black uppercase tracking-[0.25em] text-white/40">
+                <span className="font-mono text-micro font-black uppercase tracking-[0.25em] text-text-tertiary">
                   {column.title}
                 </span>
-                <span className="font-mono text-[14px] font-black text-white/30 group-hover/col:text-white/60 transition-colors">
+                <span className="font-mono text-sm font-black text-text-ghost group-hover/col:text-text-tertiary transition-colors">
                   0{colIndex + 1}
                 </span>
               </div>
@@ -543,20 +528,20 @@ export function TechStackBand() {
                         </div>
                         <div className="flex-1 flex items-center justify-between min-w-0">
                           <span className={cn(
-                            "font-jetbrains text-xs font-extrabold text-white/95 transition-colors duration-200 truncate tracking-tight group-hover/card:text-[var(--tech-color)]",
+                            "font-jetbrains text-xs font-extrabold text-text-primary transition-colors duration-200 truncate tracking-tight group-hover/card:text-[var(--tech-color)]",
                             isHovered && "text-[var(--tech-color)]"
                           )}>
                             {item.name}
                           </span>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className={cn(
-                              "font-jetbrains text-[7.5px] text-[var(--tech-color)]/90 bg-[rgba(var(--tech-rgb),0.07)] border border-[rgba(var(--tech-rgb),0.15)] px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold transition-all duration-200 truncate group-hover/card:bg-[rgba(var(--tech-rgb),0.15)] group-hover/card:text-[var(--tech-color)]",
+                              "font-jetbrains text-micro text-[var(--tech-color)]/90 bg-[rgba(var(--tech-rgb),0.07)] border border-[rgba(var(--tech-rgb),0.15)] px-1.5 py-0.5 rounded uppercase tracking-wider font-extrabold transition-all duration-200 truncate group-hover/card:bg-[rgba(var(--tech-rgb),0.15)] group-hover/card:text-[var(--tech-color)]",
                               isHovered && "bg-[rgba(var(--tech-rgb),0.15)] text-[var(--tech-color)]"
                             )}>
                               {item.sub}
                             </span>
                             <span className={cn(
-                              "font-mono text-[7px] text-white/20 transition-colors duration-200 shrink-0 group-hover/card:text-[var(--tech-color)]/50",
+                              "font-mono text-micro text-text-ghost transition-colors duration-200 shrink-0 group-hover/card:text-[var(--tech-color)]/50",
                               isHovered && "text-[var(--tech-color)]/50"
                             )}>
                               {item.step}

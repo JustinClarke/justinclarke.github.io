@@ -6,13 +6,6 @@
  * Fits in: imported by ProjectHero, the section components, and both views.
  * Note:    Numbers are verified against the real pipeline output - see the
  *          per-block "Source -" comments before changing any of them.
- *
- * For beginners ----------------------------------------------------------------
- * `as const` at the end of an object tells TypeScript "treat these exact values
- * as fixed and read-only" - so `STATS.seasons` is known to be literally 7, not
- * just "some number", and nothing can accidentally reassign it. This is a plain
- * data module: no React, no logic, just exported constants other files import.
- * -----------------------------------------------------------------------------
  */
 // Single source of truth for landing-page headline stats. Verified against transform/ on 2026-06-20.
 //

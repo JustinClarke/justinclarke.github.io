@@ -7,13 +7,6 @@
  * Fits in: the thesis centrepiece, mounted on both the Overview and Architecture
  *          pages. Data is the real São Paulo 2021 L59 overtake pair from
  *          decompositions.ts; colours are the --color-term-* tokens.
- *
- * For beginners ----------------------------------------------------------------
- * Each segment's `width` is `|seconds| / maxTotal * 100%`, where `maxTotal` is
- * the larger of the two drivers' total absolute swing. Because both bars share
- * that denominator, a wider segment literally means more seconds - no arbitrary
- * percentages. `title` gives the native hover tooltip with the signed value.
- * -----------------------------------------------------------------------------
  */
 import { LINKS } from '../../../data/projectStats';
 import { SAO_PAULO_L59, TERM_ABBR, toLapClock } from '../../../data/decompositions';
@@ -34,20 +27,20 @@ export function DecompositionExplainer() {
     <div className="rounded-3xl bg-graphite-800/40 border border-white/5 px-8 md:px-12 py-12 md:py-16 flex flex-col gap-8">
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-3 block font-semibold">
+          <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-3 block font-semibold">
             The Decomposition
           </span>
-          <h2 className="text-2xl md:text-3xl font-noto font-black text-white/90 uppercase tracking-tighter">
+          <h2 className="text-2xl md:text-3xl font-noto font-black text-text-primary uppercase tracking-tighter">
             Same lap. Seven causes.
           </h2>
         </div>
-        <p className="font-jetbrains text-[11px] text-white/50 max-w-sm leading-relaxed">
+        <p className="font-jetbrains text-fine text-text-tertiary max-w-sm leading-relaxed">
           2021 São Paulo Grand Prix · Lap 59 (the overtake) ·{' '}
           <a
             href={`${LINKS.docs}/findings/sao-paulo-2021`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/40 underline underline-offset-2 hover:text-white/70 transition-colors"
+            className="text-text-tertiary underline underline-offset-2 hover:text-text-secondary transition-colors"
           >
             fct_lap_residuals
           </a>
@@ -59,7 +52,7 @@ export function DecompositionExplainer() {
           const skill = driver.terms.find((t) => t.key === 'driver_skill_residual_s')!;
           return (
             <div key={driver.driver}>
-              <div className="flex justify-between font-jetbrains text-xs text-white/60 mb-2">
+              <div className="flex justify-between font-jetbrains text-xs text-text-tertiary mb-2">
                 <span className="font-bold text-white text-sm">{driver.driver}</span>
                 <span>
                   {toLapClock(driver.grossLapTime_s)} ·{' '}
@@ -76,7 +69,7 @@ export function DecompositionExplainer() {
                   return (
                     <div
                       key={seg.key}
-                      className="h-full flex items-center justify-center font-jetbrains text-[9px] font-bold text-white/80 border-r border-white/5 last:border-r-0 select-none overflow-hidden"
+                      className="h-full flex items-center justify-center font-jetbrains text-micro font-bold text-text-secondary border-r border-white/5 last:border-r-0 select-none overflow-hidden"
                       style={{ width: `${widthPct}%`, backgroundColor: seg.color }}
                       title={`${seg.label} ${signed}`}
                     >
@@ -90,18 +83,18 @@ export function DecompositionExplainer() {
         })}
       </div>
 
-      <p className="font-jetbrains text-[11px] text-white/45 leading-relaxed max-w-xl">
+      <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed max-w-xl">
         On the overtake lap the red <span className="text-f1-red font-semibold">SKILL</span> segment  -
         the only part the driver controls  - was{' '}
-        <span className="text-white/70 font-semibold">−3.110s</span> for Hamilton against{' '}
-        <span className="text-white/70 font-semibold">−1.517s</span> for Verstappen: a 1.60s execution
+        <span className="text-text-secondary font-semibold">−3.110s</span> for Hamilton against{' '}
+        <span className="text-text-secondary font-semibold">−1.517s</span> for Verstappen: a 1.60s execution
         edge the stopwatch hid behind near-identical lap times. Everything else is physics  - and now
         it's measured.
       </p>
 
       <div className="flex flex-wrap gap-x-6 gap-y-3 pt-2 border-t border-white/[0.06]">
         {LEGEND.map((item) => (
-          <span key={item.label} className="font-jetbrains text-[10px] text-white/45 flex items-center gap-2">
+          <span key={item.label} className="font-jetbrains text-micro text-text-tertiary flex items-center gap-2">
             <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: item.color }} />
             {item.label}
           </span>

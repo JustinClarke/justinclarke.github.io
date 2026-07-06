@@ -5,12 +5,6 @@
  * Fits in: reused at the top of most section components on both OTP pages.
  * Note:    `title` is typed React.ReactNode (not string) so callers can pass
  *          rich markup - e.g. a title with a <br /> or a coloured <span>.
- *
- * For beginners ----------------------------------------------------------------
- * ACCENT_COLORS is a lookup table: give it an accent name like 'amber' and it
- * hands back the matching Tailwind class. This keeps the four allowed colours in
- * one place instead of scattering if/else branches through the markup.
- * -----------------------------------------------------------------------------
  */
 interface SectionHeaderProps {
   number?: string;
@@ -33,14 +27,14 @@ export function SectionHeader({ number, eyebrow, title, lede, accent = 'red', cl
 
   return (
     <div className={`max-w-xl ${className}`}>
-      <span className={`font-jetbrains text-[10px] ${accentClass} uppercase tracking-[0.2em] mb-4 block font-semibold`}>
+      <span className={`font-jetbrains text-micro ${accentClass} uppercase tracking-mega mb-4 block font-semibold`}>
         {number ? `${number} / ${eyebrow}` : eyebrow}
       </span>
-      <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter mb-4">
+      <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
         {title}
       </h2>
       {lede && (
-        <p className="text-white/60 text-sm font-jetbrains leading-relaxed max-w-2xl">
+        <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed max-w-2xl">
           {lede}
         </p>
       )}

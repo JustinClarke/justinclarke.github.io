@@ -1,34 +1,41 @@
 # Maintenance
 
-Everything to check before pushing to `main`.
+What to check before pushing to `main`.
 
 ---
 
 ## Pre-push checklist
 
-### 1. Lint
+### 1. Lint & test
 
-Run this single command it covers types and Tailwind token compliance:
+Run what CI runs if both pass locally, CI will pass:
 
 ```bash
 npm run lint
+npm test
 ```
 
-Then do a full production build to catch bundler or metadata errors:
+Then do a full production build to catch bundler or metadata problems:
 
 ```bash
 npm run build
 ```
 
-CI runs `lint` on every pull request (`ci.yml`) and `build` on every deploy (`deploy.yml`). If both pass locally, CI will pass.
+CI runs `lint` + `test` on every pull request (`ci.yml`) and `build` on every deploy (`deploy.yml`).
 
-### 2. Update docs if needed
+### 2. Routes: edit the manifest, not the plumbing
 
-If you touched a signature subsystem (terminal engine, F1 telemetry, design tokens, routing), update the relevant section in `_docs/architecture.md` or `_docs/patterns.md`.
+Adding or removing a page touches three places, and the compiler walks you through each one:
 
-If you added or removed a route, also update:
-- `ROUTES` array in `scripts/inject-metadata.js`
-- `public/sitemap.xml` (canonical routes only `/contact` is an alias of `/connect` and is intentionally omitted)
+1. The entry in `src/content/routes.ts` (path, title, description, sitemap data).
+2. The lazy import + `ROUTE_COMPONENTS` line in `src/app/App.tsx` `Record<RoutePath, …>` makes a missing or stale mapping a **compile error**.
+3. The route table in `_docs/architecture.md` `scripts/check-route-sync.mjs` (part of `npm run lint`) **fails CI** until the docs match.
+
+Everything else is derived: per-route metadata, `dist/sitemap.xml`, and the screenshot matrix all read the manifest. Nothing to keep in sync by hand.
+
+### 3. Update docs if you touched something big
+
+If you changed something in a core subsystem (terminal engine, F1 telemetry, design tokens, routing, content layer), update the relevant section in `_docs/architecture.md` or `_docs/patterns.md`.
 
 ---
 
@@ -36,20 +43,26 @@ If you added or removed a route, also update:
 
 | Check | Tool | What it catches |
 |:---|:---|:---|
-| TypeScript types | `tsc --noEmit` | Type errors, missing imports, broken aliases |
-| Tailwind token compliance | `scripts/check-tailwind-tokens.mjs` | Raw hex values that should be `--color-*` tokens |
+| TypeScript types | `tsc --noEmit` | Type errors, missing imports, broken aliases, manifest↔component drift |
+| Tailwind token compliance | `scripts/check-tailwind-tokens.mjs` | Raw hex that should be a token; `text-[Npx]` below 10px; `text-white/N` or `text-fg/N` below `/45` |
+| Route-table sync | `scripts/check-route-sync.mjs` | `_docs/architecture.md` route table drifting from `src/content/routes.ts` |
+| Worker-prompt sync | `scripts/build-system-prompt.mjs --check` | Committed `worker/system-prompt.js` stale against `_resume.yaml` / `content/assistant.ts` / `site.ts` |
+| ESLint | `eslint . --max-warnings=<budget>` | typescript-eslint + jsx-a11y + react-hooks; warning budget only ratchets down |
 
-### Tailwind token rule (quick ref)
+### Tailwind token rules (quick ref)
 
-- Colours used ≥ 2 times **must** be a `@theme` token in `src/index.css` before the second use.
-- JS files that genuinely need raw hex (canvas draw calls, Framer Motion values) belong in `src/config/constants.ts` only.
-- Inline `style={{ color: '#...' }}` is a lint failure unless the line ends with `// tw-allow-hex` (needs justification in review).
+- **Colours** used ≥2 times must be a `@theme` token before the second use.
+- **Text colour** comes from the semantic ramp `text-text-primary`/`-secondary`/`-tertiary` (or the theme-flipping `fg-*` family). `text-white/N` and `text-fg/N` below `/45` are blocked (fails WCAG AA on `#050505`); `-ghost`/`-dim`/`-muted` are decorative only.
+- **Type** comes from the `--text-*` ramp (`text-micro` 10px = floor, `text-fine` 11px, `text-caption` 12px, `text-label` 13px, `text-display`) or the standard Tailwind scale. No `text-[Npx]` below 10px. A size used ≥2 times becomes a token; uppercase micro-labels get `tracking-mega`/`-ultra`.
+- JS files that genuinely need raw hex (canvas, Framer Motion) keep it in `src/config/constants.ts` only.
+- Escape hatches (justify in review): `tw-allow-hex`, `tw-allow-micro` (sub-10px decorative glyph), `tw-allow-contrast` (sub-45 decorative text) on the offending line.
+- **Viewport-height fit is the sanctioned CSS exception:** the two `@media (max-height: …)` blocks in `index.css` (bento + connect) can't be expressed as utilities (Tailwind has no height variant), so they stay as hand-written `!important` CSS with sub-10px compression fallbacks exempt from the floor.
 
-Full contract: [`_docs/patterns.md` Tailwind token contract](_docs/patterns.md#tailwind-token-contract).
+Full contract: [patterns.md → Tailwind token contract](patterns.md#tailwind-token-contract).
 
 ---
 
-## Code style (brief)
+## Code style
 
 - **No raw hex outside `constants.ts`.** See Tailwind contract above.
 - **No inline `style` for static values.** `style={{ zIndex: 40 }}` → `z-40`.
@@ -60,64 +73,71 @@ Full contract: [`_docs/patterns.md` Tailwind token contract](_docs/patterns.md#t
     className="bg-(--accent) shadow-[0_0_6px_var(--accent)]"
   />
   ```
-- **Comments only when the *why* is non-obvious** skip anything that restates what the code does.
 - **No extra abstractions.** If three similar lines won't become four, leave them as-is.
+
+### Comments
+
+A comment earns its place by explaining **this repo's** patterns not the language or framework.
+
+- **Worth commenting:** the engine registry, the token gate, the transition state machine, the content layer / degradation contract, and non-obvious invariants (e.g. "keyed on pathname so pages mount clean", "must stay erasable syntax Node imports this file directly").
+- **Not worth commenting:** what `useState`, `useRef`, `.map`, `??`, `interface`, or a Framer Motion prop *is*. The reader is a developer.
+- File headers: a `Fits in:` / `Note:` line about the file's role in this system is useful. A paragraph teaching the framework is not.
+- When in doubt, delete. A wrong or stale comment is worse than none.
 
 ---
 
-## Updating the AI agent's knowledge
+## Updating the AI assistant
 
-The AI terminal assistant (and the floating chat drawer) is powered by a Cloudflare Worker at `portfolio-ai.justinclarke.workers.dev`. Its knowledge comes entirely from one file:
+The terminal's AI assistant (and the chat drawer) runs on a Cloudflare Worker (URL in `site.ts → integrations.aiChat`). Its knowledge file, `worker/system-prompt.js`, is **generated don't edit it by hand**. Sources:
 
-```
-worker/system-prompt.js
-```
-
-`_docs/_resume.yaml` is the single source of truth for all accomplishment data metrics, bullet points, skills, project stats. When you update your resume, sync the relevant facts into `system-prompt.js`.
+| Source | Owns |
+|:---|:---|
+| `_docs/_resume.yaml` | Facts: identity, education, certs, skills, experience bullets (`signature`/`strong` strength), canonical stats |
+| `src/content/assistant.ts` | Persona: voice, instructions, canned answers, lore, studio blurbs |
+| `src/content/site.ts` | Name, role, domain |
 
 ### How to update
 
-1. Edit `worker/system-prompt.js` add or update the relevant section (EXPERIENCE, PROJECTS, SKILLS, etc.)
-2. Redeploy the worker:
+1. Edit `_docs/_resume.yaml` and/or `src/content/assistant.ts`.
+2. Regenerate and review:
+   ```bash
+   npm run build:prompt
+   git diff worker/system-prompt.js
+   ```
+3. Redeploy the worker (separate from the Pages workflow):
    ```bash
    cd worker
    npx wrangler deploy
    ```
-3. Test in the terminal: ask a question that exercises the new info.
+4. Test in the terminal ask something that exercises the new info.
 
-### What the system prompt contains
+`npm run lint` runs `build-system-prompt.mjs --check`, so a stale prompt blocks CI. You can forget to deploy, but you can't forget to regenerate.
 
-| Section | What to put here |
-|:---|:---|
-| IDENTITY | Contact info, location, work auth |
-| EDUCATION | Degrees, distinctions, relevant highlights |
-| SKILLS | Grouped by category reorder to reflect current focus |
-| EXPERIENCE | Role, company, dates, key accomplishment bullets with metrics |
-| PROJECTS | Name, live URL, stack, key stats and accomplishments |
-| INSTRUCTIONS | Tone, response length, off-topic handling, formatting rules |
+### Formatting
 
-### Formatting rule
-
-The terminal renders **plain text only** no markdown. The system prompt instructs the model not to use `**bold**`, `# headers`, or hyphen bullets. Keep accomplishment bullets as plain prose with numbers inline (e.g. `cut refresh from 45 min to 20 min`).
+The terminal renders **plain text only** no markdown. The system prompt tells the model not to use `**bold**`, `# headers`, or hyphen bullets. Keep accomplishment bullets as plain prose with numbers inline (e.g. `cut refresh from 45 min to 20 min`).
 
 ### History truncation
 
-The worker rejects history items longer than 500 characters. The client already truncates history text to 490 chars before sending (`src/hooks/useAIAgent.ts`), so multi-turn conversations are safe.
+The worker rejects history items longer than 500 characters. The client truncates to 490 chars before sending (`src/hooks/useAIAgent.ts`), so multi-turn conversations stay safe.
 
 ---
 
-## Deploy pipeline (for reference)
+## Deploy pipeline
 
 ```
 pull request → main
-  └─ GitHub Actions (ci.yml)
+  └─ GitHub Actions (ci.yml, Node 24)
        ├─ npm ci
-       └─ npm run lint          ← blocks on type errors or token violations
+       ├─ npm run lint          ← types + token gate + route/prompt sync + eslint
+       └─ npm test              ← vitest
 
 push to main
-  └─ GitHub Actions (deploy.yml)
+  └─ GitHub Actions (deploy.yml, Node 24)
        ├─ npm ci
-       ├─ npm run build         ← tsc + vite build + inject-metadata.js
-       │                           (injects VITE_UMAMI_* analytics vars)
+       ├─ npm run build         ← tsc + vite build + inject-metadata.js (meta + sitemap)
        └─ deploy dist/ → GitHub Pages
+
+worker change (separate, manual)
+  └─ npm run build:prompt → cd worker && npx wrangler deploy
 ```

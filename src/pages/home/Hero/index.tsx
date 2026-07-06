@@ -8,15 +8,6 @@
  * Note:    almost no business logic lives here. Commands are decided in
  *          engine.ts, run by useTerminalSession, and the boot animation is in
  *          useTerminalBoot. This component is mostly glue + visual state.
- *
- * For beginners ----------------------------------------------------------------
- * A "component" is a function that returns markup (JSX, which looks like HTML).
- * React calls it to draw a piece of the page, and re-calls it whenever its state
- * changes, redrawing only what differs. Below, `useState(...)` lines are this
- * component's memory; the `<section>...</section>` at the bottom is what it
- * draws. The pieces like <WindowChrome/> and <TerminalBody/> are smaller
- * components imported from ./ui composing small pieces is the whole idea.
- * -----------------------------------------------------------------------------
  */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { SnakeGame } from './games/SnakeGame';
@@ -52,9 +43,6 @@ const SessionClock: React.FC = () => {
   );
 
   useEffect(() => {
-    // LEARN: setInterval runs the callback repeatedly forever (here every 1000ms
-    //    = 1 second). It returns an id we MUST pass to clearInterval in the
-    //    cleanup, or the timer keeps firing after the clock is gone (a "leak").
     const id = setInterval(() => {
       setTime(new Date().toLocaleTimeString(DUBAI_LOCALE, { timeZone: DUBAI_TZ, hour12: false }));
     }, 1000);
@@ -62,7 +50,7 @@ const SessionClock: React.FC = () => {
   }, []);
 
   return (
-    <div className="hidden md:block font-mono text-[10px] text-term-faint mb-4 md:mb-6 shrink-0 opacity-60">
+    <div className="hidden md:block font-mono text-micro text-term-faint mb-4 md:mb-6 shrink-0 opacity-60">
       // session_active: port 8080 // auth_success: {time}
     </div>
   );
@@ -108,8 +96,6 @@ export const Hero: React.FC = () => {
 
 
 
-  // LEARN: a ref pointed at a DOM node. After render, `staticCanvasRef.current`
-  //    is the actual <canvas> element, which we draw TV-static onto by hand.
   const staticCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const [hasScrolled, setHasScrolled] = useState(false);
@@ -153,9 +139,7 @@ export const Hero: React.FC = () => {
 
 
   // TV-static effect: paint random black-and-white noise on the <canvas> every
-  // animation frame, but ONLY while terminalState === 'static'.
-  // This is hand-drawn graphics a glimpse of how games/visualisations work
-  // under the hood, below the level of HTML elements.
+  // animation frame, but only while terminalState === 'static'.
   useEffect(() => {
     if (terminalState !== 'static') return;       // only run during the static phase
     const canvas = staticCanvasRef.current;
@@ -171,10 +155,8 @@ export const Hero: React.FC = () => {
     canvas.width = w;
     canvas.height = h;
 
-    // LEARN: a canvas is really just a grid of pixels. `imageData.data` is one
-    //    long list of bytes, 4 per pixel (red, green, blue, alpha). Viewing it
-    //    as a Uint32Array lets us set a whole pixel with ONE number instead of
-    //    four much faster when we're redrawing the whole screen 60×/second.
+    // Viewing the RGBA byte buffer as a Uint32Array lets us set a whole pixel
+    // with one write instead of four faster when redrawing the screen 60×/sec.
     const imageData = ctx.createImageData(w, h);
     const buf = new Uint32Array(imageData.data.buffer);
     let animId: number;
@@ -187,9 +169,6 @@ export const Hero: React.FC = () => {
         buf[i] = 0xff000000 | (v << 16) | (v << 8) | v;
       }
       ctx.putImageData(imageData, 0, 0);  // blit our pixel buffer onto the canvas
-      // LEARN: requestAnimationFrame schedules `draw` to run again right before
-      //    the next screen repaint (~60×/sec). It's the standard way to animate
-      //    smoothly. We save the id so the cleanup can cancel the loop.
       animId = requestAnimationFrame(draw);
     };
     draw();

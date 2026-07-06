@@ -6,14 +6,8 @@
  *          --mouse-y). The useSpotlight hook updates those variables directly on
  *          the element, so the glow moves WITHOUT re-rendering React on every
  *          mouse move that's the performance trick.
- *
- * For beginners ----------------------------------------------------------------
- * `onMouseEnter?.(e)` calls the optional `onMouseEnter` prop only if a parent
- * passed one (the `?.` skips the call when it's undefined). We wrap the caller's
- * handlers so the card's own behaviour AND the parent's both run.
- * -----------------------------------------------------------------------------
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useSpotlight } from '@/hooks';
 
@@ -37,15 +31,12 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
   ...props
 }) => {
   const { handleMouseMove, mouseX, mouseY } = useSpotlight();
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsHovered(true);
     onMouseEnter?.(e);
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsHovered(false);
     onMouseLeave?.(e);
   };
 
@@ -67,7 +58,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover/spotlight:opacity-100 z-0 shadow-inner"
         style={{
           background: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.08), transparent 80%)`,
-          // @ts-ignore
+          // @ts-expect-error CSS custom properties aren't in CSSProperties
           "--mouse-x": mouseX, 
           "--mouse-y": mouseY,
         }}
@@ -80,7 +71,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
           background: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), rgba(0, 200, 180, 0.4), transparent 80%)`,
           WebkitMaskImage: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), black, transparent)`,
           maskImage: `radial-gradient(250px circle at var(--mouse-x) var(--mouse-y), black, transparent)`,
-          // @ts-ignore
+          // @ts-expect-error CSS custom properties aren't in CSSProperties
           "--mouse-x": mouseX, 
           "--mouse-y": mouseY,
         }}
@@ -89,19 +80,19 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
       {/* Content */}
       <div className="relative z-20 flex flex-col h-full">
         {number && (
-          <div className="font-mono text-[12px] font-bold text-text-muted tracking-[0.25em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-border-studio">
+          <div className="font-mono text-caption font-bold text-text-muted tracking-[0.25em] mb-4 flex items-center gap-2 after:content-[''] after:flex-1 after:h-px after:bg-border-studio">
             {number}
           </div>
         )}
         
         {title && (
-          <h3 className="font-noto font-bold text-[16px] text-white uppercase tracking-[0.1em] mb-3">
+          <h3 className="font-noto font-bold text-base text-white uppercase tracking-[0.1em] mb-3">
             {title}
           </h3>
         )}
         
         {description && (
-          <p className="font-mono text-[16px] text-white/85 leading-relaxed font-normal">
+          <p className="font-mono text-base text-text-primary leading-relaxed font-normal">
             {description}
           </p>
         )}

@@ -1,19 +1,11 @@
 /**
  * types/index.ts the shared "shapes" the rest of the app agrees on.
  *
- * Fits in: data files (data/portfolio.ts, data/projects.ts, ...) and the
+ * Fits in: content files (content/home.ts, content/projects.ts, ...) and the
  *          components that render them both refer to these, so they can't
  *          drift apart.
  * Note:    types are a compile-time contract only they vanish from the shipped
  *          JavaScript. They exist to catch mistakes in the editor, not at runtime.
- *
- * For beginners ----------------------------------------------------------------
- * An `interface` describes the exact fields an object must have and their types
- * (string, number, an array, etc). If a data file forgets a field or uses the
- * wrong type, TypeScript flags it before the site ever runs. A `?` marks an
- * optional field. `type X = [number, number]` names a tuple (a fixed-length
- * pair). This file contains NO runnable code, only these descriptions.
- * -----------------------------------------------------------------------------
  */
 import { ReactNode } from 'react';
 

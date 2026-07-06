@@ -6,22 +6,38 @@
  * Fits in: rendered inside the portalled FloatingNav in SourceView.
  * Note:    `activeId` and `onChange` are controlled by the parent - this
  *          component owns no "which tab is selected" state, only hover state.
- *
- * For beginners ----------------------------------------------------------------
- * Two things to notice. (1) Icons are looked up by name from the lucide-react
- * library: `LucideIcons[item.icon]` returns the actual icon component to render.
- * (2) `window.matchMedia('(hover: none)')` asks the browser "is this a
- * no-hover (touch) device?" and the effect keeps `isTouch` updated if that
- * changes, so touch users get the compact icon-only layout.
- * -----------------------------------------------------------------------------
  */
 import React, { useState, useEffect } from 'react';
-import * as LucideIcons from 'lucide-react';
+import {
+  Gauge,
+  Cpu,
+  BookOpen,
+  LineChart,
+  BarChart2,
+  CheckSquare,
+  type LucideIcon,
+} from 'lucide-react';
+
+// Only the icons the tabs actually render. A namespace import
+// (`import * as LucideIcons from 'lucide-react'`) plus a dynamic string lookup
+// defeated tree-shaking and pulled the whole ~1,500-icon library (~868KB raw /
+// 166KB gz) into the modulepreloaded vendor-ui chunk on every visit. This
+// explicit, named-import map lets Rollup drop everything else.
+const TAB_ICONS = {
+  Gauge,
+  Cpu,
+  BookOpen,
+  LineChart,
+  BarChart2,
+  CheckSquare,
+} satisfies Record<string, LucideIcon>;
+
+export type TabIconName = keyof typeof TAB_ICONS;
 
 export interface TabItem {
   id: string;
   label: string;
-  icon: keyof typeof LucideIcons;
+  icon: TabIconName;
   color?: string;
   /** Optical-centering nudge for glyphs whose content isn't centered in their viewBox (e.g. Gauge). */
   iconClassName?: string;
@@ -57,11 +73,11 @@ export const ExpandableTabs: React.FC<ExpandableTabsProps> = ({
       style={{ WebkitTransform: 'translateZ(0)', transform: 'translateZ(0)' }}
     >
       {items.map((item) => {
-        const IconComponent = LucideIcons[item.icon] as React.ComponentType<any>;
+        const IconComponent = TAB_ICONS[item.icon];
         const isActive = activeId === item.id;
         const isHovered = hoveredId === item.id;
-        // LEARN: expand rule - never on touch; if anything is hovered, only the
-        //    hovered tab expands; otherwise fall back to expanding the active one.
+        // Never expand on touch; if anything is hovered, only the hovered tab
+        // expands; otherwise fall back to expanding the active one.
         const isExpanded = isTouch ? false : (hoveredId !== null ? isHovered : isActive);
 
         const activeTextColor = item.color || 'text-white';

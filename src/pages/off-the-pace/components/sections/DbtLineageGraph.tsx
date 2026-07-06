@@ -9,13 +9,10 @@
  *          hand-typed "simplified DAG path".
  * Data:    src/pages/off-the-pace/data/dag.json (pruned from transform/target/
  *          manifest.json; see its `provenance` field).
- *
- * For beginners ----------------------------------------------------------------
- * The layout is computed ONCE at module load from the static JSON (positions by
- * graph depth), so hovering only flips a highlight flag  - the SVG geometry never
- * recomputes, keeping interaction well under a frame budget. Each node's `depth`
- * is its longest path from a source, which is what stacks the bands top→bottom.
- * -----------------------------------------------------------------------------
+ * Layout:  computed once at module load from the static JSON (positions by
+ *          graph depth); hovering only flips a highlight flag, so the SVG
+ *          geometry never recomputes. Each node's `depth` is its longest path
+ *          from a source, which stacks the bands top-to-bottom.
  */
 import { useState } from 'react';
 import dagData from '../../data/dag.json';
@@ -71,10 +68,10 @@ export function DbtLineageGraph() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-end justify-between gap-3 flex-wrap">
-        <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/30">
+        <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary">
           Model lineage · real dbt manifest
         </span>
-        <span className="font-jetbrains text-[9px] text-white/40 tabular-nums">
+        <span className="font-jetbrains text-micro text-text-tertiary tabular-nums">
           {DAG.totals.models} models · {DAG.totals.tests} tests · {DAG.nodes.length} upstream of{' '}
           <span className="text-f1-red">fct_lap_residuals</span>
         </span>
@@ -143,18 +140,18 @@ export function DbtLineageGraph() {
 
       {/* hover detail / legend */}
       <div className="flex items-center justify-between gap-3 flex-wrap min-h-[16px]">
-        <div className="font-jetbrains text-[10px] tabular-nums">
+        <div className="font-jetbrains text-micro tabular-nums">
           {active ? (
-            <span className="text-white/70">
+            <span className="text-text-secondary">
               <span className="text-white font-semibold">{active.label}</span>
               {' · '}{active.layer}{' · '}
               <span className="text-emerald-400">{active.tests} tests</span>
             </span>
           ) : (
-            <span className="text-white/30">Hover a model for its test count · number on each node = tests</span>
+            <span className="text-text-tertiary">Hover a model for its test count · number on each node = tests</span>
           )}
         </div>
-        <div className="flex items-center gap-3 font-jetbrains text-[8px] uppercase tracking-wider text-white/40">
+        <div className="flex items-center gap-3 font-jetbrains text-micro uppercase tracking-wider text-text-tertiary">
           {[
             { label: 'staging', c: 'rgba(255,255,255,0.45)' },
             { label: 'dim', c: 'var(--color-amber)' },

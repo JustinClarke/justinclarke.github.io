@@ -44,7 +44,7 @@ export const LinkedinBannerPage: React.FC = () => {
     circuitNode: 'rgba(0,200,180,0.4)',
     profileBorder: LINKEDIN_BANNER_COLORS.dark.profileBorder,
     profileBg: LINKEDIN_BANNER_COLORS.dark.profileBg,
-    profileText: 'text-white/15',
+    profileText: 'text-text-dim',
     profileShadow: '0 0 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,200,180,0.03)',
     arrowGlow: 'rgba(0,200,180,0.15)',
     arrowGradStart: 'rgba(0,200,180,0.08)',
@@ -56,7 +56,7 @@ export const LinkedinBannerPage: React.FC = () => {
     stackBg: 'rgba(255,255,255,0.02)',
     stackBorder: 'border-white/[0.08]',
     stackShadow: '0 4px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)',
-    stackLabel: 'text-white/25',
+    stackLabel: 'text-white/25', // tw-allow-contrast
     badgeText: 'text-term-fg',
     taglineText: 'text-term-dim',
     taglineAmp: 'text-brand-primary/50',
@@ -65,7 +65,7 @@ export const LinkedinBannerPage: React.FC = () => {
     uiWireframeBorder: 'rgba(255,255,255,0.08)',
     uiWireframeElement: 'rgba(255,255,255,0.15)',
     uiWireframeGrad: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
-    codeSnippetText: 'text-white/30',
+    codeSnippetText: 'text-white/30', // tw-allow-contrast
     syntax: LINKEDIN_BANNER_COLORS.dark.syntax
   } : {
     frameBg: 'linear-gradient(135deg, var(--color-light-bg) 0%, var(--color-term-white) 100%)',
@@ -114,14 +114,14 @@ export const LinkedinBannerPage: React.FC = () => {
   };
 
   return (
-    <div 
+    <div
       className={`w-full min-h-screen ${theme.outerBg} flex flex-col items-center justify-center px-4 py-8 transition-colors duration-300 overflow-hidden`}
       style={{ background: theme.frameBg }}
     >
 
       {/* ── Helper Control Panel (not part of the screenshotted banner) ── */}
       <div className="absolute top-8 flex items-center gap-4 select-none z-50">
-        <p className="text-black/40 dark:text-white/30 font-mono text-[11px] tracking-widest uppercase">
+        <p className="text-black/40 dark:text-white/30 font-mono text-fine tracking-widest uppercase">{/* tw-allow-contrast dev-only helper label, not part of the exported banner */}
           LinkedIn Banner screenshot the frame below
         </p>
         <button
@@ -255,15 +255,15 @@ export const LinkedinBannerPage: React.FC = () => {
         >
           <div className="p-3 flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <span className={`font-mono text-[7px] tracking-wider opacity-60 transition-colors duration-300 ${theme.titleText}`}>CPU_USAGE</span>
-              <span className="font-mono text-[7px] font-bold transition-colors duration-300" style={{ color: theme.arrowHead }}>42%</span>
+              <span className={`font-mono text-micro tracking-wider opacity-60 transition-colors duration-300 ${theme.titleText}`}>CPU_USAGE</span>
+              <span className="font-mono text-micro font-bold transition-colors duration-300" style={{ color: theme.arrowHead }}>42%</span>
             </div>
             <div className="w-full h-1 rounded-full overflow-hidden transition-colors duration-300" style={{ background: theme.uiWireframeElement }}>
               <div className="h-full w-[42%] transition-colors duration-300" style={{ background: theme.arrowHead }} />
             </div>
             <div className="flex justify-between items-center mt-1">
-              <span className={`font-mono text-[7px] tracking-wider opacity-60 transition-colors duration-300 ${theme.titleText}`}>MEM_ALLOC</span>
-              <span className="font-mono text-[7px] font-bold transition-colors duration-300" style={{ color: theme.arrowHead }}>1.2GB</span>
+              <span className={`font-mono text-micro tracking-wider opacity-60 transition-colors duration-300 ${theme.titleText}`}>MEM_ALLOC</span>
+              <span className="font-mono text-micro font-bold transition-colors duration-300" style={{ color: theme.arrowHead }}>1.2GB</span>
             </div>
             <div className="w-full h-1 rounded-full overflow-hidden transition-colors duration-300" style={{ background: theme.uiWireframeElement }}>
               <div className="h-full w-[65%] transition-colors duration-300" style={{ background: theme.arrowHead }} />
@@ -323,9 +323,9 @@ export const LinkedinBannerPage: React.FC = () => {
             <div className="w-2 h-2 rounded-full bg-viz-mac-red opacity-80" />
             <div className="w-2 h-2 rounded-full bg-viz-mac-yellow opacity-80" />
             <div className="w-2 h-2 rounded-full bg-viz-mac-green opacity-80" />
-            <span className={`ml-2 font-mono text-[8px] opacity-50 transition-colors duration-300 ${theme.titleText}`}>Analytics.tsx</span>
+            <span className={`ml-2 font-mono text-micro opacity-50 transition-colors duration-300 ${theme.titleText}`}>Analytics.tsx</span>
           </div>
-          <div className={`p-3 font-mono text-[9px] leading-[1.6] transition-colors duration-300 ${theme.codeSnippetText} opacity-[0.85] select-none`}>
+          <div className={`p-3 font-mono text-micro leading-[1.6] transition-colors duration-300 ${theme.codeSnippetText} opacity-[0.85] select-none`}>
             <div className="flex">
               <div className="w-4 text-right pr-2 opacity-30 select-none">1<br />2<br />3<br />4<br />5</div>
               <div>
@@ -357,7 +357,7 @@ export const LinkedinBannerPage: React.FC = () => {
             boxShadow: theme.profileShadow,
           }}
         >
-          <span className={`font-mono text-[10px] tracking-[0.2em] uppercase select-none transition-colors duration-300 ${theme.profileText}`}>your photo</span>
+          <span className={`font-mono text-micro tracking-mega uppercase select-none transition-colors duration-300 ${theme.profileText}`}>your photo</span>
         </div> */}
 
         {/* ════════════════════════════════════════════════════════════════════

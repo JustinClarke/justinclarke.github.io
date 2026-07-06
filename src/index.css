@@ -47,6 +47,37 @@
   --font-serif: "DM Serif Text", serif;
   --font-playfair: "Playfair Display", serif;
 
+  /* ── Type ramp ──
+     The legibility floor is 10px: no text-[Npx] below text-micro anywhere in
+     src (gated by scripts/check-tailwind-tokens.mjs; escape hatch
+     `tw-allow-micro` for genuinely decorative glyphs). micro/fine/caption/label
+     are the dense HUD/telemetry register behind the site's uppercase
+     micro-label idiom one shared line-height (1.4) so swapping sizes within
+     the register doesn't reflow. Body copy stays on the standard Tailwind
+     scale (text-sm/base/…). display is the game-countdown numeral size.
+     One-off sizes ≥10px may stay arbitrary (text-[15px]); a size used twice
+     gets a token (contract rule 2, same as colours). */
+  --text-micro: 0.625rem;
+  /* 10px the floor; HUD/telemetry labels */
+  --text-micro--line-height: 1.4;
+  --text-fine: 0.6875rem;
+  /* 11px dense UI copy, fine print */
+  --text-fine--line-height: 1.4;
+  --text-caption: 0.75rem;
+  /* 12px captions, annotations (text-xs size with label line-height) */
+  --text-caption--line-height: 1.4;
+  --text-label: 0.8125rem;
+  /* 13px form labels, nav copy */
+  --text-label--line-height: 1.4;
+  --text-display: 5rem;
+  /* 80px game countdown numerals */
+  --text-display--line-height: 1;
+
+  /* Letter-spacing steps for the uppercase micro-label idiom, extending
+     Tailwind's ladder (widest = 0.1em). Wider one-off spacings stay arbitrary. */
+  --tracking-mega: 0.2em;
+  --tracking-ultra: 0.3em;
+
   /* Brand Colors - Standardized for Tailwind Utility Access */
   --color-brand-primary: #00c8b4;
   --color-brand-bg: #050505;
@@ -57,9 +88,24 @@
   --color-border-studio: rgba(255, 255, 255, 0.08);
   --color-border-studio-heavy: rgba(255, 255, 255, 0.15);
   --color-glass-bg: rgba(0, 0, 0, 0.4);
+
+  /* ── Text-colour ramp (fixed white-alpha; does NOT theme-flip dark-locked
+     and always-dark surfaces only; flipping surfaces use the fg family below).
+     Contrast on the #050505 page surface:
+       primary   /92 ≈ 17:1   default voice
+       secondary /70 ≈ 10:1   supporting copy
+       tertiary  /55 ≈ 6.3:1  the AA floor tier smallest legal content colour
+       ghost     /35 ≈ 2.9:1  DECORATIVE ONLY (ornaments, ghost words) never content
+       dim       /15          texture: dividers, watermark numerals
+       muted     /10          texture: faintest register (dot grids)
+     Gate: text-white/N and text-fg/N with N<45 are blocked by
+     check-tailwind-tokens.mjs (escape hatch `tw-allow-contrast`). */
+  --color-text-primary: rgba(255, 255, 255, 0.92);
+  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-tertiary: rgba(255, 255, 255, 0.55);
+  --color-text-ghost: rgba(255, 255, 255, 0.35);
   --color-text-dim: rgba(255, 255, 255, 0.15);
   --color-text-muted: rgba(255, 255, 255, 0.1);
-  --color-text-primary: #ffffff;
 
   /* Category Accents (Expertise) */
   --color-acc-lang: #00c8b4;
@@ -254,7 +300,10 @@
   --color-fg: #ffffff;
   /* primary text */
   --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-mid: rgba(255, 255, 255, 0.55);
+  /* AA floor for flipping content text (tertiary twin) */
   --color-fg-faint: rgba(255, 255, 255, 0.4);
+  /* decorative/affordance only fails AA for content */
   --color-edge: rgba(255, 255, 255, 0.08);
   --color-edge-soft: rgba(255, 255, 255, 0.05);
 
@@ -472,6 +521,7 @@ body {
   --color-surface-3: #111111;
   --color-fg: #ffffff;
   --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-mid: rgba(255, 255, 255, 0.55);
   --color-fg-faint: rgba(255, 255, 255, 0.4);
   --color-edge: rgba(255, 255, 255, 0.08);
   --color-edge-soft: rgba(255, 255, 255, 0.05);
@@ -496,15 +546,16 @@ body {
   --color-surface-3: #ffffff;
   --color-fg: #0a0a0a;
   --color-fg-soft: rgba(0, 0, 0, 0.7);
+  --color-fg-mid: rgba(0, 0, 0, 0.58);
   --color-fg-faint: rgba(0, 0, 0, 0.45);
   --color-edge: rgba(0, 0, 0, 0.10);
   --color-edge-soft: rgba(0, 0, 0, 0.025);
 
-  /* Soft paper halo instead of the dark lift — keeps hint labels crisp without
+  /* Soft paper halo instead of the dark lift keeps hint labels crisp without
      the muddy blur a black shadow leaves behind near-black text. */
   --hint-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
 
-  /* Bento surfaces — light variant. Solid-white cards on the pale teal drift,
+  /* Bento surfaces light variant. Solid-white cards on the pale teal drift,
      with faint ink-tinted inner panels so the data still reads as layered. */
   --color-bento-card: #ffffff;
   --color-bento-inset: rgba(15, 18, 25, 0.04);
@@ -541,6 +592,7 @@ body {
   --color-surface-3: #111111;
   --color-fg: #ffffff;
   --color-fg-soft: rgba(255, 255, 255, 0.7);
+  --color-fg-mid: rgba(255, 255, 255, 0.55);
   --color-fg-faint: rgba(255, 255, 255, 0.4);
   --color-edge: rgba(255, 255, 255, 0.08);
   --color-edge-soft: rgba(255, 255, 255, 0.05);
@@ -712,7 +764,7 @@ body {
   .f1-scanline { animation: none; opacity: 0; }
 }
 
-/* F1 card pipeline — a bright data "packet" slides across each connector so the
+/* F1 card pipeline a bright data "packet" slides across each connector so the
    five-stage strip reads as a running system, not a static logo legend. Packets
    are staggered per hop (inline animation-delay) to chain into a left→right flow.
    Paused via a container class when the sim is paused; stilled for reduced-motion. */
@@ -1977,9 +2029,40 @@ body {
   animation: indicator-glow-breathe 2s ease-in-out infinite;
 }
 
-/* ============================================================
-   BENTO HEIGHT RESPONSIVENESS FOR SHORTER VIEWPORTS (720p)
-   ============================================================ */
+/* ════════════════════════════════════════════════════════════
+   VIEWPORT-HEIGHT FIT SYSTEM BENTO  (index.css height-fit 1 of 2)
+   ════════════════════════════════════════════════════════════
+   WHY THIS BLOCK EXISTS read before "cleaning it up" or moving it
+   onto the components as utilities:
+
+   The homepage bento grid must fit a short viewport (≈720p and
+   below) with ZERO inner scroll. That is a viewport-HEIGHT rule, and
+   Tailwind has no height-based responsive variant every built-in
+   modifier (sm:/md:/lg:, container queries) keys off WIDTH. So this
+   compaction layer genuinely cannot live on the component's utility
+   classes; it has to be a hand-written `@media (max-height: …)`
+   block. This is the correct tool, not a bolt-on hack: the JSX
+   utilities ARE the layout at normal heights; this block only
+   recompacts padding / gaps / heights when vertical space runs out.
+   (To change a card at normal heights, edit its JSX not here.)
+
+   WHY `!important`: every rule re-targets an element the utilities
+   already style (`div.rounded-3xl` padding, grid gaps, `min-h-…`),
+   so it must beat the base utility regardless of Tailwind's
+   utility-layer source order.
+
+   SUB-10px FONT SIZES ARE DELIBERATE: the 9px labels below are a
+   last-resort compression fallback for very short viewports where
+   the only alternative is the inner scroll the design forbids. They
+   are intentionally EXEMPT from the project's ≥10px legibility floor
+   that floor (scripts/check-tailwind-tokens.mjs) gates `text-[Npx]`
+   utilities in JSX, not these height-fit overrides. Raising them
+   reintroduces scroll.
+
+   TOKENISATION: the px here are viewport-fit magic numbers, not
+   semantic type-ramp uses, so they stay raw by design; the one clean
+   ramp match (.connect-subtitle, sibling block below) is tokenised.
+   ════════════════════════════════════════════════════════════ */
 @media (max-height: 800px) {
   /* Main Container adjustments */
   .bento-mockup-page {
@@ -2245,7 +2328,19 @@ body {
   }
 }
 
-/* ── CONNECT PAGE VIEWPORT HEIGHT SCALING (ZERO INNER SCROLL SYSTEM) ── */
+/* ════════════════════════════════════════════════════════════
+   VIEWPORT-HEIGHT FIT SYSTEM CONNECT  (index.css height-fit 2 of 2)
+   ════════════════════════════════════════════════════════════
+   Same discipline as the bento height-fit block above (see its
+   header for the full rationale): the /connect card fits any
+   viewport with ZERO inner scroll a HEIGHT rule Tailwind can't
+   express so it lives in hand-written `@media (max-height: …)`
+   queries using `!important`. Font sizes below 10px (9 / 8 / 7.5px)
+   are the same deliberate compression fallback, exempt from the
+   legibility floor. `.connect-subtitle` (11px → 10px) is the one
+   clean type-ramp match and uses var(--text-fine) / var(--text-micro);
+   the .connect-ctas / .mobile-channel-card ramps step below the floor,
+   so their steps stay raw rather than fragment into token + magic-px. */
 
 /* Tighten main wrapper padding on short viewports to give the card maximum vertical space */
 @media (max-height: 840px) {
@@ -2268,7 +2363,7 @@ body {
   }
   .connect-subtitle {
     margin-top: 10px !important;
-    font-size: 11px !important;
+    font-size: var(--text-fine) !important; /* 11px */
     line-height: 1.4 !important;
   }
   .connect-tags {
@@ -2318,7 +2413,7 @@ body {
   }
   .connect-subtitle {
     margin-top: 6px !important;
-    font-size: 10px !important;
+    font-size: var(--text-micro) !important; /* 10px floor */
     line-height: 1.3 !important;
   }
   .connect-tags {
@@ -2435,7 +2530,7 @@ body {
   }
   .connect-subtitle {
     margin-top: 8px !important;
-    font-size: 11px !important;
+    font-size: var(--text-fine) !important; /* 11px */
   }
   .connect-tags {
     margin-top: 8px !important;

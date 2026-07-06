@@ -6,14 +6,6 @@
  *          offset to a child's transform.
  * Note:    respects reduced-motion (returns {0,0}) and throttles to one update
  *          per animation frame so fast mouse moves don't flood React.
- *
- * For beginners ----------------------------------------------------------------
- * A "hook" is a reusable function (name starts with `use`) that plugs into
- * React's state/effect system. Here it measures the element's box once (and on
- * resize), then on each mouse move computes how far the cursor is from centre,
- * scaled to -1..1, times `factor` pixels. requestAnimationFrame batches that to
- * the screen's refresh rate; the ref boxes hold values without causing renders.
- * -----------------------------------------------------------------------------
  */
 import { useState, useEffect, RefObject, useRef } from 'react';
 import { useReducedMotion } from './useReducedMotion';

@@ -1,23 +1,39 @@
-# Justin Clarke Portfolio
+# Justin Clarke
 
-A high-fidelity, interactive engineering portfolio built as a system interface: a functional terminal hero, a causal-ML F1 case study, live data widgets, and five technical case studies. Not a static gallery a demonstration of production-grade frontend architecture.
+> A portfolio you can type into, playable arcade games, an AI assistant that knows my resume, live Last.fm integration, and a causal-ML case study on Formula 1 strategy.
 
-**Live:** [justinclarke.github.io](https://justinclarke.github.io)
+![Portfolio Preview](public/assets/og.png)
+
+**Live →** [justinclarke.github.io](https://justinclarke.github.io)
 
 ```
-React 19  ·  TypeScript 5.8 (strict)  ·  Tailwind CSS 4  ·  Framer Motion 12  ·  Vite 6
+React 19  ·  TypeScript 5.8 (strict)  ·  Tailwind CSS 4  ·  Framer Motion 12
 ```
 
 ---
 
-## Highlights
+## What's in here
 
-- **Functional CLI hero** a pure-TypeScript terminal engine (zero React, fully unit-tested) with 15+ commands, fuzzy command guessing, and side effects that drive scroll, modals, and an embedded Snake game.
-- **F1 Causal Pace Engine** (`/f1`, `/off-the-pace`) a self-contained case-study module presenting a causal-ML model with live telemetry widgets and a data/engineering deep-dive.
-- **Five case studies** Retail-as-a-Service (Next.js SaaS), an 11-entity disaster-response database with an interactive ERD, MSc Spotify research, behavioural HR AI, and a capital-budgeting financial model.
-- **Tailwind-first design system** every colour is a `@theme` token; a CI gate ([`scripts/check-tailwind-tokens.mjs`](scripts/check-tailwind-tokens.mjs)) blocks raw hex. Light/dark themes flip the entire UI via CSS-var overrides, zero markup changes.
-- **Privacy-first analytics** cookieless [Umami](https://umami.is), prod-only, SPA route changes tracked automatically. See [`_docs/analytics.md`](_docs/analytics.md).
-- **Performance-engineered** `useMotionValue` over `setState` for per-frame work, `React.lazy` per route + below-fold, no global `will-change` (Safari compositor budget), build-time per-route metadata for JS-less social scrapers.
+**Terminal hero** the landing page is a working command-line interface. Pure TypeScript engine ([unit-tested](src/pages/home/Hero/engine.test.ts), zero React in the core), 15+ commands, fuzzy matching when you mistype, side effects that scroll the page, open modals, or launch one of couple arcade games (Snake, Pong, Tetris, Space Invaders). Type `help` to poke around.
+
+**F1 pace analysis** a data engineering case study at [`/off-the-pace`](https://justinclarke.github.io/off-the-pace). FastF1 telemetry, dbt transformations, XGBoost modelling asking whether F1 pit stop calls were actually optimal. 2.4M rows through a medallion pipeline, with telemetry widgets and architecture deep-dive.
+
+**AI assistant** the `ask` command streams answers from a Cloudflare Worker. Its system prompt is [compiled at build](scripts/build-system-prompt.mjs) from a YAML resume + persona file, and CI catches it if it goes stale. It's surprisingly good at answering questions about my background.
+
+**Now Playing** Last.fm widget showing what I'm listening to. Updates live, not a static badge.
+
+**Other bits** animated career timeline, dark/light theming, macOS-style command dock, spotlight cards, scroll reveals, preloader boot sequence. The kind of details you notice on a second visit :)
+
+---
+
+## Under the hood
+
+A few things I'm particularly happy with:
+
+- **Content layer** all identity, copy, and config lives in typed TS objects under `src/content/`. Fork the repo and you only edit data files, no digging through components.
+- **Graceful degradation** Last.fm, analytics, AI chat, and the contact form are each `config | null`. Set any to `null` and the feature hides itself cleanly. A deployment with zero integrations still builds and passes tests.
+- **CI gates** a Tailwind token contract (no raw hex, no text below 10px, no sub-AA contrast), route-table sync between code and docs, and prompt-freshness checks. They catch drift before I have to think about it.
+- **Performance choices** `useMotionValue` instead of `setState` for per-frame animation, code-split per route, explicit icon imports (a wildcard once shipped ~150KB gz of unused icons).
 
 ---
 
@@ -27,18 +43,19 @@ React 19  ·  TypeScript 5.8 (strict)  ·  Tailwind CSS 4  ·  Framer Motion 12 
 git clone https://github.com/JustinClarke/justinclarke.github.io.git
 cd justinclarke.github.io
 npm install
-npm run dev        # Vite dev server on http://localhost:3000
+npm run dev        # http://localhost:3000
 ```
 
-| Command | Action |
+| Command | What it does |
 |:---|:---|
 | `npm run dev` | Dev server (port 3000) |
-| `npm run build` | `tsc` → Vite build → per-route metadata injection |
+| `npm run build` | `tsc` → Vite build → per-route metadata + sitemap |
 | `npm run preview` | Serve the production build |
-| `npm run lint` | Type-check + Tailwind token audit (CI gate) |
-| `npm run test` | Vitest unit tests (terminal engine, NowPlaying) |
+| `npm run lint` | Types + token gate + route/prompt sync + ESLint |
+| `npm test` | Vitest (terminal engine, NowPlaying, AI agent, degradation) |
+| `npm run build:prompt` | Regenerate the AI worker's system prompt |
 
-Requires Node 20+. Deploys to GitHub Pages on push to `main` ([`deploy.yml`](.github/workflows/deploy.yml)); pull requests are linted by [`ci.yml`](.github/workflows/ci.yml).
+Needs Node 24+. Deploys to GitHub Pages on push to `main` ([deploy.yml](.github/workflows/deploy.yml)); PRs gated by [ci.yml](.github/workflows/ci.yml).
 
 ---
 
@@ -46,32 +63,39 @@ Requires Node 20+. Deploys to GitHub Pages on push to `main` ([`deploy.yml`](.gi
 
 | Layer | Tech |
 |:---|:---|
-| Framework | React 19 (concurrent rendering, `createRoot`) |
-| Language | TypeScript 5.8, strict |
-| Styling | Tailwind CSS 4 CSS-first `@theme` tokens |
+| Framework | React 19 |
+| Language | TypeScript 5.8, `strict: true` |
+| Styling | Tailwind CSS 4 (`@theme` tokens) |
 | Animation | Framer Motion 12 |
-| Routing | React Router 7, animated page transitions |
+| Routing | React Router 7 |
 | Modals | Radix UI Dialog |
-| SEO | react-helmet-async + build-time metadata injection |
-| Analytics | Umami (cookieless) |
-| Bundler | Vite 6 esbuild minify, manual vendor chunks |
+| SEO | react-helmet-async + build-time metadata |
+| AI chat | Cloudflare Worker (optional) |
+| Analytics | Umami, cookieless (optional) |
+| Tests | Vitest 4 · ESLint 9 + custom gates |
+| Bundler | Vite 6 |
 
 ---
 
-## Documentation
+## Use it as a template
 
-The heavy lifting lives in [`_docs/`](_docs/):
+The content layer makes this pretty easy to fork. Edit the data files, swap the assets, delete case studies you don't need. The compiler tells you what's left to fix.
 
-| Doc | What's inside |
+See [_docs/template.md](_docs/template.md) for the full walkthrough.
+
+---
+
+## Docs
+
+| Doc | Covers |
 |:---|:---|
-| [architecture.md](_docs/architecture.md) | Stack, full source layout, design-system tokens, route table, UI primitives |
-| [patterns.md](_docs/patterns.md) | Terminal engine, SQL ERD pathing, DAG edges, scroll system, animation system, build pipeline |
-| [analytics.md](_docs/analytics.md) | Umami setup, custom events, configuration, verification |
-| [maintenance.md](_docs/maintenance.md) | Pre-push checklist, lint contract, deploy pipeline |
-
-The Tailwind token contract is enforced in [`_docs/patterns.md` Tailwind token contract](_docs/patterns.md#tailwind-token-contract).
+| [template.md](_docs/template.md) | Fork guide~ content layer, integrations, removing case studies, deploy |
+| [architecture.md](_docs/architecture.md) | Source layout, design system, route table, UI primitives |
+| [patterns.md](_docs/patterns.md) | Terminal engine, animation system, build pipeline, token contract |
+| [maintenance.md](_docs/maintenance.md) | Pre-push checklist, lint rules, worker-prompt workflow |
+| [analytics.md](_docs/analytics.md) | Umami setup, custom events, verification |
 
 ---
 
 > Built by **Justin Clarke**.
-> The interface respects `prefers-reduced-motion` throughout.
+> The site respects `prefers-reduced-motion`.

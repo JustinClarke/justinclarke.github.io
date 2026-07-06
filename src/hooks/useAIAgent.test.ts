@@ -3,6 +3,13 @@ import { callAIAgent, getQueryCount, incrementQueryCount } from './useAIAgent';
 
 const SESSION_KEY = 'ai_query_count';
 
+// callAIAgent's `aiChat` param defaults to the real `SITE.integrations.aiChat`
+// (see useAIAgent.ts) so it works unmodified in the deployed app. Tests that
+// exercise the network path inject this mock explicitly instead of relying on
+// that default only the one dedicated "off" test below should ever see the
+// real SITE value, and a fork that sets `aiChat: null` must not fail these.
+const MOCK_AI_CHAT = { workerUrl: 'https://mock.test/worker' };
+
 // Minimal sessionStorage shim for the node test environment.
 const store: Record<string, string> = {};
 const sessionStorageMock = {
@@ -62,39 +69,51 @@ describe('getQueryCount / incrementQueryCount', () => {
   });
 });
 
-// ── callAIAgent — prompt validation ───────────────────────────────────────────
+// ── callAIAgent prompt validation ───────────────────────────────────────────
 
 describe('callAIAgent prompt validation', () => {
   it('rejects prompts over 500 chars', async () => {
     const long = 'a'.repeat(501);
-    const { lines } = await callAIAgent(long, []);
+    const { lines } = await callAIAgent(long, [], undefined, undefined, MOCK_AI_CHAT);
     expect(lines[0].text).toMatch(/too long/i);
   });
 });
 
-// ── callAIAgent — network errors ──────────────────────────────────────────────
+// ── callAIAgent degradation contract ────────────────────────────────────────
+
+describe('callAIAgent with aiChat integration off', () => {
+  it('prints the not-configured line without touching the network', async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+    const { lines } = await callAIAgent('test', [], undefined, undefined, null);
+    expect(lines[0].text).toMatch(/not configured on this deployment/i);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+// ── callAIAgent network errors ──────────────────────────────────────────────
 
 describe('callAIAgent network errors', () => {
   it('returns fallback on fetch failure', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('fetch failed')));
-    const { lines } = await callAIAgent('test', []);
+    const { lines } = await callAIAgent('test', [], undefined, undefined, MOCK_AI_CHAT);
     expect(lines[0].text).toMatch(/couldn't reach|server/i);
   });
 
   it('returns rate-limit message on 429', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 429, body: null }));
-    const { lines } = await callAIAgent('test', []);
+    const { lines } = await callAIAgent('test', [], undefined, undefined, MOCK_AI_CHAT);
     expect(lines[0].text).toMatch(/too many requests/i);
   });
 
   it('returns upstream error on 500', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500, body: null }));
-    const { lines } = await callAIAgent('test', []);
+    const { lines } = await callAIAgent('test', [], undefined, undefined, MOCK_AI_CHAT);
     expect(lines[0].text).toMatch(/upstream|wrong/i);
   });
 });
 
-// ── callAIAgent — streaming ───────────────────────────────────────────────────
+// ── callAIAgent streaming ───────────────────────────────────────────────────
 
 describe('callAIAgent streaming', () => {
   it('assembles streamed tokens into a single response line', async () => {
@@ -106,7 +125,7 @@ describe('callAIAgent streaming', () => {
     }));
 
     const received: string[] = [];
-    const { lines, fullText } = await callAIAgent('test', [], t => received.push(t));
+    const { lines, fullText } = await callAIAgent('test', [], t => received.push(t), undefined, MOCK_AI_CHAT);
 
     expect(received).toEqual(tokens);
     expect(fullText).toBe('Hello, Justin here!');
@@ -122,12 +141,12 @@ describe('callAIAgent streaming', () => {
       status: 200,
       body: makeSseStream([]),
     }));
-    const { lines } = await callAIAgent('test', []);
+    const { lines } = await callAIAgent('test', [], undefined, undefined, MOCK_AI_CHAT);
     expect(lines[0].text).toMatch(/no response/i);
   });
 });
 
-// ── callAIAgent — history truncation hint ─────────────────────────────────────
+// ── callAIAgent history truncation hint ─────────────────────────────────────
 
 describe('callAIAgent history passthrough', () => {
   it('passes history to fetch body', async () => {
@@ -141,7 +160,7 @@ describe('callAIAgent history passthrough', () => {
       { role: 'user' as const, text: 'hi' },
       { role: 'model' as const, text: 'hello' },
     ];
-    await callAIAgent('question', history);
+    await callAIAgent('question', history, undefined, undefined, MOCK_AI_CHAT);
     expect(capturedBody.history).toEqual(history);
     expect(capturedBody.prompt).toBe('question');
   });

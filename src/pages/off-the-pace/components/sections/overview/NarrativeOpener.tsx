@@ -3,12 +3,6 @@
  *
  * Fits in: first block inside OverviewView, above the data sections.
  * Note:    Pure presentation no state, no effects. Edit the copy here freely.
- *
- * For beginners ----------------------------------------------------------------
- * `causes` is a plain array of strings. `causes.map(...)` turns each string into
- * a `<span>` the React way to render a list. Every mapped item needs a unique
- * `key` (here the string itself) so React can tell the chips apart when redrawing.
- * -----------------------------------------------------------------------------
  */
 export function NarrativeOpener() {
   const causes = [
@@ -23,7 +17,7 @@ export function NarrativeOpener() {
         <span className="text-f1-red">worst liar</span> in the paddock.
       </h1>
       <div className="w-12 h-0.5 bg-f1-red" />
-      <p className="font-jetbrains text-sm text-white/60 leading-relaxed max-w-2xl">
+      <p className="font-jetbrains text-sm text-text-tertiary leading-relaxed max-w-2xl">
         Every lap time hides seven physically-grounded causes. This engine separates them:causally, additively, and to the millisecond:to isolate true performance.
       </p>
 
@@ -31,13 +25,13 @@ export function NarrativeOpener() {
         {causes.map((c) => (
           <span
             key={c}
-            className="font-jetbrains text-[9px] font-bold uppercase tracking-wider text-white/50 bg-white/[0.03] border border-white/5 px-2.5 py-1.5 rounded-lg hover:border-white/10 transition-colors"
+            className="font-jetbrains text-micro font-bold uppercase tracking-wider text-text-tertiary bg-white/[0.03] border border-white/5 px-2.5 py-1.5 rounded-lg hover:border-white/10 transition-colors"
           >
             {c}
           </span>
         ))}
       </div>
-      <p className="font-jetbrains text-[10px] text-white/40 leading-relaxed max-w-xl mt-4">
+      <p className="font-jetbrains text-micro text-text-tertiary leading-relaxed max-w-xl mt-4">
         Five XGBoost models (degradation P10/P50/P90, cliff classifier,
         stint-life regressor) trained on these features, all beat a per-cohort baseline.
       </p>

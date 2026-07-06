@@ -5,15 +5,10 @@
  * Note:    JSON-LD is metadata FOR SEARCH ENGINES, not shown to humans. It tells
  *          Google "this page is about a Person (or CreativeWork) named ..." so it
  *          can show richer results. The `type` prop picks which shape to emit.
- *
- * For beginners ----------------------------------------------------------------
- * JSON.stringify turns the plain JS object into a JSON text string, which goes
- * inside a <script type="application/ld+json"> tag the standard way to embed
- * machine-readable data in a page.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { SITE } from '@/content';
 
 interface SchemaProps {
   type?: 'Person' | 'Project' | 'CreativeWork' | 'SoftwareApplication';
@@ -25,12 +20,12 @@ interface SchemaProps {
 
 export const Schema: React.FC<SchemaProps> = ({
   type = 'Person',
-  name = 'Justin Clarke',
+  name = SITE.name,
   description = 'Senior Analytics Engineer and Full-Stack Developer specialized in high-performance data systems.',
-  image = 'https://justinclarke.github.io/og-image.png',
-  url = 'https://justinclarke.github.io',
+  image = `${SITE.url}${SITE.ogImage}`,
+  url = SITE.url,
 }) => {
-  const jsonLd = type === 'Person' 
+  const jsonLd = type === 'Person'
     ? {
         "@context": "https://schema.org",
         "@type": "Person",
@@ -40,8 +35,8 @@ export const Schema: React.FC<SchemaProps> = ({
         "image": image,
         "jobTitle": "Senior Analytics Engineer",
         "sameAs": [
-          "https://github.com/JustinClarke",
-          "https://linkedin.com/in/justinsavioclarke"
+          `https://github.com/${SITE.social.github}`,
+          `https://linkedin.com/in/${SITE.social.linkedin}`
         ]
       }
     : {
@@ -53,7 +48,7 @@ export const Schema: React.FC<SchemaProps> = ({
         "image": image,
         "author": {
           "@type": "Person",
-          "name": "Justin Clarke"
+          "name": SITE.name
         }
       };
 

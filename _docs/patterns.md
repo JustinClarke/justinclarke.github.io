@@ -1,6 +1,6 @@
 # Patterns & Operations
 
-Engineering patterns, animation system, and build pipeline.
+How the trickier parts work, the animation system, and the build pipeline.
 
 ---
 
@@ -8,43 +8,60 @@ Engineering patterns, animation system, and build pipeline.
 
 ### Terminal engine (`Hero/engine.ts`)
 
-Pure TypeScript with zero React dependencies fully testable in isolation.
+Pure TypeScript, zero React dependencies testable in complete isolation.
 
-- **Registry pattern.** `COMMANDS` map keys command strings to handlers returning `{ lines: TerminalLine[]; effect? }`. Side effects (`scroll`, `contact`, `download`, `snake`) are returned as a discriminator `Hero.tsx` reads that and dispatches. The engine never touches the DOM.
-- **Boot sequence.** Seven phases driven from `TerminalHeader.tsx`, gated on `preloaderComplete` event. Transitions from step 0 to 7 happen via timeouts, and staggered reveals are powered purely by CSS `animation-delay` rather than an `async/await` loop.
-- **Output typing.** Output lines are immediately pushed to React state. The "typing" effect is handled entirely by CSS `animation-delay` staggers on individual spans.
+- **Registry pattern.** `COMMANDS` maps command strings to handlers that return `{ lines: TerminalLine[]; effect? }`. Side effects (scroll, contact, download, game launches) come back as a discriminator `Hero.tsx` reads that and dispatches. The engine never touches the DOM.
+- **Logic/copy split.** Static output blocks, easter eggs, and personality all live in `src/content/terminal.ts`. The engine only has dynamic logic (argument parsing, sudo escalation, fuzzy guessing). A fork rewrites the words without touching the engine.
+- **Boot sequence.** Seven phases driven from `TerminalHeader.tsx`, gated on the preloader (via `sessionStorage.preloader_shown`, written synchronously by `App.tsx`). Staggered reveals use CSS `animation-delay` no `async/await` loop.
+- **Output typing.** Lines are pushed to React state immediately. The "typing" effect is pure CSS `animation-delay` staggers on individual spans.
+
+### Content layer & degradation contract
+
+`src/content/site.ts` declares every third-party integration as config-or-`null`:
+
+| Integration | When `null` |
+|:---|:---|
+| `umami` | `<Analytics>` renders nothing |
+| `lastFm` | `<NowPlaying>` renders nothing |
+| `aiChat` | CommandDock AI button hidden; terminal `ask` says "not configured" |
+| `contactForm` | Contact modal drops the form, shows a plain "email me" panel |
+
+Consumers hide their entry point they don't crash. This is what makes the repo forkable: a deployment with zero external services still builds and renders properly (unit tests cover the null paths).
+
+`src/content/routes.ts` is the route manifest. `App.tsx`, `scripts/inject-metadata.js` (per-route meta + sitemap), and `scripts/capture-screenshots.js` all derive from it, and `scripts/check-route-sync.mjs` keeps the docs' route table honest in CI. Pages pull metadata with `<SEO {...routeMeta('/path')} />`.
 
 ### SQL ERD connector (`SqlErd.tsx`)
 
-Cubic Bezier paths link entities: `M x1,y1 C x1+40,y1 x2-40,y2 x2,y2`. ±40px control offsets keep curves readable for nearby tables. Crow's-foot markers at the one-to-many end. FK lines inherit the source table's accent colour.
+Cubic Bezier paths link entities: `M x1,y1 C x1+40,y1 x2-40,y2 x2,y2`. The ±40px control offsets keep curves readable for nearby tables. Crow's-foot markers at the one-to-many end. FK lines inherit the source table's accent colour.
 
 ### DAG edge system (`ExpertisePipeline/DagEdge.tsx`)
 
-Edges are SVG `<path>` elements whose coordinates are derived from `getBoundingClientRect()` at render time. A `ResizeObserver` on the grid container increments a tick counter to force re-renders after layout changes, keeping edge geometry accurate.
+Edges are SVG `<path>` elements with coordinates from `getBoundingClientRect()` at render time. A `ResizeObserver` on the grid container increments a tick counter to force re-renders after layout changes, keeping edge geometry accurate.
 
-### Scroll-driven reveal
+### Scroll-driven reveal (`ui/ScrollReveal.tsx`)
 
-Two patterns coexist:
-- **`<ScrollReveal>`** (`ui/ScrollReveal.tsx`): Currently a pass-through placeholder component with animation logic disabled.
-- **`initScrollAnimations()`** (`utils/animations.ts`): Global `MutationObserver` that scans for `[data-count-target]` attributes and populates their numbers instantly (no scroll-driven reveals).
+Framer Motion `whileInView`: content fades and slides in (default 20px, `direction` picks the axis, `delay`/`once`/`threshold` tune it) on first scroll into view. Under `prefers-reduced-motion`, it renders a plain `div` content visible immediately, no observers, no transforms. Used in about 14 places across the site.
 
 ### Elevator scroll (`utils/scroll.ts`)
 
-Custom scroll-to-section with exponential in-out easing (factor 20 for dramatic accel/decel). Calculates the target offset exactly once on activation, rather than recalculating every frame. Falls back to instant `scrollTo` under reduced motion.
+Custom scroll-to-section with exponential in-out easing (factor 20 for dramatic accel/decel). Calculates target offset once on activation, not every frame. Falls back to instant `scrollTo` under reduced motion.
 
 ### Provider pattern
 
-`ModalProvider`, `HelmetProvider`, and `ThemeProvider` live above the router. Consumed via hooks (`useModal()`, `useTheme()`). Avoids prop-drilling across the deep component tree.
+`HelmetProvider`, `ThemeProvider`, `MotionConfig reducedMotion="user"`, `ErrorBoundary`, and `ModalProvider` stack above the router in `RootProviders.tsx`. Consumed via hooks (`useModal()`, `useTheme()`). The `MotionConfig` layer degrades every Framer Motion animation to instant under `prefers-reduced-motion` in one move.
 
 ### F1 hook/widget separation (`useF1Telemetry` + `F1TelemetryWidget`)
 
-All simulation state and interval loops live in the `useF1Telemetry()` hook. `F1TelemetryWidget.tsx` is a pure renderer consuming the hook and sub-components from `bento/f1/`. The only DOM-bound logic left in the widget is the log container `scrollTop` effect (needs a ref the hook cannot hold).
+All simulation state and interval loops live in `useF1Telemetry()`. `F1TelemetryWidget.tsx` is a pure renderer consuming the hook and sub-components from `bento/f1/`. The only DOM-bound logic left in the widget is a `scrollTop` effect for the log container (needs a ref the hook can't hold). Both live in `pages/home/bento/` page-scoped, not shared.
 
-### Performance targets
+### Performance
 
-Chrome and Safari: LCP < 1.2s, FID < 50ms, CLS = 0.00, scroll frame time < 16ms.
+Measured numbers live in [baseline-2026-07.md](baseline-2026-07.md) (Lighthouse, simulated throttling, `npm run preview`): as of the 2026-07-05 pass, simulated-mobile LCP is 4.9–6.2s and page weight 564–826KB across four measured pages (worst pre-audit case was 25.5MB / 125.7s on `/studio/crescendo`), with CLS ≤ 0.006 and TBT ≤ 110ms everywhere; `/` desktop LCP ≈ 2.1s. It's a no-SSR SPA, so FCP ≈ LCP ≈ TTI and the lever is the critical chunk chain.
 
-**Never use `will-change` globally** Safari has a finite compositor budget and evicts layers. Apply only to elements that animate continuously for >5 seconds. **Prefer `useMotionValue` over `useState` for per-frame updates** bypasses React's render loop.
+A few rules I stick to:
+- **No global `will-change`** Safari has a finite compositor budget and evicts layers. Only apply it to elements animating continuously for >5 seconds.
+- **`useMotionValue` over `useState`** for per-frame updates bypasses React's render loop.
+- **Never `import *` from lucide-react** a wildcard once put the entire icon library (~150KB gz) on every page.
 
 ---
 
@@ -64,7 +81,7 @@ EASING = {
 }
 ```
 
-`AnimatePresence` with `mode="wait"` governs the F1 panel crossfade and `ThemeToggle` icon swap. Preloader exit uses `blur(20px)` + `scale(1.05)` + 1.8s quintic ease.
+`AnimatePresence` with `mode="wait"` handles the F1 panel crossfade and `ThemeToggle` icon swap. Preloader exit uses `blur(20px)` + `scale(1.05)` + 1.8s quintic ease.
 
 ### CSS keyframes (`index.css`)
 
@@ -86,7 +103,7 @@ Height animations without JS measurement:
 
 ### Theme toggle animation
 
-`ThemeToggle` wraps sun/moon icons in `AnimatePresence mode="wait"`. Icons rotate ±30° with `opacity: 0→1`. When `useReducedMotion()` returns true, animation props are omitted.
+`ThemeToggle` wraps sun/moon icons in `AnimatePresence mode="wait"`. Icons rotate ±30° with `opacity: 0→1`. Under `useReducedMotion()`, animation props are omitted entirely.
 
 ---
 
@@ -94,46 +111,50 @@ Height animations without JS measurement:
 
 ### NPM scripts
 
-| Command | Purpose |
+| Command | What it does |
 |:---|:---|
 | `npm run dev` | Vite dev server on port 3000 |
 | `npm run build` | `tsc && vite build && node scripts/inject-metadata.js` |
 | `npm run preview` | Serve production `dist/` locally |
-| `npm run lint` | `tsc --noEmit` + Tailwind token audit (`scripts/check-tailwind-tokens.mjs`) |
+| `npm run lint` | Types + token gate + route/prompt sync + ESLint (the CI gate see maintenance.md) |
+| `npm test` | Vitest (terminal engine, NowPlaying, useAIAgent, degradation contract) |
+| `npm run build:prompt` | Regenerate `worker/system-prompt.js` from `_resume.yaml` + `content/assistant.ts` |
+| `npm run screenshots` / `screenshots:matrix` | Playwright screenshots across all manifest routes (1 or 3 breakpoints) |
 
 ### Build pipeline
 
-1. **`tsc`** type-check only no emit (`noEmit: true` in `tsconfig.json`). Strict mode. Fails build on errors.
-2. **`vite build`** esbuild minify, CSS code-split, manual chunks:
-   - `vendor-react`: `react`, `react-dom`, `react-router-dom`
-   - `vendor-animation`: `framer-motion`
-   - `vendor-ui`: `lucide-react`, `@radix-ui/react-dialog`
-3. **`node scripts/inject-metadata.js`** reads `dist/index.html`, writes per-route `<title>` / OG / Twitter tags into sub-directories under `dist/`. **Update the `ROUTES` array in this script whenever a route is added or removed.**
+1. **`tsc`** type-check only, no emit (`noEmit: true`). Strict mode. Fails build on any error.
+2. **`vite build`** esbuild minify, CSS code-split, manual chunks (`vendor-react`, `vendor-animation`, `vendor-ui`). A `transformIndexHtml` plugin fills `%SITE_TITLE%` / `%SITE_DESCRIPTION%` / `%SITE_URL%` from `content/site.ts`.
+3. **`node scripts/inject-metadata.js`** reads the route manifest, writes per-route `<title>` / OG / Twitter tags into `dist/`, adds `<link rel="modulepreload">` / image preloads, and generates `dist/sitemap.xml`. No hand-maintained route list, no committed sitemap the manifest is the source, and the build fails if a non-hidden route is missing title/description or sitemap data.
 
 ### CI/CD
 
-Two workflows:
+Two workflows, both Node 24:
 
-- **`.github/workflows/ci.yml`** runs on pull requests to `main`. `npm ci` → `npm run lint` (types + Tailwind token audit). Node 20. This is the gate that blocks bad code.
-- **`.github/workflows/deploy.yml`** runs on push to `main` (and manual dispatch). `npm ci` → `npm run build` → deploy `dist/` to GitHub Pages. Node 24. Injects the Umami analytics env vars (`VITE_UMAMI_*`) at build time. One deploy at a time (`cancel-in-progress: true`).
+- **`ci.yml`** (pull requests to `main`): `npm ci` → `npm run lint` → `npm test`. This is the gate.
+- **`deploy.yml`** (push to `main` + manual dispatch): `npm ci` → `npm run build` → deploy `dist/` to GitHub Pages. No env plumbing config is baked into `src/content/site.ts`. One deploy at a time (`cancel-in-progress: true`).
 
-### Static file checklist
+The AI chat worker deploys separately (`cd worker && npx wrangler deploy`) see maintenance.md.
 
-- `.nojekyll` prevents Jekyll processing (required for `_docs/`, `_` prefixed folders)
-- `public/robots.txt` allows all crawlers
-- `public/sitemap.xml` canonical public routes with priority weights; keep in sync with `inject-metadata.js` routes (the `/contact` alias of `/connect` is intentionally omitted)
+### Static files
+
+- `.nojekyll` prevents Jekyll processing (needed for `_` prefixed folders)
+- `public/robots.txt` allows all crawlers, points at `/sitemap.xml`
+- `sitemap.xml` is generated into `dist/` by `inject-metadata.js` no committed copy to go stale (`/contact` as an alias and `hidden` routes are excluded)
 
 ---
 
 ## Tailwind token contract
 
-Enforced by `scripts/check-tailwind-tokens.mjs`, which runs as part of `npm run lint` and blocks CI on violations.
+Enforced by `scripts/check-tailwind-tokens.mjs` (runs as part of `npm run lint`). Three floors: tokenised hex, ≥10px type, ≥45-alpha text contrast.
 
-1. **No raw hex for tokenised colours.** If a colour exists in `src/index.css` as a `--color-*` token, use the utility (`text-f1-red`, `bg-brand-primary`) or CSS var (`var(--color-f1-red)`) never the literal hex.
-2. **New colours go into `@theme` first.** Any colour used ≥ 2 times must become a token before its second use. No exceptions.
-3. **JS colour constants live in `src/config/constants.ts` only.** When JS genuinely needs raw hex (canvas/SVG draw calls, Framer Motion values), keep it there.
-4. **Static inline styles → utilities.** `style={{ zIndex: 40 }}` becomes `z-40`. Inline `style` is reserved for JS-dynamic values only.
-5. **Dynamic values flow through CSS vars:**
+1. **No raw hex for tokenised colours.** If a colour exists as a `--color-*` token, use the utility (`text-f1-red`, `bg-brand-primary`) or CSS var not the literal hex.
+2. **New colours → `@theme` first.** Anything used ≥2 times must be a token before its second use.
+3. **Text colour from the ramp; never below AA.** Content text uses `text-text-primary`/`-secondary`/`-tertiary` (dark-locked) or the theme-flipping `fg-*` family. `text-white/N` and `text-fg/N` below `/45` are blocked; `-ghost`/`-dim`/`-muted` are decorative only.
+4. **Type from the ramp; never below 10px.** `text-micro`(10) / `text-fine`(11) / `text-caption`(12) / `text-label`(13) for the dense register; standard scale for body copy. A size used ≥2 times becomes a token.
+5. **JS hex constants in `src/config/constants.ts` only.** When JS genuinely needs raw hex (canvas, Framer Motion values), that's where it goes.
+6. **Static inline styles → utilities.** `style={{ zIndex: 40 }}` becomes `z-40`. Inline `style` is reserved for dynamic values.
+7. **Dynamic values through CSS vars:**
    ```tsx
    // instead of: style={{ backgroundColor: accent }}
    <span
@@ -141,17 +162,16 @@ Enforced by `scripts/check-tailwind-tokens.mjs`, which runs as part of `npm run 
      className="bg-(--accent) shadow-[0_0_6px_var(--accent)]"
    />
    ```
-6. **Reusable animations are `--animate-*` tokens** consumed as `animate-*` utilities. Hand-written `.class { animation: … }` only for one-off keyframes.
+8. **Reusable animations are `--animate-*` tokens** consumed as `animate-*` utilities. Hand-written `.class { animation: … }` only for one-off keyframes.
 
-Escape hatch (rare): add `// tw-allow-hex` on the same line as the violation to bypass the gate. Must be justified in review.
+Escape hatches (rare, justified in review, marker on the line): `tw-allow-hex`, `tw-allow-micro` (sub-10px decorative glyphs), `tw-allow-contrast` (sub-45 decorative text). The two `@media (max-height: …)` viewport-fit blocks in `index.css` are the one sanctioned hand-written-CSS exception.
 
 ---
 
 ## SEO
 
-Dynamic meta per route via `<SEO>` component (`components/layout/SEO.tsx`):
-- Sets `<title>`, `<meta name="description">`, Open Graph, and Twitter Card tags via `react-helmet-async`.
-- `<Schema>` component writes JSON-LD structured data (`CreativeWork`, `SoftwareApplication`).
-- `themeColor` meta tag is driven by `useTheme()` updates when the user toggles theme.
-- `scripts/inject-metadata.js` bakes per-route tags into static `dist/` HTML so social media scrapers (which don't run JS) see the correct metadata.
-
+Dynamic meta per route via `<SEO>` (`components/layout/SEO.tsx`):
+- Pages call `<SEO {...routeMeta('/path')} />` title/description/canonical come from the route manifest, so visitors and scrapers see the same copy.
+- Defaults (site name, og:image, socials) come from `content/site.ts`; `<Schema>` writes JSON-LD (`Person`, `CreativeWork`, `SoftwareApplication`) from the same source.
+- `themeColor` meta tag updates when the user toggles theme.
+- `scripts/inject-metadata.js` bakes per-route tags into static `dist/` HTML so social scrapers (which don't run JS) see the right metadata.

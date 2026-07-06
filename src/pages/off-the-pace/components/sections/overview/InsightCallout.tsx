@@ -5,12 +5,6 @@
  * Fits in: the overview, as a worked example of the decomposition in action.
  * Note:    Bars are scaled relative to the biggest absolute value (`maxAbs`), so
  *          the longest bar is always full-width regardless of the raw numbers.
- *
- * For beginners ----------------------------------------------------------------
- * `Math.max(...array)` finds the largest value; the `...` (spread) passes each
- * array element as a separate argument. We compute `maxAbs` once at module load
- * (the data is fixed), then each row's bar width is its share of that maximum.
- * -----------------------------------------------------------------------------
  */
 import { LINKS } from '../../../data/projectStats';
 
@@ -30,13 +24,13 @@ export function InsightCallout() {
   return (
     <div className="flex flex-col gap-10">
       <div className="max-w-xl">
-        <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block font-semibold">
+        <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block font-semibold">
           Featured insight
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-white uppercase tracking-tighter mb-4">
           The data speaks.
         </h2>
-        <p className="text-white/55 text-sm font-jetbrains leading-relaxed max-w-2xl">
+        <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed max-w-2xl">
           Lap 17, 2021 Portuguese Grand Prix. Verstappen sits 0.001s behind Hamilton on the same
           medium compound, same fuel load, same weather. The engine decomposes field-centred skill
           residuals, VER's raw pace is 0.879s faster than Hamilton's on this lap. The dirty-air tax
@@ -51,10 +45,10 @@ export function InsightCallout() {
 
         {/* Console Header */}
         <div className="relative z-10 flex items-center justify-between border-b border-white/5 pb-4 mb-4">
-          <span className="font-jetbrains text-[9px] text-white/40 uppercase tracking-[0.2em] font-bold">
+          <span className="font-jetbrains text-micro text-text-tertiary uppercase tracking-mega font-bold">
             TIMING_FEED // DRIVER_SKILL_RESIDUAL_S
           </span>
-          <span className="font-jetbrains text-[8px] text-white/40 uppercase font-mono">
+          <span className="font-jetbrains text-micro text-text-tertiary uppercase font-mono">
             NEGATIVE = FASTER THAN EXPECTED
           </span>
         </div>
@@ -62,7 +56,7 @@ export function InsightCallout() {
         {/* Live Grid Table */}
         <div className="relative z-10 flex flex-col gap-3 font-jetbrains">
           {/* Header row */}
-          <div className="grid grid-cols-12 gap-2 text-white/40 text-[9px] uppercase tracking-wider border-b border-white/5 pb-2 font-bold select-none">
+          <div className="grid grid-cols-12 gap-2 text-text-tertiary text-micro uppercase tracking-wider border-b border-white/5 pb-2 font-bold select-none">
             <div className="col-span-1">POS</div>
             <div className="col-span-2">DRIVER</div>
             <div className="col-span-3">SKILL RESIDUAL</div>
@@ -77,14 +71,14 @@ export function InsightCallout() {
             return (
               <div key={row.driver} className="grid grid-cols-12 gap-2 items-center text-xs group py-0.5">
                 {/* Pos */}
-                <div className="col-span-1 text-white/40 font-bold font-mono">
+                <div className="col-span-1 text-text-tertiary font-bold font-mono">
                   {row.pos}
                 </div>
 
                 {/* Driver Tag with team constructor colored border */}
                 <div className="col-span-2 flex items-center gap-2">
                   <span className="w-[3px] h-4 shrink-0 rounded-sm" style={{ backgroundColor: row.teamColor }} />
-                  <span className="font-bold text-white/70 group-hover:text-white transition-colors">
+                  <span className="font-bold text-text-secondary group-hover:text-white transition-colors">
                     {row.driver}
                   </span>
                 </div>
@@ -107,7 +101,7 @@ export function InsightCallout() {
                 </div>
 
                 {/* Sector Context */}
-                <div className="col-span-2 text-[10px] text-white/50 text-right truncate">
+                <div className="col-span-2 text-micro text-text-tertiary text-right truncate">
                   {row.note}
                 </div>
               </div>
@@ -117,7 +111,7 @@ export function InsightCallout() {
 
         {/* Timing board footer */}
         <div className="relative z-10 pt-4 mt-4 border-t border-white/5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <p className="font-jetbrains text-[10px] text-white/50 leading-relaxed max-w-lg">
+          <p className="font-jetbrains text-micro text-text-tertiary leading-relaxed max-w-lg">
             Verstappen's raw pace advantage was real. Hamilton's clean-air buffer was real.
             Without the decomposition, neither is visible in the timing sheets.
           </p>
@@ -125,7 +119,7 @@ export function InsightCallout() {
             href={`${LINKS.docs}/reference/schemas/laps`}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-jetbrains text-[10px] text-f1-red uppercase tracking-wider font-semibold shrink-0 hover:opacity-75 transition-opacity"
+            className="font-jetbrains text-micro text-f1-red uppercase tracking-wider font-semibold shrink-0 hover:opacity-75 transition-opacity"
           >
             See fct_lap_residuals →
           </a>

@@ -5,6 +5,7 @@
  *   child (including ErrorBoundary) can safely call useTheme().
  */
 import { ReactNode } from 'react';
+import { MotionConfig } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
 import { ModalProvider } from './ModalProvider';
 import { ThemeProvider } from './ThemeProvider';
@@ -19,9 +20,19 @@ export function RootProviders({ children }: RootProvidersProps) {
     <HelmetProvider>
       <ThemeProvider>
         <ErrorBoundary>
-          <ModalProvider>
-            {children}
-          </ModalProvider>
+          {/*
+           * reducedMotion="user" makes every descendant framer-motion animation
+           * honour the OS "reduce motion" setting in one place: transform/layout
+           * animations degrade to instant, opacity fades still play. Covers all
+           * ~34 motion consumers without per-component guards. Non-framer motion
+           * (canvas games, custom cursor, preloader) is handled separately via
+           * the useReducedMotion hook.
+           */}
+          <MotionConfig reducedMotion="user">
+            <ModalProvider>
+              {children}
+            </ModalProvider>
+          </MotionConfig>
         </ErrorBoundary>
       </ThemeProvider>
     </HelmetProvider>

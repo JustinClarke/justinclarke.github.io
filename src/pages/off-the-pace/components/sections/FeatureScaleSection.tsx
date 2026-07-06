@@ -5,13 +5,6 @@
  * Fits in: a reusable "scale" band for the Off The Pace pages.
  * Note:    forwardRef passes a ref through to the <section> so a parent can
  *          scroll to it or observe it.
- *
- * For beginners ----------------------------------------------------------------
- * METRICS is a small array of plain objects; `.map(...)` below turns each one
- * into a card. Writing the data once and looping is cleaner than copy-pasting
- * four near-identical blocks of JSX. forwardRef is explained more fully in
- * CardSwap - here it just lets the parent reach this section's DOM node.
- * -----------------------------------------------------------------------------
  */
 import React, { forwardRef } from 'react';
 import { STATS } from '../../data/projectStats';
@@ -37,10 +30,10 @@ export const FeatureScaleSection = forwardRef<HTMLElement, FeatureScaleSectionPr
             <span className="font-noto text-4xl md:text-5xl font-black text-white tracking-tighter leading-none">
               {value}
             </span>
-            <span className="font-jetbrains text-[10px] uppercase tracking-[0.2em] text-white/70 font-semibold mt-2">
+            <span className="font-jetbrains text-micro uppercase tracking-mega text-text-secondary font-semibold mt-2">
               {label}
             </span>
-            <span className="font-jetbrains text-[9px] uppercase tracking-widest text-white/25">
+            <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary">
               {sub}
             </span>
           </div>

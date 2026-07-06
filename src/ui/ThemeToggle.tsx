@@ -4,13 +4,6 @@
  * Fits in: placed in any persistent nav surface (SidebarMenu, header).
  * Note:    AnimatePresence lets Framer Motion animate the OUTGOING icon before
  *          it's removed from the DOM, giving the rotate-and-crossfade illusion.
- *
- * For beginners ----------------------------------------------------------------
- * useTheme() reads/sets the shared light-or-dark setting (a React Context).
- * useReducedMotion() returns true if the visitor asked their OS to minimise
- * animation when it does, we skip the spin by passing `false`/`undefined` as
- * the animation, which is the accessible thing to do.
- * -----------------------------------------------------------------------------
  */
 import { AnimatePresence, motion } from 'framer-motion';
 import { Moon, Sun } from 'lucide-react';

@@ -6,13 +6,6 @@
  * Fits in: a standalone band on the Off The Pace pages.
  * Note:    CapCard is a small private sub-component declared in this same file
  *          because it is only ever used here.
- *
- * For beginners ----------------------------------------------------------------
- * `glowColor` is passed in as a prop and dropped into an inline `style` because
- * it differs per card (a JS-driven value, so inline style is correct here). The
- * radial-gradient only shows on hover via the `group`/`group-hover` Tailwind
- * pattern: the parent has `group`, children react to its hover with `group-hover:`.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 
@@ -34,13 +27,13 @@ const CapCard: React.FC<CapCardProps> = ({ icon, title, desc, meta, glowColor })
     <div className="w-9 h-9 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-lg mb-4 select-none">
       {icon}
     </div>
-    <h4 className="text-sm font-bold text-white/95 uppercase tracking-wide mb-2">
+    <h4 className="text-sm font-bold text-text-primary uppercase tracking-wide mb-2">
       {title}
     </h4>
-    <p className="font-jetbrains text-[11px] text-white/55 leading-relaxed mb-4">
+    <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed mb-4">
       {desc}
     </p>
-    <div className="font-jetbrains text-[9px] text-white/35 tracking-wider mt-auto select-all">
+    <div className="font-jetbrains text-micro text-text-tertiary tracking-wider mt-auto select-all">
       {meta}
     </div>
   </div>

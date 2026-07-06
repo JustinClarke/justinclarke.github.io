@@ -7,33 +7,23 @@
  * Note:    two separate, tricky concerns live here (1) whether to show the
  *          intro Preloader, and (2) the cross-fade when the URL changes. Both
  *          are commented in detail below.
- *
- * For beginners ----------------------------------------------------------------
- * Think of this as the picture frame around the site. The frame is always the
- * same (skip-link, SEO tags, analytics, "back to top" button, the modals); only
- * the picture inside (the current page) swaps out as you navigate.
- * -----------------------------------------------------------------------------
  */
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { CommandDock, SEO, GlobalSpotlight } from '@/components/layout';
 import { Analytics } from '@/components/analytics';
-import { initTooltips, initScrollAnimations, debug } from '@/utils';
+import { initTooltips, debug } from '@/utils';
 import { ContactModal } from '@/components/modals';
 import { EmailModal } from '@/components/modals/EmailModal';
+import { ROUTES, type RoutePath } from '@/content/routes';
 
-// LEARN: A logger labelled "app". It prints nothing unless you enable debugging
-//    (see src/utils/debug.ts). Turn it on in the console with:
-//    localStorage.debug = 'app'  then refresh.
+// Silent-by-default logger (localStorage.debug = 'app'); see utils/debug.ts.
 const log = debug('app');
 
 // ─── Lazy-loaded pages ────────────────────────────────────────────────────────
-// LEARN: `lazy(() => import(...))` tells the build tool to put each page in its OWN
-//    JavaScript file and only download it when the visitor actually navigates
-//    there. This is "code splitting": the homepage loads fast because the code
-//    for, say, the HR Archetype page isn't downloaded until it's needed.
-//    The `.then(m => ({ default: m.X }))` dance is just adapting a named export
-//    (`export function X`) to the "default export" shape `lazy` expects.
+// Every page is code-split into its own chunk, downloaded only on navigation, so
+// the homepage payload stays small. `.then(m => ({ default: m.X }))` adapts our
+// named exports to the default-export shape `lazy` expects.
 const Home = lazy(() => import('@/pages/home/Home').then(m => ({ default: m.Home })));
 
 const Preloader = lazy(() => import('@/components/layout/Preloader').then(m => ({ default: m.Preloader })));
@@ -42,59 +32,69 @@ const ConnectPage = lazy(() => import('@/pages/Connect').then(m => ({ default: m
 const NotFound = lazy(() => import('@/pages/NotFound').then(m => ({ default: m.NotFound })));
 const TheLongVersionPage = lazy(() => import('@/pages/TheLongVersion'));
 const SpotifyEnginePage = lazy(() => import('@/pages/projects/SpotifyEnginePage').then(m => ({ default: m.SpotifyEnginePage })));
-const SqlDisasterPage = lazy(() => import('@/pages/projects/SqlDisasterPage').then(m => ({ default: m.SqlDisasterPage })));
+const SqlDisasterPage = lazy(() => import('@/pages/projects/SqlDisasterPage/SqlDisasterPage').then(m => ({ default: m.SqlDisasterPage })));
 const LiteStorePage = lazy(() => import('@/pages/projects/LiteStorePage').then(m => ({ default: m.LiteStorePage })));
 const CapitalBudgetingPage = lazy(() => import('@/pages/projects/CapitalBudgetingPage').then(m => ({ default: m.CapitalBudgetingPage })));
 const HRArchetypePage = lazy(() => import('@/pages/projects/HRArchetypePage').then(m => ({ default: m.HRArchetypePage })));
 const OffThePaceOverview = lazy(() => import('@/pages/off-the-pace/OffThePaceOverview').then(m => ({ default: m.OffThePaceOverview })));
 const OffThePaceSource = lazy(() => import('@/pages/off-the-pace/OffThePaceSource').then(m => ({ default: m.OffThePaceSource })));
 const LinkedinBannerPage = lazy(() => import('@/pages/LinkedinBannerPage').then(m => ({ default: m.LinkedinBannerPage })));
-const PortfolioPage = lazy(() => import('@/pages/studio/index').then(m => ({ default: m.PortfolioPage })));
+const StudioPage = lazy(() => import('@/pages/studio/StudioPage').then(m => ({ default: m.StudioPage })));
 const CrescendoPage = lazy(() => import('@/pages/studio/CrescendoPage').then(m => ({ default: m.CrescendoPage })));
 const StrokTalkPage = lazy(() => import('@/pages/studio/StrokTalkPage').then(m => ({ default: m.StrokTalkPage })));
+
+// ─── Route → component map ───────────────────────────────────────────────────
+// WHICH pages exist (paths, titles, dark flag, sitemap data) lives in the
+// content/routes.ts manifest; this map only says which component renders each
+// path. `Record<RoutePath, …>` is exhaustive both ways: a manifest entry with
+// no component here is a TS error, and so is a stale entry for a deleted
+// route so a forker who removes a case study gets pointed at exactly the
+// two lines (here + the lazy import above) left to delete.
+const ROUTE_COMPONENTS: Record<RoutePath, ComponentType> = {
+  '/': Home,
+  '/project/spotify-engine': SpotifyEnginePage,
+  '/project/sql-disaster': SqlDisasterPage,
+  '/project/litestore': LiteStorePage,
+  '/project/capital-budgeting': CapitalBudgetingPage,
+  '/project/hr-archetype': HRArchetypePage,
+  '/the-long-version': TheLongVersionPage,
+  '/f1': OffThePaceOverview,
+  '/off-the-pace': OffThePaceSource,
+  '/connect': ConnectPage,
+  '/contact': ConnectPage, // aliasOf '/connect' renders the same page
+  '/linkedin-banner': LinkedinBannerPage,
+  '/studio': StudioPage,
+  '/studio/crescendo': CrescendoPage,
+  '/studio/stroktalk': StrokTalkPage,
+};
 
 // ─── Preloader policy ─────────────────────────────────────────────────────────
 // The intro ("Preloader") should appear at most ONCE per browser tab,
 // and never on certain pages or devices. The rules are fiddly, so we keep them
 // in one place `decideInitialPreloader()` below instead of scattering them.
 
-// LEARN: A module-level `let` is a single value shared by EVERY render and every
-//    component instance in this file (unlike useState, which is per-component).
-//    We use it as a one-way latch: once the preloader is done, it stays done,
-//    even if React re-creates the App component during navigation.
-let globalPreloaderCompleted = false;
+// In-memory guard against `decideInitialPreloader` running twice (StrictMode
+// double-invokes state initializers in dev). Other modules that need "is the
+// preloader done" (e.g. useTerminalBoot) can't see this module-local `let`
+// they read `sessionStorage`, which `markPreloaderComplete` keeps in sync.
+let preloaderComplete = false;
 
-// LEARN: The app also stashes the same fact on the global `window` object so code
-//    OUTSIDE React (the prerender script, other modules) can read it. These two
-//    helpers just hide the verbose, repeated `(window as any).__PRELOADER...`
-//    casts so the logic below reads cleanly.
-function isPreloaderMarkedCompleteGlobally(): boolean {
-  return typeof window !== 'undefined' && Boolean((window as any).__PRELOADER_COMPLETE__);
-}
 function markPreloaderComplete() {
-  globalPreloaderCompleted = true;
-  if (typeof window !== 'undefined') (window as any).__PRELOADER_COMPLETE__ = true;
+  preloaderComplete = true;
+  try { sessionStorage.setItem('preloader_shown', 'true'); } catch { /* ignore */ }
 }
 
 /**
  * Work out on the very first render only whether to show the intro Preloader.
  * Returns true to show it, false to skip it. As a side effect, it latches the
- * "complete" flags whenever it decides to skip, so we never show it later.
- *
- * LEARN: This is a plain function (not a component). We call it ONCE, from the
- *    useState initializer, to compute the starting value. Splitting it out like
- *    this means a debugger/stack trace points straight at "the preloader
- *    decision" instead of a tangle inside the component body.
+ * "complete" flag whenever it decides to skip, so we never show it later. Called
+ * once from the useState initializer; kept as a named function so a stack trace
+ * points straight at "the preloader decision".
  */
 function decideInitialPreloader(isTheLongVersion: boolean, isOffThePace: boolean): boolean {
   // Already finished earlier in this tab's life → never show again.
-  if (globalPreloaderCompleted) {
+  if (preloaderComplete) {
     log('preloader: skip (already completed this session)');
-    return false;
-  }
-  if (isPreloaderMarkedCompleteGlobally()) {
-    globalPreloaderCompleted = true;
-    log('preloader: skip (window flag already set)');
     return false;
   }
 
@@ -117,7 +117,7 @@ function decideInitialPreloader(isTheLongVersion: boolean, isOffThePace: boolean
   // is closed. The try/catch guards browsers that block storage.
   try {
     if (sessionStorage.getItem('preloader_shown')) {
-      markPreloaderComplete();
+      preloaderComplete = true;
       log('preloader: skip (sessionStorage flag)');
       return false;
     }
@@ -153,25 +153,20 @@ function DarkRoute({ children }: { children: ReactNode }) {
  * Root providers (Modal, ErrorBoundary) are handled in RootProviders via main.tsx.
  */
 export default function App() {
-  // LEARN: useLocation() is a hook from the router. It returns the current URL info
-  //    (pathname, search, hash). When the URL changes, this component re-renders
-  //    with the new value that's how we react to navigation.
   const location = useLocation();
   const navigate = useNavigate();
 
-  // LEARN: We deliberately keep TWO locations: `location` is where the URL says we
-  //    are RIGHT NOW; `displayLocation` is the page currently painted on screen.
-  //    During a transition they differ for a moment we hold the old page on
-  //    screen (fade it out) before swapping `displayLocation` to the new one.
+  // The heart of the page-transition machine: we deliberately keep TWO locations.
+  // `location` is where the URL says we are right now; `displayLocation` is the
+  // page currently painted. During a transition they differ for a moment we hold
+  // the old page on screen (fade it out) before swapping `displayLocation` over.
   const [displayLocation, setDisplayLocation] = useState(location);
   const [transitionState, setTransitionState] = useState<'idle' | 'fade-out'>('idle');
 
   const isTheLongVersion = getNormalizedPathname(displayLocation.pathname) === '/the-long-version';
   const isOffThePace = getNormalizedPathname(displayLocation.pathname) === '/f1' || getNormalizedPathname(displayLocation.pathname) === '/off-the-pace';
 
-  // LEARN: useState can take a FUNCTION instead of a value. React calls it once, on
-  //    the first render only, to compute the initial state. We use that to run
-  //    our (slightly expensive, side-effecting) preloader decision exactly once.
+  // Lazy initializer so the side-effecting preloader decision runs exactly once.
   const [showPreloader, setShowPreloader] = useState(() =>
     decideInitialPreloader(
       getNormalizedPathname(location.pathname) === '/the-long-version',
@@ -179,16 +174,11 @@ export default function App() {
     ),
   );
 
-  // LEARN: useRef holds a value that survives re-renders but, unlike state, changing
-  //    it does NOT trigger a re-render. Here we snapshot the initial preloader
-  //    decision so the effect below runs its "once" logic correctly even though
-  //    `showPreloader` will change to false later.
+  // Snapshot the initial decision so Effect 1's "once" logic stays correct even
+  // after `showPreloader` flips to false.
   const initialShowPreloader = useRef(showPreloader);
 
   // ── Effect 1: finish-the-preloader wiring (runs once on mount) ──────────────
-  // LEARN: useEffect runs code AFTER the component is painted. The empty array `[]`
-  //    at the end means "run this only once, when App first appears" like an
-  //    onload handler for the component.
   useEffect(() => {
     // Stop the browser from auto-restoring scroll position on navigation; we
     // manage scrolling ourselves (we always jump to the top of a new page).
@@ -199,12 +189,9 @@ export default function App() {
     // What to do when the intro animation reports it's finished.
     const handlePreloaderComplete = () => {
       markPreloaderComplete();
-      try { sessionStorage.setItem('preloader_shown', 'true'); } catch { /* ignore */ }
       setShowPreloader(false);
-      // These set up the scroll-triggered reveal animations and hover tooltips
-      // for the page underneath. We start them only after the intro is gone.
+      // Hover tooltips for the page underneath start only after the intro is gone.
       initTooltips();
-      initScrollAnimations();
       log('preloader: complete');
     };
 
@@ -219,9 +206,6 @@ export default function App() {
     // ...with a 3.5s safety net so a stuck animation can never trap the visitor.
     const timeout = setTimeout(handlePreloaderComplete, 3500);
 
-    // LEARN: The function you RETURN from useEffect is its "cleanup". React runs it
-    //    when the component is removed, to undo the listener/timer above so they
-    //    don't leak. Always pair an addEventListener with a removeEventListener.
     return () => {
       window.removeEventListener('preloaderComplete', handlePreloaderComplete);
       clearTimeout(timeout);
@@ -229,9 +213,8 @@ export default function App() {
   }, []);
 
   // ── Effect 2: page-transition state machine ─────────────────────────────────
-  // LEARN: This effect runs whenever `location` or `displayLocation` changes. It
-  //    drives the cross-fade: fade the old page out, jump to the top, then swap
-  //    in the new page and fade it back in.
+  // Drives the cross-fade: fade the old page out, jump to the top, swap in the
+  // new page, fade it back in. Runs on any `location`/`displayLocation` change.
   useEffect(() => {
     const normLoc = getNormalizedPathname(location.pathname);
     const normDisp = getNormalizedPathname(displayLocation.pathname);
@@ -270,9 +253,8 @@ export default function App() {
   }, [location, displayLocation]);
 
   // ── Effect 3: trailing-slash normalization ─────────────────────────────────
-  // LEARN: If a visitor lands on a path with a trailing slash (e.g., /f1/),
-  //    redirect them immediately to the clean version (e.g., /f1) without causing
-  //    a full reload. This unifies analytics tracking and page checks.
+  // Redirect /f1/ → /f1 in-place (no reload) so analytics and page checks see a
+  // single canonical path.
   useEffect(() => {
     if (location.pathname !== '/' && location.pathname.endsWith('/')) {
       navigate({
@@ -285,25 +267,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen text-fg selection:bg-brand-primary/20">
-      {/* LEARN: "Skip to content" link: invisible until keyboard-focused (sr-only =
-          screen-reader only). Lets keyboard/screen-reader users jump past the
-          nav straight to the page. An accessibility best practice. */}
+      {/* "Skip to content": invisible until keyboard-focused, lets keyboard and
+          screen-reader users jump past the nav straight to the page. */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-white focus:text-black focus:px-4 focus:py-2 focus:rounded-md focus:font-mono focus:text-xs focus:font-bold">
         SKIP TO CONTENT
       </a>
       <SEO />          {/* sets <title> + social-share meta tags per page */}
       <Analytics />    {/* loads the privacy-friendly Umami analytics script */}
-      {/* LEARN: `{condition && <Thing />}` renders <Thing /> only when condition is
-          true. So the Preloader appears only while showPreloader is true. */}
       {showPreloader && <Suspense fallback={null}><Preloader /></Suspense>}
       {/* <CustomCursor /> */}
       <GlobalSpotlight />
       <CommandDock />
 
       <div
-        // LEARN: The `key` prop is a hint to React: when it changes, React throws
-        //    away the old subtree and builds a fresh one. Keying on the pathname
-        //    guarantees the new page mounts cleanly instead of being reused.
+        // Keying on the pathname forces each page to mount clean instead of being
+        // reused across a transition don't drop this or pages bleed into each other.
         key={displayLocation.pathname}
         className={`min-h-screen flex flex-col ${
           transitionState === 'fade-out'
@@ -312,28 +290,18 @@ export default function App() {
         }`}
       >
         <main id="main-content" className="flex-grow flex flex-col">
-          {/* LEARN: <Suspense> shows its `fallback` while a lazy page is still
-              downloading. We pass `null` (nothing) because pages load fast and a
-              spinner would flash annoyingly. */}
+          {/* fallback={null}: pages load fast enough that a spinner would only flash. */}
           <Suspense fallback={null}>
-            {/* LEARN: <Routes> looks at the URL and renders the ONE <Route> whose
-                `path` matches. `path="*"` is the catch-all 404 at the end. */}
+            {/* Routes are generated from the content/routes.ts manifest (single
+                source of truth); `path="*"` is the catch-all 404. */}
             <Routes location={displayLocation} key={displayLocation.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/project/spotify-engine" element={<DarkRoute><SpotifyEnginePage /></DarkRoute>} />
-              <Route path="/project/sql-disaster" element={<DarkRoute><SqlDisasterPage /></DarkRoute>} />
-              <Route path="/project/litestore" element={<DarkRoute><LiteStorePage /></DarkRoute>} />
-              <Route path="/project/capital-budgeting" element={<DarkRoute><CapitalBudgetingPage /></DarkRoute>} />
-              <Route path="/project/hr-archetype" element={<DarkRoute><HRArchetypePage /></DarkRoute>} />
-              <Route path="/the-long-version" element={<DarkRoute><TheLongVersionPage /></DarkRoute>} />
-              <Route path="/f1" element={<OffThePaceOverview />} />
-              <Route path="/off-the-pace" element={<OffThePaceSource />} />
-              <Route path="/connect" element={<ConnectPage />} />
-              <Route path="/contact" element={<ConnectPage />} />
-              <Route path="/linkedin-banner" element={<DarkRoute><LinkedinBannerPage /></DarkRoute>} />
-              <Route path="/studio" element={<DarkRoute><PortfolioPage /></DarkRoute>} />
-              <Route path="/studio/crescendo" element={<DarkRoute><CrescendoPage /></DarkRoute>} />
-              <Route path="/studio/stroktalk" element={<DarkRoute><StrokTalkPage /></DarkRoute>} />
+              {ROUTES.map(route => {
+                const Page = ROUTE_COMPONENTS[route.path];
+                const element = 'dark' in route && route.dark
+                  ? <DarkRoute><Page /></DarkRoute>
+                  : <Page />;
+                return <Route key={route.path} path={route.path} element={element} />;
+              })}
               <Route path="*" element={<DarkRoute><NotFound /></DarkRoute>} />
             </Routes>
           </Suspense>

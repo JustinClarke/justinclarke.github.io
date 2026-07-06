@@ -9,13 +9,8 @@
  *          ?contact=true or #contact is in the URL. Keeping them separate
  *          means each one's cleanup is scoped and obvious.
  *
- * For beginners ----------------------------------------------------------------
- * "Lifting state" means storing something in a parent so multiple children
- * can share it. This page does the opposite in one place: the QR modal is
- * fully owned by ConnectPage (local state) because nothing else needs to
- * know about it. The contact modal, though, lives in ModalProvider (global
- * state) so App.tsx can also open it from other pages.
- * -----------------------------------------------------------------------------
+ * The QR modal is local state here since nothing else needs it; the contact
+ * modal lives in ModalProvider so App.tsx can also open it from other pages.
  */
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -25,6 +20,7 @@ import { useModal, useTheme } from '@/providers';
 import { cn, track } from '@/utils';
 import { WindowChrome } from '@/pages/home/Hero/ui/WindowChrome';
 import { BackToTerminal, TechStack } from '@/ui';
+import { SITE, routeMeta } from '@/content';
 
 export function ConnectPage() {
   const { setIsContactModalOpen, openEmailModal } = useModal();
@@ -34,10 +30,8 @@ export function ConnectPage() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
-  // LEARN: Effect 1 - the "breathing" background. gradientHue ticks up by 0.4
-  //    every 50ms (20 fps). getTealPulse() converts it to a slowly oscillating
-  //    HSL colour string used in the main background gradient. The sine wave
-  //    makes the background pulse in and out subtly, like slow breathing.
+  // Effect 1 the "breathing" background. gradientHue ticks up every 50ms;
+  // getTealPulse() maps it through a sine wave into a slowly pulsing HSL gradient.
   useEffect(() => {
     const interval = setInterval(() => {
       setGradientHue(prev => prev + 0.4);
@@ -45,10 +39,8 @@ export function ConnectPage() {
     return () => clearInterval(interval);
   }, []);
 
-  // LEARN: Effect 2 - the [C] keyboard shortcut. We listen on the whole window
-  //    but bail early if focus is inside an input/textarea, otherwise pressing
-  //    [C] while typing would intercept the keypress. navigator.clipboard is the
-  //    modern async clipboard API; the .catch silently ignores permission errors.
+  // Effect 2 the [C] shortcut copies the email. Bails when focus is in an
+  // input/textarea so it doesn't swallow the keypress mid-typing.
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (
@@ -59,9 +51,8 @@ export function ConnectPage() {
       }
       if (e.key === 'c' || e.key === 'C') {
         e.preventDefault();
-        const email = 'justinsavioclarke@outlook.com';
         if (navigator.clipboard) {
-          navigator.clipboard.writeText(email).catch(() => { });
+          navigator.clipboard.writeText(SITE.email).catch(() => { });
         }
         setCopiedToast(true);
         setTimeout(() => setCopiedToast(false), 2000);
@@ -71,10 +62,8 @@ export function ConnectPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // LEARN: Effect 3 - URL-triggered modal. useLocation gives us the current URL
-  //    object. URLSearchParams parses the query string (?key=value pairs).
-  //    This runs whenever the location changes so deep-linked URLs like
-  //    /connect?contact=true automatically pop the contact form open.
+  // Effect 3 deep-linked URLs like /connect?contact=true (or #contact) pop the
+  // contact form open automatically.
   const location = useLocation();
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -101,27 +90,25 @@ export function ConnectPage() {
     return `hsl(174, ${saturation}%, ${lightness}%)`;
   };
 
-  // LEARN: vCard (.vcf) is a standard contact-info file format. We build the
-  //    text as an array of strings and join('\n'), then wrap it in a Blob
-  //    (an in-memory binary object), create a temporary object URL for it,
-  //    click a hidden <a download> link to trigger the browser's Save dialog,
-  //    and immediately clean up the URL. No server needed - the file is
-  //    generated entirely in the browser's memory.
+  // Build a vCard (.vcf) entirely in-browser (Blob + object URL + hidden
+  // <a download>) so the "save contact" button needs no server.
   const handleDownloadVCard = () => {
+    // Phone, instagram and birthday are used nowhere else on the site, so they
+    // stay local to the vCard rather than widening the SITE schema.
     const vcardData = [
       'BEGIN:VCARD',
       'VERSION:3.0',
-      'FN:Justin Clarke',
-      'N:Clarke;Justin;;;',
-      'EMAIL;TYPE=INTERNET:justinsavioclarke@outlook.com',
+      `FN:${SITE.name}`,
+      `N:${SITE.lastName};${SITE.firstName};;;`,
+      `EMAIL;TYPE=INTERNET:${SITE.email}`,
       'TEL;TYPE=CELL:+971585376967',
       'TITLE:Data Product Engineer',
-      'URL:https://justinclarke.github.io',
-      'X-SOCIALPROFILE;type=linkedin:justinsavioclarke',
-      'X-SOCIALPROFILE;type=github:JustinClarke',
+      `URL:${SITE.url}`,
+      `X-SOCIALPROFILE;type=linkedin:${SITE.social.linkedin}`,
+      `X-SOCIALPROFILE;type=github:${SITE.social.github}`,
       'X-SOCIALPROFILE;type=instagram:justiiiinsta',
       'BDAY:20010224',
-      'TZ:Asia/Dubai',
+      `TZ:${SITE.timezone}`,
       'END:VCARD'
     ].join('\n');
 
@@ -129,7 +116,7 @@ export function ConnectPage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'Justin_Clarke.vcf');
+    link.setAttribute('download', `${SITE.firstName}_${SITE.lastName}.vcf`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -137,10 +124,7 @@ export function ConnectPage() {
 
   return (
     <>
-      <SEO
-        title="Justin Clarke ⋅ Connect"
-        description="Get in touch or save contact details for Justin Clarke, Analytics Engineer based in Dubai."
-      />
+      <SEO {...routeMeta('/connect')} />
 
       <div className="hidden md:block">
         <BackToTerminal />
@@ -167,7 +151,7 @@ export function ConnectPage() {
 
           <div className="w-full h-auto max-h-[calc(100dvh-2rem)] lg:max-h-none lg:h-[80vh] min-h-[auto] lg:min-h-[600px] page-entry-scale bg-term-bg/95 border border-edge rounded-2xl overflow-hidden flex flex-col shadow-[0_40px_100px_-20px_rgba(0,0,0,0.6)] mx-auto animate-in fade-in duration-500 my-0 lg:my-0">
             <WindowChrome
-              url="justinclarke@portfolio: ~/connect"
+              url={`${SITE.social.github.toLowerCase()}@portfolio: ~/connect`}
               showBackOnMobile
               onMinimize={() => setIsMinimized(true)}
               isMinimized={isMinimized}
@@ -178,7 +162,7 @@ export function ConnectPage() {
                 {/* Left Pane: Typographic Identity & Core Actions */}
                 <div className="flex flex-col text-left">
 
-                  <div className="font-mono text-[11px] md:text-xs text-brand-primary font-bold mb-2 md:mb-4 lg:mb-6 flex items-center gap-2 md:gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
+                  <div className="font-mono text-fine md:text-xs text-brand-primary font-bold mb-2 md:mb-4 lg:mb-6 flex items-center gap-2 md:gap-3 animate-in fade-in slide-in-from-left-4 duration-500">
                     <span>~$</span>
                     <span className="flex items-center gap-1.5">
                       connect
@@ -188,10 +172,10 @@ export function ConnectPage() {
 
                   <h1 className="leading-[0.9] tracking-tighter flex flex-row md:flex-col items-baseline md:items-start gap-x-2 md:gap-x-0 select-none animate-in fade-in slide-in-from-left-4 duration-500 delay-75 connect-title whitespace-nowrap">
                     <span className="font-mono text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-term-fg leading-[0.9] drop-shadow-[0_2px_10px_rgba(255,255,255,0.06)]">
-                      justin
+                      {SITE.firstName.toLowerCase()}
                     </span>
                     <span className="font-playfair italic text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-brand-primary font-black leading-[0.9] mt-0 md:mt-2 drop-shadow-[0_2px_15px_rgba(0,200,180,0.18)]">
-                      clarke.
+                      {SITE.lastName.toLowerCase()}.
                     </span>
                   </h1>
 
@@ -204,16 +188,16 @@ export function ConnectPage() {
                     </span>
 
                     {/* Responsive Stack Badges (Visible on all sizes, wraps beautifully) */}
-                    <TechStack className="!text-[10px] md:!text-xs" />
+                    <TechStack className="!text-micro md:!text-xs" />
                   </div>
 
                   {/* Status Tags */}
                   <div className="hidden md:flex flex-wrap gap-2.5 mt-4 md:mt-5.5 lg:mt-8 animate-in fade-in slide-in-from-left-4 duration-500 delay-200 connect-tags">
-                    <span className="hidden md:inline-flex font-mono text-[10px] lg:text-[11px] tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/5 text-brand-primary items-center gap-1.5">
+                    <span className="hidden md:inline-flex font-mono text-micro lg:text-fine tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-brand-primary/30 bg-brand-primary/5 text-brand-primary items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-brand-primary animate-pulse" />
                       AVAILABLE
                     </span>
-                    <span className="hidden md:inline-flex font-mono text-[10px] lg:text-[11px] tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-edge bg-fg/[0.02] text-fg/50 cursor-help" data-tooltip="For the UAE">
+                    <span className="hidden md:inline-flex font-mono text-micro lg:text-fine tracking-[0.14em] font-semibold px-2.5 py-1 lg:px-3 lg:py-1.5 rounded-md border border-edge bg-fg/[0.02] text-fg-mid cursor-help" data-tooltip="For the UAE">
                       SPONSORSHIP NOT REQUIRED
                     </span>
                   </div>
@@ -222,32 +206,32 @@ export function ConnectPage() {
                   <div className="flex flex-row w-full gap-2 md:gap-3 lg:gap-4 mt-5 md:mt-7 lg:mt-10 items-stretch animate-in fade-in slide-in-from-left-4 duration-500 delay-250 connect-ctas">
                     <button
                       onClick={handleDownloadVCard}
-                      className="group/btn flex-[1.2] sm:flex-[1.4] md:flex-initial px-2 sm:px-3 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-brand-primary hover:brightness-110 text-ink border border-brand-primary rounded-lg md:rounded-xl font-mono text-[9px] sm:text-[10px] lg:text-[11px] font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-[0.2em] flex items-center justify-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer shadow-[0_6px_20px_-4px_rgba(0,200,180,0.35)] hover:shadow-[0_10px_34px_-4px_rgba(0,200,180,0.6)] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 duration-200"
+                      className="group/btn flex-[1.2] sm:flex-[1.4] md:flex-initial px-2 sm:px-3 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-brand-primary hover:brightness-110 text-ink border border-brand-primary rounded-lg md:rounded-xl font-mono text-micro sm:text-micro lg:text-fine font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-mega flex items-center justify-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer shadow-[0_6px_20px_-4px_rgba(0,200,180,0.35)] hover:shadow-[0_10px_34px_-4px_rgba(0,200,180,0.6)] hover:-translate-y-0.5 active:scale-[0.97] active:translate-y-0 duration-200"
                     >
                       <Download className="w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-[18px] lg:h-[18px] stroke-[2.5] shrink-0 group-hover/btn:scale-110 transition-transform duration-200" />
                       <span className="whitespace-nowrap">SAVE CONTACT</span>
                     </button>
                     <a
-                      href="https://cal.com/justinclarke"
+                      href={`https://cal.com/${SITE.social.cal}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={() => track('outbound-click', { channel: 'book' })}
-                      className="group/btn flex-1 md:flex-initial px-2 sm:px-3 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-fg/[0.02] hover:bg-fg/[0.06] text-term-fg/70 md:text-term-fg/80 hover:text-term-fg border border-edge md:border-edge hover:border-brand-primary/30 rounded-lg md:rounded-xl font-mono text-[9px] sm:text-[10px] lg:text-[11px] font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-[0.25em] flex items-center justify-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer active:scale-[0.97] duration-200 backdrop-blur-sm md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)] hover:shadow-[0_4px_16px_-4px_rgba(0,200,180,0.15)]"
+                      className="group/btn flex-1 md:flex-initial px-2 sm:px-3 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-fg/[0.02] hover:bg-fg/[0.06] text-term-fg/70 md:text-term-fg/80 hover:text-term-fg border border-edge md:border-edge hover:border-brand-primary/30 rounded-lg md:rounded-xl font-mono text-micro sm:text-micro lg:text-fine font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-[0.25em] flex items-center justify-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer active:scale-[0.97] duration-200 backdrop-blur-sm md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)] hover:shadow-[0_4px_16px_-4px_rgba(0,200,180,0.15)]"
                     >
                       <Calendar className="w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-[18px] lg:h-[18px] shrink-0 group-hover/btn:text-brand-primary group-hover/btn:scale-110 transition-all duration-200" />
                       <span className="whitespace-nowrap">BOOK CALL</span>
                     </a>
                     <button
                       onClick={() => setIsQrModalOpen(true)}
-                      className="group/btn flex-1 md:flex-initial px-2 sm:px-3.5 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-fg/[0.02] hover:bg-fg/[0.06] text-term-fg/70 md:text-term-fg/80 hover:text-term-fg border border-edge md:border-edge hover:border-brand-primary/30 rounded-lg md:rounded-xl font-mono text-[9px] sm:text-[10px] lg:text-[11px] font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-[0.25em] flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-2.5 transition-all cursor-pointer active:scale-[0.97] duration-200 backdrop-blur-sm md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)] hover:shadow-[0_4px_16px_-4px_rgba(0,200,180,0.15)]"
+                      className="group/btn flex-1 md:flex-initial px-2 sm:px-3.5 py-3 md:px-5 md:py-3.5 lg:px-7 lg:py-4 bg-fg/[0.02] hover:bg-fg/[0.06] text-term-fg/70 md:text-term-fg/80 hover:text-term-fg border border-edge md:border-edge hover:border-brand-primary/30 rounded-lg md:rounded-xl font-mono text-micro sm:text-micro lg:text-fine font-black tracking-[0.08em] sm:tracking-[0.14em] lg:tracking-[0.25em] flex items-center justify-center gap-1.5 sm:gap-2 lg:gap-2.5 transition-all cursor-pointer active:scale-[0.97] duration-200 backdrop-blur-sm md:shadow-[inset_0_1px_1px_rgba(255,255,255,0.04)] hover:shadow-[0_4px_16px_-4px_rgba(0,200,180,0.15)]"
                     >
                       <QrCode className="w-4 h-4 sm:w-4.5 sm:h-4.5 lg:w-[18px] lg:h-[18px] shrink-0 group-hover/btn:text-brand-primary group-hover/btn:scale-110 transition-all duration-200" />
                       <span className="whitespace-nowrap">QR<span className="hidden sm:inline"> CODE</span></span>
                     </button>
                   </div>
 
-                  <div className="font-mono text-[9px] lg:text-[10px] text-fg/30 tracking-[0.14em] mt-4 lg:mt-6 animate-in fade-in duration-700 delay-300 hidden sm:block">
-                    ⏎ or press <kbd className="border border-edge bg-fg/[0.02] px-1.5 py-0.5 rounded text-fg/50 text-[8px] font-bold">C</kbd> <span className="text-fg/50">to copy email</span>
+                  <div className="font-mono text-micro lg:text-micro text-fg-faint tracking-[0.14em] mt-4 lg:mt-6 animate-in fade-in duration-700 delay-300 hidden sm:block">
+                    ⏎ or press <kbd className="border border-edge bg-fg/[0.02] px-1.5 py-0.5 rounded text-fg-mid text-micro font-bold">C</kbd> <span className="text-fg-mid">to copy email</span>
                   </div>
 
                 </div>
@@ -256,10 +240,10 @@ export function ConnectPage() {
                 <div className="flex flex-col animate-in fade-in slide-in-from-right-4 duration-500 mt-0 md:mt-6 lg:mt-0 connect-right-pane">
 
                   <div className="hidden sm:flex justify-between items-center mb-4 pb-2 border-b border-edge-soft connect-channels-header">
-                    <h3 className="font-mono text-[10px] text-fg/50 tracking-[0.22em] uppercase font-bold">
+                    <h3 className="font-mono text-micro text-fg-mid tracking-[0.22em] uppercase font-bold">
                         // CHANNELS · 05
                     </h3>
-                    <span className="font-mono text-[10px] text-fg/30 tracking-[0.14em] hidden sm:inline">
+                    <span className="font-mono text-micro text-fg-faint tracking-[0.14em] hidden sm:inline">
                       sorted by: response_time ↓
                     </span>
                   </div>
@@ -280,20 +264,20 @@ export function ConnectPage() {
                         </div>
                         <div className="flex flex-col min-w-0">
                           <span className="font-mono text-xs text-term-fg font-semibold truncate">
-                            justinsavioclarke@outlook.com
+                            {SITE.email}
                           </span>
-                          <span className="font-mono text-[9px] text-fg/40 uppercase tracking-widest mt-0.5">
+                          <span className="font-mono text-micro text-fg-mid uppercase tracking-widest mt-0.5">
                             REPLIES &lt; 24H
                           </span>
                         </div>
                       </div>
-                      <ArrowRight className="w-3.5 h-3.5 text-fg/30 shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 text-fg-faint shrink-0" />
                     </button>
                     <button
                       type="button"
                       data-channel="email"
                       onClick={() => {
-                        navigator.clipboard.writeText('justinsavioclarke@outlook.com').catch(() => { });
+                        navigator.clipboard.writeText(SITE.email).catch(() => { });
                         setCopiedToast(true);
                         setTimeout(() => setCopiedToast(false), 2000);
                       }}
@@ -302,10 +286,10 @@ export function ConnectPage() {
                       <div className="flex items-center gap-6 min-w-0">
 
                         <div className="flex flex-col w-16 md:w-20 shrink-0 select-none">
-                          <span className="font-mono text-[9px] text-social-email/40 tracking-wider group-hover:text-social-email/70 transition-colors font-bold">
+                          <span className="font-mono text-micro text-social-email/40 tracking-wider group-hover:text-social-email/70 transition-colors font-bold">
                             [01]
                           </span>
-                          <span className="font-mono text-[10px] text-social-email/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-email transition-colors">
+                          <span className="font-mono text-micro text-social-email/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-email transition-colors">
                             EMAIL
                           </span>
                         </div>
@@ -316,21 +300,21 @@ export function ConnectPage() {
 
                         <div className="flex flex-col min-w-0">
                           <span className="font-mono text-sm md:text-base text-term-fg font-semibold truncate group-hover:text-fg transition-colors">
-                            justinsavioclarke@outlook.com
+                            {SITE.email}
                           </span>
-                          <span className="font-mono text-[9px] text-social-email/50 uppercase tracking-widest mt-1 group-hover:text-social-email/70 transition-colors">
+                          <span className="font-mono text-micro text-social-email/50 uppercase tracking-widest mt-1 group-hover:text-social-email/70 transition-colors">
                             REPLIES &lt; 24H
                           </span>
                         </div>
 
                       </div>
 
-                      <ArrowRight className="w-4 h-4 text-fg/30 group-hover:text-social-email group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                      <ArrowRight className="w-4 h-4 text-fg-faint group-hover:text-social-email group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                     </button>
 
                     {/* 2. LinkedIn */}
                     <a
-                      href="https://linkedin.com/in/justinsavioclarke"
+                      href={`https://linkedin.com/in/${SITE.social.linkedin}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       data-channel="linkedin"
@@ -341,35 +325,35 @@ export function ConnectPage() {
 
                         {/* Index & Label Block */}
                         <div className="hidden sm:flex flex-col w-16 md:w-20 shrink-0 select-none">
-                          <span className="font-mono text-[9px] text-social-linkedin/40 tracking-wider group-hover:text-social-linkedin/70 transition-colors font-bold">
+                          <span className="font-mono text-micro text-social-linkedin/40 tracking-wider group-hover:text-social-linkedin/70 transition-colors font-bold">
                             [02]
                           </span>
-                          <span className="font-mono text-[10px] text-social-linkedin/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-linkedin transition-colors">
+                          <span className="font-mono text-micro text-social-linkedin/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-linkedin transition-colors">
                             LINKEDIN
                           </span>
                         </div>
 
-                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-md sm:rounded-xl bg-social-linkedin/5 border-0 sm:border sm:border-social-linkedin/10 flex items-center justify-center text-social-linkedin sm:group-hover:bg-social-linkedin sm:group-hover:text-ink sm:group-hover:border-transparent transition-all duration-300 sm:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] sm:group-hover:shadow-[0_0_15px_rgba(10,102,194,0.4)] shrink-0 font-sans font-black text-[11px] sm:text-[13px] lowercase tracking-tighter">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 rounded-md sm:rounded-xl bg-social-linkedin/5 border-0 sm:border sm:border-social-linkedin/10 flex items-center justify-center text-social-linkedin sm:group-hover:bg-social-linkedin sm:group-hover:text-ink sm:group-hover:border-transparent transition-all duration-300 sm:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)] sm:group-hover:shadow-[0_0_15px_rgba(10,102,194,0.4)] shrink-0 font-sans font-black text-fine sm:text-label lowercase tracking-tighter">
                           in
                         </div>
 
                         <div className="flex flex-col min-w-0">
                           <span className="font-mono text-xs sm:text-sm md:text-base text-term-fg font-semibold truncate group-hover:text-fg transition-colors">
-                            linkedin.com/in/justinsavioclarke
+                            linkedin.com/in/{SITE.social.linkedin}
                           </span>
-                          <span className="font-mono text-[9px] text-fg/40 sm:text-social-linkedin/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-linkedin/70 transition-colors">
+                          <span className="font-mono text-micro text-fg-mid sm:text-social-linkedin/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-linkedin/70 transition-colors">
                             PROFESSIONAL NETWORK
                           </span>
                         </div>
 
                       </div>
 
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg/30 group-hover:text-social-linkedin group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg-faint group-hover:text-social-linkedin group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                     </a>
 
                     {/* 3. GitHub */}
                     <a
-                      href="https://github.com/JustinClarke"
+                      href={`https://github.com/${SITE.social.github}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       data-channel="github"
@@ -380,10 +364,10 @@ export function ConnectPage() {
 
                         {/* Index & Label Block */}
                         <div className="hidden sm:flex flex-col w-16 md:w-20 shrink-0 select-none">
-                          <span className="font-mono text-[9px] text-social-github/40 tracking-wider group-hover:text-social-github/70 transition-colors font-bold">
+                          <span className="font-mono text-micro text-social-github/40 tracking-wider group-hover:text-social-github/70 transition-colors font-bold">
                             [03]
                           </span>
-                          <span className="font-mono text-[10px] text-social-github/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-github transition-colors">
+                          <span className="font-mono text-micro text-social-github/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-github transition-colors">
                             GITHUB
                           </span>
                         </div>
@@ -394,21 +378,21 @@ export function ConnectPage() {
 
                         <div className="flex flex-col min-w-0">
                           <span className="font-mono text-xs sm:text-sm md:text-base text-term-fg font-semibold truncate group-hover:text-fg transition-colors">
-                            github.com/justinclarke
+                            github.com/{SITE.social.github.toLowerCase()}
                           </span>
-                          <span className="font-mono text-[9px] text-fg/40 sm:text-social-github/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-github/70 transition-colors">
+                          <span className="font-mono text-micro text-fg-mid sm:text-social-github/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-github/70 transition-colors">
                             38 PUBLIC REPOS
                           </span>
                         </div>
 
                       </div>
 
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg/30 group-hover:text-social-github group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg-faint group-hover:text-social-github group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                     </a>
 
                     {/* 4. Book Call */}
                     <a
-                      href="https://cal.com/justinclarke"
+                      href={`https://cal.com/${SITE.social.cal}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       data-channel="book"
@@ -419,10 +403,10 @@ export function ConnectPage() {
 
                         {/* Index & Label Block */}
                         <div className="hidden sm:flex flex-col w-16 md:w-20 shrink-0 select-none">
-                          <span className="font-mono text-[9px] text-social-cal/40 tracking-wider group-hover:text-social-cal/70 transition-colors font-bold">
+                          <span className="font-mono text-micro text-social-cal/40 tracking-wider group-hover:text-social-cal/70 transition-colors font-bold">
                             [04]
                           </span>
-                          <span className="font-mono text-[10px] text-social-cal/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-cal transition-colors">
+                          <span className="font-mono text-micro text-social-cal/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-social-cal transition-colors">
                             BOOK
                           </span>
                         </div>
@@ -433,16 +417,16 @@ export function ConnectPage() {
 
                         <div className="flex flex-col min-w-0">
                           <span className="font-mono text-xs sm:text-sm md:text-base text-term-fg font-semibold truncate group-hover:text-fg transition-colors">
-                            cal.com/justinclarke
+                            cal.com/{SITE.social.cal}
                           </span>
-                          <span className="font-mono text-[9px] text-fg/40 sm:text-social-cal/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-cal/70 transition-colors">
+                          <span className="font-mono text-micro text-fg-mid sm:text-social-cal/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-social-cal/70 transition-colors">
                             THIS WEEK: OPEN
                           </span>
                         </div>
 
                       </div>
 
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg/30 group-hover:text-social-cal group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg-faint group-hover:text-social-cal group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                     </a>
 
                     {/* 5. Secure Inquiries (Triggers Contact Modal) */}
@@ -455,10 +439,10 @@ export function ConnectPage() {
 
                         {/* Index & Label Block */}
                         <div className="hidden sm:flex flex-col w-16 md:w-20 shrink-0 select-none">
-                          <span className="font-mono text-[9px] text-brand-primary/40 tracking-wider group-hover:text-brand-primary/70 transition-colors font-bold">
+                          <span className="font-mono text-micro text-brand-primary/40 tracking-wider group-hover:text-brand-primary/70 transition-colors font-bold">
                             [05]
                           </span>
-                          <span className="font-mono text-[10px] text-brand-primary/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-brand-primary transition-colors">
+                          <span className="font-mono text-micro text-brand-primary/60 tracking-widest font-black uppercase mt-0.5 group-hover:text-brand-primary transition-colors">
                             INQUIRIES
                           </span>
                         </div>
@@ -471,14 +455,14 @@ export function ConnectPage() {
                           <span className="font-mono text-xs sm:text-sm md:text-base text-term-fg font-semibold truncate group-hover:text-fg transition-colors">
                             let's work together
                           </span>
-                          <span className="font-mono text-[9px] text-fg/40 sm:text-brand-primary/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-brand-primary/70 transition-colors">
+                          <span className="font-mono text-micro text-fg-mid sm:text-brand-primary/50 uppercase tracking-widest mt-0.5 sm:mt-1 group-hover:text-brand-primary/70 transition-colors">
                             SECURE FORM
                           </span>
                         </div>
 
                       </div>
 
-                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg/30 group-hover:text-brand-primary group-hover:translate-x-1 transition-all duration-300 shrink-0" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-fg-faint group-hover:text-brand-primary group-hover:translate-x-1 transition-all duration-300 shrink-0" />
                     </button>
 
                   </div>
@@ -505,7 +489,7 @@ export function ConnectPage() {
               {/* Close Button Icon */}
               <button
                 onClick={() => setIsQrModalOpen(false)}
-                className="absolute top-4 right-4 text-fg/40 hover:text-fg/60 transition-colors p-1 rounded-md hover:bg-fg/5 cursor-pointer z-10"
+                className="absolute top-4 right-4 text-fg-mid hover:text-fg-soft transition-colors p-1 rounded-md hover:bg-fg/5 cursor-pointer z-10"
                 aria-label="Close"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -516,15 +500,15 @@ export function ConnectPage() {
                 {/* HUD Viewfinder Frame */}
                 <div className="absolute -inset-1.5 border border-brand-primary/30 rounded-[18px] opacity-80 pointer-events-none" />
                 <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&color=0c1110&data=${encodeURIComponent('https://justinclarke.github.io/connect')}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&color=0c1110&data=${encodeURIComponent(`${SITE.url}/connect`)}`}
                   alt="QR Code"
                   className="w-48 h-48 sm:w-60 sm:h-60 block rounded-lg"
                 />
               </div>
 
               {/* Stylish Website Label */}
-              <p className="font-mono text-[10px] sm:text-[11px] text-fg/50 tracking-[0.25em] font-semibold text-center mt-2 uppercase select-all">
-                justinclarke<span className="text-brand-primary font-bold">.github.io</span>
+              <p className="font-mono text-micro sm:text-fine text-fg-mid tracking-[0.25em] font-semibold text-center mt-2 uppercase select-all">
+                {SITE.domain.split('.')[0]}<span className="text-brand-primary font-bold">.{SITE.domain.split('.').slice(1).join('.')}</span>
               </p>
             </div>
           </div>

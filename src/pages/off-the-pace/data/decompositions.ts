@@ -25,12 +25,10 @@
  *   We store gross + the 7 signed terms and *derive* truePace, so the bar can
  *   never silently drift out of tolerance (±0.0001s).
  *
- * For beginners ----------------------------------------------------------------
  * Each raw lap below is a plain object of {term key -> seconds}. `buildLap` turns
  * it into a `LapDecomposition` whose `terms` array is ordered exactly like
  * IDENTITY_TERMS (so charts iterate in a stable order) and whose `truePace_s`
  * and `totalStripped_s` are computed, not typed by hand.
- * -----------------------------------------------------------------------------
  */
 import { IDENTITY_TERMS } from './projectStats';
 
@@ -225,7 +223,6 @@ if (import.meta.env?.DEV) {
   for (const d of DECOMPOSITIONS) {
     const drift = Math.abs(d.grossLapTime_s - d.totalStripped_s - d.truePace_s);
     if (drift > 1e-4) {
-      // eslint-disable-next-line no-console
       console.error(`decompositions: ${d.id} breaks the identity by ${drift}s`);
     }
   }

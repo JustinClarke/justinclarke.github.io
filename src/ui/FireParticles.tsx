@@ -1,32 +1,20 @@
 /**
  * FireParticles a full-screen <canvas> that animates rising fire embers.
  *
- * Fits in: a decorative background layer (used behind hero-style sections).
- * Note:    everything is drawn by hand on a 2D canvas, NOT with HTML elements.
- *          That's why colours are raw rgba strings here drawing calls can't use
- *          CSS classes (see the project's Tailwind-token rule).
- *
- * For beginners ----------------------------------------------------------------
- * A <canvas> is a blank drawing surface; JavaScript paints pixels onto it. We
- * keep a list of "particle" objects, and ~60 times a second we move each one a
- * little and redraw it that loop is the `animate()` function below. `useRef`
- * holds a handle to the canvas DOM node; `useEffect` runs the setup once after
- * the component appears, and its returned function cleans up when it disappears.
- * -----------------------------------------------------------------------------
+ * Decorative background layer (used behind hero-style sections). Everything is
+ * drawn by hand on a 2D canvas, not with HTML elements that's why colours are
+ * raw rgba strings here: canvas draw calls can't use Tailwind classes, the one
+ * sanctioned home for literal colour alongside constants.ts (see the token rule).
  */
 import React, { useRef, useEffect } from 'react';
 
 export function FireParticles() {
-  // LEARN: a ref is a stable box that survives re-renders. canvasRef.current
-  //    will point at the real <canvas> element once it's on screen.
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // LEARN: getContext('2d') hands us the "pen" we draw with everything below
-    //    (fillStyle, beginPath, fill) talks to this ctx object.
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
@@ -128,9 +116,6 @@ export function FireParticles() {
       }
     };
 
-    // LEARN: the game loop. Wipe the canvas, advance + redraw every particle,
-    //    recycle dead ones, then ask the browser to call us again next frame.
-    //    requestAnimationFrame self-schedules ~60fps and pauses in background tabs.
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -150,9 +135,6 @@ export function FireParticles() {
     init();
     animate();
 
-    // LEARN: the cleanup function. React runs this when the component leaves the
-    //    screen we stop the loop and unhook the resize listener so we don't keep
-    //    drawing (or leak memory) after the canvas is gone.
     return () => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);

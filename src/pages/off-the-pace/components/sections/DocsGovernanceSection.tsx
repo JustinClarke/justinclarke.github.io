@@ -5,13 +5,6 @@
  * Fits in: rendered by SourceView's final block.
  * Note:    Each CI workflow carries its own `style` object (token-based colours
  *          via color-mix) so the three cards read amber / blue / green.
- *
- * For beginners ----------------------------------------------------------------
- * CI_WORKFLOWS and DOC_PILLARS are data arrays mapped into cards - the same
- * write-once-then-loop pattern as the other sections. Carrying the per-card
- * colour in the data (the `style` field) keeps the JSX below identical for all
- * three cards; only the data differs.
- * -----------------------------------------------------------------------------
  */
 import React from 'react';
 import { STATS, LINKS } from '../../data/projectStats';
@@ -64,13 +57,13 @@ export const DocsGovernanceSection: React.FC<DocsGovernanceSectionProps> = ({ id
   return (
     <section id={id} className="w-full scroll-mt-32 reveal-element">
       <div className="max-w-6xl mx-auto py-16">
-        <span className="font-jetbrains text-[10px] text-f1-red uppercase tracking-[0.2em] mb-4 block">
+        <span className="font-jetbrains text-micro text-f1-red uppercase tracking-mega mb-4 block">
           08 / Docs & Governance
         </span>
-        <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter mb-4">
+        <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
           Docusaurus + three CI workflows.<br />Docs can't drift.
         </h2>
-        <p className="text-white/55 text-sm max-w-xl font-jetbrains leading-relaxed mb-10">
+        <p className="text-text-tertiary text-sm max-w-xl font-jetbrains leading-relaxed mb-10">
           The project ships a full Docusaurus site alongside the code  - four sections, ADR register, and a reference layer auto-generated from the dbt schema. A <code className="text-xs" style={{ color: 'var(--color-viz-success)' }}>git diff --exit-code</code> in CI ensures the reference never falls out of sync.
         </p>
 
@@ -85,8 +78,8 @@ export const DocsGovernanceSection: React.FC<DocsGovernanceSectionProps> = ({ id
               <div className="font-jetbrains text-xs font-bold uppercase tracking-wider mb-1" style={{ color: wf.style.color }}>
                 {wf.name}
               </div>
-              <div className="font-jetbrains text-[9px] uppercase tracking-widest text-white/30 mb-3">{wf.badge}</div>
-              <p className="font-jetbrains text-[11px] text-white/55 leading-relaxed">{wf.desc}</p>
+              <div className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mb-3">{wf.badge}</div>
+              <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed">{wf.desc}</p>
             </div>
           ))}
         </div>
@@ -98,24 +91,24 @@ export const DocsGovernanceSection: React.FC<DocsGovernanceSectionProps> = ({ id
               key={pillar.title}
               className="bg-graphite-800/30 border border-white/5 rounded-xl p-5 hover:border-white/10 hover:bg-graphite-800/60 transition-all duration-300"
             >
-              <div className="font-jetbrains text-xs font-bold text-white/80 uppercase tracking-wider mb-2">
+              <div className="font-jetbrains text-xs font-bold text-text-secondary uppercase tracking-wider mb-2">
                 {pillar.title}
               </div>
-              <p className="font-jetbrains text-[11px] text-white/45 leading-relaxed">{pillar.desc}</p>
+              <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed">{pillar.desc}</p>
             </div>
           ))}
         </div>
 
         {/* ADR + links strip */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-white/[0.06]">
-          <div className="font-jetbrains text-[11px] text-white/40 leading-relaxed">
-            <span className="text-white/60 font-semibold">ADR register</span>  - architectural decisions recorded as numbered ADRs in <code className="text-white/50">docs/adr/</code>. Each non-obvious design choice has an entry.
+          <div className="font-jetbrains text-fine text-text-tertiary leading-relaxed">
+            <span className="text-text-tertiary font-semibold">ADR register</span>  - architectural decisions recorded as numbered ADRs in <code className="text-text-tertiary">docs/adr/</code>. Each non-obvious design choice has an entry.
           </div>
           <a
             href={LINKS.docs}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 inline-flex items-center gap-2 border border-white/15 text-white/60 hover:text-white/90 hover:border-white/30 font-jetbrains text-xs uppercase tracking-wider px-4 py-2.5 rounded transition-all duration-200"
+            className="shrink-0 inline-flex items-center gap-2 border border-white/15 text-text-tertiary hover:text-text-primary hover:border-white/30 font-jetbrains text-xs uppercase tracking-wider px-4 py-2.5 rounded transition-all duration-200"
           >
             Read the Docs →
           </a>

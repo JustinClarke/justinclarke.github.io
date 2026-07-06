@@ -6,19 +6,11 @@
  *          Renders ProjectHero + the heavy SourceView (the dbt/CI/ML sections).
  * Note:    Shares the same preloader + dark-theme-lock pattern as the Overview
  *          page, and adds a thin scroll-progress bar pinned to the top edge.
- *
- * For beginners ----------------------------------------------------------------
- * The red bar across the top tracks how far you have scrolled. The useEffect
- * below subscribes to the browser's "scroll" event when the page appears and
- * unsubscribes when it leaves (that returned function is the "cleanup"). Each
- * scroll recomputes a 0-100 percentage and stores it in state, which re-renders
- * the bar at its new width. The `{ passive: true }` flag tells the browser we
- * will never block scrolling, so it can keep scrolling smooth.
- * -----------------------------------------------------------------------------
  */
 import { lazy, Suspense, useState } from 'react';
 import { SEO } from '@/components/layout';
 import { TheCloser } from '@/components/layout/TheCloser';
+import { routeMeta } from '@/content';
 import { PersistentNav } from './components/ui/PersistentNav';
 import { ProjectHero } from './components/ProjectHero';
 import { OffThePacePreloader } from './components/ui/OffThePacePreloader';
@@ -58,11 +50,7 @@ export function OffThePaceSource() {
 
   return (
     <div data-theme-lock="dark" className="otp-scope min-h-screen bg-graphite-900 text-white font-sans selection:bg-f1-red/30 overflow-x-hidden relative">
-      <SEO
-        title="Off The Pace ⋅ Architecture & Engineering"
-        description="The engineering behind the F1 Causal Pace Engine: 60 dbt models, 336 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator."
-        path="/off-the-pace"
-      />
+      <SEO {...routeMeta('/off-the-pace')} />
 
       {/* Ambient background decorations */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">

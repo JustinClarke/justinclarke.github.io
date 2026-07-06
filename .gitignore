@@ -35,5 +35,3 @@ yarn-error.log*
 
 _docs/screenshots
 _docs/misc
-graphify-out/
-.agents

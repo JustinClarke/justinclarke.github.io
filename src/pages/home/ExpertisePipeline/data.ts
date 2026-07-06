@@ -4,13 +4,7 @@
  * SKILLS drives the three stage columns; ALL_EDGES defines the DAG topology;
  * NARRATIVES maps each node to the one-line lineage story shown in the console.
  *
- * For beginners ----------------------------------------------------------------
- * Content lives here, behaviour lives in the components add a skill or an
- * edge by editing these arrays, no component changes needed. This is a .ts
- * file (not .tsx), so it can't use JSX tags; the icons are therefore built
- * with React.createElement, which is exactly what JSX compiles into anyway:
- * createElement('svg', { props }, ...children) === <svg {...props}>...</svg>.
- * -----------------------------------------------------------------------------
+ * Add a skill or an edge by editing these arrays, no component changes needed.
  */
 import React from 'react';
 import {
@@ -24,10 +18,9 @@ export interface SkillItem {
   icon: React.ReactNode;
 }
 
-// LEARN: each stage carries its colour three ways for three consumers:
-//    `color`/`bg` are Tailwind class names dropped into className, while `rgb`
-//    is raw "R, G, B" components for the --tech-rgb CSS variable and the SVG
-//    edges, which need to mix their own alpha via rgba(var(--tech-rgb), …).
+// Each stage carries its colour three ways for three consumers: `color`/`bg`
+// are Tailwind class names for className; `rgb` is raw "R, G, B" for the
+// --tech-rgb var and the SVG edges, which mix their own alpha via rgba(…).
 export interface SkillStage {
   cat: string;
   stage: string;
@@ -169,9 +162,8 @@ export const SKILLS: SkillStage[] = [
   },
 ];
 
-// LEARN: `[string, string][]` is an array of two-element tuples each entry
-//    is one arrow in the diagram, [from, to], matched by skill NAME, so the
-//    names here must spell skills in SKILLS exactly.
+// Each entry is one arrow in the diagram, [from, to], matched by skill NAME so
+// these strings must spell skills in SKILLS exactly.
 export const ALL_EDGES: [string, string][] = [
   ['DuckDB-Wasm', 'Telemetry Platforms'],
   ['Telemetry Platforms', 'React'],

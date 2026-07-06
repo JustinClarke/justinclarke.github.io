@@ -5,12 +5,6 @@
  * Fits in: rendered inside SourceView's Pipeline section.
  * Note:    The "terminal" is pure markup - coloured <span>s fake SQL syntax
  *          highlighting; there is no real code execution here.
- *
- * For beginners ----------------------------------------------------------------
- * The `{'\n'}` and `{'  '}` strings are literal newlines and spaces. In JSX,
- * whitespace in your source is collapsed, so to render a pre-formatted code
- * block you insert the line breaks and indentation explicitly as expressions.
- * -----------------------------------------------------------------------------
  */
 import { forwardRef } from 'react';
 import { STATS } from '../../data/projectStats';
@@ -25,13 +19,13 @@ export const EngineeringDecisionsSection = forwardRef<HTMLElement, EngineeringDe
       <div className="flex flex-col lg:flex-row items-center gap-12">
 
         <div className="lg:w-1/3 flex flex-col gap-4">
-          <span className="font-jetbrains text-[10px] text-[color:var(--color-viz-success)] uppercase tracking-[0.2em] font-semibold">
+          <span className="font-jetbrains text-micro text-[color:var(--color-viz-success)] uppercase tracking-mega font-semibold">
             02 / Architecture & Scale
           </span>
-          <h2 className="text-3xl md:text-4xl font-noto font-black text-white/90 uppercase tracking-tighter">
+          <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter">
             Zero Cloud Compute.
           </h2>
-          <p className="font-jetbrains text-sm leading-relaxed text-white/50">
+          <p className="font-jetbrains text-sm leading-relaxed text-text-tertiary">
             Built a headless dbt pipeline running entirely locally on DuckDB. {STATS.dbtModels} models compile and run {STATS.tests} tests in under {STATS.buildSeconds} seconds. Maximum developer velocity, rigorous CI/CD constraints, and zero cloud costs.
           </p>
         </div>
@@ -41,16 +35,16 @@ export const EngineeringDecisionsSection = forwardRef<HTMLElement, EngineeringDe
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-viz-mac-red shrink-0" />
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full shrink-0" style={{ backgroundColor: 'var(--color-viz-warning)' }} />
             <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-viz-mac-green shrink-0" />
-            <span className="ml-2 sm:ml-4 text-[9px] sm:text-[10px] text-white/40 uppercase tracking-widest truncate flex-1 min-w-0">
+            <span className="ml-2 sm:ml-4 text-micro sm:text-micro text-text-tertiary uppercase tracking-widest truncate flex-1 min-w-0">
               assert_additive_identity.sql • CI Gate
             </span>
-            <span className="ml-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 shrink-0 whitespace-nowrap" style={{ color: 'var(--color-viz-success)' }}>
+            <span className="ml-2 text-micro sm:text-micro font-bold uppercase tracking-wider flex items-center gap-1 shrink-0 whitespace-nowrap" style={{ color: 'var(--color-viz-success)' }}>
               <span className="w-1.5 h-1.5 rounded-full animate-status-dot shrink-0" style={{ backgroundColor: 'var(--color-viz-success)' }} />
               CI Enforced
             </span>
           </div>
-          <div className="p-6 text-xs md:text-sm text-white/80 overflow-x-auto whitespace-pre leading-loose">
-            <span className="text-white/30 italic">
+          <div className="p-6 text-xs md:text-sm text-text-secondary overflow-x-auto whitespace-pre leading-loose">
+            <span className="text-text-tertiary italic">
               -- assert_lap_7term_identity  - fails build if 7-term sum ≠ pace_delta_s ± 0.0001s
             </span>{'\n\n'}
             <span className="text-pink-400">SELECT</span> <span className="text-blue-400">count</span>(*) <span className="text-pink-400">FROM</span> fct_lap_residuals{'\n'}

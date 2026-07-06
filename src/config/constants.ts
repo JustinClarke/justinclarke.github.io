@@ -1,18 +1,12 @@
 /**
  * config/constants.ts the single home for shared design constants and the
- * occasional bit of copy/config the UI reads (greetings, boot logs, timings).
+ * occasional bit of copy/config the UI reads (greetings, timings).
  *
  * Fits in: imported wherever a fixed value is needed in JS (e.g. the Preloader).
  * Note:    per the project's Tailwind rule, colours here are CSS-variable
  *          references like 'var(--color-brand-primary)', NOT raw hex the real
  *          colour values live once in src/index.css's @theme block. This file is
  *          also the ONLY sanctioned place for JS colour constants.
- *
- * For beginners ----------------------------------------------------------------
- * These are plain exported values, not components. `as const` tells TypeScript
- * to treat the object as fixed and read-only (so, e.g., BREAKPOINTS.md is known
- * to be exactly 768, not just "a number"). Other files import what they need.
- * -----------------------------------------------------------------------------
  */
 export const THEME = {
   colors: {
@@ -51,14 +45,7 @@ export const OTHER_LANGUAGES = [
   "Szia", "Ahoj", "Selam", "Sawubona", "Hujambo", "God dag", "Dia duit", "Bula"
 ];
 
-export const BOOT_LOGS = [
-  "[ OK ] [BOOT] SYSTEM_HUD V4.2 LOADED SUCCESSFULLY.",
-  "[ OK ] [DATA] DBT COMPILE → 6 LAYERS RESOLVED.",
-  "[ OK ] [STRM] FABRIC EVENTHOUSE LISTENING ON :443.",
-  "[ INFO ] [VITE] HMR UPDATE → /SRC/INDEX.CSS (X6)",
-  "[ OK ] [GPU]  FRAME BUDGET LOCKED → 16.67MS.",
-  "[ OK ] [USR]  VISITOR AUTHENTICATED → SESSION OPEN.",
-];
+// BOOT_LOGS moved to src/content/terminal.ts it's copy, not config.
 
 export const PIPELINE_COLORS = ['var(--color-brand-primary)', 'var(--color-acc-cloud)', 'var(--color-acc-bi)'] as const;
 
@@ -76,10 +63,9 @@ export const TERM_COLORS = {
   driver_skill_residual_s: '#e10600', // --color-term-driver      (f1-red)
 } as const;
 
-export const GITHUB_USERNAME = 'JustinClarke';
-
+// The AI proxy endpoint lives in SITE.integrations.aiChat (site identity);
+// these are the behavioural tuning knobs for talking to it.
 export const AI_AGENT = {
-  proxyUrl: import.meta.env.VITE_AI_PROXY_URL || 'https://portfolio-ai.justinclarke.workers.dev',
   maxSessionQueries: 20,
   maxPromptLength: 500,
   maxHistoryTurns: 6,

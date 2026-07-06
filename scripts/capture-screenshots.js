@@ -4,32 +4,53 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
+import { ROUTES } from '../src/content/routes.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = 3000;
 const BASE_URL = `http://localhost:${PORT}`;
-const SCREENSHOTS_DIR = path.join(__dirname, '../_docs/screenshots');
+const SCREENSHOTS_ROOT = path.join(__dirname, '../_docs/screenshots');
+
+const LEGACY_NAMES = {
+  '/': '01_home',
+  '/project/spotify-engine': '02_spotify-engine',
+  '/project/sql-disaster': '03_sql-disaster',
+  '/project/litestore': '04_litestore',
+  '/project/capital-budgeting': '05_capital-budgeting',
+  '/project/hr-archetype': '06_hr-archetype',
+  '/the-long-version': '07_the-long-version',
+  '/f1': '08_f1-telemetry',
+  '/off-the-pace': '09_f1-source',
+  '/connect': '10_connect',
+  '/studio': '12_studio',
+  '/studio/crescendo': '13_crescendo',
+  '/studio/stroktalk': '14_stroktalk'
+};
+
+const slugFor = (routePath) =>
+  LEGACY_NAMES[routePath] ?? routePath.replace(/^\//, '').replace(/\//g, '-');
 
 const ALL_PAGES = [
-  { name: '01_home', path: '/' },
-  { name: '02_spotify-engine', path: '/project/spotify-engine' },
-  { name: '03_sql-disaster', path: '/project/sql-disaster' },
-  { name: '04_litestore', path: '/project/litestore' },
-  { name: '05_capital-budgeting', path: '/project/capital-budgeting' },
-  { name: '06_hr-archetype', path: '/project/hr-archetype' },
-  { name: '07_the-long-version', path: '/the-long-version' },
-  { name: '08_f1-telemetry', path: '/f1' },
-  { name: '09_f1-source', path: '/off-the-pace' },
-  { name: '10_connect', path: '/connect' },
-  { name: '11_not-found', path: '/non-existent-page' },
-  { name: '12_studio', path: '/studio' },
-  { name: '13_crescendo', path: '/studio/crescendo' },
-  { name: '14_stroktalk', path: '/studio/stroktalk' }
+  ...ROUTES.filter(r => !r.hidden && !r.aliasOf).map(r => ({ name: slugFor(r.path), path: r.path })),
+  // Deliberately unroutable: exercises the 404 page.
+  { name: '11_not-found', path: '/non-existent-page' }
 ];
 
-const filterArg = process.argv[2];
+// Viewport matrix: pass --matrix to shoot all three breakpoints in one run,
+// or --width=NNN to pin a single custom width. Defaults to the 1440 desktop shot.
+const VIEWPORTS = {
+  390: { width: 390, height: 844 },   // mobile
+  768: { width: 768, height: 1024 },  // tablet
+  1440: { width: 1440, height: 900 }  // desktop
+};
+
+const args = process.argv.slice(2);
+const matrixMode = args.includes('--matrix');
+const widthArg = args.find(a => a.startsWith('--width='));
+const filterArg = args.find(a => !a.startsWith('--'));
+
 const PAGES = filterArg
   ? ALL_PAGES.filter(p => p.name.includes(filterArg) || p.path.includes(filterArg))
   : ALL_PAGES;
@@ -39,6 +60,34 @@ if (PAGES.length === 0) {
   process.exit(1);
 }
 
+const widths = matrixMode
+  ? Object.keys(VIEWPORTS).map(Number)
+  : widthArg
+    ? [Number(widthArg.split('=')[1])]
+    : [1440];
+
+
+// ScrollReveal (src/ui/ScrollReveal.tsx) fades sections in via framer-motion's
+// `whileInView`, which only fires once a section crosses the browser's real
+// viewport during a scroll. Playwright's `fullPage` screenshot captures
+// beyond the viewport without moving it, so below-the-fold ScrollReveal
+// content stays at its pre-reveal opacity:0 unless we scroll through the
+// page first. Capped step count keeps this bounded even on the longest page.
+async function scrollThroughPage(page, viewportHeight) {
+  const step = Math.max(200, Math.floor(viewportHeight * 0.8));
+  const maxSteps = 60;
+  for (let i = 0; i < maxSteps; i++) {
+    const { atBottom } = await page.evaluate((y) => {
+      window.scrollBy(0, y);
+      return { atBottom: window.scrollY + window.innerHeight >= document.body.scrollHeight - 2 };
+    }, step);
+    await page.waitForTimeout(150);
+    if (atBottom) break;
+  }
+  // Let the final in-view transitions finish, then reset for a top-down shot.
+  await page.waitForTimeout(400);
+  await page.evaluate(() => window.scrollTo(0, 0));
+}
 
 function waitForServer(url, timeout = 30000) {
   return new Promise((resolve, reject) => {
@@ -62,12 +111,6 @@ function waitForServer(url, timeout = 30000) {
 }
 
 async function run() {
-  // Ensure screenshots directory exists
-  if (!fs.existsSync(SCREENSHOTS_DIR)) {
-    fs.mkdirSync(SCREENSHOTS_DIR, { recursive: true });
-    console.log(`Created directory: ${SCREENSHOTS_DIR}`);
-  }
-
   console.log('Starting Vite dev server...');
   const serverProcess = spawn('npm', ['run', 'dev'], {
     stdio: 'ignore',
@@ -81,42 +124,58 @@ async function run() {
     console.log('Server is ready! Launching Playwright browser...');
 
     const browser = await chromium.launch({ headless: true });
-    const context = await browser.newContext({
-      viewport: { width: 1440, height: 900 },
-      deviceScaleFactor: 2 // High-DPI / Retina quality
-    });
 
-    // Add init script to skip preloader globally in this context
-    await context.addInitScript(() => {
-      try {
-        sessionStorage.setItem('preloader_shown', 'true');
-        window.__PRELOADER_COMPLETE__ = true;
-      } catch (e) {
-        console.error('Failed to set sessionStorage in init script', e);
+    for (const width of widths) {
+      const viewport = VIEWPORTS[width] || { width, height: 900 };
+      const dir = matrixMode || widthArg
+        ? path.join(SCREENSHOTS_ROOT, String(width))
+        : SCREENSHOTS_ROOT;
+
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`Created directory: ${dir}`);
       }
-    });
 
-    for (const pageInfo of PAGES) {
-      const pageUrl = `${BASE_URL}${pageInfo.path}`;
-      console.log(`Navigating to ${pageInfo.name} (${pageUrl})...`);
-      
-      const page = await context.newPage();
-      
-      try {
-        await page.goto(pageUrl, { waitUntil: 'networkidle' });
-        
-        // Wait for any CSS/JS transitions & animations to settle
-        console.log('Waiting 3 seconds for animations/charts to settle...');
-        await page.waitForTimeout(3000);
+      const context = await browser.newContext({
+        viewport,
+        deviceScaleFactor: 2 // High-DPI / Retina quality
+      });
 
-        const screenshotPath = path.join(SCREENSHOTS_DIR, `${pageInfo.name}.png`);
-        await page.screenshot({ path: screenshotPath, fullPage: true });
-        console.log(`✓ Saved screenshot: ${screenshotPath}`);
-      } catch (err) {
-        console.error(`Error capturing ${pageInfo.name}:`, err);
-      } finally {
-        await page.close();
+      // Add init script to skip preloader globally in this context
+      await context.addInitScript(() => {
+        try {
+          sessionStorage.setItem('preloader_shown', 'true');
+        } catch (e) {
+          console.error('Failed to set sessionStorage in init script', e);
+        }
+      });
+
+      for (const pageInfo of PAGES) {
+        const pageUrl = `${BASE_URL}${pageInfo.path}`;
+        console.log(`[${width}px] Navigating to ${pageInfo.name} (${pageUrl})...`);
+
+        const page = await context.newPage();
+
+        try {
+          await page.goto(pageUrl, { waitUntil: 'networkidle' });
+
+          // Scroll through so ScrollReveal's whileInView sections fire before capture.
+          await scrollThroughPage(page, viewport.height);
+
+          // Wait for any CSS/JS transitions & animations to settle
+          await page.waitForTimeout(3000);
+
+          const screenshotPath = path.join(dir, `${pageInfo.name}.png`);
+          await page.screenshot({ path: screenshotPath, fullPage: true });
+          console.log(`✓ Saved screenshot: ${screenshotPath}`);
+        } catch (err) {
+          console.error(`Error capturing ${pageInfo.name}:`, err);
+        } finally {
+          await page.close();
+        }
       }
+
+      await context.close();
     }
 
     console.log('Closing browser...');
@@ -129,7 +188,7 @@ async function run() {
       try {
         // Kill the process tree (since we ran spawn with detached: true, we kill the process group)
         process.kill(-serverProcess.pid, 'SIGINT');
-      } catch (e) {
+      } catch {
         // If detached group kill fails, try direct kill
         try {
           serverProcess.kill('SIGINT');

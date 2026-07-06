@@ -5,12 +5,6 @@
  * Fits in: the overview, near the end, as a candour note.
  * Note:    The status-to-styling map lives in `badge`; the list itself lives in
  *          `BUILD_STATUS` (data file). Change copy in the data, look in the map.
- *
- * For beginners ----------------------------------------------------------------
- * `Record<BuildStatus, ...>` is a TypeScript type meaning "an object whose keys
- * are exactly the BuildStatus values". It's a lookup table: `badge[item.status]`
- * fetches the right label + CSS classes for a row, instead of a chain of ifs.
- * -----------------------------------------------------------------------------
  */
 import { BUILD_STATUS, type BuildStatus } from '../../../data/projectStats';
 
@@ -18,17 +12,17 @@ const badge: Record<BuildStatus, { label: string; cls: string }> = {
   built:   { label: '✓ Built',       cls: 'text-emerald-400 bg-emerald-500/5 border-emerald-500/10' },
   fitted:  { label: '✓ Fitted',      cls: 'text-emerald-400 bg-emerald-500/5 border-emerald-500/10' },
   wip:     { label: '⟳ In progress', cls: 'text-amber-400 bg-amber-500/5 border-amber-500/10' },
-  planned: { label: '⊙ Planned',     cls: 'text-white/40 bg-white/[0.03] border-white/10' },
+  planned: { label: '⊙ Planned',     cls: 'text-text-tertiary bg-white/[0.03] border-white/10' },
 };
 
 export function HonestyStrip() {
   return (
     <div className="flex flex-col gap-4">
       <div className="max-w-xl">
-        <span className="font-jetbrains text-[10px] text-white/40 uppercase tracking-[0.2em] mb-3 block font-semibold">
+        <span className="font-jetbrains text-micro text-text-tertiary uppercase tracking-mega mb-3 block font-semibold">
           Build Status
         </span>
-        <p className="text-white/55 text-xs font-jetbrains leading-relaxed">
+        <p className="text-text-tertiary text-xs font-jetbrains leading-relaxed">
           This project is built layer-by-layer. Planned items are designed and specced, not yet shipped.
         </p>
       </div>
@@ -40,8 +34,8 @@ export function HonestyStrip() {
               key={item.label}
               className="flex items-center justify-between px-4 py-2.5 bg-graphite-850 border border-white/5 rounded-xl"
             >
-              <span className="font-jetbrains text-xs text-white/70">{item.label}</span>
-              <span className={`font-jetbrains text-[9px] uppercase tracking-wider border px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap ml-3 ${b.cls}`}>
+              <span className="font-jetbrains text-xs text-text-secondary">{item.label}</span>
+              <span className={`font-jetbrains text-micro uppercase tracking-wider border px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap ml-3 ${b.cls}`}>
                 {b.label}
               </span>
             </div>
