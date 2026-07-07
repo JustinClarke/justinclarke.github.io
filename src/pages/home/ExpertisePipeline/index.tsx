@@ -264,16 +264,16 @@ export const ExpertisePipeline: React.FC = () => {
             } as React.CSSProperties}
             aria-live="polite"
           >
-            <div className="flex items-center gap-3 w-[70%]">
+            <div className="flex items-center gap-3 flex-grow min-w-0">
               <span className="relative flex h-2 w-2">
                 {activeStageObj && (
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: `rgb(var(--tech-rgb))` }} />
                 )}
                 <span className="relative inline-flex rounded-full h-2 w-2 transition-colors duration-300" style={{ backgroundColor: activeStageObj ? `rgb(var(--tech-rgb))` : 'var(--color-fg-faint)', boxShadow: activeStageObj ? `0 0 8px rgb(var(--tech-rgb))` : 'none' }} />
               </span>
-              <span className="font-mono text-micro uppercase tracking-[0.25em] text-fg-mid font-bold whitespace-nowrap">Lineage Console</span>
-              <span className="text-fg/25 font-mono text-micro select-none">{/* tw-allow-contrast */}|</span>
-              <div className="h-4 flex items-center overflow-hidden w-full">
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-fg-mid font-bold whitespace-nowrap shrink-0">Lineage Console</span>
+              <span className="text-fg/25 font-mono text-xs select-none shrink-0">{/* tw-allow-contrast */}|</span>
+              <div className="h-5 flex items-center overflow-hidden flex-grow min-w-0">
                 {/* Keying on the skill name swaps this line on every change;
                     mode="wait" plays the old line out before the new one in. */}
                 <AnimatePresence mode="wait">
@@ -285,7 +285,7 @@ export const ExpertisePipeline: React.FC = () => {
                     transition={{ duration: 0.18, ease: 'easeOut' }}
                     className="flex items-center gap-1.5 w-full"
                   >
-                    <span className={cn('font-mono text-micro transition-colors duration-300 truncate', activeStageObj ? 'text-fg' : 'text-fg-mid')}>
+                    <span className={cn('font-mono text-xs transition-colors duration-300 truncate', activeStageObj ? 'text-fg' : 'text-fg-mid')}>
                       {hoveredSkill ? NARRATIVES[hoveredSkill] : 'Awaiting node connection. Hover any skill below to trace pipeline lineage.'}
                     </span>
                     <span
@@ -296,7 +296,7 @@ export const ExpertisePipeline: React.FC = () => {
                 </AnimatePresence>
               </div>
             </div>
-            <div className="flex items-center gap-4 font-mono text-micro text-fg-mid shrink-0">
+            <div className="flex items-center gap-4 font-mono text-xs text-fg-mid shrink-0">
               <div className="flex items-center gap-1.5">
                 <span className="text-fg-mid">NODE:</span>
                 <span className={cn('font-bold transition-colors duration-300', activeStageObj ? 'text-fg' : 'text-fg-mid')}>
