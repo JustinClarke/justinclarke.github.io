@@ -615,13 +615,13 @@ projects:
 # EDUCATION
 # =============================================================================
 education:
-  - id: mba-bits
-    degree: MBA, Business Analytics
-    institution: BITS Pilani, Dubai Campus
-    start: 2026-02
-    end: 2028
-    status: In progress (part-time, evening)
-    notes: include as in-progress; signals analytics + business depth for tier-1 employers
+  # - id: mba-bits
+  #   degree: MBA, Business Analytics
+  #   institution: BITS Pilani, Dubai Campus
+  #   start: 2026-02
+  #   end: 2028
+  #   status: In progress (part-time, evening)
+  #   notes: include as in-progress; signals analytics + business depth for tier-1 employers
 
   - id: msc-qmul
     degree: MSc, Computer Science
@@ -629,11 +629,10 @@ education:
     start: 2022
     end: 2023
     highlights:
-      - Distinction in semi-structured data analysis
-      - Built a predictive analytics model for music recommendation (see Spotify project)
-      - "Security & system design: secure system architecture, natural language processing"
-      - Specialisation in data analysis with Python and R for structured data
-      - "Human-Computer Interaction: interactive system design and user-centric methodologies"
+      - "Core Focus: Human-Computer Interaction (Interactive System Design, Accessibility), Secure System Architecture, Natural Language Processing"
+      - "Notable Output: Researched, designed, and developed StrokTalk (aphasia recovery UX case study) under the HCI curriculum"
+      - "Advanced Data Modelling: Achieved distinction in Semi-structured Data and built a machine learning model for predictive analytics"
+      - "Security & System Design: Gained expertise in secure system architecture, natural language processing"
 
   - id: btech-gitam
     degree: B.Tech, Computer Science & Engineering
@@ -641,11 +640,10 @@ education:
     start: 2018
     end: 2022
     highlights:
-      - Awarded Distinction
-      - "Algorithms & data structures: graph theory, sorting/searching, complexity analysis"
-      - "Optimisation & applied mathematics: linear programming, nonlinear optimisation"
-      - "Distributed systems & databases: multi-tier architecture, SQL/NoSQL, fault-tolerant distributed computing"
-      - Researched encryption using quantum key generation
+      - "Coursework: Distributed Systems & Multi-Tier Architecture, Database Systems (SQL/NoSQL), Algorithms & Data Structures, Optimisation & Applied Mathematics"
+      - "Algorithms & Data Structures: Studied and applied advanced graph theory, sorting, and searching, with a focus on complexity analysis"
+      - "Optimisation & Applied Mathematics: Developed a strong foundation in linear programming and nonlinear optimisation for computational applications"
+      - "Distributed Systems & Databases: Studied multi-tiered architectures, relational databases (SQL, NoSQL), and fault-tolerant distributed computing"
 
 # =============================================================================
 # CERTIFICATIONS
@@ -662,26 +660,26 @@ certifications:
 # =============================================================================
 skills:
   groups:
-    - id: data-and-bi
-      label: Data & BI
-      lead_for: [data-analyst, bi-developer]
-      items: [SQL, Python, Power BI, DAX, "Microsoft Fabric", PySpark, PostgreSQL, "Excel (pivot tables, macros, VBA)", ETL, "dimensional modelling", RLS]
-    - id: analytics-engineering
-      label: Analytics Engineering
-      lead_for: [analytics-engineer]
-      items: [dbt, DuckDB, SQL, "Hive partitioning", Parquet, "incremental loading", "data testing", "CI/CD", "data quality / reconciliation"]
-    - id: ml
-      label: Machine Learning
-      lead_for: [ml-engineer]
-      items: [XGBoost, ONNX, scikit-learn, "feature engineering", "conformal calibration", Optuna, "leakage auditing (sqlglot)", "model governance / model cards"]
-    - id: frontend
-      label: Frontend
+    - id: ui-ux-design-ops
+      label: UI/UX & Design Operations
+      lead_for: [designer, product-designer]
+      items: [Figma (variables, components, Auto Layout), Design Systems, Responsive Web Design, Interaction Design, Typography, "Adobe CC (Illustrator, InDesign)", "WCAG 2.2 / a11y"]
+    - id: ai-integration-ux
+      label: AI Integration & Emerging UX
+      lead_for: [ai-engineer]
+      items: [Conversational UI layout patterns, Prompt Engineering, LLM APIs (Gemini, OpenAI), AI-assisted design audits]
+    - id: growth-optimisation
+      label: Growth & Optimisation
+      lead_for: [growth-engineer]
+      items: [CRO, A/B Testing, Multivariate Testing, GA4, Conversion Funnel Mapping]
+    - id: frontend-dev
+      label: Frontend Development
       lead_for: [frontend]
-      items: [React, TypeScript, JavaScript, "Next.js", "Tailwind CSS", Vite, HTML5, CSS3, "DuckDB-Wasm", "ONNX Runtime Web", "interactive charting", "D3.js"]
-    - id: infra
-      label: Infra & Tooling
-      lead_for: []
-      items: [AWS, Docker, "CI/CD", "GitHub Actions", "Firebase Hosting", "GCS", Git, "REST APIs", Mixpanel, GA4]
+      items: [React, TypeScript, Next.js, Tailwind CSS, HTML5, CSS3, D3.js, Chart.js, Vite]
+    - id: backend-data
+      label: Backend & Data
+      lead_for: [backend, data-engineer]
+      items: [SQL (PostgreSQL, MySQL), DuckDB-Wasm, dbt, Git, "CI/CD (GitHub Actions)"]
 
 # =============================================================================
 # OPTIONAL / NOT CURRENTLY SURFACED

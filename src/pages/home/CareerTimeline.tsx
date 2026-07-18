@@ -18,8 +18,8 @@ import { debug } from '@/utils';
 const log = debug('timeline');
 
 export const CareerTimeline = () => {
-  // 'mba' starts open so the section doesn't look inert on first scroll.
-  const [expandedId, setExpandedId] = useState<string | null>('mba');
+  // 'msc' starts open so the section doesn't look inert on first scroll.
+  const [expandedId, setExpandedId] = useState<string | null>('msc');
 
   const workEntries = ENTRIES.filter(e => e.type === 'work');
   const eduEntries = ENTRIES.filter(e => e.type === 'edu');

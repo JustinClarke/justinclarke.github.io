@@ -15,29 +15,26 @@ IDENTITY:
   Portfolio:    justinclarke.github.io
 
 EDUCATION:
-  MBA, Business Analytics — BITS Pilani, Dubai Campus — Feb 2026–2028 — In progress (part-time, evening)
   MSc, Computer Science — Queen Mary University of London — 2022–2023
-    Distinction in semi-structured data analysis
-    Built a predictive analytics model for music recommendation (see Spotify project)
-    Security & system design: secure system architecture, natural language processing
-    Specialisation in data analysis with Python and R for structured data
-    Human-Computer Interaction: interactive system design and user-centric methodologies
+    Core Focus: Human-Computer Interaction (Interactive System Design, Accessibility), Secure System Architecture, Natural Language Processing
+    Notable Output: Researched, designed, and developed StrokTalk (aphasia recovery UX case study) under the HCI curriculum
+    Advanced Data Modelling: Achieved distinction in Semi-structured Data and built a machine learning model for predictive analytics
+    Security & System Design: Gained expertise in secure system architecture, natural language processing
   B.Tech, Computer Science & Engineering — Gandhi Institute of Technology and Management (GITAM) — 2018–2022
-    Awarded Distinction
-    Algorithms & data structures: graph theory, sorting/searching, complexity analysis
-    Optimisation & applied mathematics: linear programming, nonlinear optimisation
-    Distributed systems & databases: multi-tier architecture, SQL/NoSQL, fault-tolerant distributed computing
-    Researched encryption using quantum key generation
+    Coursework: Distributed Systems & Multi-Tier Architecture, Database Systems (SQL/NoSQL), Algorithms & Data Structures, Optimisation & Applied Mathematics
+    Algorithms & Data Structures: Studied and applied advanced graph theory, sorting, and searching, with a focus on complexity analysis
+    Optimisation & Applied Mathematics: Developed a strong foundation in linear programming and nonlinear optimisation for computational applications
+    Distributed Systems & Databases: Studied multi-tiered architectures, relational databases (SQL, NoSQL), and fault-tolerant distributed computing
 
 CERTIFICATIONS:
   Microsoft PL-300: Power BI Data Analyst — Expected July 2026
 
 SKILLS:
-  Data & BI:              SQL, Python, Power BI, DAX, Microsoft Fabric, PySpark, PostgreSQL, Excel (pivot tables, macros, VBA), ETL, dimensional modelling, RLS
-  Analytics Engineering:  dbt, DuckDB, SQL, Hive partitioning, Parquet, incremental loading, data testing, CI/CD, data quality / reconciliation
-  Machine Learning:       XGBoost, ONNX, scikit-learn, feature engineering, conformal calibration, Optuna, leakage auditing (sqlglot), model governance / model cards
-  Frontend:               React, TypeScript, JavaScript, Next.js, Tailwind CSS, Vite, HTML5, CSS3, DuckDB-Wasm, ONNX Runtime Web, interactive charting, D3.js
-  Infra & Tooling:        AWS, Docker, CI/CD, GitHub Actions, Firebase Hosting, GCS, Git, REST APIs, Mixpanel, GA4
+  UI/UX & Design Operations:     Figma (variables, components, Auto Layout), Design Systems, Responsive Web Design, Interaction Design, Typography, Adobe CC (Illustrator, InDesign), WCAG 2.2 / a11y
+  AI Integration & Emerging UX:  Conversational UI layout patterns, Prompt Engineering, LLM APIs (Gemini, OpenAI), AI-assisted design audits
+  Growth & Optimisation:         CRO, A/B Testing, Multivariate Testing, GA4, Conversion Funnel Mapping
+  Frontend Development:          React, TypeScript, Next.js, Tailwind CSS, HTML5, CSS3, D3.js, Chart.js, Vite
+  Backend & Data:                SQL (PostgreSQL, MySQL), DuckDB-Wasm, dbt, Git, CI/CD (GitHub Actions)
   AI / Agentic: ChromaDB, knowledge graphs, RAG, embeddings, Gemini
 
 EXPERIENCE:

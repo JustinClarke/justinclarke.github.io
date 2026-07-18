@@ -254,7 +254,7 @@ export const COMMAND_MANIFEST: CommandSpec[] = [
           sp(),
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'UPTIME      ' }, { t: 'viz-success', text: fmtUptime(uptimeMs) }] },
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'ENV         ' }, { t: 'muted', text: 'studio.v4.2 · branch: main' }] },
-          { t: 'm', text: '', parts: [{ t: 'brand', text: 'MBA         ' }, { t: 'b', text: 'BITS Pilani · active sprint' }] },
+          // { t: 'm', text: '', parts: [{ t: 'brand', text: 'MBA         ' }, { t: 'b', text: 'BITS Pilani · active sprint' }] },
           { t: 'm', text: '', parts: [{ t: 'brand', text: 'OTP         ' }, { t: 'viz-mac-yellow', text: 'Off the Pace · sprint 1 active' }] },
           sp(),
           line('viz-success', 'all systems nominal.'),

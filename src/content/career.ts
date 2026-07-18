@@ -51,22 +51,22 @@ export const experiences: Experience[] = [
 ];
 
 export const education: Education[] = [
-  {
-    type: 'Postgraduate',
-    school: 'Birla Institute of Technology and Science',
-    degree: 'MBA in Business Analytics',
-    year: 'Feb 2026 – 2028',
-    badge: 'In Progress',
-    note: 'Focusing on the intersection of data analytics and business strategy, applying machine learning and statistical methods to business problems.',
-    isOngoing: true,
-  },
+  // {
+  //   type: 'Postgraduate',
+  //   school: 'Birla Institute of Technology and Science',
+  //   degree: 'MBA in Business Analytics',
+  //   year: 'Feb 2026 – 2028',
+  //   badge: 'In Progress',
+  //   note: 'Focusing on the intersection of data analytics and business strategy, applying machine learning and statistical methods to business problems.',
+  //   isOngoing: true,
+  // },
   {
     type: 'Postgraduate',
     school: 'Queen Mary University of London',
     degree: 'MSc in Computer Science',
     year: '2022 – 2023',
     badge: 'Distinction',
-    note: 'Distinction in semi-structured data analysis; built a predictive analytics model for music recommendation. Completed concurrently with full-time role at LiteStore.',
+    note: 'Focus: Human-Computer Interaction (Interactive System Design, User-Centric Methodologies, Accessibility), Secure System Architecture, Natural Language Processing. Developed StrokTalk as a primary UX project.',
   },
   {
     type: 'Undergraduate',
@@ -74,7 +74,7 @@ export const education: Education[] = [
     degree: 'BTech in Computer Science & Engineering',
     year: '2018 – 2022',
     badge: 'Distinction',
-    note: 'Algorithms, optimisation, and advanced mathematics; researched encryption using quantum key generation.',
+    note: 'Focus: Distributed Systems & Multi-Tier Architecture, Database Systems (SQL/NoSQL), Algorithms & Data Structures, and Optimisation & Applied Mathematics.',
   },
 ];
 
@@ -148,20 +148,20 @@ export const ENTRIES: Entry[] = [
       'Built React surfaces for a smart-lockbox delivery product: the courier-side OTP unlock flow and homeowner app screens for viewing deliveries and sharing one-time access codes with couriers',
     ],
   },
-  {
-    id: 'mba',
-    type: 'edu',
-    title: 'Birla Institute of Technology and Science, Pilani',
-    subtitle: 'MBA in Business Analytics',
-    period: 'Feb 2026 – 2028',
-    start: 2026.1,
-    end: 2028.5,
-    ongoing: true,
-    tags: ['Analytics', 'Strategy', 'ML'],
-    bullets: [
-      'Intersection of data analytics and business strategy. Evening programme - fully available for full-time roles.',
-    ],
-  },
+  // {
+  //   id: 'mba',
+  //   type: 'edu',
+  //   title: 'Birla Institute of Technology and Science, Pilani',
+  //   subtitle: 'MBA in Business Analytics',
+  //   period: 'Feb 2026 – 2028',
+  //   start: 2026.1,
+  //   end: 2028.5,
+  //   ongoing: true,
+  //   tags: ['Analytics', 'Strategy', 'ML'],
+  //   bullets: [
+  //     'Intersection of data analytics and business strategy. Evening programme - fully available for full-time roles.',
+  //   ],
+  // },
   {
     id: 'msc',
     type: 'edu',
@@ -172,7 +172,9 @@ export const ENTRIES: Entry[] = [
     end: 2023.75,
     tags: ['Python', 'ML', 'Research'],
     bullets: [
-      'Distinction in semi-structured data analysis · ML model for music recommendation · completed alongside the LiteStore Tech Lead role',
+      'Advanced Data Modelling & ML: Achieved distinction in Semi-structured Data and built a predictive analytics model.',
+      'Core Focus: Human-Computer Interaction (Interactive System Design, User-Centric Methodologies, Accessibility), Secure System Architecture, Natural Language Processing.',
+      'Notable Output: Researched, designed, and developed StrokTalk (aphasia recovery UX case study) under the HCI curriculum.',
     ],
   },
   {
@@ -186,7 +188,9 @@ export const ENTRIES: Entry[] = [
     // badge: 'Distinction',
     tags: ['C/C++', 'Algorithms', 'Maths'],
     bullets: [
-      'Algorithms, optimisation, and advanced mathematics. Entered the workforce in the final years - Drop and LiteStore both began before graduation.',
+      'Algorithms & Data Structures: Studied and applied advanced graph theory, sorting, searching, and complexity analysis.',
+      'Optimisation & Applied Mathematics: Developed a strong foundation in linear programming and nonlinear optimisation.',
+      'Distributed Systems & Databases: Studied multi-tiered architectures, relational/NoSQL databases, and fault-tolerant computing.',
     ],
   },
 ];

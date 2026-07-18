@@ -29,7 +29,7 @@ export const WHOAMI_LINES: TerminalLine[] = [
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'FOCUS:     ' }, { t: 'b', text: 'pipelines and the products they power' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'LOCATION:  ' }, { t: 'pu', text: `${SITE.location} · open to relocation · sponsorship not required (UAE)` }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'STACK:     ' }, { t: 'viz-mac-yellow', text: 'Python ' }, { t: 'viz-mac-red', text: 'SQL ' }, { t: 'b', text: 'dbt ' }, { t: 'pu', text: 'PowerBI' }] },
-  { t: 'm', text: '', parts: [{ t: 'brand', text: 'IN FLIGHT: ' }, { t: 'muted', text: 'MBA Business Analytics · Off the Pace' }] },
+  { t: 'm', text: '', parts: [{ t: 'brand', text: 'IN FLIGHT: ' }, { t: 'muted', text: 'Off the Pace' }] },
   sp,
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'TRY NEXT:  ' }, { t: 'muted', text: 'about me · timeline · ls projects' }], chips: ['about me', 'timeline', 'ls projects'] },
 ];
@@ -38,7 +38,7 @@ export const WHOAMI_LINES: TerminalLine[] = [
 export const CONNECT_LINES: TerminalLine[] = [
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'CHANNEL:       ' }, { t: 'g', text: SITE.email }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'LINKEDIN:      ' }, { t: 'g', text: `linkedin.com/in/${SITE.social.linkedin} ↗` }] },
-  { t: 'm', text: '', parts: [{ t: 'brand', text: 'AVAILABILITY:  ' }, { t: 'viz-success', text: 'OPEN · full-time alongside MBA' }] },
+  { t: 'm', text: '', parts: [{ t: 'brand', text: 'AVAILABILITY:  ' }, { t: 'viz-success', text: 'OPEN · full-time' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'SPONSORSHIP:   ' }, { t: 'muted', text: 'not required (UAE Family Residence Visa)' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'RESPONSE TIME: ' }, { t: 'viz-mac-yellow', text: '< 24h' }] },
 ];
@@ -50,7 +50,7 @@ export const ABOUT_LINES: TerminalLine[] = [
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'ROLE       ' }, { t: 'b', text: 'analytics engineer + creative technologist' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'BASED      ' }, { t: 'pu', text: `${SITE.location.split(',')[0].toLowerCase()} · willing to relocate` }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'EDU        ' }, { t: 'muted', text: 'msc computer science · distinction · qmul' }] },
-  { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'muted', text: 'mba business analytics · bits pilani · in progress' }] },
+  // { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'muted', text: 'mba business analytics · bits pilani · in progress' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'NOW        ' }, { t: 'muted', text: 'building off the pace on microsoft fabric.' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: '           ' }, { t: 'muted', text: 'isolating driver skill from car performance.' }] },
   { t: 'm', text: '', parts: [{ t: 'brand', text: 'SIGNAL     ' }, { t: 'viz-mac-yellow', text: "// i notice patterns before they're named." }] },
@@ -98,7 +98,7 @@ export const TIMELINE_LINES: TerminalLine[] = [
   { t: 'm', text: '', parts: [{ t: 'viz-success', text: '● ' }, { t: 'brand', text: 'Frontend & Brand Dev   ' }, { t: 'b', text: 'Drop                    ' }, { t: 'muted', text: '2021' }] },
   sp,
   line('brand', '[ ACADEMIC ]'),
-  { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'BITS Pilani, UAE              ' }, { t: 'b', text: 'MBA Business Analytics   ' }, { t: 'viz-mac-red', text: 'IN PROGRESS' }] },
+  // { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'BITS Pilani, UAE              ' }, { t: 'b', text: 'MBA Business Analytics   ' }, { t: 'viz-mac-red', text: 'IN PROGRESS' }] },
   { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'Queen Mary, Univ. of London   ' }, { t: 'b', text: 'MSc Computer Science     ' }, { t: 'viz-success', text: 'DISTINCTION' }] },
   { t: 'm', text: '', parts: [{ t: 'viz-mac-yellow', text: '● ' }, { t: 'brand', text: 'GITAM University, India       ' }, { t: 'b', text: 'BTech CS&E               ' }, { t: 'viz-success', text: 'DISTINCTION' }] },
   sp,
@@ -272,10 +272,10 @@ export const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
     line('viz-success', "test suite: all passing."),
     line('muted', "dbt tests: green. studio: shipped. Justin: operational."),
   ],
-  mba: [
-    line('viz-mac-yellow', "MBA Business Analytics · BITS Pilani, UAE · 2026–2028."),
-    line('muted', "yes, he's doing it alongside full-time work. yes, he's fine. mostly."),
-  ],
+  // mba: [
+  //   line('viz-mac-yellow', "MBA Business Analytics · BITS Pilani, UAE · 2026–2028."),
+  //   line('muted', "yes, he's doing it alongside full-time work. yes, he's fine. mostly."),
+  // ],
   dubai: [
     line('pu', "Dubai, UAE · UTC+4 · sponsorship not required (UAE)."),
     line('muted', "open to relocation. also open to remote. very flexible. very available."),
