@@ -8,9 +8,9 @@
  *          is a pure renderer. The one exception is the log auto-scroll effect,
  *          which stays here because it needs a DOM ref the hook can't hold.
  */
-import { useRef, useEffect, Fragment } from 'react';
+import { Fragment } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Activity, Database, Sparkles, Cpu } from 'lucide-react';
+import { Database, Sparkles } from 'lucide-react';
 import { cn } from '@/utils';
 import { useF1Telemetry } from './useF1Telemetry';
 import { HudHeader } from './f1/HudHeader';
@@ -18,18 +18,10 @@ import { ControlsBar } from './f1/ControlsBar';
 import { TrackMap } from './f1/TrackMap';
 import { TelemetryPanel } from './f1/TelemetryPanel';
 import { CausalPanel } from './f1/CausalPanel';
+import { DbtConsole } from './f1/DbtConsole';
 
 export function F1TelemetryWidget() {
   const telemetry = useF1Telemetry();
-  const logContainerRef = useRef<HTMLDivElement>(null);
-
-  // Pin the dbt console to its newest line whenever the log list grows.
-  useEffect(() => {
-    if (logContainerRef.current) {
-      logContainerRef.current.scrollTop = logContainerRef.current.scrollHeight;
-    }
-  }, [telemetry.pipelineLogs]);
-
   const { uiMode, pipelineLogs, isTesting, runDbtTests } = telemetry;
 
   return (
@@ -48,7 +40,7 @@ export function F1TelemetryWidget() {
           stack. Shown on mobile too (horizontal scroll) recruiter traffic is
           often a phone. Packets freeze via `f1-flow-paused` when the sim pauses. */}
       <div className={cn(
-        "flex items-center justify-between py-2.5 px-3 md:px-4 bg-white/[0.02] border border-[rgba(255,255,255,0.05)] rounded-xl shrink-0 select-none overflow-hidden",
+        "flex items-center justify-between py-2.5 px-2.5 md:px-2 lg:px-3 xl:px-4 bg-white/[0.02] border border-[rgba(255,255,255,0.05)] rounded-xl shrink-0 select-none overflow-hidden",
         !telemetry.isPlaying && "f1-flow-paused"
       )}>
         {[
@@ -76,7 +68,7 @@ export function F1TelemetryWidget() {
                 <path d="M624.4 780.1c-9.1 0-17.8-3.6-24.3-10.1L299.6 469.5c-13.4-13.4-13.4-35.1 0-48.5l300.6-300.6c13.4-13.4 35.1-13.4 48.5 0s13.4 35.1 0 48.5L372.4 445.3l252 252 252-252-113-113c-13.4-13.4-13.4-35.1 0-48.5s35.1-13.4 48.5 0L949.3 421c6.4 6.4 10.1 15.2 10.1 24.3 0 9.1-3.6 17.8-10.1 24.3L648.7 770.1c-6.4 6.4-15.2 10-24.3 10zM235.7 379.2c-8.8 0-17.6-3.4-24.3-10.1l-136-136C62 219.7 62 198 75.4 184.6s35.1-13.4 48.5 0l136.1 136c13.4 13.4 13.4 35.1 0 48.5-6.7 6.8-15.5 10.1-24.3 10.1zM89.6 727.1c-8.8 0-17.6-3.4-24.3-10.1-13.4-13.4-13.4-35.1 0-48.5l136.1-136.1c13.4-13.4 35.1-13.4 48.5 0s13.4 35.1 0 48.5L113.8 717c-6.7 6.7-15.4 10.1-24.2 10.1z" />
               </svg>
             ),
-            label: 'XGBOOST ML',
+            label: 'XGBOOST',
             color: 'text-purple-400'
           },
           {
@@ -85,7 +77,7 @@ export function F1TelemetryWidget() {
                 <path fillRule="evenodd" clipRule="evenodd" d="M12.19 2.38a9.344 9.344 0 0 0-9.234 6.893c.053-.02-.055.013 0 0-3.875 2.551-3.922 8.11-.247 10.941l.006-.007-.007.03a6.717 6.717 0 0 0 4.077 1.356h5.173l.03.03h5.192c6.687.053 9.376-8.605 3.835-12.35a9.365 9.365 0 0 0-2.821-4.552l-.043.043.006-.05A9.344 9.344 0 0 0 12.19 2.38zm-.358 4.146c1.244-.04 2.518.368 3.486 1.15a5.186 5.186 0 0 1 1.862 4.078v.518c3.53-.07 3.53 5.262 0 5.193h-5.193l-.008.009v-.04H6.785a2.59 2.59 0 0 1-1.067-.23h.001a2.597 2.597 0 1 1 3.437-3.437l3.013-3.012A6.747 6.747 0 0 0 8.11 8.24c.018-.01.04-.026.054-.023a5.186 5.186 0 0 1 3.67-1.69z" />
               </svg>
             ),
-            label: 'GCS CLOUD',
+            label: 'GCS',
             color: 'text-blue-400'
           }
         ].map((stage, i, arr) => (
@@ -105,7 +97,7 @@ export function F1TelemetryWidget() {
             {i < arr.length - 1 && (
               // Connector with a data packet sliding across; staggered per hop so
               // the packets chain into one continuous left→right flow.
-              <span className="relative flex-grow h-px min-w-[12px] bg-white/10 mx-2 md:mx-4">
+              <span className="relative flex-grow h-px min-w-[10px] bg-white/10 mx-1.5 md:mx-1.5 lg:mx-2 xl:mx-4">
                 <span
                   className="f1-flow-packet h-1 w-1 rounded-full bg-brand-primary shadow-[0_0_6px_var(--color-brand-primary)]"
                   style={{ animationDelay: `${i * 0.5}s` }}
@@ -131,7 +123,7 @@ export function F1TelemetryWidget() {
           thermalBulk={telemetry.thermalBulk}
         />
 
-        <div className="md:col-span-2 flex flex-col gap-1.5 min-h-0">
+        <div className="md:col-span-2 flex flex-col gap-1.5 min-h-0 h-full overflow-hidden">
 
           <ControlsBar
             isPlaying={telemetry.isPlaying}
@@ -168,47 +160,11 @@ export function F1TelemetryWidget() {
           </AnimatePresence>
 
           {/* dbt console log stream + interactive test runner */}
-          <div className="hidden md:flex flex-col justify-between flex-grow bg-bento-panel border border-[rgba(255,255,255,0.1)] rounded-2xl p-2.5 md:p-3 min-h-0 relative">
-            <div className="flex items-center justify-between border-b border-[rgba(255,255,255,0.05)] pb-1.5 mb-1.5 shrink-0">
-              <span className="font-mono text-micro md:text-micro text-neutral-500 tracking-wider flex items-center gap-1.5">
-                <Cpu size={11} className="shrink-0" /> dbt CONSOLE
-              </span>
-              <button
-                onClick={(e) => { e.stopPropagation(); runDbtTests(); }}
-                disabled={isTesting}
-                className={cn(
-                  "font-mono text-micro md:text-micro px-1.5 py-0.5 rounded font-black uppercase border transition-all flex items-center gap-1",
-                  isTesting
-                    ? "bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.3)] text-amber-400"
-                    : "bg-[rgba(16,185,129,0.1)] border-[rgba(16,185,129,0.3)] text-emerald-400 hover:bg-[rgba(16,185,129,0.2)] active:scale-95"
-                )}
-              >
-                {isTesting ? 'Running tests...' : 'Run tests'}
-              </button>
-            </div>
-            <div
-              ref={logContainerRef}
-              className="flex-grow font-mono text-micro xs:text-micro md:text-micro text-neutral-400 overflow-y-auto leading-tight flex flex-col gap-0.5 pr-1 min-h-[90px] md:min-h-[110px]"
-            >
-              {/* Colour-code each log line by keyword syntax-highlight without parsing. */}
-              {pipelineLogs.map((log, index) => {
-                const isSuccess = log.includes('SUCCESS') || log.includes('PASS');
-                const isDuck = log.includes('DuckDB');
-                const isDbt = log.includes('dbt');
-                return (
-                  <div key={index} className="truncate">
-                    <span className={cn(
-                      isSuccess ? "text-emerald-400 font-semibold" :
-                        isDuck ? "text-purple-400" :
-                          isDbt ? "text-orange-400" : "text-neutral-400"
-                    )}>
-                      {log}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <DbtConsole
+            pipelineLogs={pipelineLogs}
+            isTesting={isTesting}
+            runDbtTests={runDbtTests}
+          />
 
         </div>
 

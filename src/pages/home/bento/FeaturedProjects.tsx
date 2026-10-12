@@ -1,6 +1,6 @@
 /**
  * FeaturedProjects the interactive bento-grid section on the home page that
- * showcases the five portfolio projects as clickable widgets.
+ * showcases the four portfolio projects as clickable widgets.
  *
  * Fits in: rendered by Home.tsx as the second major section after the Hero.
  * Note:    two separate useEffects live here with separate cleanup - the card
@@ -17,21 +17,19 @@ import { InteractiveHint } from '@/ui/InteractiveHint';
 import { TOOLTIPS } from '@/utils/tooltipContent';
 import type { RoutePath } from '@/content';
 
+import { DataScopeWidget } from './DataScopeWidget';
 import { F1TelemetryWidget } from './F1TelemetryWidget';
-import { LiteStoreWidget } from './LiteStoreWidget';
 import { SpotifyWidget } from './SpotifyWidget';
-import { SqlDisasterWidget } from './SqlDisasterWidget';
 import { BehaviouralRiskWidget } from './BehaviouralRiskWidget';
 
-const CARDS = ['f1', 'litestore', 'spotify', 'sql', 'hr'] as const;
-const CYCLING_CARDS = ['litestore', 'spotify', 'sql', 'hr'] as const satisfies CardId[];
+const CARDS = ['datascope', 'f1', 'spotify', 'hr'] as const;
+const CYCLING_CARDS = ['spotify', 'hr'] as const satisfies CardId[];
 type CardId = typeof CARDS[number];
 
 const CARD_META: Record<CardId, { accent: string }> = {
+  datascope: { accent: 'var(--color-datascope)' },
   f1: { accent: 'var(--color-viz-mac-red)' },
-  litestore: { accent: 'var(--color-litestore)' },
   spotify: { accent: 'var(--color-viz-spotify)' },
-  sql: { accent: 'var(--color-viz-red)' },
   hr: { accent: 'var(--color-acc-bi)' },
 };
 
@@ -199,7 +197,7 @@ export function FeaturedProjects() {
   // Factory collecting each BentoCard's props (shadow/border/gradient + computed
   // isActive) into one object, so the grid markup below stays readable.
   const cardProps = (id: CardId, shadow: string, border: string, gradient: string) => {
-    const isActive = id === 'f1' || cyclingCard === id;
+    const isActive = id === 'f1' || id === 'datascope' || cyclingCard === id;
     return {
       id,
       isActive,
@@ -270,9 +268,26 @@ export function FeaturedProjects() {
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1.1fr_1.1fr] gap-4 sm:gap-6 lg:gap-2" style={{ minHeight: '520px' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-2" style={{ minHeight: '520px' }}>
 
-          {/* COLUMN 1: F1 Telemetry + Connect */}
+          {/* COLUMN 1: DataScope Studio (hero) */}
+          <div className="lg:col-span-1 flex flex-col gap-4 sm:gap-6 lg:gap-2">
+            <div className="flex flex-col flex-1 min-h-0">
+              <BentoCard
+                {...cardProps('datascope',
+                  '0 10px 40px -15px rgba(0,212,255,0.12), inset 0 0 20px rgba(0,212,255,0.03)',
+                  'rgba(0,212,255,0.2)',
+                  'rgba(0,212,255,0.05)'
+                )}
+                to="/datascope"
+                className="flex-grow h-full"
+              >
+                <DataScopeWidget />
+              </BentoCard>
+            </div>
+          </div>
+
+          {/* COLUMN 2: F1 Telemetry + Connect */}
           <div className="lg:col-span-1 flex flex-col gap-4 sm:gap-6 lg:gap-2">
             <div className="flex flex-col flex-1 min-h-0">
               <BentoCard
@@ -342,7 +357,7 @@ export function FeaturedProjects() {
             </motion.div>
           </div>
 
-          {/* COLUMN 2: Behavioral Risk + Spotify */}
+          {/* COLUMN 3: Behavioral Risk + Spotify */}
           <div className="lg:col-span-1 grid grid-rows-2 gap-4 sm:gap-6 lg:gap-2 min-h-0">
             <div className="row-span-1 min-h-0 flex flex-col">
               <BentoCard
@@ -369,37 +384,6 @@ export function FeaturedProjects() {
                 className="flex-grow h-full"
               >
                 <SpotifyWidget />
-              </BentoCard>
-            </div>
-          </div>
-
-          {/* COLUMN 3: SQL Disaster + LiteStore */}
-          <div className="lg:col-span-1 grid grid-rows-2 gap-4 sm:gap-6 lg:gap-2 min-h-0">
-            <div className="row-span-1 min-h-0 flex flex-col">
-              <BentoCard
-                {...cardProps('sql',
-                  '0 10px 40px -15px rgba(239,68,68,0.15), inset 0 0 20px rgba(239,68,68,0.02)',
-                  'rgba(239,68,68,0.25)',
-                  'rgba(239,68,68,0.05)'
-                )}
-                to="/project/sql-disaster"
-                className="flex-grow h-full"
-              >
-                <SqlDisasterWidget />
-              </BentoCard>
-            </div>
-
-            <div className="row-span-1 min-h-0 flex flex-col">
-              <BentoCard
-                {...cardProps('litestore',
-                  '0 10px 30px -15px rgba(126,124,166,0.15), inset 0 0 20px rgba(126,124,166,0.02)',
-                  'rgba(126,124,166,0.25)',
-                  'rgba(126,124,166,0.05)'
-                )}
-                to="/project/litestore"
-                className="flex-grow h-full"
-              >
-                <LiteStoreWidget />
               </BentoCard>
             </div>
           </div>

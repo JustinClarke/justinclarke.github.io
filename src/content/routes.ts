@@ -116,6 +116,22 @@ export const ROUTES = [
     preloadImage: '/assets/audif1.avif',
   },
   {
+    path: '/datascope',
+    title: 'DataScope Studio ⋅ Client-Side Analytics & AI',
+    description:
+      'Browser-native analytics workspace powered by DuckDB-Wasm and DuckChat. Zero upload, 100% on-device OLAP with AST-guaranteed deterministic AI.',
+    dark: true,
+    sitemap: { priority: 0.9, lastmod: '2026-10-05' },
+  },
+  {
+    path: '/datascope/architecture',
+    title: 'DataScope ⋅ Architecture & Evaluation Programme',
+    description:
+      'Systems engineering and AI eval deep-dive: DuckDB-Wasm IPC, DuckChat AST repair layer, 408-call Grounding Ladder, and small-model frontier testing.',
+    dark: true,
+    sitemap: { priority: 0.8, lastmod: '2026-10-05' },
+  },
+  {
     path: '/connect',
     title: `${SITE.name} ⋅ Connect`,
     description: `Get in touch or save contact details for ${SITE.name}, ${SITE.role.split(' · ')[0]} based in ${SITE.location}.`,

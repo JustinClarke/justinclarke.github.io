@@ -11,6 +11,25 @@
 #    `data-analyst`, lead skills with SQL/Python/Power BI/DAX, use the
 #    `data-analyst` headline + summary, 1 page."
 #
+#   17 role archetypes are supported as of 2026-09-22, and 12 of them have an explicit
+#   recipe under `tailoring_recipes` (motorsport-data-scientist added 2026-09-22 for the
+#   FIA F1 Data Scientist application). If a recipe exists for the target role, FOLLOW IT;
+#   otherwise fall back to tags + strength. The four archetypes without a recipe
+#   (data-analyst, bi-developer, frontend, ml-engineer) predate the recipe system and
+#   still tailor correctly from tags — write one for them the next time you apply to one.
+#
+# THE ONE-PAGE CONSTRAINT IS NOT NEGOTIABLE. This file is deliberately rich; a printed
+# resume is not. Every recipe must be able to produce a truthful one-pager at ~14 bullets.
+# When in doubt, cut a technology and keep a signature bullet — a small number of specific,
+# verifiable accomplishments beats a catalogue every time.
+#
+# EVIDENCE DISCIPLINE (added 2026-09-10). Every number in this file traces to a repository
+# artifact, a recorded run, a test command, or git/PR metadata, recorded in each bullet's
+# `evidence` field. If you add a bullet with a number and cannot fill in `evidence`, the
+# number is not defensible and does not belong here. Read `meta.source_of_truth_notes`
+# before changing any figure — several stale numbers have already been corrected downward
+# once, and it lists the ones that must never be reinstated.
+#
 # HOW TO UPDATE:
 #   Add a new accomplishment under the right `experience`/`projects` entry with
 #   the next free id (e.g. vns-09), fill text/metric/skills/tags/strength.
@@ -24,6 +43,11 @@
 #   strength -> signature (must-include) | strong (include if room) | supporting (filler/depth)
 #   variants -> OPTIONAL role-specific rephrasings. Same achievement, different emphasis.
 #               If a variant exists for the role you're tailoring to, use it INSTEAD of `text`.
+#   evidence -> OPTIONAL, NEVER PRINTED. Repo-relative path, command, or commit/PR that
+#               reproduces the claim. Added 2026-09-10. Purely additive — downstream tooling
+#               reads text/metric/skills/tags/strength and ignores unknown keys, so this is
+#               safe. Rule: if a bullet carries a number, `evidence` must say where the
+#               number comes from. If you cannot fill it in, the number is not defensible.
 #
 # TAILORING RECIPES:
 #   The `tailoring_recipes` section (below role_targets) encodes, per role, the exact
@@ -33,12 +57,295 @@
 
 meta:
   schema_version: 1
-  last_updated: 2026-06-30
+  last_updated: 2026-09-22
   owner: Justin Clarke
   source_of_truth_notes: |
-    Off The Pace figures here are swept from the repo's compiled manifests
-    (dbt manifest.json, ml manifest.json) and are AUTHORITATIVE. If the GitHub
-    README or any portfolio page disagrees, fix the README to match THIS file.
+    METHOD. Numbers in this file are swept from compiled manifests, recorded run JSON, test
+    runners actually executed, and git/PR metadata — never from a README. Where a README
+    disagrees, THIS FILE WINS and the README is the thing to fix. Bullets now carry an
+    optional `evidence:` field naming the artifact that reproduces the claim.
+
+    ---------------------------------------------------------------------------
+    OFF THE PACE RE-SWEEP 2026-09-22 (for the FIA application). Only Off The Pace was
+    re-checked; every other project's figures stand as of 2026-09-10.
+    ---------------------------------------------------------------------------
+      * dbt 72 models / 639 tests -> 74 models / 658 tests (62 singular). manifest.json
+        generated 2026-09-21.
+      * ML v11 -> v13. Contract is 32 features per model (the cliff classifier carries 39,
+        with seven qualifying features); "33 features" is retired. Print "30+".
+      * WEAKER, and this must be printed honestly: `all_models_beat_baseline` is still
+        true, but the stint-life regressor's win is NOT significant
+        (`claims_inside_noise: [stint_life_regressor]`, paired-t). Say "all beat baseline,
+        four significantly". "Every one clears it" is RETIRED.
+      * underperforming_cohorts 5 -> 16. The count got worse. Know it before an interview.
+      * Conformal coverage 0.8034 -> 0.8060 (raw 0.7751). Leakage probe 0.9967 -> 0.9956
+        against a 0.1681 majority-class floor.
+      * NEW, verified: 118,708,607 bronze telemetry samples (10 Hz, 147 race files) are
+        reduced to per-corner metrics (int_corner_metrics -> fct_telemetry_deltas). This
+        file never mentioned the telemetry layer before. See otp-17.
+      * NEW, verified: 13 versioned model releases (ml/models/*_v1..v13); the manifest pins
+        dataset fingerprint, random_state and library versions. Feature experiments run as
+        multi-seed ablation arms (ml/artefacts/0*_arms.json) under e-value pre-registration
+        and campaign-level false-discovery control. See otp-18.
+      * Tools checked against the FIA job and NOT found anywhere under ~/github: PyTorch,
+        MLflow, AWS. Do not list them. Docker exists only as DataScope/Dockerfile (a
+        multi-stage static build, authored 2026-07-23).
+
+    ---------------------------------------------------------------------------
+    FULL AUDIT 2026-09-10 — five repositories inspected end to end.
+    ---------------------------------------------------------------------------
+
+    OFF THE PACE — re-swept from `transform/target/manifest.json` (generated 2026-09-09),
+    `ml/models/manifest.json`, `ml/artefacts/evaluation_metrics.json` (2026-09-10), the
+    DuckDB warehouse at `data/dev.duckdb`, and `pytest ml/tests --collect-only`.
+    Corrections made, all of them DOWNWARD or toward honesty except the growth figures:
+      * dbt 60 models / 443 tests  ->  72 models / 639 tests (57 singular + 582 generic,
+        0 disabled). The repo README says 620 tests and is STALE — fix the README.
+      * ML v4 / 42 features  ->  v11 / 33 features. The feature spine was rebuilt, not grown.
+      * ML tests 28 -> 189 (pytest collection, 12 files).
+      * RESOLVED — the `races_discrepancy_2026_08_17` flag that this file carried as
+        UNRESOLVED. Both numbers were right and measuring different things: 149 races are
+        INGESTED (149 `data/bronze/laps/season=*/race=*` partitions, 2018-2024) and 147 are
+        FULLY PROCESSED to lap grain (`select count(distinct race_id)` on both
+        `fct_lap_residuals` and `fct_cliff_prediction_features` = 147, 137,447 laps). The
+        old "168 ingested" figure was wrong and is deleted. The safe-form workaround is
+        withdrawn; the race count can now be printed.
+      * CORRECTED CLAIM — the leakage probe recovers race_year at 0.9967 accuracy
+        (evaluation_metrics.json; the model card records 0.9964 from its own run), NOT the
+        0.9999 this file previously printed. Do not use 0.9999 again.
+      * CORRECTED CLAIM — 2025 is the DESIGNATED holdout but is NOT YET INGESTED
+        (`holdout_populated: false`, `evaluation_mode: cv_final_fold`, eval season 2024).
+        The model card says so explicitly: "there is no live holdout". This file previously
+        implied 2025 was a live validation set. It is not. Say "designated holdout, not yet
+        ingested; selection currently rests on season-grouped time-series CV".
+      * Verified and unchanged: 137,447 laps; 7 decomposition terms (counted in
+        `assert_additive_identity.sql`); `all_models_beat_baseline: true`; conformal
+        empirical coverage 0.8034 at nominal 0.80 (raw 0.7767); ONNX parity all_pass at
+        atol/rtol 1e-5; 7-stage pipeline (stage names literally in `pipeline.yml`);
+        Terraform 9 .tf files; 30 app features.
+
+    DATASCOPE — re-swept 2026-09-10 via `npx vitest run`: 2,535 tests across 231 files,
+    2,532 passing, 3 FAILING. The two CanvasScatter theme-token failures have now survived
+    THREE sweeps, and a third failure appeared in eval/chat/15-cleared-context/runPilot.
+    ds-05 therefore still says "2,500+ tests" and MUST NOT say "all green". The repo README
+    badge still advertises "1,015 passing" and is badly stale — fix it.
+      * MAJOR CORRECTION — the cloud-edge harness figure. This file printed "cloud-edge
+        82.8% correct (98.3% exec)". That is a SUPERSEDED 2026-07-22 measurement of Mistral
+        Small 3.1. The current recorded run (`eval/EVAL-RESULTS.json`, 2026-08-02) is
+        96.6% exec / 53.4% correctness, and `_implementation/build/15-analyst-layer/
+        04-tool-loop.md` documents the drop as "real, not deploy skew ... not diagnosed
+        further in this pass". Quoting 82.8% would be quoting a number the repo itself has
+        retracted. ds-08 is rewritten to lead with the bracketing controls rather than any
+        single contender rate, which is the honest and the stronger framing.
+      * The harness has FIVE arms, not four: local-template 19.0%, mock-cloud 100%,
+        cloud-edge 53.4%, webllm 72.4%, plus an informational ollama qwen3:8b stand-in
+        (46.6% exec / 43.1% correct) that is explicitly NOT the pinned model.
+      * Grounding ladder VERIFIED EXACTLY: 4 rungs x 102 = 408 calls, gemini-flash-latest,
+        correctness 71.6 / 64.7 / 63.7 / 56.9%. ds-06 stands unchanged.
+      * ds-11 VERIFIED and now better supported. A stale harness README under
+        `eval/claude/16-.../README.md` still says two WebGPU probes were "not yet run"; the
+        authoritative experiment doc (`_implementation/_misc/_ideation/_experiments/
+        _archive/16-light-model-sql-ceiling/README.md`, update part 4) records Probe 12
+        one-join 24/24 and 4-table 24/24 at N=3 on the real MLC/WebGPU build. Experiment
+        doc wins; the harness README is the stale one.
+      * Experiment count corrected 19 -> 20 designs (17 archived 01-17, plus 18/19/20).
+        The old "19" was an arithmetic slip. Built harnesses remain 12, re-counted.
+      * NEW EVIDENCE, added this revision: experiment 16's sub-experiments 16a/16b/16e
+        produced three further self-falsifying results — the production prompt scored WORSE
+        than the bare probe prompt (12/24 vs 15/24), the app's own semantic-type labels were
+        measured NET-HARMFUL (9 -> 12 -> 15 of 21 as labels go shipped -> corrected ->
+        removed), and a structured-spec design passed its compiler gate but failed its
+        model-emission gate 0/8. See ds-12.
+      * Source LOC re-counted: ~66.5k lines of TS/TSX under src/ (this file said ~33k).
+
+    DUCKCHAT — NEW ENTRY, audited 2026-09-10. Benchmarks recomputed directly from
+    `docs/baselines/*.json`, each of which carries its own model id and git SHA. Every
+    filename's claim checked out. Headline evidence used: the fit-repair ablation at one
+    fixed SHA (377e711) — 62/72 with deterministic repairs OFF vs 68/72 with them auto —
+    and the model-size comparison at one fixed SHA (66c87f5) where qwen3.5:4b scored 62/66
+    while the larger qwen3.5:9b scored 57/66 and 60/66. Tests: `node --test test/*.test.js`
+    = 71 passing. CI additionally regenerates the seeded dataset and fails on any diff.
+
+    IBIS — NEW ENTRY, audited 2026-09-10, and DELIBERATELY SCOPED DOWN.
+      * The local checkout is a FORK (origin JustinClarke/ibis, upstream ibis-project/ibis).
+      * `git log --author` initially matched THREE commits; one of them (3a66a9618) is by
+        Justin Poehnelt of Google, a different person entirely. Only TWO commits are Justin
+        Clarke's. Guard against this — do not re-run a bare name grep and trust it.
+      * PR metadata pulled live via `gh`: PR #12104 "fix(sql): adapt Drop expression for
+        sqlglot 30.18 compatibility" is OPEN, NOT MERGED (24 files, +138/-117), against
+        issue #12101 (open). A maintainer (deepyaman) left CHANGES_REQUESTED and Justin
+        revised the PR to match the project's existing `_compat.py` convention.
+      * PR #12103 exists but was opened and self-closed 45 seconds later. It is NOT
+        presented anywhere in this file — a 45-second PR is not an accomplishment.
+      * The fix was REPRODUCED LOCALLY on sqlglot 30.18.0: the naive call emits
+        `DROP TABLE IF EXISTS` with no table; the shim emits `DROP TABLE IF EXISTS "t"`.
+      * NEVER imply merged status, maintainer status, or project-wide ownership.
+
+    SECURENEST — RE-AUDITED 2026-09-10 and substantially UPGRADED. This file previously
+    described it as architecture-and-documents work. That undersold it: it is a running
+    application. `npx vitest run` in server/ = 1,149 tests across 134 files, ALL PASSING.
+    Verified: Fastify 4 + Prisma 5 + PostgreSQL + Redis/BullMQ + JWT + WebSocket + Zod;
+    63 Prisma models across 60 migrations; 86 route modules; 72 services; 3 client apps
+    (dashboard, gate, resident) plus 3 shared packages; a transactional outbox table.
+    The "schema-level enforcement" claim in sn-03 is now CONCRETE rather than aspirational:
+    11 migrations run `ENABLE ROW LEVEL SECURITY` and install `tenant_isolation` policies
+    of the form `"societyId" = app_current_society()`. The 28 decision records are real —
+    D-001..D-028 in `docs/decisions/architecture-decision-register.md`.
+
+    ---------------------------------------------------------------------------
+    CLAIMS DELIBERATELY EXCLUDED FOR WANT OF EVIDENCE (do not add these back)
+    ---------------------------------------------------------------------------
+    * JAVA — zero .java files anywhere under ~/github. No claim is made. Do not list Java.
+    * C / C++ — the only C/C++ in the tree is `_misc/_archive/Cybersecurity-Projects-main`,
+      which is a THIRD-PARTY repository by CarterPerez-dev, not Justin's work. There is no
+      defensible C/C++ evidence in this workspace. The `skills` block therefore separates
+      languages by evidence tier and puts C/C++/Java in an explicitly-unevidenced group that
+      is COMMENTED OUT. If Justin has university or employer code in these languages that
+      simply is not on this machine, he may re-enable that group — but only then, and the
+      claim should be scoped to coursework rather than production.
+    * PuffCheck — product concept documents, zero commits, no code. Not included.
+    * TrackRecord (`_misc/TrackRecord`) — 18 commits, early implementation, and adds no
+      signal that DataScope and DuckChat do not already carry better. Not included.
+    * Off The Pace `_improvements/` — a research programme tree (R1-R8 scan, staged work
+      items, an epistemics doc separating Verified from Assumed). It is cited ONLY as
+      research-programme evidence in otp-16 and is never presented as shipped functionality.
+    * DuckChat's "65-file Instagram export becomes 34 tables" is a README claim without a
+      recorded result file. The recogniser bullet describes the mechanism, which is
+      evidenced by `src/recognise.js` + passing `recognise.test.js`, and omits that count.
+
+    ---------------------------------------------------------------------------
+    STILL OPEN / FIX BEFORE INTERVIEWING
+    ---------------------------------------------------------------------------
+    1. Three failing DataScope tests. Two are one-line theme-token fixes that have now
+       survived three sweeps. Clear them and ds-05 can finally carry a green suite.
+    2. Off The Pace README is stale in three places (620 tests, and it does not distinguish
+       149 ingested from 147 processed). This file is right; fix the README.
+    3. DataScope README badge says 1,015 tests. Nearly 1,500 tests out of date.
+    4. Ibis PR #12104 is open. If it merges, upgrade oss-01's wording — and if it is closed
+       unmerged, the bullet still stands as written, because it claims authorship and
+       review response, not acceptance.
+
+    ---------------------------------------------------------------------------
+    DATE + FRAMING CHANGES 2026-09-10 (owner's instruction, second pass)
+    ---------------------------------------------------------------------------
+    Master dates were realigned to what has actually been sent, taken from a rendered PDF:
+      * DataScope     2026-03 -> 2026-05 (start)
+      * Off The Pace  2025-12 -> 2025-11 start, end present -> 2026-04. See that project's
+                      `dates_note` — the repo is still active, so an Apr 2026 end date and
+                      "actively developed" must not appear on the same page.
+      * VNS           2023-04 -> 2024-04 start, and REFRAMED from "Independent (contract) —
+                      primary client VNS Solutions / Independent Data Engineer" to plain
+                      employment: "VNS Solutions / Analytics Engineer, London, UK".
+      * LiteStore     unchanged (2021-04 - 2023-04, already matched).
+    Knock-on edits made at the same time, so nothing contradicts the new framing:
+      * Removed the `vns:` title_overrides from recipe-analytics-engineer, recipe-general
+        and recipe-software-engineer. They renamed the entry to "Independent ...", which
+        would now contradict the company field.
+      * narrative.arc "Independent (2023-2025)" -> "VNS Solutions (2024-2025)".
+      * narrative.positioning_notes: the gap-closing bullet is replaced by an explicit
+        statement that the Apr 2023 - Apr 2024 gap is REINSTATED and deliberate.
+    UNRESOLVED, and the one thing to action: vns-07/vns-08 describe freelance work that
+    largely predates Apr 2024 and now sit under an employer heading. Cut them or restore
+    the dormant `fiverr` entry. Full reasoning in the vns entry's honesty_note.
+
+    LOCATION removed from `contact` and from the DataScope entry (owner's instruction).
+    Sent versions have carried both Dubai and Bangalore headers with matching +971/+91
+    numbers; set location per application and check the phone agrees with it.
+
+    ---------------------------------------------------------------------------
+    RETAINED FROM EARLIER SWEEPS (still valid)
+    ---------------------------------------------------------------------------
+    RESOLVED 2026-08-10: the stale "1,015 tests / 101 test files" claim in ds-05 is fixed.
+    DataScope eval figures are swept from recorded run JSON, not estimates — every rate is
+    reproducible from the files named in each bullet's `evidence` field.
+
+# -----------------------------------------------------------------------------
+# THE NARRATIVE. Read this before assembling any resume.
+#
+# The standing objection to this candidate is "solo projects, not a real job."
+# The counter is not more numbers — it is a visible PROGRESSION. Every entry in
+# this file is a rung on one ladder, and the ladder is the hiring case.
+# -----------------------------------------------------------------------------
+narrative:
+  thesis: >
+    Justin builds data systems that can be audited, and then attacks them to find out
+    where they break.
+  arc: |
+    The through-line is ESCALATING RIGOUR ABOUT VERIFICATION, applied at rising stakes.
+    Each role does the same thing one level harder than the last:
+
+      LiteStore (2021-2023)        measure to DECIDE, not to decorate.
+                                   GA4 -> A/B experiments -> 20% conversion uplift.
+                                   Sole engineer, real commercial outcome (Rs 2.2 Cr+ GMV).
+
+      VNS Solutions (2024-2025)    verification as a professional habit.
+                                   Cross-source reconciliation, automated quality checks,
+                                   dashboard output checked against raw source, for paying
+                                   clients on multi-million-record datasets.
+
+      Off The Pace (2025-2026)     verification becomes MACHINE-ENFORCED.
+                                   A mathematical invariant the build fails on. 443 CI data
+                                   tests. An adversarial probe that PROVES a feature would
+                                   leak before it can enter training.
+
+      DataScope (2026-present)     the same instinct turned on AI itself, and on his own
+                                   beliefs. Preregistered acceptance criteria written before
+                                   the run. Contamination screening. A published negative
+                                   result that reversed his own product strategy. Plus the
+                                   first delegation: an intern held to the same gate.
+
+      Ibis (2026)                  and finally, outward. The same habit applied to somebody
+                                   else's codebase, under somebody else's review: a silent
+                                   cross-backend breakage diagnosed, fixed behind a version
+                                   shim, regression-tested, and revised when a maintainer
+                                   asked for it. Open, not merged — and it counts anyway,
+                                   because the reviewable artifact is the work.
+
+    Stated as one line for a cover letter or a screen call:
+      "I started by measuring whether my product decisions worked, and I kept raising the
+       standard of proof until I was preregistering experiments that could prove me wrong —
+       and then published one that did."
+
+    SUPPORTING EVIDENCE off the main ladder, added 2026-09-10:
+      SecureNest    the delivery counterweight. Whatever else is true of the two research-
+                    flavoured projects, this one is 1,149 passing tests, 63 data models and
+                    tenant isolation enforced by Postgres RLS. Use it whenever the objection
+                    is "does he actually finish and ship things".
+      DuckChat      the same NL->SQL problem as DataScope, attacked at small scale with
+                    ablations instead of opinions — including the finding that a 4B model
+                    beat a 9B one on his benchmark.
+  positioning_notes: |
+    - The two projects are NOT hobby work and must never be presented as such. Off The Pace
+      and DataScope are the entries carrying the senior engineering signal; the paid roles
+      carry commercial context and stakeholder evidence. Lead with whichever the JD rewards,
+      but never drop the other entirely — the arc needs both ends to be legible.
+    - THE GAP (reinstated 2026-09-10): Apr 2023 - Apr 2024 is now an open twelve months, by
+      the owner's decision to present VNS as plain employment rather than as independent
+      contract work. The timeline is no longer continuous, and that is a deliberate trade —
+      a simple entry that verifies cleanly beats a defensible one that invites questions.
+      If a reader raises it, the honest answer is freelance product work (vns-07/vns-08).
+      Read the `vns` entry's `honesty_note` BEFORE printing vns-07 or vns-08 — under a
+      VNS Solutions heading they misattribute independent projects to an employer.
+    - Seniority objection ("has he ever worked with anyone?"): answer with ds-10 (recruited
+      and manages an intern, reviews every PR) + lite-09 (documented a handoff and onboarded
+      his own successor) + vns-06 (multi-client delivery). That is a repeated habit across
+      three separate entries, not one anecdote.
+    - Employment-gap objection: do not over-explain. The work is continuous and evidenced;
+      2026 reads as two funded-quality engineering programmes with recorded, reproducible
+      output.
+    - "Never worked in someone else's codebase" objection (ADDED 2026-09-10): this was the
+      one real hole in the file, and oss-01 closes it. A 20-backend change to a major OSS
+      data project, conforming to that project's existing conventions, with a maintainer
+      review answered. Lead with it for backend/data-platform/software-engineer roles, where
+      "can he work inside constraints he didn't set" is the live question.
+    - "Research projects, but does he ship?" objection (ADDED 2026-09-10): answer with
+      SecureNest. 1,149 passing tests, RLS-enforced multi-tenancy, three client apps. It is
+      the least glamorous entry here and the most reassuring one to a delivery-focused
+      manager. Pair sn-01 with sn-06.
+    - SENIORITY, restated plainly: target engineer-level roles. Do not build a "senior"
+      recipe. The rigour in this file is unusual for the level and reads as high ownership;
+      claiming a title the timeline does not support converts that asset into a liability
+      the first time someone checks.
 
 # -----------------------------------------------------------------------------
 # Role archetypes. Every accomplishment is tagged against one or more of these.
@@ -49,6 +356,37 @@ role_targets:
   - id: bi-developer        # lead: Power BI, DAX, data modelling, RLS, Fabric
   - id: ml-engineer         # lead: XGBoost->ONNX, feature engineering, calibration, leakage audit
   - id: frontend            # lead: React/TS, data-products, in-browser data apps
+  - id: ai-engineer         # lead: evals, grounded generation, hallucination gating, LLM reliability
+    # NOTE: scarcest-supply lane on the 2026 market; the DataScope eval programme
+    # (ds-06..ds-09) is the strongest evidence in this file. Bullets previously
+    # tagged `agentic-ai` are now tagged `ai-engineer` — that orphan tag had no
+    # role_target, so it never surfaced in any tailored resume.
+
+  # -- ADDED 2026-09-10 -------------------------------------------------------
+  # Every archetype below is backed by evidence audited on 2026-09-10. None is
+  # speculative. SENIORITY RULE: all of these target ENGINEER-level roles. There is
+  # deliberately no "senior"/"staff"/"lead" recipe in this file — the paid track is
+  # 2021-2025 and the delegation evidence is one intern plus one successor handoff.
+  # The work shows unusual ownership and rigour for the level; it does not show years
+  # of scope. Let the bullets carry that, and never claim the title.
+  - id: data-engineer       # lead: ingestion -> warehouse -> orchestration, CI-gated pipelines, IaC
+  - id: backend-engineer    # lead: Fastify/Node APIs, Postgres + RLS, queues/workers, tested services
+    # NOTE: replaces the orphan `backend` tag that sn-01/sn-03/sn-04 carried. That tag had
+    # no role_target, so SecureNest's backend evidence never surfaced in any tailored cut.
+  - id: platform-engineer   # lead: CI/CD, Terraform, WIF/OIDC, supply-chain gates, observability
+  - id: data-platform-engineer  # lead: the seam — warehouse + orchestration + contracts + serving
+  - id: software-engineer   # lead: general SWE. Breadth across TS/Python/SQL, testing, code review
+  - id: ai-systems-engineer # lead: the system AROUND the model — tool loops, typed protocols, guards
+  - id: applied-ai-engineer # lead: shipping AI product features that are measured before they ship
+  - id: ml-platform-engineer    # lead: training->ONNX->serving, model cards, drift gates, leakage CI
+  - id: f1-performance-software # lead: motorsport domain + telemetry + race strategy modelling
+  - id: research-engineer   # lead: preregistration, ablations, negative results, reproducible runs
+  # -- ADDED 2026-09-22 -------------------------------------------------------
+  - id: motorsport-data-scientist # lead: telemetry + statistical modelling + the ML lifecycle/MLOps
+    # Distinct from f1-performance-software: that one sells domain modelling to teams and
+    # strategy vendors; this one sells the DATA SCIENCE LIFECYCLE (models, validation,
+    # versioning, CI gates) to a data-science job in motorsport. First use: FIA F1 Data
+    # Scientist, Geneva, applied 2026-09.
 
 # -----------------------------------------------------------------------------
 # Tailoring recipes. Per-role assembly instructions: title overrides, bullet
@@ -62,23 +400,434 @@ tailoring_recipes:
     headline: head-analytics-engineer
     summary: sum-analytics-engineer
     title_overrides:
-      vns: Analytics Engineer        # (conservative alt: "BI Developer / Analytics Engineer")
+      # vns title_override REMOVED 2026-09-10 — the entry is now plain employment
+      # (Analytics Engineer, VNS Solutions). Renaming it to "Independent ..." would
+      # contradict the company field directly above it. The entry's own title is correct
+      # for this recipe as it stands.
     experience_order:
       vns:
-        order: [vns-02, vns-01, vns-03, vns-04, vns-05]
+        # REMAPPED 2026-08-17 — vns ids changed meaning in the independent rewrite.
+        # vns-01 pipelines / vns-02 SQL optimization / vns-03 validation / vns-05 automation.
+        order: [vns-01, vns-02, vns-03, vns-05]
         use_variant: false
-        cut: []
-        include_if_room: []
+        cut: [vns-04, vns-07, vns-08, vns-09]
+        include_if_room: [vns-06]
     project_order:
-      # Off The Pace goes DIRECTLY under VNS for AE applications — these three
-      # bullets are stronger AE signals than most candidates with 3-5 yrs experience
+      # Off The Pace goes DIRECTLY under the independent entry for AE applications —
+      # these bullets are stronger AE signals than most candidates with 3-5 yrs experience
       first: off-the-pace
-      lead_bullets: [otp-02, otp-01, otp-04]
+      lead_bullets: [otp-02, otp-01, otp-12]
       then: [litestore, spotify-engine, sql-disaster, hr-archetype]
     skills_lead: analytics-engineering
     notes: |
-      Rationale: For AE applications, we lead with SQL/Data Prep (vns-02) then BI (vns-01).
-      The heavy AE engineering narrative is driven entirely by the Off The Pace project.
+      Rationale: lead with pipeline construction (vns-01), then the optimization win (vns-02),
+      then the testing/validation habit (vns-03) — that ordering IS the narrative arc in
+      miniature, and it hands off directly to Off The Pace's 443 CI tests.
+      The heavy AE engineering narrative is driven by Off The Pace: otp-02 (60 models, 443
+      tests) then otp-01 (the enforced invariant) then otp-12 (the 7-stage CI pipeline with
+      auto-rollback). Swap otp-12 for otp-04 if the JD mentions ML or feature stores.
+
+  - id: recipe-general
+    for: [general, product-developer]
+    headline: head-general
+    summary: sum-general
+    # title_overrides: none — the vns entry's own title (Analytics Engineer) is correct
+    # since the 2026-09-10 reframing. See that entry's honesty_note.
+    experience_order:
+      datascope: {order: [ds-01, ds-02, ds-06, ds-08, ds-10], cut: [ds-03, ds-04, ds-05, ds-07, ds-09, ds-11, ds-12]}
+      vns:       {order: [vns-01, vns-02, vns-05, vns-03, vns-04], cut: [vns-06, vns-07, vns-08, vns-09]}
+      litestore: {order: [lite-01, lite-06, lite-02, lite-09], cut: [lite-03, lite-04, lite-05, lite-07, lite-08]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-01, otp-09, otp-02, otp-03]
+      then: []
+    skills_lead: analytics-engineering
+    notes: |
+      THE DEFAULT ONE-PAGER. Optimised for a mixed audience — the first reader is usually a
+      recruiter 1-2 years out of university who is keyword-matching, not evaluating engineering.
+
+      The governing rule for this cut is DUAL LEGIBILITY: every bullet must land twice.
+      Clause 1 = a number and a plain-English outcome anyone can grasp. Clause 2 = the technical
+      mechanism that earns respect from the hiring manager who reads it later. Jargon goes at
+      the END of a sentence, never the start.
+        BAD:  "Implemented a two-way HDFE panel regression to separate car quality from driver..."
+        GOOD: "Separated driver skill from car advantage across 137,447 laps — using a two-way
+               high-dimensional fixed-effects panel regression..."
+      Same facts, same honesty; only the reading order changed, and the second version survives
+      a six-second scan.
+
+      Other rules for this cut:
+      - Front-load every metric. "Cut refresh times from ~45 to ~20 minutes" beats "Optimized
+        pipelines, reducing refresh times...". The digit should be in the first 6 words.
+      - PAGE BUDGET (corrected 2026-08-17 — the first draft of this recipe said 18 bullets and
+        did NOT fit; the printed PDF spilled the skills block onto page 2).
+        One page at 10pt = ~45 lines. Fixed overhead (name, contact, summary, 4 entry headers,
+        education, skills) eats ~22 of them. That leaves ~23 lines for bullets, so the real
+        budget is 14 BULLETS AVERAGING 1.5 LINES — roughly 160 characters each, hard cap.
+        Allocation: DataScope 4, Off The Pace 3, Independent 4, LiteStore 3.
+      - Compression is done by MERGING, not by deleting facts. Three merges make the budget:
+        ds-01 absorbs ds-02's schema inference; otp-02/03/05 collapse into one platform bullet
+        (60 dbt models -> 5 ML models -> ONNX -> React app is one sentence, not three);
+        lite-02 absorbs lite-09's handoff. Every number survives.
+      - If it still spills, cut in this order: lite-09's handoff clause, then vns-04,
+        then otp-09. Never cut ds-06.
+      - Never open a bullet with "Responsible for", "Assisted in", or "Worked on".
+      - ds-11 and ds-07 are CUT here despite being signature bullets. They are the two most
+        technically impressive things in the file and the two least legible to a non-technical
+        reader. They belong in recipe-ai-engineer, not the general cut. Swap ds-02 -> ds-11 the
+        moment the JD mentions LLMs, evals, or inference.
+
+  - id: recipe-ai-engineer
+    for: ai-engineer
+    headline: head-ai-engineer
+    summary: sum-ai-engineer
+    title_overrides:
+      datascope: "Founder / AI Engineer"
+    experience_order:
+      datascope:
+        # LEAD WITH THE EVAL PROGRAMME, NOT THE APP. ds-06 is the differentiator:
+        # almost nobody applying to these roles has preregistered evals with a
+        # published negative result. The app (ds-01) is context for why the evals exist.
+        # ds-11 added 2026-08-17, placed second: it converts "one striking experiment"
+        # into "a programme", which is the objection ds-06 alone invites.
+        order: [ds-06, ds-11, ds-12, ds-07, ds-08, ds-03, ds-01]
+        use_variant: false
+        cut: [ds-04]
+        include_if_room: [ds-09, ds-10, ds-02, ds-05]  # ds-10 early when seniority is the question
+      vns:
+        order: [vns-03, vns-01]   # validation habit first, then pipeline scale
+        cut: [vns-02, vns-04, vns-05, vns-06, vns-07, vns-08, vns-09]
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-04, otp-03, otp-05]   # leakage audit first — it is ML-reliability work
+      then: [spotify-engine, hr-archetype]
+    skills_lead: ai-evals
+    notes: |
+      Rationale: The market gap is *reliability*, not "can call an LLM API". Every bullet
+      selected here is about constraining a model, measuring it honestly, or proving it
+      wrong — not about shipping chat. ds-06 (the negative result) is the single most
+      credible bullet in this file for AI-lab and applied-AI hiring, because publishing a
+      result that contradicts the intuition of the person publishing it is the costly
+      signal that separates evaluation work from marketing.
+
+      ds-06 -> ds-11 is the intended one-two: a striking negative result, immediately
+      followed by evidence that it came out of a systematic programme (19 experiment designs,
+      12 built harnesses) rather than a single lucky run. Leading with ds-06 alone invites
+      "nice anecdote"; the pair does not.
+
+      vns-03 leads the independent entry here on purpose — "cross-source reconciliation and
+      automated quality checks" is the paid precedent for the whole eval programme, and it
+      pre-empts the "this rigour is all unpaid side-project rigour" read.
+      Pair with the two public write-ups (see _docs/misc/2026-07-31-career-strategy.md);
+      the resume points at them, they carry the depth.
+
+  # ===========================================================================
+  # RECIPES ADDED 2026-09-10.
+  # Shared budget rule inherited from recipe-general: ~14 bullets at ~160 chars.
+  # Every id below was checked against the master list on 2026-09-10.
+  # NOTE ON TITLES: none of these overrides Justin's level upward. There is no
+  # senior/lead/staff recipe in this file, on purpose — see narrative.positioning_notes.
+  # ===========================================================================
+
+  - id: recipe-data-engineer
+    for: [data-engineer, data-platform-engineer]
+    headline: head-data-engineer
+    summary: sum-data-engineer
+    # title_overrides: none — the vns entry's own title (Analytics Engineer) is correct
+    # since the 2026-09-10 reframing. See that entry's honesty_note.
+    experience_order:
+      vns:       {order: [vns-01, vns-02, vns-03, vns-05], cut: [vns-04, vns-06, vns-07, vns-08, vns-09]}
+      datascope: {order: [ds-02, ds-01], cut: [ds-03, ds-04, ds-05, ds-06, ds-07, ds-08, ds-09, ds-10, ds-11, ds-12]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-02, otp-01, otp-12, otp-13]
+      then: [ibis-oss, duckchat, sql-disaster]
+      project_bullets: {ibis-oss: [oss-01], duckchat: [dc-03], sql-disaster: [sqld-01]}
+    skills_lead: data-engineering
+    notes: |
+      THE STRONGEST NEW LANE, and the one with the most job volume of the ten added here.
+
+      Order is deliberate: otp-02 (72 models, 639 tests) establishes scale, otp-01 (the
+      enforced invariant) establishes that he thinks about correctness differently from most
+      applicants, otp-12/otp-13 establish that he can operate it — the seven-stage pipeline
+      with auto-rollback and the Terraform footprint are what separate a data engineer from
+      an analyst who writes dbt.
+
+      oss-01 is the differentiator against the rest of the applicant pool. Most data-engineer
+      candidates at this level have never contributed to the tools they use. He fixed a
+      compiler bug in one, across 19 backends. It also lands the Python-depth point without
+      needing a "Python: advanced" self-rating.
+
+      dc-03 (schema-free ingestion by structural shape) is included over dc-01/dc-02 because
+      messy heterogeneous ingestion is the actual daily work of the job.
+      Cut vns-06 here — Power BI dashboards pull toward the analyst read of his profile.
+
+  - id: recipe-backend-engineer
+    for: [backend-engineer]
+    headline: head-backend-engineer
+    summary: sum-backend-engineer
+    experience_order:
+      datascope: {order: [ds-05, ds-10], cut: [ds-01, ds-02, ds-03, ds-04, ds-06, ds-07, ds-08, ds-09, ds-11, ds-12]}
+      vns:       {order: [vns-04, vns-07, vns-08], cut: [vns-01, vns-02, vns-03, vns-05, vns-06, vns-09]}
+    project_order:
+      first: securenest
+      lead_bullets: [sn-01, sn-03, sn-06, sn-04]
+      then: [ibis-oss, duckchat, off-the-pace]
+      project_bullets: {ibis-oss: [oss-01, oss-02], duckchat: [dc-01], off-the-pace: [otp-12]}
+    skills_lead: backend-engineering
+    notes: |
+      SecureNest leads — this is the only recipe in the file where it does, and it is the
+      right call: 1,149 green tests, 63 models, RLS-enforced tenancy and queue workers is a
+      more complete backend story than anything else here.
+
+      sn-03 (row-level security) then sn-06 (outbox + non-mocked tests) is the pairing that
+      wins this application. Both are patterns that signal someone who has thought about
+      failure modes rather than someone who has wired up CRUD routes.
+
+      oss-02 earns its place ONLY in this recipe and recipe-software-engineer, because
+      "responds well to code review" is a live hiring question for backend teams and dead
+      weight everywhere else.
+
+      Honest framing to hold: SecureNest is not deployed. Say "built and tested,
+      pre-deployment" if asked. Do not let the recipe's prominence imply live traffic.
+
+  - id: recipe-platform-engineer
+    for: [platform-engineer]
+    headline: head-platform-engineer
+    summary: sum-platform-engineer
+    experience_order:
+      datascope: {order: [ds-05, ds-09], cut: [ds-01, ds-02, ds-03, ds-04, ds-06, ds-07, ds-08, ds-10, ds-11, ds-12]}
+      vns:       {order: [vns-05, vns-09], cut: [vns-01, vns-02, vns-03, vns-04, vns-06, vns-07, vns-08]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-12, otp-13, otp-14, otp-15]
+      then: [securenest, duckchat]
+      project_bullets: {securenest: [sn-06], duckchat: [dc-04]}
+    skills_lead: platform-devops
+    notes: |
+      Off The Pace's platform layer is unusually complete for a personal project and this
+      recipe is simply that layer in order: pipeline (otp-12), IaC (otp-13), supply chain
+      (otp-14), observability (otp-15).
+
+      The two clauses to make sure survive editing, because they are what a platform
+      interviewer actually reacts to: KEYLESS Workload Identity Federation (no long-lived
+      service-account keys) and the post-publish verification gate that AUTO-ROLLS-BACK when
+      published CDN output diverges from the build. Anyone can list GitHub Actions.
+
+      dc-04 is small but thematically perfect here — CI that fails when the benchmark's own
+      dataset changes is reproducibility enforced by the platform, not by discipline.
+
+      WEAKEST OF THE TEN NEW LANES. All the evidence is self-directed: no on-call, no
+      incident response, no multi-team infrastructure, no Kubernetes. Apply to platform roles
+      at data-heavy companies where the pipeline work reads as adjacent; do not apply to pure
+      SRE postings on the strength of this recipe.
+
+  - id: recipe-software-engineer
+    for: [software-engineer]
+    headline: head-software-engineer
+    summary: sum-software-engineer
+    # title_overrides: none — see recipe-general's note; the vns entry is plain employment.
+    experience_order:
+      datascope: {order: [ds-01, ds-05, ds-10], cut: [ds-02, ds-03, ds-04, ds-06, ds-07, ds-08, ds-09, ds-11, ds-12]}
+      vns:       {order: [vns-07, vns-08, vns-04], cut: [vns-01, vns-02, vns-03, vns-05, vns-06, vns-09]}
+      litestore: {order: [lite-01, lite-02], cut: [lite-03, lite-04, lite-05, lite-06, lite-07, lite-08, lite-09]}
+    project_order:
+      first: securenest
+      lead_bullets: [sn-01, sn-06]
+      then: [ibis-oss, off-the-pace]
+      project_bullets: {ibis-oss: [oss-01, oss-02], off-the-pace: [otp-05]}
+    skills_lead: languages
+    notes: |
+      THE GENERALIST FALLBACK, and the right choice whenever a JD says "software engineer"
+      without a data or AI qualifier — which is a large share of the market.
+
+      Strategy: breadth demonstrated by range rather than asserted by list. A tested Node
+      backend (sn-01/sn-06), a large TypeScript frontend (ds-01/otp-05), and Python in
+      someone else's repo (oss-01) covers the stack without a single self-rating.
+
+      lite-02 stays because a measured 3.0s -> 0.6s page-load improvement is legible to every
+      engineer alive, needs no domain context, and is the oldest evidence in the file that he
+      optimises against numbers rather than vibes.
+
+      Lead skills with `languages` here — three languages, all evidenced. Resist the urge to
+      pad it for ATS; see that group's notes.
+
+  - id: recipe-ai-systems-engineer
+    for: [ai-systems-engineer, applied-ai-engineer]
+    headline: head-ai-systems-engineer
+    summary: sum-ai-systems-engineer
+    title_overrides:
+      datascope: "Founder / AI Engineer"
+    experience_order:
+      datascope: {order: [ds-07, ds-03, ds-12, ds-08, ds-01], cut: [ds-02, ds-04, ds-05, ds-06, ds-09, ds-10, ds-11]}
+      vns:       {order: [vns-03], cut: [vns-01, vns-02, vns-04, vns-05, vns-06, vns-07, vns-08, vns-09]}
+    project_order:
+      first: duckchat
+      lead_bullets: [dc-01, dc-02]
+      then: [off-the-pace]
+      project_bullets: {off-the-pace: [otp-04]}
+    skills_lead: ai-systems
+    notes: |
+      DISTINCT FROM recipe-ai-engineer, and the distinction is worth holding onto.
+      recipe-ai-engineer sells EVALUATION — measuring models honestly. This one sells
+      SYSTEM DESIGN — the machinery that makes an unreliable component safe to build on.
+      Read the JD: "evals/benchmarks/model quality" -> recipe-ai-engineer. "agents, tool
+      calling, RAG, production LLM features" -> this one.
+
+      ds-07 leads because the typed evidence loop is the purest statement of the thesis: the
+      model plans, DuckDB executes, a validator strips any claim whose numbers are not in its
+      cited evidence. Follow with ds-03 (three tiers, one pipeline, graded by one harness),
+      then ds-12 so the design decisions are visibly measured rather than asserted.
+
+      DuckChat leads the projects here rather than Off The Pace because dc-01's guard-plus-
+      repair architecture is the same idea at a scale an interviewer can hold in their head
+      — and dc-02 proves the repair layer was worth building instead of assuming it.
+
+      Have the bounded-loop detail ready: 24 provider round-trips, 48 total operations, three
+      CONSECUTIVE failures rather than cumulative, and a termination guarantee that holds
+      regardless of what the model emits. That level of specificity is the whole interview.
+
+  - id: recipe-ml-platform-engineer
+    for: [ml-platform-engineer]
+    headline: head-ml-platform-engineer
+    summary: sum-ml-platform-engineer
+    experience_order:
+      datascope: {order: [ds-09], cut: [ds-01, ds-02, ds-03, ds-04, ds-05, ds-06, ds-07, ds-08, ds-10, ds-11, ds-12]}
+      vns:       {order: [vns-01, vns-03], cut: [vns-02, vns-04, vns-05, vns-06, vns-07, vns-08, vns-09]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-03, otp-04, otp-12, otp-08, otp-07]
+      then: [spotify-engine]
+      project_bullets: {spotify-engine: [spot-02]}
+    skills_lead: ml-engineering
+    notes: |
+      Sells the PATH rather than the model: feature mart -> tuning -> ONNX export with
+      verified parity -> calibration -> gated promotion -> served inference -> regenerated
+      model card. Use the otp-03 `ml-platform-engineer` variant, which is written for exactly
+      this ordering.
+
+      otp-04 second on purpose: a leakage audit that runs in CI is MLOps, not modelling, and
+      it is the bullet that says he has thought about how training silently goes wrong.
+
+      otp-08 matters more here than in any other recipe — model cards regenerated from the
+      run manifest and drift-gated in CI is model governance, which is increasingly the job.
+
+      Caveat to hold honestly: there is no online serving, no feature store, no retraining
+      schedule and no production model monitoring in this evidence. This is a strong
+      batch-training-to-static-serving story. Do not stretch it to real-time ML platforms.
+
+  - id: recipe-research-engineer
+    for: [research-engineer]
+    headline: head-research-engineer
+    summary: sum-research-engineer
+    title_overrides:
+      datascope: "Founder / Research Engineer"
+    experience_order:
+      datascope: {order: [ds-06, ds-11, ds-12, ds-09, ds-08], cut: [ds-01, ds-02, ds-03, ds-04, ds-05, ds-07, ds-10]}
+      vns:       {order: [vns-03], cut: [vns-01, vns-02, vns-04, vns-05, vns-06, vns-07, vns-08, vns-09]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-09, otp-11, otp-16]
+      then: [duckchat]
+      project_bullets: {duckchat: [dc-02]}
+    skills_lead: research-methods
+    notes: |
+      THE HIGHEST-CEILING LANE IN THE FILE, and the one with the fewest openings. Worth a
+      tailored application every time one appears.
+
+      The four-bullet DataScope opening is a complete argument in order: ds-06 a negative
+      result that reversed his own strategy, ds-11 evidence it came from a programme rather
+      than a lucky run, ds-12 three more falsifications of his own shipped design, ds-09 the
+      machinery that makes all of it reproducible.
+
+      otp-09 (two-way HDFE separating driver from car) is the statistical-depth bullet that
+      says he can identify a confound and choose the right estimator, not just call .fit().
+      otp-11 must follow it — the estimate is only credible because teammate-swap and
+      team-change counterfactuals exist to falsify it.
+
+      LIKELY OBJECTION, and be ready for it: no publications, no PhD, no academic
+      affiliation. The counter is that the artifacts are unusually complete for someone
+      without them — preregistration written before the run, contamination screening,
+      adversarial design review before spending inference budget, immutable rescorable run
+      records. Offer the write-ups; they carry depth a resume line cannot.
+
+      Best single interview answer available anywhere in this file: "what's the hardest open
+      problem in your work?" -> the grain-error class from ds-11. SQL that executes cleanly
+      and returns the wrong number produces no error signal, so every reliability mechanism
+      in the stack — which all key off an error — has nothing to trigger on.
+
+  - id: recipe-f1-performance-software
+    for: [f1-performance-software]
+    headline: head-f1-performance-software
+    summary: sum-f1-performance-software
+    experience_order:
+      vns:       {order: [vns-01, vns-03], cut: [vns-02, vns-04, vns-05, vns-06, vns-07, vns-08, vns-09]}
+      datascope: {order: [ds-01], cut: [ds-02, ds-03, ds-04, ds-05, ds-06, ds-07, ds-08, ds-09, ds-10, ds-11, ds-12]}
+    project_order:
+      first: off-the-pace
+      lead_bullets: [otp-01, otp-09, otp-03, otp-10, otp-07, otp-05]
+      then: []
+    skills_lead: ml-engineering
+    notes: |
+      MOTORSPORT EMPLOYERS ONLY — teams, timing and telemetry vendors, race-strategy
+      software, broadcast and betting analytics. Everywhere else this framing actively hurts:
+      it converts a serious data-engineering portfolio into "the F1 fan".
+
+      Nearly the whole page is Off The Pace, and that is correct here. Six bullets covering
+      lap decomposition, driver-vs-car identification, tyre degradation models, survival
+      analysis of the cliff, uncertainty-propagated counterfactuals, and browser delivery is
+      a more complete motorsport-analytics portfolio than most applicants will have.
+
+      otp-10 (Kaplan-Meier tyre-cliff survival across 438 groups) is the domain-credibility
+      bullet — it shows he modelled the cliff as the censored-duration problem it actually
+      is, rather than as a threshold rule.
+
+      Read the JD before ordering: strategy/simulation roles -> lead otp-01 and otp-07.
+      Vehicle-performance or race-engineering support -> lead otp-09 and otp-03.
+      Keep the honest caveat ready: this is public FastF1/OpenF1 timing data, not team
+      telemetry, and the 2025 season is a designated holdout that has not yet been ingested.
+
+  - id: recipe-motorsport-data-scientist
+    for: [motorsport-data-scientist]
+    headline: head-motorsport-data-scientist
+    summary: sum-motorsport-data-scientist
+    date_overrides:
+      off-the-pace: "Nov 2025 - present"   # dates_note: 'present' is honest (repo active) and puts it first
+    experience_order:
+      datascope: {order: [ds-07, ds-11], cut: [ds-01, ds-02, ds-03, ds-04, ds-05, ds-08, ds-09, ds-10, ds-12], include_if_room: [ds-06]}
+      vns:       {order: [vns-01, vns-03, vns-02], merge: {vns-02: vns-05}, cut: [vns-04, vns-06, vns-07, vns-08, vns-09]}
+      litestore: {order: [lite-01, lite-06], merge: {lite-01: lite-09, lite-06: lite-07}, cut: [lite-02, lite-03, lite-04, lite-05, lite-08]}
+    project_order:
+      first: off-the-pace        # ABOVE DataScope. Both are "present"; order by relevance.
+      lead_bullets: [otp-01, otp-09, otp-17, otp-03, otp-12, otp-18]
+      then: []
+    skills_lead: data-science
+    printed_copy: _docs/misc/resume_fia_f1_data_scientist.md
+    notes: |
+      First used for the FIA F1 Data Scientist role (Geneva, deadline 2026-10-04). The JD
+      in one line: ML models on telemetry time series, plus the MLOps to version, track and
+      deploy them, plus nice-to-haves in open-source LLMs and on-device ML.
+
+      Off The Pace carries six bullets and goes FIRST. The order is the data-science
+      lifecycle: attribution model (otp-01) -> the identification problem (otp-09) -> raw
+      telemetry (otp-17) -> the ML suite with its significance caveat (otp-03) -> the
+      pipeline and gates (otp-12 merged with otp-02 and otp-04) -> versioning and
+      experiment tracking (otp-18). otp-18 is the honest answer to "MLflow or similar":
+      hand-built, but it covers the same ground (versioned manifests, pinned provenance,
+      recorded experiment runs).
+
+      DataScope drops to two bullets, picked for the JD's nice-to-haves rather than for
+      AI-engineer signal: ds-07 (grounded LLM over structured data, the pattern regulatory-
+      document work needs) and ds-11 (open-source small models, on-device on WebGPU).
+
+      VNS keeps vns-01 because the JD names PySpark. CONFIRM Fabric notebooks really ran
+      PySpark before sending; if not, drop PySpark from both the bullet and the skills.
+
+      Do NOT print the contact.work_authorization line. It is a UAE visa statement, and a
+      Geneva role needs a Swiss permit. Header: "Dubai, UAE · open to relocating to Geneva".
+
+      GAPS, deliberately left off: PyTorch, MLflow, AWS, computer vision. None has evidence.
+      Wiring MLflow into ml/ would be the cheapest way to earn one of those keywords.
 
 # -----------------------------------------------------------------------------
 # Contact / identity (canonical, final)
@@ -90,7 +839,11 @@ contact:
   github: github.com/JustinClarke          # note: verify exact casing before printing
   portfolio: justinclarke.github.io
   phone: "+971 58 537 6967"
-  location: Dubai, UAE
+  # location: REMOVED 2026-09-10 at owner's request. Set it per application instead —
+  # sent resumes have carried both "Dubai, UAE" and "Bangalore, India" headers, and a
+  # master value here would silently contradict one of them. Check the phone number
+  # matches whichever location the header claims before sending (+971 is UAE; a sent
+  # version has used a +91 India number).
   work_authorization: UAE Family Residence Visa — no sponsorship required, available immediately
 
 # -----------------------------------------------------------------------------
@@ -109,11 +862,224 @@ headlines:
   - id: head-frontend
     for: [frontend]
     text: "Front-End Engineer · Data Products — React + TypeScript for Data-Intensive Apps"
+  - id: head-ai-engineer
+    for: [ai-engineer]
+    text: "AI Engineer — Evals, Grounded Generation & LLM Reliability"
+  # -- ADDED 2026-09-10. Plain titles on purpose: the summary underneath does the
+  #    characterising, and a headline that also editorialises just competes with it.
+  - id: head-data-engineer
+    for: [data-engineer, data-platform-engineer]
+    text: "Data Engineer — Pipelines, Warehousing & CI-Enforced Data Quality"
+  - id: head-backend-engineer
+    for: [backend-engineer]
+    text: "Backend Engineer — TypeScript/Node APIs, PostgreSQL & Tested Services"
+  - id: head-platform-engineer
+    for: [platform-engineer]
+    text: "Platform Engineer — CI/CD, Terraform & Supply-Chain Hardening"
+  - id: head-software-engineer
+    for: [software-engineer]
+    text: "Software Engineer — TypeScript, Python & SQL"
+  - id: head-ai-systems-engineer
+    for: [ai-systems-engineer, applied-ai-engineer]
+    text: "AI Systems Engineer — Tool Loops, Grounding & Model Reliability"
+  - id: head-ml-platform-engineer
+    for: [ml-platform-engineer]
+    text: "ML Platform Engineer — Training Pipelines, ONNX Serving & Model Governance"
+  - id: head-research-engineer
+    for: [research-engineer]
+    text: "Research Engineer — Experiment Design, Ablations & Reproducible Runs"
+  - id: head-f1-performance-software
+    for: [f1-performance-software]
+    text: "Performance Software Engineer — F1 Telemetry, Lap-Time Modelling & Race Strategy"
+    notes: |
+      Use ONLY for motorsport employers (teams, timing//telemetry vendors, race-strategy
+      software, betting/broadcast analytics). Everywhere else Off The Pace is a project that
+      demonstrates data engineering, and leading with F1 makes it read as a fan's hobby.
+      The domain is the hook here, but otp-01/otp-09 are what actually carry the application.
+  - id: head-motorsport-data-scientist
+    for: [motorsport-data-scientist]
+    text: "Data Scientist — Motorsport Telemetry, Statistical Modelling & MLOps"
+    notes: |
+      ADDED 2026-09-22. The sent Pages layout has no headline line; its bold summary lead-in
+      ("Data scientist and ML engineer:") does this job. Use this text only in a layout that
+      has a headline slot.
+
+  - id: head-general
+    for: [general, product-developer]
+    text: "Data & AI Engineer"
+    notes: |
+      REWRITTEN 2026-08-17 — was "Product Developer — Tested Data Systems & Honest Evaluation
+      of the AI on Top". Two problems with that: it opened by claiming a title (Product
+      Developer) that contradicts the AI-engineering positioning directly beneath it, and it
+      pre-announced the summary's content, so the reader got the same idea twice in four lines.
+
+      Bare and unhyphenated on purpose. sum-general does the characterising immediately below
+      it; a headline that also tries to characterise just competes with it. The pairing is
+      meant to read as: flat title, then a line with a point of view.
+
+      Still true: use head-ai-engineer or head-analytics-engineer whenever the JD names one
+      clearly. A specific headline always outperforms this one — this is for speculative
+      applications and genuinely straddling roles.
 
 # -----------------------------------------------------------------------------
 # Summary / about variants. Pick ONE.
 # -----------------------------------------------------------------------------
 summaries:
+  # -- ADDED 2026-09-10 -------------------------------------------------------
+  # Convention held from the existing variants: implied-subject fragments, no "I",
+  # no metrics (the body carries them), no technology dump. State a stance.
+  - id: sum-data-engineer
+    for: [data-engineer, data-platform-engineer]
+    text: >
+      Data engineer who builds pipelines that fail loudly. Has taken raw source data through
+      ingestion, a tested warehouse layer and CI-gated publication to a served product —
+      including a mathematical invariant the build refuses to violate — and has run
+      multi-source ETL in Microsoft Fabric for paying clients. dbt, DuckDB, SQL, Python,
+      GitHub Actions, Terraform.
+    notes: |
+      "Fail loudly" is the whole positioning: most candidates at this level can build a
+      pipeline, and far fewer can say what happens when it silently goes wrong. otp-01 and
+      otp-02 are the proof, and vns-01/vns-03 stop it reading as unpaid-only.
+
+  - id: sum-backend-engineer
+    for: [backend-engineer]
+    text: >
+      Backend engineer working in TypeScript and Node. Builds Fastify services on PostgreSQL
+      with tenant isolation enforced by the database rather than by application code, queue-
+      backed workers for asynchronous work, and test suites large enough to refactor behind.
+      Also contributes fixes to open-source data tooling in Python.
+    notes: |
+      Lead evidence is SecureNest (sn-01, sn-03, sn-06) and Ibis (oss-01). The last sentence
+      is doing real work — it is the answer to "has he written code anyone else reviewed".
+
+  - id: sum-platform-engineer
+    for: [platform-engineer]
+    text: >
+      Platform engineer focused on the path from commit to production. Runs a seven-stage
+      data pipeline on keyless federated auth with a post-publish verification gate that
+      rolls staging back when published output diverges from the build, and codifies the
+      cloud footprint as Terraform so setup is reviewable rather than remembered.
+
+  - id: sum-software-engineer
+    for: [software-engineer]
+    text: >
+      Software engineer across TypeScript, Python and SQL, most at home where an application
+      meets the data underneath it. Ships tested code — thousands of tests across production
+      React, Node services and Python ML — and works to other people's conventions when the
+      codebase is not his, including an upstream fix to a widely used Python data library.
+
+  - id: sum-ai-systems-engineer
+    for: [ai-systems-engineer, applied-ai-engineer]
+    text: >
+      AI systems engineer building the machinery around the model rather than the prompt
+      inside it: typed tool protocols with bounded, provably terminating loops, execution
+      guards, and validators that strip any claim not backed by executed evidence. Every
+      mechanism is measured against a recorded baseline before it ships. Design principle:
+      the model decides what is interesting; it never decides what is true.
+
+  - id: sum-ml-platform-engineer
+    for: [ml-platform-engineer]
+    text: >
+      ML platform engineer covering the path from feature mart to served model: a five-model
+      gradient-boosted suite trained under season-grouped cross-validation, exported to ONNX
+      with verified numerical parity, conformally calibrated, and gated in CI on a leakage
+      audit plus a beats-baseline check. Model cards and documentation regenerate from the
+      run manifest, so governance artifacts cannot drift from the model they describe.
+
+  - id: sum-research-engineer
+    for: [research-engineer]
+    text: >
+      Research engineer who writes the acceptance criteria before the run. Designs
+      ablations, screens for contamination, keeps mechanical gates separate from human
+      judgement, and stores results as immutable append-only artifacts that can be rescored
+      without re-spending inference budget. Has published results that contradicted the
+      product direction — and then changed the product.
+    notes: |
+      This is the archetype where DataScope's eval programme is not a supporting detail but
+      the entire application. ds-06, ds-11, ds-12, ds-09 in that order.
+
+  - id: sum-f1-performance-software
+    for: [f1-performance-software]
+    text: >
+      Engineer building F1 performance analysis from timing and telemetry data. Decomposes
+      every lap of seven seasons into named physical causes — fuel, compound, track rubber,
+      ambient, car, dirty air, driver — separates driver skill from car advantage with a
+      two-way fixed-effects panel model, and serves tyre-degradation and stint-life
+      predictions to a browser app with no server behind it.
+    notes: |
+      Motorsport employers only. Do not include the "no server behind it" clause for a
+      trackside/embedded role — it is a cost story, and there the interesting story is the
+      modelling. Swap in otp-10 (survival analysis) if the JD mentions tyre or strategy.
+
+  - id: sum-motorsport-data-scientist
+    for: [motorsport-data-scientist]
+    text: >
+      Data scientist and ML engineer: Takes F1 timing and telemetry from raw data to deployed,
+      CI-gated models. Separates driver from car, models tyre degradation, and holds every
+      model to a baseline.
+    notes: |
+      ADDED 2026-09-22 for the FIA application. Kept to two printed lines. "Holds every
+      model to a baseline" is accurate: the gate is beats-baseline, which all five pass.
+      The significance caveat (4 of 5) belongs in the bullet, not the summary.
+
+  - id: sum-general
+    for: [general, product-developer, ai-engineer]
+    text: >
+      Data and AI engineer working where language models meet production databases — the point
+      at which a confident answer and a correct answer stop being the same thing. Builds both
+      the data platform and the evaluation that keeps what sits on top of it honest.
+    notes: |
+      REWRITTEN 2026-08-17, then REGISTER-CORRECTED the same day. The first rewrite read
+      "I build both sides of it, and I test the side that lies" — rejected, correctly, as too
+      informal. Two specific faults, worth remembering when writing any future variant:
+        1. FIRST PERSON. UK and Gulf CV convention drops the pronoun and uses implied-subject
+           fragments ("Builds...", "Led..."). This is convention, not taste — no variant in this
+           file should use "I" unless the target is a startup or a personal-site bio.
+        2. A PUNCHLINE. "...the side that lies" is a closer, not a claim. It lands with a
+           founder and grates on a bank, a Big Four consultancy, or an HR screener — which is
+           most of the application volume from Dubai.
+      What survived is the POSITIONING, which was never the problem.
+
+      Still deliberately carries NO metrics and NO technology list. The body is dense with both;
+      repeating them here spends the reader's most valuable three seconds on information they
+      are about to get anyway. This states a stance instead.
+
+      Load-bearing dual positioning: "Data and AI engineer" claims the AI ground without
+      conceding the data-engineering ground, so one resume serves both lanes without a rewrite.
+      Do not narrow it unless the JD is unambiguous.
+
+      Pairs with head-general. Availability and visa status live in the contact line — do not
+      repeat them here, it costs a line.
+    variants:
+      - for: formal
+        text: >
+          Data and AI engineer focused on the boundary between production data systems and the
+          language models increasingly placed on top of them — building the pipelines, the tests
+          that guard them, and the evaluation that keeps model output accountable to the data
+          underneath.
+        notes: |
+          No rhetorical turn at all, but still states a stance rather than listing outputs.
+          Use for established enterprises and any employer whose own writing is formal.
+      - for: conventional
+        text: >
+          Data and AI engineer with a background spanning analytics engineering, production data
+          pipelines, and the evaluation of LLM-based systems. Focused on data platforms that are
+          verifiable and AI features held to the same standard.
+        notes: |
+          The safe cut — nothing here for anyone to object to. Correct choice ONLY for volume
+          applications through large-corporate ATS pipelines, where a distinctive line is pure
+          downside risk and keyword coverage matters more than being remembered.
+      - for: technical-reader
+        text: >
+          Data engineer, increasingly an AI engineer. Working principle: the model decides what
+          is interesting, it never decides what is true. Builds the pipelines, the tests that
+          guard them, and the evaluation that keeps whatever AI sits on top of them honest.
+        notes: |
+          For a technical reader (founder, engineering manager, AI lab) where the summary is
+          read by someone who will probe it. The principle is the actual design rule behind
+          ds-07, so it survives being probed — do not use it in front of a reader who cannot
+          follow up on it, since unbacked it sounds like a slogan.
+
   - id: sum-data-analyst
     for: [data-analyst, bi-developer]
     text: >
@@ -124,23 +1090,32 @@ summaries:
   - id: sum-analytics-engineer
     for: [analytics-engineer]
     text: >
-      Analytics Engineer who builds tested, reproducible data layers. I architect medallion
+      Analytics engineer building tested, reproducible data layers. Architects medallion
       pipelines (FastF1/Jolpica -> Hive-partitioned Parquet -> dbt on DuckDB) with 400+
-      CI-enforced tests and CI-gated invariants, and have automated multi-source ETL in
+      CI-enforced tests and CI-gated invariants, and has automated multi-source ETL in
       Microsoft Fabric in production. dbt, SQL, Python, incremental loading, data contracts.
   - id: sum-ml-engineer
     for: [ml-engineer]
     text: >
       ML engineer focused on physics-grounded features and honest evaluation. Built a 5-model
-      gradient-boosted suite (quantile trio + classifier + regressor) over 42 engineered
+      gradient-boosted suite (quantile trio + classifier + regressor) over 30+ engineered
       features, exported to ONNX for in-browser inference with conformal calibration, a
       CI-enforced leakage spine, and beats-baseline gating across season-grouped splits.
   - id: sum-frontend
     for: [frontend]
     text: >
-      Front-end engineer for data products. I build production React + TypeScript apps that
+      Front-end engineer for data products. Builds production React + TypeScript apps that
       turn high-volume datasets into fast interactive tools — including a zero-backend F1
       analytics SPA running DuckDB-Wasm SQL and ONNX inference fully client-side at sub-10ms.
+  - id: sum-ai-engineer
+    for: [ai-engineer]
+    text: >
+      AI engineer working on the reliability layer: making LLM systems verifiably unable to
+      assert what they cannot cite. Runs a preregistered evaluation programme — a 58-question
+      NL→SQL harness across four providers, a 408-call grounding ladder, and typed
+      evidence-loop architectures where the model plans analysis but never writes SQL and
+      every retained claim carries executed evidence. Design principle: the model decides
+      what is interesting; it never decides what is true.
 
 # =============================================================================
 # EXPERIENCE
@@ -150,58 +1125,157 @@ experience:
   # ---------------------------------------------------------------------------
   - id: vns
     company: VNS Solutions
-    title: Analytics Consultant
+    title: Analytics Engineer
     start: 2024-04
     end: 2025-11
-    location: London, England, United Kingdom · Hybrid
+    location: London, UK
+    stack_line: "Python · SQL · React · TypeScript · Microsoft Fabric"
     context: |
-      Reporting/analytics delivery for ~8-10 clients across retail, F&B and e-commerce.
-      Cross-functional team of data engineers + BI developers. Microsoft Fabric stack.
+      Analytics and data engineering delivery for retail, F&B and e-commerce clients on a
+      Microsoft Fabric stack. Freelance product work from the same period (formerly the
+      separate `fiverr` entry) is retained below as vns-07/vns-08 — see the honesty_note
+      before printing either of them under this employer's heading.
+    honesty_note: |
+      DECISION REVERSED (2026-09-10, owner's call). This entry is now straightforward
+      employment: Analytics Engineer at VNS Solutions, Apr 2024 - Nov 2025, London.
+
+      What this replaced, and why the history matters: from 2026-08-17 to 2026-09-10 the
+      entry was framed as "Independent (contract) — primary client VNS Solutions",
+      Apr 2023 - Nov 2025. That framing existed to close the Apr 2023 - Apr 2024 gap left
+      when LiteStore ended, using real freelance work from that window (the former `fiverr`
+      entry, which started 2023-06). The framing was defensible but the simpler one is
+      safer, verifies cleanly against LinkedIn and any background check, and is what has
+      actually been sent.
+
+      CONSEQUENCES OF THE REVERSAL — three things follow, do not let them drift:
+
+      1. THE GAP IS BACK, and it is now visible: Apr 2023 - Apr 2024, twelve months. Do not
+         paper over it and do not over-explain it. If asked, the true answer is freelance
+         product work — 10+ client projects, React/Next.js frontends and Node backends —
+         which is exactly what vns-07 and vns-08 describe.
+
+      2. vns-07 AND vns-08 ARE NOW MISFILED. They describe freelance work that largely
+         predates Apr 2024, so printing them under a "VNS Solutions" employer heading
+         attributes independent projects to an employer. That is the one genuinely
+         misleading thing this file could now do.
+         Options, in order of preference:
+           (a) Cut them. Every recipe except recipe-backend-engineer and
+               recipe-software-engineer already cuts vns-07/vns-08, so this costs almost
+               nothing.
+           (b) Restore the `fiverr` entry (it is still in this file at `print: false`,
+               with fv-01/fv-02 intact) as its own Jun 2023 - Apr 2024 line. This fills the
+               gap honestly AND keeps the bullets, and is the better move if a reader is
+               likely to ask about the gap.
+         Do NOT simply leave them printing under the VNS heading.
+
+      3. LinkedIn should now match this exactly. That was previously a risk to manage; it
+         is now the easy case — leave LinkedIn as "VNS Solutions, Apr 2024 - Nov 2025".
     accomplishments:
+      # -- the five canonical bullets (approved copy, 2026-08-17) -----------------
       - id: vns-01
         text: >
-          Assisted in building and modifying 12+ Power BI dashboards for ~8-10 clients, updating
-          layouts and writing foundational DAX measures that automated reporting and saved
-          roughly 12 hours/week of manual effort.
-        metric: 12+ dashboards, ~8-10 clients, ~12 hrs/week saved
-        skills: [Power BI, DAX, KPI reporting]
-        tags: [data-analyst, bi-developer]
+          Built data ingestion and transformation pipelines in Microsoft Fabric Notebooks for
+          clients across retail, F&B and e-commerce, processing multi-million-record datasets
+          for downstream analytics.
+        metric: multi-million-record pipelines, 3 client verticals
+        skills: [Microsoft Fabric, PySpark, Python, SQL, data pipelines, ETL]
+        tags: [analytics-engineer, data-analyst, bi-developer, data-engineer, data-platform-engineer]
         strength: signature
 
       - id: vns-02
         text: >
-          Extracted and transformed multi-million-record datasets using standard SQL queries and
-          Power Query, cutting average report refresh times from ~45 minutes to ~20 minutes.
-        metric: ~45 min -> ~20 min refresh, multi-million rows
-        skills: [SQL, Power Query, Data Extraction]
-        tags: [data-analyst, analytics-engineer, bi-developer]
+          Optimized large-scale SQL and transformation pipelines, reducing average downstream
+          refresh times from ~45 minutes to ~20 minutes.
+        metric: ~45 min -> ~20 min refresh (>50% cut)
+        skills: [SQL, Power Query, query optimization, performance tuning]
+        tags: [data-analyst, analytics-engineer, bi-developer, data-engineer, data-platform-engineer]
         strength: signature
 
       - id: vns-03
         text: >
-          Performed manual data validation and reconciliation, comparing dashboard outputs against
-          raw source data to ensure reporting accuracy across client accounts.
-        metric: cross-client data reconciliation
-        skills: [Data Validation, Excel, Data Quality]
-        tags: [data-analyst, analytics-engineer]
-        strength: strong
+          Developed Python-based data processing and validation workflows, including
+          cross-source reconciliation and automated quality checks.
+        metric: automated cross-source reconciliation + quality checks
+        skills: [Python, pandas, data validation, reconciliation, data quality]
+        tags: [data-analyst, analytics-engineer, data-engineer, research-engineer, ai-systems-engineer]
+        strength: signature
+        notes: |
+          NARRATIVE LOAD-BEARING: this is rung 2 of the verification ladder — the paid,
+          professional precedent for the CI-enforced testing in Off The Pace and the
+          preregistered evals in DataScope. Never cut it from an AE or AI-engineer resume;
+          without it the rigour story starts at "personal project" instead of "at work".
+          CLAIM CHECK: this says *automated* quality checks. The earlier version of this
+          bullet said "performed manual data validation". Only send the automated wording
+          if the Python validation workflows genuinely ran unattended — otherwise revert
+          to `variants[for: conservative]` below.
+        variants:
+          - for: conservative
+            text: >
+              Performed data validation and reconciliation, comparing dashboard outputs
+              against raw source data to ensure reporting accuracy across client accounts.
 
       - id: vns-04
         text: >
-          Monitored scheduled report refreshes, logged technical errors for senior team review,
-          and provisioned report access permissions for internal users.
-        metric: system monitoring, user access
-        skills: [Power BI Service, Monitoring]
-        tags: [bi-developer]
-        strength: supporting
+          Built custom React/TypeScript tools for exploring and operationalizing client data
+          workflows.
+        metric: bespoke client-facing data tooling
+        skills: [React, TypeScript, internal tooling, data visualization]
+        tags: [frontend, analytics-engineer, data-analyst, software-engineer]
+        strength: strong
 
       - id: vns-05
         text: >
-          Participated in business meetings to capture reporting requirements, and authored data
-          dictionaries and user guides to support internal teams.
-        metric: requirements gathering, documentation
-        skills: [Documentation, Stakeholder Management]
+          Automated recurring analytical workflows, eliminating approximately 12 hours/week of
+          manual reporting effort.
+        metric: ~12 hrs/week of manual effort eliminated
+        skills: [automation, Power BI, DAX, KPI reporting]
+        tags: [data-analyst, bi-developer, analytics-engineer, data-engineer, platform-engineer]
+        strength: signature
+
+      # -- retained depth: available when the JD rewards it ----------------------
+      - id: vns-06
+        text: >
+          Built and modified 12+ Power BI dashboards across ~8-10 client accounts, writing the
+          DAX measure layer and capturing reporting requirements directly from business
+          stakeholders.
+        metric: 12+ dashboards, ~8-10 clients
+        skills: [Power BI, DAX, KPI reporting, stakeholder management]
         tags: [data-analyst, bi-developer]
+        strength: strong
+        notes: |
+          Lead with this for BI-developer/PL-300 applications — it is the only Power BI-forward
+          bullet left in the printed set after the 2026-08-17 rewrite. Doubles as multi-client
+          stakeholder evidence against the "only works alone" objection.
+
+      - id: vns-07
+        text: >
+          Delivered 10+ independent client projects spanning React/Next.js frontends,
+          Node.js/Express backends, TypeScript type systems and D3/Recharts data visualization,
+          with 100% on-time delivery and repeat engagements.
+        metric: 10+ projects, 100% on-time, repeat clients
+        skills: [React, TypeScript, Next.js, Node.js, full-stack development]
+        tags: [frontend, software-engineer, backend-engineer]
+        strength: strong
+        notes: was fv-01 under the standalone `fiverr` entry, merged here 2026-08-17.
+
+      - id: vns-08
+        text: >
+          Owned end-to-end delivery on every engagement — requirements gathering, technical
+          design, implementation, testing, deployment and knowledge transfer — translating
+          ambiguous client briefs into shipped features.
+        metric: end-to-end ownership, ambiguous-brief handling
+        skills: [product ownership, requirements gathering, technical design, delivery]
+        tags: [frontend, data-analyst, software-engineer]
+        strength: supporting
+        notes: was fv-02 under the standalone `fiverr` entry, merged here 2026-08-17.
+
+      - id: vns-09
+        text: >
+          Monitored scheduled refreshes, triaged pipeline errors, and authored data dictionaries
+          and user guides for client teams.
+        metric: operational monitoring + documentation
+        skills: [Power BI Service, monitoring, documentation]
+        tags: [bi-developer]
         strength: supporting
 
   # ---------------------------------------------------------------------------
@@ -223,7 +1297,7 @@ experience:
           client-facing feature delivery and ongoing maintenance end-to-end.
         metric: 11 brands, 3 malls, sole engineer
         skills: [Next.js, React, ownership, multi-tenant architecture]
-        tags: [frontend]
+        tags: [frontend, software-engineer]
         strength: signature
 
       - id: lite-02
@@ -233,7 +1307,7 @@ experience:
           edge caching, cutting average page load from ~3.0s to 0.6s.
         metric: 3.0s -> 0.6s load (5x)
         skills: [Next.js, React, SSG, getStaticProps, Vercel edge, performance]
-        tags: [frontend]
+        tags: [frontend, software-engineer]
         strength: signature
 
       - id: lite-03
@@ -306,6 +1380,365 @@ experience:
         strength: supporting
 
   # ---------------------------------------------------------------------------
+  # ---------------------------------------------------------------------------
+  # MERGED 2026-08-17 — do NOT print this as a separate entry.
+  # Its content now lives in the `vns` independent-contract entry as vns-07/vns-08.
+  # Printing both would double-count the same 2023-2025 freelance work and would
+  # visibly contradict the continuous independent timeline. Kept only as a record
+  # of where those bullets came from; delete once the change has shipped in a few
+  # sent resumes and nothing references fv-* anymore.
+  - id: fiverr
+    company: Fiverr
+    title: Freelance Product Developer
+    start: 2023-06
+    end: present
+    location: Remote
+    status: merged-into-vns
+    print: false
+    context: |
+      SUPERSEDED. Freelance platform work across React frontends, Node.js backends, data
+      visualization and full-stack product features, with repeat engagements.
+    accomplishments:
+      - id: fv-01
+        text: >
+          Delivered 10+ client projects spanning React/Next.js frontends, Node.js/Express
+          backends, TypeScript type systems, and data visualization with D3/Recharts,
+          with 100% on-time delivery and strong client satisfaction ratings.
+        metric: 10+ projects, 100% on-time, repeat clients
+        skills: [React, TypeScript, Next.js, Node.js, full-stack development]
+        tags: [frontend]
+        strength: signature
+        notes: superseded by vns-07
+
+      - id: fv-02
+        text: >
+          Owned end-to-end product delivery: requirements gathering, technical design,
+          implementation, testing, deployment and knowledge transfer — handling ambiguous
+          briefs and translating them into shipped features.
+        metric: end-to-end ownership, ambiguous-brief handling
+        skills: [product ownership, requirements gathering, technical design, delivery]
+        tags: [frontend]
+        strength: strong
+        notes: superseded by vns-08
+
+  # ---------------------------------------------------------------------------
+  - id: datascope
+    company: DataScope
+    title: Founder
+    start: 2026-05
+    end: present
+    # location: REMOVED 2026-09-10 — a "Dubai, UAE" line here contradicted a
+    # Bangalore header on a sent version. Set per application if the role wants it.
+    context: |
+      Browser-native analytics workspace for data exploration and querying entirely
+      client-side. No uploads, no backend required. ~33k lines of TypeScript, 2,500+ tests.
+      Runs a parallel, preregistered LLM-evaluation programme (eval/) that is deliberately
+      isolated from the product — no experiment imports app code, and results have twice
+      contradicted the product direction and changed it. Team: Justin + 1 research intern
+      (recruited via LinkedIn) on join-inference.
+    canonical_stats:   # AUTHORITATIVE — swept from recorded run JSON in ~/github/DataScope/eval/
+      app_tests: 2535          # re-swept 2026-09-10 via `npx vitest run`: 2,532 passing, 3 FAILING
+      app_test_files: 231      # 167 src/ + eval/ 53 + edge/ + misc
+      app_test_status: |
+        NOT GREEN. 3 failures as of 2026-09-10: two in
+        src/features/charts/correlation/CanvasScatter.test.tsx (theme-token fallback
+        literals, now failing across three consecutive sweeps) and one in
+        eval/chat/15-cleared-context/runPilot.test.ts. Say "2,500+ tests". Never "all
+        passing". The README badge claiming "1,015 passing" is ~1,500 tests out of date.
+      source_loc: 66507        # lines of .ts/.tsx under src/ (was quoted as ~33k)
+      team: "1 research intern, recruited via LinkedIn, extending join-inference"
+      eval_experiments_designed: 20   # 17 archived (01-17) + 18/19/20. Was miscounted as 19.
+      eval_experiments_built: 12      # running harnesses under eval/: claude/ 01,02,03,08,10,16 + chat/ 11,12,13,15,17,20
+      harness_questions: 58    # NL->SQL correctness harness
+      harness_providers: 5     # local-template / mock-cloud / cloud-edge / webllm / ollama stand-in
+      harness_rates: |
+        CORRECTED 2026-09-10 from eval/EVAL-RESULTS.json (run 2026-08-02), which is the
+        current recorded run:
+          local-template  67.2% exec / 19.0% correct   <- deliberately weak floor
+          mock-cloud     100.0% exec / 100.0% correct   <- ceiling control
+          cloud-edge      96.6% exec /  53.4% correct
+          webllm          93.1% exec /  72.4% correct   (Qwen2.5-Coder-1.5B in-browser)
+          ollama qwen3:8b 46.6% exec /  43.1% correct   <- informational stand-in only,
+                                                           NOT the pinned model
+        The previously quoted "cloud-edge 82.8% / 98.3%" is a SUPERSEDED 2026-07-22 Mistral
+        measurement. _implementation/build/15-analyst-layer/04-tool-loop.md records the drop
+        to 53.4% as "real, not deploy skew". Do not quote 82.8% again.
+      ladder_calls: 408        # grounding ladder, 4 rungs x 102 calls, gemini-flash-latest
+      ladder_result: "correctness DECLINES 71.6% -> 64.7% -> 63.7% -> 56.9% as row evidence grows (rungs 0/10/100/max)"
+      eval_test_files: 53
+      run_artifacts: "append-only, manifest-first, refuse-to-overwrite; secret redaction; terminal dispositions"
+      # -- experiment 16, the on-device SQL capability frontier (swept 2026-08-17) --
+      frontier_probes: 15      # probes 1-15, browser (Prompt API / WebLLM-WebGPU) + Ollama
+      frontier_models: 5       # Gemini Nano, Qwen3-1.7B, Qwen3-0.6B, Qwen2.5-Coder-0.5B, the shipped 1.5B pin
+      frontier_fixtures: "flat / one-join / 4-table schemas, then a nested-grain axis"
+      frontier_result: "ceiling is capacity-shaped, not a blanket small-model limit: Qwen3-1.7B clears flat+one-join+4-table at N>=3 execution-verified (24/24 each) on the real WebGPU build; Qwen2.5-Coder-0.5B clears none stably (12/24, same 4 questions failing every run)"
+      frontier_open_failure: "the grain-error class — SQL that executes cleanly and returns the wrong number, so an execution-retry rung has nothing to trigger on"
+      frontier_provenance_note: |
+        VERIFIED 2026-09-10, with a trap to avoid. The harness README at
+        eval/claude/16-light-model-sql-ceiling/README.md still says two WebGPU probes are
+        "not yet run" / "not yet re-run at N=3". It is STALE. The authoritative record is
+        _implementation/_misc/_ideation/_experiments/_archive/16-light-model-sql-ceiling/
+        README.md, whose "part 4" update records Probe 12 (one-join, WebGPU, N=3) at 24/24
+        and the 4-table WebGPU probe re-run at N=3 at 24/24, concluding that every fixture
+        now has an N>=3 execution-verified clean result on the real MLC/WebGPU build.
+        ds-11 is correct as written. Use the experiment doc, not the harness README.
+      # -- experiment 16 sub-experiments (swept 2026-09-10), evidence for ds-12 --
+      sub_16a: "production prompt scored 12/24 (N=3) — WORSE than the bare-DDL probe's 15/24 on the identical fixture"
+      sub_16b: "semantic-type labels measured net-harmful: 9 -> 12 -> 15 of 21 as labels go shipped -> hand-corrected -> removed; the stripped arm's 18/24 is the best result any prompt achieved on that fixture"
+      sub_16e: "structured-spec design passed its compiler gate (8/8 compiled to gold-matching SQL) but failed its model-emission gate (0/8 execution-correct), isolating the hand-rolled JSON protocol rather than model capacity as the bottleneck"
+    accomplishments:
+      - id: ds-01
+        text: >
+          Built a browser-native analytics workspace that runs a full OLAP engine (DuckDB-Wasm)
+          entirely client-side — SQL editing, pivoting, profiling and charting over files that
+          are never uploaded — shipping as a zero-deployment static bundle that runs from any
+          host or offline from disk.
+        metric: full OLAP engine client-side, zero upload, zero backend
+        skills: [React, TypeScript, DuckDB-Wasm, Vite, zero-backend architecture]
+        tags: [frontend, software-engineer, data-engineer]
+        strength: signature
+
+      - id: ds-02
+        text: >
+          Built a zero-config schema engine that infers column meaning beyond storage type and
+          derives cross-table joins from measured containment and cardinality evidence, rendering
+          a schema graph where every edge carries a confidence score, the evidence sentence behind
+          it, and a flagged near-tie when two parent columns compete — inference the rest of the
+          app then reads to gate which capabilities a dataset unlocks.
+        metric: zero-config type + join inference, evidence-scored schema graph
+        skills: [TypeScript, schema inference, FK/join inference, data profiling, DuckDB]
+        tags: [frontend, analytics-engineer, data-engineer, data-platform-engineer, software-engineer]
+        strength: signature
+        notes: |
+          NAMING: this feature is called "schema graph" everywhere in the resume and portfolio.
+          The codebase still carries "Join Graph" and "ERD" for the same thing — do not let the
+          three labels leak into anything a reader sees.
+
+      - id: ds-03
+        text: >
+          Designed a 3-tier AI system — off (no network at all), in-browser WebLLM on WebGPU, or
+          a cloud provider — behind one staged NL→SQL pipeline with full client-side trace
+          inspection and stateless key-passing, so the privacy guarantee weakens only by explicit
+          user choice and every tier is graded by the same eval harness.
+        metric: 3 AI tiers, one NL→SQL pipeline, client-side trace, stateless secrets
+        skills: [AI integration, prompt engineering, WebLLM, Cloudflare Workers, security]
+        tags: [frontend, ai-engineer, applied-ai-engineer, ai-systems-engineer]
+        strength: strong
+
+      - id: ds-04
+        text: >
+          Built the analyst surfaces for users who don't write SQL: a pivot/cross-tab builder, a
+          transformation layer that records the generating SQL so every derived table stays
+          re-runnable, and a "Blueprint" post-ingest view summarising a new dataset on one screen
+          with ranked next actions and confidence labels.
+        metric: SQL-free pivot builder, re-runnable transforms, one-screen dataset summary
+        skills: [React, TypeScript, data transformation, query building]
+        tags: [frontend, software-engineer]
+        strength: strong
+
+      - id: ds-05
+        text: >
+          Held a 66,000-line TypeScript codebase to 2,500+ tests across 231 test files with
+          CI-enforced linting (oxlint), type checking (tsc -b), and supply-chain hardening
+          (gitleaks, pip-audit, CodeQL) gating every change — including the intern's.
+        metric: 2,500+ tests, 231 test files, 5-layer supply-chain gate
+        skills: [Vitest, CI/CD, GitHub Actions, testing, security]
+        tags: [frontend, software-engineer, platform-engineer]
+        strength: supporting
+        evidence: "`npx vitest run` in ~/github/DataScope, 2026-09-10: 2,535 tests / 231 files, 2,532 passing"
+        notes: |
+          RE-SWEPT 2026-09-10: 2,535 tests / 231 files, 2,532 passing, 3 FAILING. The two
+          CanvasScatter theme-token failures have now survived THREE sweeps and a third
+          failure appeared in eval/chat/15-cleared-context/runPilot.test.ts.
+
+          "2,500+" is the honest phrasing and this bullet must not say "all passing" or
+          "green". If asked directly in an interview, say three tests are failing and what
+          they are — the suite is large enough that the answer costs nothing, whereas being
+          caught overclaiming a green suite costs the whole interview.
+
+          Fix the two CanvasScatter one-liners and this bullet can finally carry a green
+          suite instead of a hedge. That is the single highest-leverage hour in this file.
+
+      # -- LLM evaluation & reliability programme (eval/) ------------------------
+      # These four are the AI-engineer core. They describe research process, not
+      # features. Keep the numbers exact — every one is reproducible from recorded JSON.
+
+      - id: ds-06
+        text: >
+          Ran a 408-call grounding-ladder experiment measuring how answer correctness responds
+          to injected row evidence, and found it *falls* monotonically — 71.6% to 56.9% across
+          four evidence rungs — showing that raw rows degrade a model already given computed
+          facts. Screened the result for pretraining contamination on public fixtures before
+          accepting it, and reversed the product's context strategy on the finding.
+        metric: 408 calls, correctness 71.6% -> 56.9% as evidence grows
+        skills: [LLM evaluation, experiment design, contamination screening, grounded generation, statistics]
+        tags: [ai-engineer, ml-engineer, research-engineer, applied-ai-engineer, ai-systems-engineer]
+        strength: signature
+        evidence: "DataScope/eval/claude/10-grounding-ladder/CHAT-RESULTS-gemini.json — 4 rungs x 102 calls, gemini-flash-latest, perRung correctness 0.7157/0.6471/0.6373/0.5686"
+        notes: |
+          THE strongest bullet in this file for AI roles. It is a negative result that cost
+          money to produce and contradicted the expected direction — the costly signal that
+          distinguishes real evaluation from vendor benchmarking. Never cut it.
+        variants:
+          - for: ml-engineer
+            text: >
+              Designed and ran a 408-call ablation over evidence volume (4 rungs x 102 calls,
+              fixed model and temperature), establishing a monotone inverse relationship
+              between injected row context and answer correctness (71.6% -> 56.9%), with a
+              pretraining-contamination screen on public fixtures as the confound control.
+
+      - id: ds-07
+        text: >
+          Built a typed evidence-loop architecture in which a local 7B model selects analysis
+          probes from a constrained grammar but cannot author SQL — DuckDB compiles and executes
+          every probe, and a validator strips any claim whose numbers are absent from its cited
+          evidence — so factual authority stays deterministic while the model supplies judgement.
+        metric: model plans, never asserts; 100% citation validity gate
+        skills: [LLM architecture, grounded generation, hallucination mitigation, DuckDB, TypeScript, Ollama]
+        tags: [ai-engineer, frontend, ai-systems-engineer, applied-ai-engineer, research-engineer]
+        strength: signature
+        evidence: "DataScope/eval/chat/12-verified-claims/runs/*/verdict.json — phase 3 modelAuthoredLabels: 0; phase 5: 40 trials, 40/40 first-pass validity"
+        notes: |
+          Design principle, quotable in interviews and the write-up title:
+          "The model decides what is interesting; it never decides what is true."
+
+      - id: ds-08
+        text: >
+          Established the evaluation infrastructure: a 58-question NL→SQL harness scored on
+          execution, correctness and repair across five providers, bracketed by two controls
+          the industry usually omits — a deliberately weak local-template floor at 19.0% and a
+          mock ceiling at 100% — so every later claim was positioned between an honest floor
+          and a known maximum rather than quoted as a bare vendor number.
+        metric: 58 questions x 5 providers, floor + ceiling controls
+        skills: [evals, benchmarking, NL-to-SQL, experiment design, WebLLM, Cloudflare Workers]
+        tags: [ai-engineer, ml-engineer, applied-ai-engineer, ai-systems-engineer, research-engineer]
+        strength: signature
+        evidence: "DataScope/eval/EVAL-RESULTS.json (run 2026-08-02, 58 questions x 5 arms)"
+        notes: |
+          REWRITTEN 2026-09-10 — and this is a correction, not a polish.
+
+          The previous text quoted "edge cloud 82.8%". That figure is a superseded 2026-07-22
+          Mistral Small 3.1 measurement. The current recorded run is 96.6% exec / 53.4%
+          correctness, and the repo's own build log calls the drop "real, not deploy skew ...
+          not diagnosed further in this pass". Quoting 82.8% would have meant printing a
+          number the project itself had retracted.
+
+          The rewrite leads with the CONTROLS instead of any contender rate, which is both
+          honest and stronger: the bracketing floor-and-ceiling design is the actual
+          methodological contribution, and unlike a per-provider rate it does not go stale
+          every time a model is swapped. Per-provider numbers now live in canonical_stats,
+          where they can be updated without touching printed copy.
+
+          If an interviewer asks for the provider numbers, give them and volunteer that
+          cloud-edge regressed from 82.8% to 53.4% after an architecture change and has not
+          yet been diagnosed. That answer is far better evidence of an evaluation habit than
+          a flattering number would be.
+
+      - id: ds-09
+        text: >
+          Engineered reproducibility into the experiment programme itself: preregistered
+          acceptance criteria written before each run, mechanical gates kept separate from
+          human-scored qualitative results, and immutable append-only run artifacts
+          (manifest-first allocation, refuse-to-overwrite, secret redaction, additive re-scores)
+          — including re-scoring recorded runs at zero model cost.
+        metric: preregistered criteria, immutable run provenance
+        skills: [research methodology, preregistration, reproducibility, provenance, TypeScript, Vitest]
+        tags: [ai-engineer, analytics-engineer, research-engineer, ml-platform-engineer, platform-engineer]
+        strength: strong
+        evidence: "DataScope/eval/**/runs/ (manifest-first, append-only run artifacts); experiment READMEs carry predeclared pass/fail thresholds"
+        notes: |
+          Distinguishing detail: the READMEs state predeclared pass/fail thresholds AND
+          explicitly note that passing the mechanical gates does not prove usefulness.
+          That epistemic honesty is rare and worth saying out loud in an interview.
+
+          Second detail, stronger than the first and usually the one that lands: experiment
+          designs go through adversarial review BEFORE any model is called. Experiment 20's
+          v1 design was reviewed and rejected as not runnable — a dataset was mis-described,
+          the headline mechanism couldn't compute its own target measure, one arm silently
+          duplicated another, the trap sample had no statistical power, and the core claim was
+          unfalsifiable as scoped. All 5 blocking findings were accepted and the design was
+          rewritten as a preregistered, falsifiable, budget-neutral ablation. The point to make:
+          the review caught an experiment that would have produced a publishable-looking number
+          that meant nothing — spending review effort before spending inference budget is the
+          habit, not an accident.
+
+      - id: ds-11
+        text: >
+          Mapped the on-device SQL capability frontier across 15 probes and 5 small local models
+          (Gemini Nano, Qwen3 1.7B/0.6B, Qwen2.5-Coder 0.5B) on schemas escalating from flat to
+          four-table, scoring only execution-verified correctness at N≥3 — establishing that the
+          ceiling is capacity-shaped rather than a blanket limit on small models (a 1.7B clears
+          every join and grain question 24/24 on the real WebGPU build; a 0.5B coder clears none
+          stably), and isolating the failure class that matters: SQL that executes cleanly and
+          returns the wrong number, which no execution-retry can catch.
+        metric: 15 probes x 5 models x 3 schema fixtures, N>=3 execution-verified
+        skills: [LLM evaluation, on-device inference, WebGPU, WebLLM, Ollama, NL-to-SQL, benchmarking, DuckDB]
+        tags: [ai-engineer, ml-engineer, frontend, research-engineer, applied-ai-engineer, ai-systems-engineer]
+        strength: signature
+        evidence: "DataScope/_implementation/_misc/_ideation/_experiments/_archive/16-light-model-sql-ceiling/README.md (verdict + update part 4); harnesses in eval/claude/16-light-model-sql-ceiling/"
+        notes: |
+          The bullet that proves the eval programme is a PROGRAMME, not one lucky experiment.
+          Two details worth raising unprompted in an interview:
+          (1) Scoring execution-verified correctness instead of syntactic validity reversed an
+              earlier "8/8 valid" headline that had overstated real correctness — he caught his
+              own harness flattering the model.
+          (2) The grain-error class is the genuinely hard finding: every reliability mechanism in
+              the stack keys off an error signal, and this failure mode produces none. It is why
+              experiment 20 exists. Good answer to "what's the hardest open problem in your work?"
+
+      - id: ds-12
+        text: >
+          Turned the same measurement discipline on the product's own AI scaffolding and
+          found three of its assumptions wrong: the shipped production prompt scored worse
+          than a bare schema block (12/24 vs 15/24), the app's inferred semantic-type labels
+          were net-harmful to SQL correctness (9 → 12 → 15 of 21 as labels went shipped →
+          corrected → removed), and a structured-spec design that compiled all 8 fixture
+          questions to gold-matching SQL collapsed to 0/8 once the model had to emit it.
+        metric: 3 shipped-design assumptions measured and falsified
+        skills: [LLM evaluation, ablation design, prompt engineering, NL-to-SQL, error analysis]
+        tags: [ai-engineer, research-engineer, applied-ai-engineer, ai-systems-engineer, ml-engineer]
+        strength: signature
+        evidence: "DataScope/_implementation/_misc/_ideation/_experiments/_archive/16-light-model-sql-ceiling/ — sub-experiments 16a (production prompt), 16b (semantic labels), 16e (structured spec)"
+        notes: |
+          ADDED 2026-09-10. This is the bullet that answers the standing objection to ds-06,
+          which is "one striking negative result could be luck". Here are three more, all
+          against his own shipped design, all measured on the same fixture.
+
+          16b is the one to tell in an interview. The semantic-type classifier is a HEADLINE
+          FEATURE of DataScope — it is what ds-02 is about — and he measured it making the
+          model worse, then reported the number rather than quietly dropping the experiment.
+          The three-arm design (shipped labels / hand-corrected labels / no labels) is also
+          the right design: it separates "the labels are wrong" from "labels hurt", which a
+          two-arm test could not have distinguished.
+
+          16e is the best answer to "tell me about a design you killed": the compiler gate
+          passed cleanly, so the idea was sound — it was the model's ability to emit into it
+          that failed, and he located the bottleneck in the hand-rolled JSON protocol rather
+          than concluding the model was too small.
+
+          Do NOT compress these three into "ran ablations on prompting". The specificity is
+          the entire value; a generic version of this bullet is worth nothing.
+
+      # -- team ------------------------------------------------------------------
+      - id: ds-10
+        text: >
+          Sourced and recruited a research intern via LinkedIn and manage their work extending
+          the schema engine's join-inference logic — scoping the problem, reviewing every pull
+          request, and holding their output to the same eval-harness and test-coverage bar the
+          rest of the codebase is gated on.
+        metric: recruited + manages 1 research intern; owns PR review
+        skills: [technical leadership, mentoring, code review, hiring, scoping]
+        tags: [ai-engineer, frontend, analytics-engineer, data-analyst, software-engineer, backend-engineer, research-engineer]
+        strength: strong
+        notes: |
+          The only people-management evidence in this file, and the only bullet showing work
+          being delegated rather than done solo — which is the standing objection to a
+          founder/solo-project resume. Include it in any role where seniority is in question;
+          it pairs with lite-09 (documented handoff + recruited a successor) to show this is a
+          repeated habit, not a one-off. Keep it tied to the schema engine (ds-02) so the
+          managed work is concrete rather than generic "mentored a junior".
+
+  # ---------------------------------------------------------------------------
   - id: drop
     company: Drop
     title: Frontend & Brand Developer
@@ -337,91 +1770,190 @@ projects:
     tagline: "When a car is off the pace, why? — F1 lap-time causal decomposition, ML, and a zero-server analytics app."
     role: Sole creator
     status: Live / actively developed
+    dates_note: |
+      DISCREPANCY, flagged 2026-09-10. The `start`/`end` above now read Nov 2025 - Apr 2026
+      to match what has been sent, but the repository is still active (the dbt manifest was
+      regenerated 2026-09-09 and commits continue). So `status: Live / actively developed`
+      and an end date of Apr 2026 disagree.
+      Both readings are honest, they just answer different questions — Apr 2026 is when the
+      main build finished, and the project is still live and maintained. Pick one per
+      application: "Nov 2025 - Apr 2026" reads as a completed project (cleaner next to
+      employment entries), "Nov 2025 - present" reads as ongoing (better if you want the
+      recency). Do not print an Apr 2026 end date alongside the words "actively developed".
+    start: 2025-11
+    end: 2026-04
     links:
       app: off-the-pace.web.app
       docs: offthepace.mintlify.app
       repo: github.com/JustinClarke   # note: confirm exact repo path before printing
     stack: [React, TypeScript, Python, SQL, dbt, DuckDB, DuckDB-Wasm, XGBoost, ONNX, FastF1, Firebase, GCS]
-    canonical_stats:   # AUTHORITATIVE — swept from compiled manifests. Reconcile README to these.
-      seasons: "2018-2024 (7 full seasons), 2025 held out as reproducible OpenF1 validation set"
-      races: "168 ingested (147 fully processed for lap-level analysis)"
+    canonical_stats:   # AUTHORITATIVE — re-swept 2026-09-10. Reconcile README to these.
+      seasons: "2018-2024 (7 full seasons) trained; 2025 designated as holdout but NOT YET INGESTED"
+      holdout_status: |
+        IMPORTANT, corrected 2026-09-10. Do not say 2025 is a validation set. The model card
+        and evaluation_metrics.json both record `holdout_populated: false` and
+        `evaluation_mode: cv_final_fold` — selection currently rests on season-grouped
+        TimeSeriesSplit with 2024 as the final fold standing in for a holdout. The design is
+        built so 2025 becomes a true holdout with no code change the moment it ingests.
+        Correct phrasing: "2025 is the designated holdout, not yet ingested."
+      races: "149 ingested (2018-2024); 147 fully processed to lap grain"
+      races_reconciled_2026_09_10: |
+        RESOLVED. Both figures were right and measured different things. 149 = ingested race
+        partitions under data/bronze/laps/season=*/race=*. 147 = distinct race_id in the
+        lap-grain marts (fct_lap_residuals and fct_cliff_prediction_features both return 147,
+        137,447 laps). The older "168 ingested" figure was simply wrong. The README's "149"
+        is the ingest count and is fine as far as it goes, but it should say which one it is.
+        The safe-form workaround (omit the race count) is WITHDRAWN — print either number,
+        labelled.
       processed_laps: 137447
-      dbt_models: 60          # 12 staging / 34 intermediate / 10 marts / 4 reference dims
-      dbt_tests: 443          # CI-enforced; incl. 28 bespoke singular tests
-      ml_models: 5            # quantile trio (p10/p50/p90) + cliff classifier + stint-life regressor
-      ml_features: 42         # v4 feature spine
-      ml_tests: 28
-      app_tests: 35
+      ml_beats_baseline: "5/5 beat baseline on the headline metric; 4/5 significantly — stint_life_regressor is inside noise (evaluation_metrics.json v13, 2026-09-21)"
+      underperforming_cohorts: 16  # was 5 at the 2026-09-10 sweep. Circuit-level cohorts that do NOT beat baseline
+      browser_features: 30
+      dbt_models: 74          # re-swept 2026-09-22 (manifest generated 2026-09-21); was 72
+      dbt_tests: 658          # 62 singular; was 639 / 57. README says 620 — stale.
+      ml_version: v13         # v11 at the 2026-09-10 sweep
+      ml_versions_on_disk: 13 # ml/models/*_v1..v13.{bst,onnx}
+      ml_models: 5            # quantile trio (p10/p50/p90) + cliff classifier + stint-life AFT survival
+      ml_features: "32 per model (cliff classifier 39, adds 7 qualifying features) — print '30+'"
+      ml_manifest_provenance: "dataset_fingerprint + random_state + library_versions pinned per release"
+      ml_training_rows: 82315 # NOT re-swept 2026-09-22
+      ml_tests: 189           # NOT re-swept 2026-09-22
+      ml_onnx_parity: "all_pass at atol/rtol 1e-5 (v13)"
+      ml_calibration: "conformal empirical coverage 0.8060 at nominal 0.80 (raw 0.7751), v13"
+      ml_leakage_probe: 0.9956   # v13: race_year recoverable from X at 0.9956 vs 0.1681 majority class
+      telemetry_samples: 118708607   # 10 Hz bronze telemetry, 147 race files, count(*) via read_parquet
+      corner_catalogue: 2441         # rows in main.dim_corners (per-race corner windows)
+      ablation_arms: "7 recorded arm runs in ml/artefacts/0*_arms.json (02b 02c 02d 05d 08e 08h 08i), e-value construction B, campaign-level e-BH"
+      app_tests: "275 test cases across 37 files"
       decomposition_terms: 7  # fuel + compound + rubber + ambient + constructor + dirty_air + driver_skill
       chart_primitives: 8
-      routes: "12 (9 shipped, 3 coming soon)"
-      ts_files: 318           # 158 .tsx + 160 .ts
-      onnx_artifacts: 25      # across v1->v4 lineage
-      parquet_files: 1674
-      tracked_files: 731
-      docs_pages: 199         # 193 .mdx + 6 .md, Mintlify, auto-generated reference
+      ts_files: 330
+      docs_pages: 215         # 209 .mdx + 6 .md, Mintlify, auto-generated reference
+      pipeline_stages: 7      # stage names are literal step names in .github/workflows/pipeline.yml
+      terraform_files: 9      # infra/terraform/*.tf
+      ci_workflows: 16        # .github/workflows/
     accomplishments:
       - id: otp-01
         text: >
-          Built a 7-term additive causal model decomposing every F1 lap into fuel, compound,
-          rubber, ambient, constructor, dirty-air and driver-skill components — with a
-          CI-enforced invariant that the terms reconstruct lap-time pace to within 0.0001s
-          (observed residual ~1.4e-14s, machine precision) or the build fails.
-        metric: 7-term decomposition, CI-enforced to 0.0001s
+          Answered "when a car is off the pace, why?" by decomposing all 137,447 laps of seven
+          F1 seasons into seven additive physical components — fuel, compound, rubber, ambient,
+          constructor, dirty air and driver skill — so lost time is attributed to a named cause
+          rather than a ranking, and guarded the model with a CI-enforced invariant that the
+          terms must reconstruct true lap-time pace to within 0.0001s or the build fails
+          (observed residual ~1.4e-14s, machine precision).
+        metric: 137,447 laps, 7-term decomposition, CI-enforced to 0.0001s
         skills: [causal modelling, dbt, SQL, fixed effects, statistics]
-        tags: [analytics-engineer, ml-engineer]
+        tags: [analytics-engineer, ml-engineer, data-engineer, data-platform-engineer, f1-performance-software, research-engineer]
         strength: signature
+        evidence: "off-the-pace/transform/macros/assert_additive_identity.sql (7 terms, 0.0001s threshold); 137,447 laps = count(*) on main.fct_lap_residuals"
+        notes: |
+          LEAD BULLET for this project in almost every role. It carries the thesis (most F1
+          analytics says WHO is slow; this says WHY) and the rigour signal (an invariant the
+          build enforces) in one line. The quotable version: "an enforced invariant is worth
+          more than a claimed one."
 
       - id: otp-02
         text: >
-          Engineered the data layer: FastF1 + Jolpica ingestion to Hive-partitioned Parquet,
-          transformed through a dbt medallion architecture of 60 models on DuckDB, guarded by
-          443 CI-enforced data-quality tests.
-        metric: 60 dbt models, 443 CI tests
+          Engineered the data layer end to end: 149 races of FastF1 and OpenF1 telemetry
+          ingested to Hive-partitioned Parquet, transformed through a dbt medallion
+          architecture of 74 models on DuckDB, and guarded by 658 CI-enforced data-quality
+          tests — 62 of them bespoke assertions written for failures generic tests cannot see.
+        metric: 74 dbt models, 658 CI tests (62 bespoke)
         skills: [dbt, DuckDB, SQL, Hive partitioning, Parquet, FastF1, data testing, medallion architecture]
-        tags: [analytics-engineer]
+        tags: [analytics-engineer, data-engineer, data-platform-engineer, platform-engineer]
         strength: signature
+        evidence: "off-the-pace/transform/target/manifest.json (generated 2026-09-21): 74 model nodes, 658 test nodes, 62 singular"
+        notes: |
+          RE-SWEPT 2026-09-22: 72/639/57 -> 74/658/62.
+          RE-SWEPT 2026-09-10: was 60 models / 443 tests. The repo README says 620 tests and
+          is stale — the compiled manifest is the source of truth and says 639.
+          The "57 bespoke" clause is the part that lands with an analytics-engineering
+          reviewer: anyone can add not_null and unique, and a singular test means he found a
+          failure mode worth naming.
 
       - id: otp-03
         text: >
           Built a 5-model XGBoost suite (degradation quantile trio, tyre-cliff classifier,
-          stint-life regressor) over 42 physics-grounded features, exported to ONNX with
-          conformal calibration (empirical coverage 0.80 at nominal 0.80) and beats-baseline
-          gating on season-grouped TimeSeriesSplit.
-        metric: 5 models, 42 features, calibrated intervals
-        skills: [XGBoost, ONNX, feature engineering, conformal calibration, scikit-learn, Optuna]
-        tags: [ml-engineer]
+          AFT survival model for stint life) over 30+ physics-grounded features, exported to
+          ONNX with verified numerical parity and conformal calibration landing empirical
+          coverage at 0.806 against a nominal 0.80 — every model gated on beating a
+          baseline under season-grouped TimeSeriesSplit: all five clear it, four with
+          statistical significance.
+        metric: 5/5 beat baseline (4/5 significant), 30+ features, coverage 0.806 at nominal 0.80
+        skills: [XGBoost, ONNX, feature engineering, conformal calibration, survival analysis, scikit-learn, Optuna, SciPy]
+        tags: [ml-engineer, ml-platform-engineer, research-engineer, motorsport-data-scientist]
         strength: signature
+        evidence: "off-the-pace/ml/artefacts/evaluation_metrics.json v13 (all_models_beat_baseline: true; beats_baseline_significant false for stint_life_regressor; conformal_empirical_coverage 0.8060); ml/models/manifest.json (v13, 32 features per model / 39 cliff classifier, onnx_parity.all_pass true at 1e-5)"
+        notes: |
+          RE-SWEPT 2026-09-22. v11 -> v13. "Every one clears it" is RETIRED: the stint-life
+          model's win is inside noise under the paired-t interval. "All five, four
+          significantly" is both honest and a better data-science signal.
+          RE-SWEPT 2026-09-10. Was "42 features" under the v4 spine; v11 rebuilt it to 33.
+          Do not describe this as a reduction achievement — it is a different feature set,
+          not a pruning result.
+          HONEST CAVEAT to have ready: "beats baseline" is on the HEADLINE metric. Sixteen
+          circuit-level cohorts still underperform their baseline
+          (`underperforming_cohorts_total: 16` at v13, up from 5 at v11), and the repo
+          reports it rather than hiding it. Raise this yourself if asked how the models fail — it is a much better answer
+          than being caught by it.
+        variants:
+          - for: ml-platform-engineer
+            text: >
+              Owned the training-to-serving path for a 5-model XGBoost suite: 30+ engineered
+              features from a governed dbt feature mart, Optuna tuning under season-grouped
+              TimeSeriesSplit, ONNX export verified to 1e-5 parity against the Python
+              booster, conformal calibration to 0.806 empirical coverage, and a
+              beats-baseline gate that blocks promotion in CI.
 
       - id: otp-04
         text: >
           Enforced a CI leakage spine — an sqlglot audit of compiled SQL plus an adversarial
-          probe (recovers race_year at 0.9999, proving it would leak) — so no forward-looking
-          information enters training.
-        metric: CI-enforced leakage audit
+          probe that recovers race_year from the feature matrix at 0.996 accuracy against a
+          0.168 majority-class floor, proving the column would leak if admitted — so no
+          forward-looking information reaches training.
+        metric: CI-enforced leakage audit; probe 0.996 vs 0.168 chance
         skills: [data leakage, sqlglot, ML validation, CI/CD]
-        tags: [ml-engineer, analytics-engineer]
+        tags: [ml-engineer, analytics-engineer, ai-engineer, ml-platform-engineer, research-engineer, motorsport-data-scientist]
         strength: strong
+        evidence: "off-the-pace/ml/artefacts/evaluation_metrics.json v13 -> leakage_probe {accuracy: 0.9956, majority_class_accuracy: 0.1681}"
+        notes: |
+          RE-SWEPT 2026-09-22: 0.9967 (v11) -> 0.9956 (v13), so print 0.996.
+          CORRECTED 2026-09-10: this bullet previously said 0.9999. Never print 0.9999 again.
+          Quoting the 0.168 chance floor alongside it is what makes the number mean
+          something — 0.996 alone is just a big number.
+
+          Reads as ML-reliability work for AI roles — the adversarial probe that PROVES a
+          feature would leak is the same instinct as the eval programme's contamination
+          screen (ds-06). Pair the two; together they show a consistent method, not one lucky
+          idea: never trust a result you have not tried to break.
+          (A duplicate `notes:` key on this bullet was removed 2026-09-22.)
 
       - id: otp-05
         text: >
-          Shipped a zero-backend React + TypeScript SPA (318 TS files) running analytical SQL
-          over F1 telemetry in-browser via DuckDB-Wasm at sub-10ms, with live ML inference via
-          ONNX Runtime Web — no server, zero compute cost.
-        metric: sub-10ms in-browser SQL, zero backend
+          Shipped 30 interactive analytics features as a zero-backend React + TypeScript SPA
+          (330 TS files) running analytical SQL over F1 telemetry in-browser via DuckDB-Wasm at
+          sub-10ms, with live ML inference via ONNX Runtime Web — no server, no login, and no
+          cost to serve, because nothing is computed at request time.
+        metric: 30 features, sub-10ms in-browser SQL, zero servers, zero serving cost
         skills: [React, TypeScript, DuckDB-Wasm, ONNX Runtime Web, Vite]
-        tags: [frontend, ml-engineer]
+        tags: [frontend, ml-engineer, software-engineer, f1-performance-software]
         strength: signature
+        evidence: "off-the-pace/app/src — 330 .ts/.tsx files; feature table in README.md"
 
       - id: otp-06
         text: >
           Built 8 reusable chart primitives (Gantt, survival, quantile-fan, waterfall,
-          CI-ribbon, heatmap, scatter, ranked table) across 9 shipped analytics views on a
-          consistent dark design system, covered by 35 app tests.
-        metric: 8 chart primitives, 9 views, 35 tests
+          CI-ribbon, heatmap, scatter, ranked table) across the shipped analytics views on a
+          consistent dark design system, covered by 275 front-end tests.
+        metric: 8 chart primitives, 275 app tests
         skills: [React, TypeScript, data visualization, D3, design systems, testing]
-        tags: [frontend]
+        tags: [frontend, software-engineer]
         strength: strong
+        evidence: "off-the-pace/app/src — 275 it()/test() cases across 37 .test.ts(x) files"
+        notes: |
+          CORRECTED 2026-09-10: the old "35 app tests" was counting FILES, not tests (now 37
+          files / 275 cases). Also dropped the "9 shipped views" count — the route table has
+          grown and 9 no longer matches; the primitive count is the durable number here.
 
       - id: otp-07
         text: >
@@ -430,41 +1962,67 @@ projects:
           Monte Carlo finish-order probabilities.
         metric: live in-browser inference + uncertainty propagation
         skills: [ONNX Runtime Web, Monte Carlo, uncertainty quantification, React]
-        tags: [ml-engineer, frontend]
+        tags: [ml-engineer, frontend, f1-performance-software, ml-platform-engineer]
         strength: strong
 
       - id: otp-08
         text: >
-          Auto-generated documentation and model governance: a Mintlify docs site (199 pages)
+          Auto-generated documentation and model governance: a Mintlify docs site (215 pages)
           and a model card (metrics, baselines, calibration, feature importance, limitations)
-          regenerated from a single source manifest and drift-gated in CI.
-        metric: 199 doc pages, drift-gated, auto-generated
+          regenerated from a single source manifest and drift-gated in CI, so governance
+          artifacts cannot silently disagree with the model they describe.
+        metric: 215 doc pages, drift-gated, auto-generated
         skills: [Mintlify, model cards, ML governance, documentation automation, CI/CD]
-        tags: [ml-engineer, analytics-engineer]
+        tags: [ml-engineer, analytics-engineer, ml-platform-engineer, platform-engineer]
         strength: supporting
+        evidence: "off-the-pace/docs — 209 .mdx + 6 .md; ml/model_card.yml regenerated by `make ml-all`"
 
       - id: otp-09
         text: >
-          Implemented a two-way High-Dimensional Fixed Effects (HDFE) panel regression to separate car quality from driver quality, solving a fundamental confounding problem in F1 analytics.
-        metric: HDFE panel regression de-biasing
-        skills: [econometrics, fixed effects, statistics, PyFixest, Python]
-        tags: [data-analyst, analytics-engineer, ml-engineer]
-        strength: strong
+          Implemented a two-way high-dimensional fixed-effects (HDFE) panel regression that
+          separates car quality from driver quality — the central confound in F1 analysis, where
+          no driver is ever observed in every car — recovering per-driver and per-constructor
+          effects from one panel instead of crediting the driver with the team's advantage.
+        metric: two-way HDFE, driver effect de-confounded from car effect
+        skills: [econometrics, fixed effects, panel regression, statistics, PyFixest, Python]
+        tags: [data-analyst, analytics-engineer, ml-engineer, research-engineer, f1-performance-software]
+        strength: signature
+        notes: |
+          PROMOTED to signature 2026-08-17. This is the highest-ceiling technical bullet in the
+          project: it names a real identification problem (no driver is ever observed in every
+          car, so car quality and driver quality are confounded by construction) and solves it
+          with the right tool rather than a black-box model. For any role with a quantitative
+          or research bar, this is the bullet that separates him from candidates who only ever
+          call .fit().
+
+          Always pair with otp-11 — the HDFE estimate is only credible because the teammate-swap
+          and team-change counterfactual checks exist to falsify it. Claim alone reads as a
+          library call; claim + validation gate reads as econometrics.
 
       - id: otp-10
         text: >
-          Modelled tyre-cliff onset as a right-censored Kaplan-Meier survival problem across 401 groups, and enforced physically monotone tyre degradation envelopes using weighted isotonic regression.
-        metric: Kaplan-Meier survival, isotonic regression
+          Modelled tyre-cliff onset as a right-censored Kaplan-Meier survival problem across
+          438 circuit-compound-season groups — 337 fitted directly, the rest falling back to
+          cross-season or compound-class priors where a group had too few stints to support a
+          fit — and enforced physically monotone degradation envelopes with weighted isotonic
+          regression.
+        metric: 438 survival groups (337 directly fitted), isotonic monotonicity constraint
         skills: [survival analysis, Kaplan-Meier, isotonic regression, statistics, Python]
-        tags: [ml-engineer, data-analyst]
+        tags: [ml-engineer, data-analyst, research-engineer, f1-performance-software]
         strength: strong
+        evidence: "off-the-pace/transform/seeds/compound_cliff_params.csv — 438 rows; fit_source: cox_km_survival 337, cross_season_fallback 77, compound_class_default 24"
+        notes: |
+          CORRECTED 2026-09-10: was "401 groups", now 438. The fallback ladder is new in this
+          wording and is deliberately included — naming the 337 that are genuinely fitted is
+          more credible than an unqualified 438, and the graceful-degradation design is
+          itself the interesting engineering.
 
       - id: otp-11
         text: >
           Developed a 5-step statistical validation harness—including teammate-swap checks, team-change counterfactuals, and leave-one-race-out (LORO) backtests—using bootstrap confidence intervals to rigorously validate structural predictions.
         metric: 5-step statistical validation gate
         skills: [statistical validation, bootstrap CIs, Monte Carlo, Python, hypothesis testing]
-        tags: [ml-engineer, data-analyst, analytics-engineer]
+        tags: [ml-engineer, data-analyst, analytics-engineer, ai-engineer, research-engineer]
         strength: strong
 
       - id: otp-12
@@ -475,7 +2033,7 @@ projects:
           published CDN output diverges from the build.
         metric: 7-stage CI pipeline, keyless WIF auth, auto-rollback on drift
         skills: [GitHub Actions, CI/CD, Workload Identity Federation, GCP, data pipeline orchestration]
-        tags: [analytics-engineer, ml-engineer]
+        tags: [analytics-engineer, ml-engineer, data-engineer, platform-engineer, data-platform-engineer, ml-platform-engineer]
         strength: strong
 
       - id: otp-13
@@ -485,7 +2043,7 @@ projects:
           of ad hoc setup scripts with a single reviewable, reproducible apply.
         metric: full Terraform IaC, zero manual cloud setup
         skills: [Terraform, Infrastructure as Code, GCP, IAM, Firebase]
-        tags: [analytics-engineer]
+        tags: [analytics-engineer, platform-engineer, data-platform-engineer, data-engineer]
         strength: strong
 
       - id: otp-14
@@ -495,7 +2053,7 @@ projects:
           CycloneDX SBOM — all gating CI on every PR.
         metric: 5-layer supply-chain security gate
         skills: [CodeQL, gitleaks, pip-audit, OSV-Scanner, SBOM, application security, CI/CD]
-        tags: [analytics-engineer]
+        tags: [analytics-engineer, platform-engineer, software-engineer]
         strength: supporting
 
       - id: otp-15
@@ -507,8 +2065,233 @@ projects:
           bundle against the live CDN.
         metric: RUM + synthetic monitoring + E2E against live prod
         skills: [Sentry, Playwright, RUM, synthetic monitoring, observability, performance budgets]
-        tags: [frontend, analytics-engineer]
+        tags: [frontend, analytics-engineer, platform-engineer, software-engineer]
         strength: supporting
+
+      - id: otp-16
+        text: >
+          Runs the modelling work as a staged research programme rather than a backlog: a
+          literature scan across ML, causal inference and the published F1 field feeding work
+          items that each carry an objective, an acceptance test and a definition of done,
+          governed by a machine-checked build log and an epistemics standard that forces every
+          figure to be labelled Verified or Assumed before it can be quoted.
+        metric: staged research programme with machine-checked state and a Verified/Assumed standard
+        skills: [research methodology, experiment design, technical writing, programme management]
+        tags: [research-engineer, ml-engineer, analytics-engineer]
+        strength: strong
+        evidence: "off-the-pace/_improvements/ — research/R1-R8, foundations/epistemics.md, status/build-log.json validated by status/board.py --check"
+        notes: |
+          ADDED 2026-09-10. SCOPE WARNING, and it is the whole point of this bullet:
+          `_improvements/` is RESEARCH AND PLANNING, not shipped functionality. Nothing in
+          that tree is referenced by ml/, transform/ or app/. This bullet claims a working
+          METHOD and must never be read as claiming delivered features. If a reader could
+          mistake it for shipped work, cut it.
+
+          Why it earns space anyway: for research-engineer and ML roles it evidences the one
+          thing a portfolio of finished projects cannot — how he decides what to build next
+          and what standard of proof he holds it to. "A measurement that comes back 'not
+          viable' is a result, not a failure" is the tree's own governing rule, and it is a
+          strong answer to "tell me about something that didn't work."
+
+      # -- ADDED 2026-09-22 for the FIA application ------------------------------
+      - id: otp-17
+        text: >
+          Reduced 118.7M samples of 10 Hz car telemetry (speed, throttle, brake) from 147
+          races to per-corner braking points, minimum speeds and throttle-return points for
+          driver-versus-reference comparison.
+        metric: 118.7M telemetry samples -> per-corner metrics, 147 races
+        skills: [time series, telemetry processing, SQL, dbt, DuckDB, FastF1]
+        tags: [motorsport-data-scientist, f1-performance-software, data-engineer, ml-engineer]
+        strength: signature
+        evidence: "off-the-pace: select count(*) from read_parquet('data/bronze/telemetry/**/*.parquet') = 118,708,607 over 147 files; transform/models/intermediate/int_corner_metrics.sql (braking point, min speed, throttle_point_m); marts/fct_telemetry_deltas.sql (driver vs ghost-car corner deltas); dim_corners 2,441 rows"
+        notes: |
+          The only bullet in this file that evidences RAW TELEMETRY TIME SERIES, not lap-grain
+          timing. Before 2026-09-22 the file never mentioned the telemetry layer, so every
+          motorsport cut undersold it. Lead with it whenever a JD says "telemetry".
+          Caveats to hold: public FastF1 feed at ~10 Hz, race sessions only, and brake is a
+          BOOLEAN (FastF1 exposes no brake-pressure channel). Never say "brake pressure".
+
+      - id: otp-18
+        text: >
+          Versioned 13 model releases, each manifest pinning data fingerprint, seed and
+          library versions; feature experiments run as pre-registered multi-seed ablations
+          with false-discovery control.
+        metric: 13 versioned releases, pinned provenance, pre-registered ablation arms
+        skills: [MLOps, model versioning, experiment tracking, ablation design, multiple testing, e-values]
+        tags: [motorsport-data-scientist, ml-platform-engineer, research-engineer, ml-engineer]
+        strength: strong
+        evidence: "off-the-pace/ml/models/*_v1..v13; ml/models/manifest.json provenance {dataset_fingerprint, random_state, library_versions}; ml/artefacts/0*_arms.json from scripts/arms_*.py; _improvements items 09b (e-value pre-registration per arm, campaign-level e-BH) and 04c (BH at campaign level), both LANDED"
+        notes: |
+          The honest answer to a JD that asks for "MLflow or similar". It IS similar
+          (versioned artifacts, pinned provenance, recorded experiment runs) but it is
+          hand-built, and it has no registry UI and no tracking server. If asked "have you
+          used MLflow", say no, then describe this. Do not write "MLflow-equivalent" on the page.
+          SCOPE: the ablation machinery is driven by the _improvements research programme
+          (see otp-16), but the arms are EXECUTED runs with recorded results, not plans.
+
+  # ---------------------------------------------------------------------------
+  - id: ibis-oss
+    name: "Ibis (open source) — cross-backend SQL compiler fix"
+    tagline: "Diagnosed and fixed a silent cross-backend SQL breakage in Ibis, the Python dataframe library, upstream and under maintainer review."
+    role: External contributor
+    status: "PR #12104 open under review (not merged) as of 2026-09-10"
+    links:
+      pr: github.com/ibis-project/ibis/pull/12104
+      issue: github.com/ibis-project/ibis/issues/12101
+    stack: [Python, sqlglot, pytest, Git]
+    honesty_note: |
+      SCOPE DISCIPLINE — read before printing anything from this entry.
+      * The PR is OPEN and NOT MERGED. Never write or imply "merged", "accepted", "shipped
+        in Ibis", "maintainer" or "committer". The claim is authorship and review response.
+      * Justin authored exactly TWO commits in this checkout. A third commit that a naive
+        `git log --author` match returns (3a66a9618) belongs to Justin Poehnelt of Google.
+        Do not count it.
+      * A second PR (#12103) exists but was opened and self-closed 45 seconds later. It is
+        deliberately not mentioned anywhere. Do not pad the entry with it.
+      * If the PR is later merged, upgrade the wording. If it is closed unmerged, the bullet
+        below still stands exactly as written, because it does not claim acceptance.
+    accomplishments:
+      - id: oss-01
+        text: >
+          Diagnosed and fixed a silent cross-backend failure in Ibis, the Python dataframe
+          library: a sqlglot upgrade renamed an argument of the DROP expression, and because
+          unrecognised keyword arguments are ignored rather than raising, every SQL backend
+          began emitting `DROP TABLE IF EXISTS` with no table name — a corruption that failed
+          downstream instead of at the call site. Fixed it behind a version-adaptive shim and
+          migrated 19 database backends onto it, with a regression test citing the issue.
+        metric: 19 backends fixed behind one compatibility shim; 24 files, +138/-117
+        skills: [Python, sqlglot, SQL compilers, debugging, open-source contribution, pytest]
+        tags: [backend-engineer, data-engineer, software-engineer, data-platform-engineer, platform-engineer]
+        strength: signature
+        evidence: "ibis-project/ibis PR #12104 (open) against issue #12101; local commit cd245cd5f; reproduced on sqlglot 30.18.0 — naive call emits 'DROP TABLE IF EXISTS', shim emits 'DROP TABLE IF EXISTS \"t\"'"
+        notes: |
+          ADDED 2026-09-10. This is the most valuable NEW bullet in the file, because it is
+          the only evidence of Justin working inside a codebase he does not own, to
+          conventions he did not set. Every other entry is his own project.
+
+          The technically interesting part, and the thing to say out loud in an interview, is
+          the FAILURE MODE rather than the fix: sqlglot silently ignores unknown kwargs, so a
+          renamed argument produced a syntactically valid statement with the table missing.
+          Nothing raised. That is a class of bug worth being able to talk about — it fails
+          far from its cause, and it is exactly the kind of thing a type checker does not
+          catch.
+
+          The shim itself is the right call rather than a clever one: `_compat.py` already
+          held WITH_ARG and EXCEPT_ARG resolved the same way, so DROP_ARG follows an existing
+          pattern instead of inventing a new one. Say that — "I matched what was already
+          there" is a stronger engineering signal than novelty.
+
+      - id: oss-02
+        text: >
+          Revised the contribution in response to maintainer review, relocating the shim into
+          the project's existing compatibility module and aligning it with the conventions
+          already used there rather than introducing a parallel one.
+        metric: maintainer review answered and incorporated
+        skills: [code review, collaboration, open-source contribution, Python]
+        tags: [software-engineer, backend-engineer, data-engineer]
+        strength: strong
+        evidence: "PR #12104 — CHANGES_REQUESTED review by maintainer deepyaman, followed by Justin's revision comment addressing each point"
+        notes: |
+          ADDED 2026-09-10. Deliberately kept as its own bullet rather than folded into
+          oss-01, because it answers a different objection. oss-01 answers "can he fix a hard
+          bug"; this answers "what happens when someone tells him he did it wrong".
+
+          Use it for any role where the standing worry is that a solo-project candidate will
+          not take review well. Cut it first if space is tight — oss-01 carries the entry.
+
+  # ---------------------------------------------------------------------------
+  - id: duckchat
+    name: DuckChat
+    tagline: "Local-first natural-language querying over DuckDB — with a deterministic SQL repair layer and an ablation programme measuring what actually helps a small model."
+    role: Sole creator
+    status: Complete / actively benchmarked
+    links:
+      repo: github.com/JustinClarke/duckchat
+    stack: [Node.js, JavaScript, DuckDB-Wasm, Ollama, SQL]
+    canonical_stats:   # AUTHORITATIVE — recomputed 2026-09-10 from docs/baselines/*.json
+      benchmark: "72 labelled questions; every baseline JSON carries its own model id and git SHA"
+      best_score: "69/72 (qwen3.5:4b, V23_gateall strategy, SHA 377e711)"
+      repair_ablation: "62/72 with deterministic repairs OFF vs 68/72 with them ON — same model, same SHA"
+      model_size_result: "at one fixed SHA (66c87f5) qwen3.5:4b scored 62/66 while the larger qwen3.5:9b scored 57/66 and 60/66"
+      small_models: "qwen2.5-coder:1.5b 50/72; qwen3:1.7b 48/72"
+      tests: "71 passing (`node --test test/*.test.js`, 2026-09-10) plus 7 assertion scripts in `npm test`"
+      source_loc: 5455
+    accomplishments:
+      - id: dc-01
+        text: >
+          Built a local-first natural-language query tool over DuckDB where the model never
+          touches the database: generated SQL passes a read-only guard that rejects anything
+          but SELECT/WITH, and a deterministic repair layer rewrites three fault classes that
+          are wrong by definition — a GROUP BY key missing from the SELECT list, a duration
+          divided by the wrong constant, a signed amount summed as if money moved one way.
+        metric: read-only guard + 3 mechanically-decidable repair classes
+        skills: [Node.js, DuckDB, SQL parsing, NL-to-SQL, local inference, Ollama]
+        tags: [ai-systems-engineer, applied-ai-engineer, backend-engineer, data-engineer, ai-engineer]
+        strength: signature
+        evidence: "duckchat/src/repair.js, src/sql-text.js, src/ask.js"
+        notes: |
+          The distinguishing idea, and the one to lead with: a repair only fires on SQL that
+          ALREADY RUNS, a retry only on SQL that does not, and the project's own README says
+          plainly that neither can tell whether the answer is correct. That last clause is
+          the tell — most people building this write "self-correcting AI" and stop there.
+
+          Do NOT describe this as "an AI chatbot for data". It is a constrained NL→SQL
+          pipeline whose interesting content is the guard, the repair taxonomy, and the
+          measurement of both.
+
+      - id: dc-02
+        text: >
+          Quantified what the repair layer was actually worth by re-running the full
+          72-question benchmark at a fixed commit with repairs disabled: 62/72 without them
+          against 68/72 with them, isolating the mechanism's contribution instead of assuming
+          it — and separately found a 4B model outscoring a 9B one on the same harness,
+          62/66 to 57/66.
+        metric: repair ablation +6/72; 4B beat 9B at identical commit
+        skills: [ablation design, benchmarking, evaluation, NL-to-SQL, experiment design]
+        tags: [research-engineer, ai-engineer, applied-ai-engineer, ml-engineer, ai-systems-engineer]
+        strength: signature
+        evidence: "duckchat/docs/baselines/4b-s59-fitoff-62of72.json vs 4b-s60-gfil-example-68of72.json (both SHA 377e711); 4b-run2.json 62/66 vs 9b-run1.json 57/66 and 9b-run2.json 60/66 (all SHA 66c87f5)"
+        notes: |
+          Both halves matter and they make different points.
+
+          The ABLATION is the methodological point: he turned his own feature off to find out
+          whether it earned its place. Every baseline file records its model id and git SHA,
+          so the comparison is genuinely like-for-like — that provenance discipline is why
+          the number is quotable at all.
+
+          The 4B-BEATS-9B result is the memorable one, and it is the safer kind of surprising
+          because it cost him nothing to admit. Caveat to state honestly if pressed: those
+          two model runs are from the 66-question era, N=1 and N=2 respectively, so it is a
+          finding on this benchmark rather than a general claim about model scaling. Say that
+          before someone else does.
+
+      - id: dc-03
+        text: >
+          Made the tool work on arbitrary personal data exports without a per-vendor loader,
+          by recognising structural shapes — an array of records, a named array, deeply nested
+          attribute bags, per-directory shards, epoch timestamps, mis-encoded UTF-8 — and
+          deduplicating files that restate each other before any question is asked.
+        metric: schema-free ingestion by structural shape, no per-vendor loader
+        skills: [data ingestion, schema inference, JavaScript, data quality, deduplication]
+        tags: [data-engineer, backend-engineer, software-engineer, data-platform-engineer]
+        strength: strong
+        evidence: "duckchat/src/recognise.js, src/ingest.js; passing test/recognise.test.js and test/ingest.test.js"
+        notes: |
+          Kept deliberately free of the README's "65 files become 34 tables" figure — that
+          number has no recorded result file behind it, only prose. The mechanism is fully
+          evidenced by the source and its passing tests, so describe the mechanism.
+          If Justin wants the number on the resume, record a run artifact for it first.
+
+      - id: dc-04
+        text: >
+          Kept the benchmark honest at the infrastructure level: the seeded dataset is
+          regenerated in CI and the build fails on any diff, so a result can never be
+          explained by the data having quietly changed underneath it.
+        metric: CI-enforced dataset determinism
+        skills: [CI/CD, GitHub Actions, reproducibility, testing]
+        tags: [platform-engineer, research-engineer, software-engineer]
+        strength: supporting
+        evidence: "duckchat/.github/workflows/ci.yml — `npm run seed` then `git diff --exit-code -- data/coffee_sales.csv`"
 
   # ---------------------------------------------------------------------------
   - id: spotify-engine
@@ -538,7 +2321,7 @@ projects:
           loop (Spotipy fetch -> append -> auto-merge at 200 new rows).
         metric: 1M rows in <200MB, auto-growing corpus
         skills: [Python, pandas, memory optimization, Spotipy, data engineering]
-        tags: [ml-engineer, analytics-engineer]
+        tags: [ml-engineer, analytics-engineer, data-engineer, software-engineer]
         strength: strong
 
   # ---------------------------------------------------------------------------
@@ -559,7 +2342,7 @@ projects:
           enforcing occupancy <= capacity at the schema level.
         metric: 11 entities, composite PKs, CHECK invariants
         skills: [MySQL, relational modelling, database design, constraints, normalization]
-        tags: [analytics-engineer, data-analyst]
+        tags: [analytics-engineer, data-analyst, backend-engineer, data-engineer]
         strength: strong
 
       - id: sqld-02
@@ -569,7 +2352,7 @@ projects:
           indexed design.
         metric: 47 queries, <200ms avg latency
         skills: [SQL, CTEs, window functions, query optimization, indexing]
-        tags: [analytics-engineer, data-analyst]
+        tags: [analytics-engineer, data-analyst, backend-engineer, data-engineer]
         strength: supporting
 
       - id: sqld-03
@@ -581,6 +2364,140 @@ projects:
         skills: ["D3.js", JavaScript, data visualization, force-directed graphs]
         tags: [frontend]
         strength: supporting
+
+  # ---------------------------------------------------------------------------
+  - id: securenest
+    name: SecureNest
+    tagline: "Multi-tenant community-operations platform for Indian residential societies — gate security, resident services, helpdesk and billing."
+    role: Founder & Engineer
+    status: In development (v0.01 tier, pre-pilot) — application built and tested, not yet deployed to a live society
+    links:
+      repo: github.com/JustinClarke/SecureNest
+      docs: github.com/JustinClarke/SecureNest/tree/main/docs
+    stack: [TypeScript, Node.js, Fastify, PostgreSQL, Prisma, Redis, BullMQ, React, Zod, pnpm]
+    canonical_stats:   # AUTHORITATIVE — swept 2026-09-10
+      server_tests: "1,149 passing across 134 files (`npx vitest run` in server/, 2026-09-10 — ALL GREEN)"
+      prisma_models: 63
+      migrations: 60
+      rls_migrations: 11        # migrations running ENABLE ROW LEVEL SECURITY + CREATE POLICY
+      route_modules: 86
+      services: 72
+      client_apps: 3            # dashboard, gate, resident
+      shared_packages: 3        # shared, theme, ui
+      decision_records: 28      # D-001..D-028 in docs/decisions/architecture-decision-register.md
+      docs_pages: 229
+    honesty_note: |
+      REASSESSED 2026-09-10. This entry previously read as architecture-and-documentation
+      work, which undersold it badly: it is a running, comprehensively tested application.
+      It is also genuinely NOT DEPLOYED to a live society yet, and nothing here should imply
+      users, revenue or a pilot in progress. The correct framing is "built and tested,
+      pre-deployment". Its value on a resume is as the DELIVERY counterweight to the two
+      research-heavy projects — this is the one with 1,149 green tests.
+    accomplishments:
+      - id: sn-01
+        text: >
+          Built the backend for a multi-tenant community-operations platform — a Fastify
+          modular monolith over PostgreSQL with independent API and worker runtimes, 86 route
+          modules and 72 services across 63 data models — and held it to 1,149 passing tests.
+        metric: 63 data models, 86 route modules, 1,149 passing tests
+        skills: [TypeScript, Node.js, Fastify, PostgreSQL, Prisma, system architecture, testing]
+        tags: [backend-engineer, software-engineer, data-engineer]
+        strength: signature
+        evidence: "`npx vitest run` in SecureNest/server, 2026-09-10 — 1,149 passed / 134 files, 0 failures; 63 `model` blocks in prisma/schema.prisma"
+        notes: |
+          REWRITTEN 2026-09-10 from an architecture-intent bullet to a delivery bullet.
+          The old version described a design; this one describes a system that runs and is
+          tested. The test count is the load-bearing number — it is the largest fully green
+          suite in this file and the direct answer to "does he ship or just design?"
+
+      - id: sn-02
+        text: >
+          Built a decision-governed documentation workflow: 5-stage pipeline (ideate → accept →
+          elaborate → build → log) with 28 Architecture Decision Records (ADRs), decision packs,
+          dependency-ordered build checklists, and an append-only archive — replacing ad hoc
+          narrative with a single source of truth for product, security, and operational intent.
+        metric: 28 decision records, decision register, append-only archive
+        skills: [documentation, architecture governance, product planning]
+        tags: [analytics-engineer, backend-engineer, software-engineer, research-engineer]
+        strength: strong
+        evidence: "SecureNest/docs/decisions/architecture-decision-register.md — D-001..D-028; docs/ carries 229 markdown pages"
+        notes: |
+          DEMOTED from signature to strong, 2026-09-10. Not because it got weaker, but
+          because sn-01 and sn-06 now carry verified delivery evidence and outrank it. A
+          documentation-process bullet leading a project entry invites "so where's the
+          software?" — put the software first and let this one show the rigour behind it.
+          The "28 ADRs" figure is verified: D-001 through D-028 in the register.
+
+      - id: sn-03
+        text: >
+          Enforced multi-tenant isolation in the database rather than in application code:
+          PostgreSQL row-level security policies across 11 migrations restrict every protected
+          table to the caller's society, so a missed WHERE clause in a route handler cannot
+          leak one community's data to another. Layered RBAC and append-only activity logs on
+          top for dispute trails.
+        metric: RLS tenant isolation across 11 migrations; RBAC + audit trail
+        skills: [PostgreSQL, row-level security, security architecture, RBAC, multi-tenancy, auth design]
+        tags: [backend-engineer, software-engineer, platform-engineer, data-engineer]
+        strength: signature
+        evidence: "SecureNest/server/prisma/migrations — 11 migrations with ENABLE ROW LEVEL SECURITY + CREATE POLICY \"tenant_isolation\" USING (\"societyId\" = app_current_society())"
+        notes: |
+          PROMOTED to signature 2026-09-10 and made concrete. The old text asserted
+          "enforced at the schema level" as a design intention; the policies are real and
+          quotable: `"societyId" = app_current_society()` applied in a loop over protected
+          tables, with both USING and WITH CHECK so it governs reads and writes alike.
+
+          This is the strongest security bullet in the file and the best "defence in depth"
+          story he has: the argument is not that the application code is careful, it is that
+          the database refuses regardless of whether the application code is careful.
+
+      - id: sn-04
+        text: >
+          Modelled a tenant hierarchy (Cluster → Society → Building → Unit → Resident/Guest)
+          with typed event streams for member lifecycle (join/leave/role-change), real-time
+          presence and activity feeds — data model designed for offline-first sync and
+          eventual consistency without central state.
+        metric: hierarchical tenancy, typed events, offline sync
+        skills: [data modelling, event design, TypeScript, PostgreSQL, Prisma]
+        tags: [analytics-engineer, backend-engineer, data-engineer, software-engineer]
+        strength: strong
+        evidence: "SecureNest/server/prisma/schema.prisma — 63 models across 60 migrations"
+
+      - id: sn-05
+        text: >
+          Defined tiered shipping strategy: v0.01 (NestGate/NestConnect/NestDesk/NestBooks),
+          v1 (NestPark/NestHub/NestStock/FM company deployment), v2 (NestMarket/third-party
+          integrations/ANPR/Nest AI) — each with pilot success criteria, rollout sequencing,
+          and deferred-feature tracking to prevent scope creep.
+        metric: 3-tier roadmap, pilot criteria, deferred-feature tracking
+        skills: [product planning, roadmapping, scope management]
+        tags: [data-analyst, software-engineer]
+        strength: supporting
+        notes: |
+          Planned work, clearly labelled. v1 and v2 are ROADMAP, not built — never let this
+          bullet sit next to the delivery bullets without the word "roadmap" visible.
+
+      - id: sn-06
+        text: >
+          Separated request-path work from background work with Redis/BullMQ queue workers on
+          their own runtime, driven by a transactional outbox so an event is never published
+          without the database change that caused it, and covered the whole surface — gate
+          decisions, visit lifecycle, overstay handling, billing, notifications — with 1,149
+          tests that run against a real database and Redis rather than mocks.
+        metric: queue-backed workers, transactional outbox, 1,149 integration-level tests
+        skills: [BullMQ, Redis, background jobs, transactional outbox, integration testing, Fastify]
+        tags: [backend-engineer, software-engineer, platform-engineer, data-engineer]
+        strength: signature
+        evidence: "SecureNest/server/src/workers + worker.ts; OutboxEvent model in prisma/schema.prisma (RLS-protected); `npx vitest run` 2026-09-10 boots real Redis connections"
+        notes: |
+          ADDED 2026-09-10. The two details that distinguish this from every other "built a
+          Node backend" bullet, and both are worth raising unprompted:
+
+          (1) TRANSACTIONAL OUTBOX. It is the correct answer to dual-write inconsistency
+              between a database and a queue, and it is a pattern most candidates at this
+              level have not heard of, let alone implemented.
+          (2) THE TESTS ARE NOT MOCKED. The suite connects to a real Redis during the run.
+              1,149 tests that exercise real infrastructure is a materially different claim
+              from 1,149 unit tests over mocks, and it is worth saying which kind they are.
 
   # ---------------------------------------------------------------------------
   - id: hr-archetype
@@ -599,7 +2516,7 @@ projects:
           with AI-generated retention recommendations (Gemini 1.5).
         metric: 13-axis diagnostic, 8 archetypes, 90-day window
         skills: [React, TypeScript, "Gemini 1.5", behavioural modelling, product analytics]
-        tags: [data-analyst, agentic-ai, frontend]
+        tags: [data-analyst, ai-engineer, frontend]
         strength: strong
 
       - id: hr-02
@@ -664,9 +2581,16 @@ skills:
       label: UI/UX & Design Operations
       lead_for: [designer, product-designer]
       items: [Figma (variables, components, Auto Layout), Design Systems, Responsive Web Design, Interaction Design, Typography, "Adobe CC (Illustrator, InDesign)", "WCAG 2.2 / a11y"]
+    - id: ai-evals
+      label: LLM Evaluation & Reliability
+      lead_for: [ai-engineer]
+      items: [Evals & benchmark design, Grounded generation, Hallucination gating, Citation faithfulness, Preregistered experiments, Contamination screening, "NL→SQL", Local inference (Ollama, WebLLM), ONNX Runtime Web]
+      notes: |
+        Lead with THIS block for AI roles, not `ai-integration-ux`. These are the terms
+        applied-AI recruiters actually search for; "prompt engineering" alone reads junior.
     - id: ai-integration-ux
       label: AI Integration & Emerging UX
-      lead_for: [ai-engineer]
+      lead_for: [ai-designer]
       items: [Conversational UI layout patterns, Prompt Engineering, LLM APIs (Gemini, OpenAI), AI-assisted design audits]
     - id: growth-optimisation
       label: Growth & Optimisation
@@ -676,10 +2600,99 @@ skills:
       label: Frontend Development
       lead_for: [frontend]
       items: [React, TypeScript, Next.js, Tailwind CSS, HTML5, CSS3, D3.js, Chart.js, Vite]
+    - id: analytics-engineering
+      label: Analytics Engineering
+      lead_for: [analytics-engineer, data-engineer]
+      items: [dbt, "DuckDB (+ Wasm)", "SQL (PostgreSQL, MySQL, DuckDB)", Python, Microsoft Fabric, Data modelling, Medallion architecture, "Parquet / Hive partitioning", Data quality testing, "CI/CD (GitHub Actions)", Terraform]
+      notes: |
+        ADDED 2026-08-17. recipe-analytics-engineer had pointed `skills_lead` at this group id
+        since the file was written, but the group did not exist — so AE-tailored resumes were
+        silently falling back to whatever block came first. Fixed.
+
     - id: backend-data
       label: Backend & Data
-      lead_for: [backend, data-engineer]
+      lead_for: [backend]
       items: [SQL (PostgreSQL, MySQL), DuckDB-Wasm, dbt, Git, "CI/CD (GitHub Actions)"]
+      notes: |
+        SUPERSEDED 2026-09-10 by `backend-engineering` and `data-engineering` below, which
+        are evidence-backed and specific. Kept so nothing referencing `backend-data` breaks.
+        Prefer the newer groups for any new recipe.
+
+    # -- ADDED 2026-09-10 -----------------------------------------------------
+    # ORGANISED BY EVIDENCE TIER, not by wishful breadth. Every item below appears
+    # in at least one accomplishment in this file. Before adding anything here, ask
+    # which bullet evidences it; if the answer is none, it does not go in.
+    - id: languages
+      label: Languages
+      lead_for: [software-engineer]
+      items: ["TypeScript / JavaScript (primary — ~66k LOC DataScope, SecureNest, Off The Pace app)", "Python (primary — ML pipeline, dbt/DuckDB tooling, upstream Ibis contribution)", "SQL (primary — dbt, DuckDB, PostgreSQL, MySQL)"]
+      notes: |
+        THREE LANGUAGES, ALL PRIMARY, ALL EVIDENCED. This block is deliberately short.
+
+        A long language list is the single most common way a junior-to-mid resume loses
+        credibility, because the interviewer picks the weakest item and asks about it. Three
+        languages he can be examined on in depth beat eight he cannot.
+
+        See the commented-out `languages-unevidenced` group below before adding C, C++ or
+        Java. The short version: there is no evidence for them in this workspace.
+
+    # - id: languages-unevidenced
+    #   label: Additional Languages
+    #   items: [C++, C, Java]
+    #   DISABLED 2026-09-10 — DO NOT ENABLE WITHOUT EVIDENCE.
+    #   An audit of ~/github found zero .java files anywhere, and the only C/C++ in the tree
+    #   is _misc/_archive/Cybersecurity-Projects-main, which is a THIRD-PARTY repository by
+    #   CarterPerez-dev — not Justin's work. Listing these would be an unsupported claim on
+    #   the most easily tested part of a resume.
+    #   Legitimate ways to re-enable, in order of preference:
+    #     1. Point to real code he wrote. Then move the language into `languages` with the
+    #        project named, and delete this block.
+    #     2. If the only exposure is university coursework, list it under EDUCATION as
+    #        coursework — not in a skills block, which reads as working proficiency.
+    #     3. Otherwise leave it off. A missing language costs one keyword match; a language
+    #        he cannot write at a whiteboard costs the interview.
+
+    - id: data-engineering
+      label: Data Engineering
+      lead_for: [data-engineer, data-platform-engineer]
+      items: [dbt, "DuckDB (+ Wasm)", "SQL (PostgreSQL, MySQL, DuckDB)", Python, "Parquet / Hive partitioning", Medallion architecture, Data modelling, Data quality testing, Incremental loading, Microsoft Fabric, "Pipeline orchestration (GitHub Actions)", Terraform]
+
+    - id: backend-engineering
+      label: Backend Engineering
+      lead_for: [backend-engineer]
+      items: [TypeScript, "Node.js (Fastify)", PostgreSQL, Prisma, "Row-level security", "Redis / BullMQ", "Transactional outbox", Zod, "REST API design", Integration testing]
+
+    - id: platform-devops
+      label: Platform & DevOps
+      lead_for: [platform-engineer]
+      items: ["CI/CD (GitHub Actions)", Terraform, "Workload Identity Federation (keyless OIDC)", GCP, Firebase Hosting, Cloudflare Workers, "Supply-chain scanning (CodeQL, gitleaks, OSV, pip-audit, SBOM)", "Observability (Sentry, RUM, synthetic monitoring)", Playwright]
+
+    - id: ml-engineering
+      label: ML Engineering
+      lead_for: [ml-engineer, ml-platform-engineer]
+      items: [XGBoost, scikit-learn, Optuna, "ONNX / ONNX Runtime Web", Feature engineering, Conformal calibration, Survival analysis (Kaplan-Meier, AFT), Isotonic regression, "Leakage auditing (sqlglot)", "Model cards & governance", "Season-grouped TimeSeriesSplit"]
+
+    - id: data-science
+      label: Data Science (motorsport)
+      lead_for: [motorsport-data-scientist]
+      items: ["ML & Statistics: XGBoost, scikit-learn, SciPy, Optuna, SHAP, survival analysis, conformal prediction", "Python & Data: pandas, NumPy, PySpark, SQL (PostgreSQL, DuckDB), NoSQL (Firestore, Redis), dbt", "MLOps: GitHub Actions CI/CD, model versioning & run provenance, ONNX Runtime, Docker, Terraform, GCP", "AI: open-source LLMs (Ollama, WebLLM), on-device inference on WebGPU, LLM evaluation, grounding"]
+      notes: |
+        ADDED 2026-09-22. Printed as four labelled lines, one per item. Evidence per item:
+        scikit-learn/SciPy/Optuna/SHAP/pandas/NumPy = off-the-pace ml/requirements.txt and
+        imports; survival (lifelines, AFT) = otp-03/otp-10; PySpark = vns-01 (CONFIRM);
+        Firestore = hr-archetype + spotify-engine; Redis = SecureNest; Docker =
+        DataScope/Dockerfile only (light); GCP/Terraform = otp-12/otp-13.
+        NOT listed, for want of evidence: PyTorch, MLflow, AWS, computer vision.
+
+    - id: research-methods
+      label: Research & Evaluation Methods
+      lead_for: [research-engineer]
+      items: [Preregistered experiment design, Ablation studies, Contamination screening, Baseline & ceiling controls, Bootstrap confidence intervals, "Fixed-effects panel regression (HDFE)", Reproducible run provenance, Negative-result reporting]
+
+    - id: ai-systems
+      label: AI Systems
+      lead_for: [ai-systems-engineer, applied-ai-engineer]
+      items: [Typed tool-call protocols, Bounded agent loops, Grounded generation, Citation validators, "NL→SQL pipelines", "Local inference (Ollama, WebLLM, WebGPU)", ONNX Runtime Web, "LLM APIs (Gemini, Mistral, OpenAI)", Cloudflare Workers]
 
 # =============================================================================
 # OPTIONAL / NOT CURRENTLY SURFACED

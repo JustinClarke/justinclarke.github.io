@@ -229,6 +229,9 @@
   /* IDC Capital Budgeting project gold accent (WACC / NPV highlight) */
   --color-capital: #E6A100;
 
+  /* DataScope Studio project cyan accent (bento card, detail page) */
+  --color-datascope: #00d4ff;
+
   /* Spotify acoustic-feature teal (Danceability/Acousticness bars + code syntax) */
   --color-viz-teal: #4fd1c5;
 

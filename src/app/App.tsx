@@ -38,6 +38,8 @@ const CapitalBudgetingPage = lazy(() => import('@/pages/projects/CapitalBudgetin
 const HRArchetypePage = lazy(() => import('@/pages/projects/HRArchetypePage').then(m => ({ default: m.HRArchetypePage })));
 const OffThePaceOverview = lazy(() => import('@/pages/off-the-pace/OffThePaceOverview').then(m => ({ default: m.OffThePaceOverview })));
 const OffThePaceSource = lazy(() => import('@/pages/off-the-pace/OffThePaceSource').then(m => ({ default: m.OffThePaceSource })));
+const DataScopeOverview = lazy(() => import('@/pages/datascope/DataScopeOverview').then(m => ({ default: m.DataScopeOverview })));
+const DataScopeArchitecture = lazy(() => import('@/pages/datascope/DataScopeArchitecture').then(m => ({ default: m.DataScopeArchitecture })));
 const LinkedinBannerPage = lazy(() => import('@/pages/LinkedinBannerPage').then(m => ({ default: m.LinkedinBannerPage })));
 const StudioPage = lazy(() => import('@/pages/studio/StudioPage').then(m => ({ default: m.StudioPage })));
 const CrescendoPage = lazy(() => import('@/pages/studio/CrescendoPage').then(m => ({ default: m.CrescendoPage })));
@@ -60,6 +62,8 @@ const ROUTE_COMPONENTS: Record<RoutePath, ComponentType> = {
   '/the-long-version': TheLongVersionPage,
   '/f1': OffThePaceOverview,
   '/off-the-pace': OffThePaceSource,
+  '/datascope': DataScopeOverview,
+  '/datascope/architecture': DataScopeArchitecture,
   '/connect': ConnectPage,
   '/contact': ConnectPage, // aliasOf '/connect' renders the same page
   '/linkedin-banner': LinkedinBannerPage,

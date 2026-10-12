@@ -11,6 +11,25 @@ import { Project } from '@/types';
 
 export const projectsData: Project[] = [
   {
+    id: "datascope",
+    projectType: 'analytics ide',
+    title: 'DataScope Studio',
+    tech: ['TypeScript', 'DuckDB-Wasm', 'React'],
+    copy: 'Browser-native analytics IDE. Drop Parquet/CSV, get automatic profiling, join graphs, and a SQL playground — entirely client-side, no upload.',
+    fullDescription: 'A browser-native analytics IDE for privacy-constrained data workers. Drop a folder of Parquet or CSV files and get automatic column profiling, relationship inference, a join graph, quality reports, and a full SQL playground — all powered by DuckDB-Wasm, entirely client-side, with zero data upload.',
+    visualDescription: "Analytics IDE interface showing column profiling, schema graph, and SQL playground running entirely in the browser.",
+    pageMetrics: [
+      { val: 'Zero', label: 'Data Upload' },
+      { val: 'DuckDB', label: 'Engine' },
+      { val: 'Client', label: 'Side Only' },
+    ],
+    pageStatus: {
+      text: 'In Development',
+      color: 'bg-cyan-400',
+      blink: true,
+    }
+  },
+  {
     id: "off-the-pace",
     projectType: 'data engineering',
     title: 'Off The Pace',

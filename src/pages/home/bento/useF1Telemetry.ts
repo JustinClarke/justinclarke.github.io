@@ -111,12 +111,13 @@ export function useF1Telemetry() {
 
       // Live log emitter
       if (Math.random() > 0.8) {
+        const timeStr = new Date().toTimeString().slice(0, 8);
         const events = [
-          `[${new Date().toLocaleTimeString()}] [dbt] SUCCESS - f1_pit_model`,
-          `[${new Date().toLocaleTimeString()}] [DuckDB] Ingested 12.4K packets`,
-          `[${new Date().toLocaleTimeString()}] [XGBoost] Driver Residual ε: -0.142s`,
-          `[${new Date().toLocaleTimeString()}] [Fabric] Refresh Power BI model`,
-          `[${new Date().toLocaleTimeString()}] [Data Quality] SLA: 100% OK`
+          `[${timeStr}] [dbt] SUCCESS - f1_pit_model`,
+          `[${timeStr}] [DuckDB] Ingested 12.4K packets`,
+          `[${timeStr}] [XGBoost] Driver Residual ε: -0.142s`,
+          `[${timeStr}] [Fabric] Refresh Power BI model`,
+          `[${timeStr}] [Data Quality] SLA: 100% OK`
         ];
         const newLog = events[Math.floor(Math.random() * events.length)];
         setPipelineLogs(prev => [...prev.slice(-4), newLog]);
@@ -155,7 +156,8 @@ export function useF1Telemetry() {
     if (isTesting) return;
     log('dbt tests: start');
     setIsTesting(true);
-    setPipelineLogs([`[${new Date().toLocaleTimeString()}] [dbt] Initiating Physical Verification Suite...`]);
+    const startTimeStr = new Date().toTimeString().slice(0, 8);
+    setPipelineLogs([`[${startTimeStr}] [dbt] Initiating Physical Verification Suite...`]);
 
     const tests = [
       { msg: '[dbt] 🔍 [TEST 1/5] DECOMPOSITION_CLOSURE ...', status: 'PASS (residual sum = 0.000s)' },

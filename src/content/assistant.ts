@@ -100,6 +100,7 @@ He is based in Dubai, UAE and open to relocation.`,
    */
   extraProjectLines: [
     'Capital Architecture DCF financial engineering, Excel to Python migration. Case study at /project/capital-budgeting.',
+    'DataScope Studio browser-native analytics IDE, DuckDB-Wasm, automatic profiling, join graphs, SQL playground. Entirely client-side, no upload. In development.',
   ],
 
   /**
