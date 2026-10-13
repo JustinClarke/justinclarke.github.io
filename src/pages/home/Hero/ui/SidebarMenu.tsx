@@ -1,6 +1,8 @@
 /**
- * SidebarMenu the "CONTROLS" panel beside the terminal: the four quick-action
- * buttons (resumé, connect, the long version, featured project).
+ * SidebarMenu the "CONTROLS" panel beside the terminal: the quick-action
+ * buttons (resumé, connect, the long version, featured projects, studio). The
+ * featured tile carries two projects: Off The Pace as the photo hero, DataScope
+ * as a strip along its bottom edge.
  *
  * Fits in: the right-hand column of the Hero. Clicking a button either runs a
  *          terminal command (`onCommand`) or navigates to a page.
@@ -13,6 +15,7 @@ import { cn, track } from '@/utils';
 import { TOOLTIPS } from '@/utils/tooltipContent';
 import { useNavigate } from 'react-router-dom';
 import { ProjectShowcase } from './ProjectShowcase';
+import { ProjectStrip } from './ProjectStrip';
 import { projectsData } from '@/content/projects';
 import { CommandButton, CommandButtonProps } from './CommandButton';
 
@@ -37,7 +40,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
     { n: '01', cmd: 'resumé', desc: 'download pdf', important: false, hot: false, className: "resume-blink-active", tooltip: TOOLTIPS.resume, onClick: () => onCommand('resume', 'sidebar'), mobileOrder: 2 },
     { n: '02', cmd: 'connect', desc: 'get in touch', important: true, hot: false, tooltip: TOOLTIPS.contactme, onClick: () => onCommand('connect', 'sidebar'), mobileOrder: 3 },
     { n: '03', cmd: 'the long version', desc: 'how I got here', important: false, hot: false, tooltip: TOOLTIPS.everythingelse, onClick: () => onCommand('the long version', 'sidebar'), mobileOrder: 4 },
-    { n: '04', cmd: 'featured project', desc: 'VIEW OVERVIEW', large: true, badge: <ProjectShowcase project={crownJewelProject} />, hot: false, alignTop: true, tooltip: TOOLTIPS.projects, onClick: () => { track('project-click', { project: crownJewelProject.id }); navigate('/f1'); }, mobileOrder: 1 },
+    { n: '04', cmd: 'featured projects', desc: 'VIEW OVERVIEW', large: true, badge: <ProjectShowcase project={crownJewelProject} />, footer: <ProjectStrip onClick={() => { track('project-click', { project: 'datascope' }); navigate('/datascope'); }} />, hot: false, alignTop: true, tooltip: TOOLTIPS.projects, onClick: () => { track('project-click', { project: crownJewelProject.id }); navigate('/f1'); }, mobileOrder: 1 },
     { n: '05', cmd: 'studio', desc: 'ui/ux & visuals', important: false, hot: false, tooltip: 'Design Portfolio', onClick: () => { track('studio-click'); navigate('/studio'); }, mobileOrder: 5 },
   ];
 
@@ -79,6 +82,7 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({ onCommand, isVisible =
               important={c.important}
               large={c.large}
               badge={c.badge}
+              footer={c.footer}
               alignTop={c.alignTop}
               tooltip={c.tooltip}
               onClick={c.onClick}

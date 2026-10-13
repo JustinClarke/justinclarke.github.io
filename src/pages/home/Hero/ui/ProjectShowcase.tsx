@@ -16,7 +16,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
     <div className="h-full w-full flex flex-col justify-end">
 
       {/* Full-bleed photo */}
-      <div className="hidden md:block absolute -inset-3 pointer-events-none overflow-hidden rounded-lg">
+      <div className="hidden md:block absolute -inset-3 pointer-events-none overflow-hidden rounded-t-lg">
         <div className="absolute inset-0 transition-transform duration-[1200ms] ease-out scale-100 group-hover/btn:scale-[1.04] flex items-center justify-center">
           <img
             src="/assets/audif1.webp"
@@ -28,7 +28,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
 
       {/* Bottom gradient */}
       <div
-        className="hidden md:block absolute -inset-3 pointer-events-none z-[5] rounded-lg"
+        className="hidden md:block absolute -inset-3 pointer-events-none z-[5] rounded-t-lg"
         style={{
           background: 'linear-gradient(to top, rgba(11,15,18,1) 0%, rgba(11,15,18,0.9) 22%, rgba(11,15,18,0.5) 50%, rgba(11,15,18,0.1) 72%, transparent 100%)',
         }}
@@ -36,7 +36,7 @@ export const ProjectShowcase = ({ project }: { project: Project }) => {
 
       {/* Hover border */}
       <div
-        className="hidden md:block absolute -inset-3 rounded-lg pointer-events-none z-30 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
+        className="hidden md:block absolute -inset-3 rounded-t-lg pointer-events-none z-30 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500"
         style={{
           border: '1px solid rgba(180,20,30,0.2)',
           boxShadow: '0 25px 60px -15px rgba(120,8,20,0.45)',

@@ -19,27 +19,28 @@ export interface CommandButtonProps {
   important?: boolean;
   large?: boolean;
   badge?: React.ReactNode;  // e.g. a ProjectShowcase preview
+  footer?: React.ReactNode; // large only: a second, separately clickable row under the badge (e.g. ProjectStrip)
   alignTop?: boolean;
   tooltip?: string;
   onClick?: () => void;
   className?: string;
 }
 
-export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, large, badge, alignTop, tooltip, onClick, className }) => {
+export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, hot, important, large, badge, footer, alignTop, tooltip, onClick, className }) => {
   const isLongVersion = cmd === 'the long version';
 
-  return (
+  const button = (
     <button
       onClick={onClick}
       data-tooltip={tooltip}
       data-tooltip-pos="below"
-      data-theme-lock={large ? "dark" : undefined}
       className={cn(
-        "flex w-full rounded-lg border group/btn text-left relative transition-all duration-500 justify-between",
-        large ? "overflow-hidden" : "overflow-hidden",
+        "flex w-full group/btn text-left relative transition-all duration-500 justify-between overflow-hidden",
+        // The large tile's border, surface and hover scale live on the wrapper
+        // below, so the footer row sits inside the same frame.
         large
-          ? "flex-col items-stretch p-3 md:flex-1 md:min-h-0 md:h-full hover:scale-[1.01] hover:border-f1-red/30"
-          : ((large && alignTop) ? "items-start" : "items-center p-3"),
+          ? "flex-col items-stretch p-3 md:flex-1 md:min-h-0"
+          : cn("rounded-lg border p-3", alignTop ? "items-start" : "items-center"),
         isLongVersion
           ? "bg-[rgba(102,14,29,0.08)] border-[rgba(102,14,29,0.25)] hover:border-[rgba(102,14,29,0.5)] hover:bg-[rgba(102,14,29,0.15)] text-fg hover:text-fg hover:shadow-[0_10px_30px_-10px_rgba(102,14,29,0.12)]"
           : important
@@ -47,10 +48,10 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
             : hot
               ? "bg-brand-primary/5 border-brand-primary/30 text-fg"
               : large
-                ? "bg-surface md:bg-transparent border-f1-red/20 md:border-edge-soft text-fg"
+                ? "text-fg"
                 : "bg-control-bg border-edge-soft text-fg",
         (!isLongVersion && !large) && "system-control-hover",
-        className
+        !large && className
       )}
     >
       {/* Left accent spine  - bolder, grows on hover */}
@@ -175,5 +176,23 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
         </>
       )}
     </button>
+  );
+
+  if (!large) return button;
+
+  // The large tile is a frame, not a button: buttons can't nest, so the
+  // footer row has to be a sibling of the main button to be clickable on its own.
+  return (
+    <div
+      data-theme-lock="dark"
+      className={cn(
+        "flex flex-col w-full rounded-lg border overflow-hidden relative transition-all duration-500 md:flex-1 md:min-h-0 md:h-full",
+        "bg-surface md:bg-ds-panel border-f1-red/20 md:border-edge-soft",
+        className
+      )}
+    >
+      {button}
+      {footer}
+    </div>
   );
 };

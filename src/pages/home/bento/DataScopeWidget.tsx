@@ -166,7 +166,7 @@ export function DataScopeWidget() {
         {/* Row 2: description callout */}
         <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2">
           <p className="text-fine sm:text-caption leading-relaxed text-fg-soft">
-            Browser-native <span className="font-semibold text-fg">analytics IDE</span>. Drop files, get <span className="font-semibold" style={{ color: DS_AMBER }}>schema detection</span>, <span className="font-semibold" style={{ color: DS_VIOLET }}>profiling</span>, <span className="font-semibold" style={{ color: DS_TEAL }}>SQL</span>, <span className="font-semibold text-fg">charts</span>, and <span className="font-semibold" style={{ color: DS_AMBER }}>schema-graph inference</span>. Nothing leaves your browser.
+            Browser-native <span className="font-semibold text-fg">analytics IDE</span>. Drop files, get <span className="font-semibold" style={{ color: DS_AMBER }}>schema detection</span>, <span className="font-semibold" style={{ color: DS_VIOLET }}>profiling</span>, <span className="font-semibold" style={{ color: DS_TEAL }}>SQL</span>, <span className="font-semibold text-fg">charts</span>, and <span className="font-semibold" style={{ color: DS_AMBER }}>schema-graph inference</span>.
           </p>
         </div>
       </div>
