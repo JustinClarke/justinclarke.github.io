@@ -36,28 +36,22 @@ interface TerminalBodyProps {
 // Konami code sequence; completing it triggers the `matrix` easter egg (see handler below).
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
+// Questions the AI agent can answer; shared by the placeholder cycler and the desktop "try asking" panel.
+const AI_QUESTIONS = [
+  'how much coffee he drinks?',
+  'what is his favourite framework?',
+  'does he actually sleep?',
+  'what is his biggest flex?',
+  'can he fix my printer?',
+];
+
+
 // ---------------------------------------------------------------------------
-// PlaceholderCycler cycles suggestions, skipping already-run commands
+// PlaceholderCycler cycles AI question hints, skipping already-asked ones
 // ---------------------------------------------------------------------------
-const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
-  const allSuggestions = [
-    { prefix: 'type ', cmd: 'whoami', suffix: ' to skip the small talk' },
-    { prefix: 'try asking ', cmd: 'how much coffee he drinks?', suffix: '' },
-    { prefix: 'type ', cmd: 'ls projects', suffix: ' for the good stuff' },
-    { prefix: 'try asking ', cmd: 'what is his favourite framework?', suffix: '' },
-    { prefix: 'type ', cmd: 'timeline', suffix: ' to see his origin story' },
-    { prefix: 'type ', cmd: 'play', suffix: ' to ruin your productivity' },
-    { prefix: 'try asking ', cmd: 'if he actually sleeps', suffix: '' },
-    { prefix: 'type ', cmd: 'resumé', suffix: ' to hire him immediately' },
-    { prefix: 'type ', cmd: 'off the pace', suffix: ' for F1 drama' },
-    { prefix: 'type ', cmd: 'expertise', suffix: ' to see his weapon choice' },
-    { prefix: 'try asking ', cmd: 'what is his biggest flex?', suffix: '' },
-    { prefix: 'type ', cmd: 'connect', suffix: ' to slide into his inbox' },
-    { prefix: 'type ', cmd: 'sudo', suffix: ' to see what happens' },
-    { prefix: 'try asking ', cmd: 'can he fix my printer?', suffix: '' },
-    { prefix: 'type ', cmd: 'help', suffix: ' if you are completely lost' },
-  ];
-  // Drop already-run commands so the cycler suggests fresh things; fall back to all once everything's been tried.
+const PlaceholderCycler: React.FC<{ ran: Set<string>; className?: string }> = ({ ran, className }) => {
+  const allSuggestions = AI_QUESTIONS.map(cmd => ({ prefix: 'try asking ', cmd, suffix: '' }));
+  // Drop already-asked questions so the cycler suggests fresh things; fall back to all once everything's been tried.
   const pool = allSuggestions.filter(s => !ran.has(s.cmd));
   const suggestions = pool.length > 0 ? pool : allSuggestions;
 
@@ -101,7 +95,7 @@ const PlaceholderCycler: React.FC<{ ran: Set<string> }> = ({ ran }) => {
   void charsDone; // used for cursor sync
 
   return (
-    <div className="font-mono text-fine md:text-caption text-term-fg select-none leading-tight whitespace-pre-wrap opacity-85">
+    <div className={cn('font-mono text-fine md:text-caption text-term-fg select-none leading-tight whitespace-pre-wrap opacity-85', className)}>
       <Typewriter key={`prefix-${key}`} text={current.prefix} speed={speed} className="text-term-fg" />
       <Typewriter key={`cmd-${key}`} text={current.cmd} speed={speed} delay={cmdDelay} className="text-brand-primary font-black brightness-110" />
       <Typewriter key={`suffix-${key}`} text={current.suffix} speed={speed} delay={suffixDelay} className="text-term-fg" />
@@ -334,6 +328,16 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
       }
     }
   }, [inputValue, cmdHistory, historyIndex, onInputChange, onCommand]);
+
+  // Desktop clicks (suggested question, completion chip, ASK) record the command
+  // in the ↑/↓ history exactly like pressing Enter does.
+  const remember = useCallback((cmd: string) => {
+    const updated = [cmd, ...cmdHistory.filter(c => c !== cmd).slice(0, 49)];
+    setCmdHistory(updated);
+    try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
+    setHistoryIndex(-1);
+    setGhostText('');
+  }, [cmdHistory]);
 
   const lastPromptIndex = history.map((l) => l.t).lastIndexOf('prompt');
   const showPlaceholder = !inputValue && !isInputFocused;
@@ -570,16 +574,23 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
         </div>
       </div>
 
-      {/* Permanent Textarea Prompt for Desktop */}
+      {/* Desktop AI input. It is a row from the sidebar's CONTROLS system (accent
+          spine, indicator light, numbered badge, uppercase title + desc) promoted
+          to the left column's focal point. Its frame follows the hero grid: the
+          left edge sits on the column's ~$ rail, there is no bottom padding so
+          it lands flush with the sidebar's last row, and lg:pr-4 (the sidebar's
+          lg:pl-12 minus the grid's gap-8, i.e. 48 - 32px) puts it as far left of
+          the divider as the sidebar rows sit right of it, at every lg width.
+          Hovering or focusing it fans out the suggested questions above it. */}
       {!isMobile && bootStep >= 7 && (
         <div
           className={cn(
-            'mt-auto shrink-0 pt-4 pb-2 transition-opacity duration-300',
+            'mt-auto shrink-0 pt-4 lg:pr-4 transition-opacity duration-300',
             isTyping ? 'opacity-60 pointer-events-none' : 'opacity-100'
           )}
         >
           {inputValue && completionCandidates.length > 0 && (
-            <div className="flex gap-2 mb-2 flex-wrap pl-6 md:pl-9">
+            <div className="flex gap-2 mb-2 flex-wrap pl-11">
               {completionCandidates.map((c, ci) => (
                 <button
                   key={ci}
@@ -587,11 +598,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
                   onClick={() => {
                     const cmd = c.trim();
                     if (!isTyping) {
-                      const updated = [cmd, ...cmdHistory.filter(h => h !== cmd).slice(0, 49)];
-                      setCmdHistory(updated);
-                      try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
-                      setHistoryIndex(-1);
-                      setGhostText('');
+                      remember(cmd);
                       onCommand(cmd);
                     }
                   }}
@@ -603,75 +610,188 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
             </div>
           )}
 
-          <div
-            className={cn(
-              'flex items-center gap-2 md:gap-3 w-full max-w-lg bg-input-bg border rounded-[20px] p-1.5 pl-4 transition-all duration-300 cursor-default',
-              isInputFocused ? 'border-brand-primary/50 shadow-[0_0_15px_rgba(0,200,180,0.15)] bg-input-bg' : 'border-edge hover:border-fg-faint hover:bg-input-bg/90'
+          <div className="group/ai relative w-full">
+            {/* Suggested questions, as numbered rows like the sidebar's. Enter is
+                staggered (each row's delay rides in on --stagger) and eased on the
+                site's expo curve; exit is a quick undelayed fade. */}
+            {!inputValue && !isTyping && (
+              <div className="pointer-events-none absolute bottom-full left-0 z-30 w-full max-w-sm pb-2 group-hover/ai:pointer-events-auto group-focus-within/ai:pointer-events-auto">
+                <div
+                  role="group"
+                  aria-label="Suggested questions"
+                  className={cn(
+                    'origin-bottom-left rounded-lg border border-edge bg-input-bg/95 p-1.5 backdrop-blur-md shadow-[0_24px_48px_-24px_var(--color-hover-shadow)]',
+                    'translate-y-2 scale-[0.98] opacity-0 transition-[opacity,transform] duration-200 ease-out',
+                    'group-hover/ai:translate-y-0 group-hover/ai:scale-100 group-hover/ai:opacity-100 group-hover/ai:duration-500 group-hover/ai:ease-out-expo group-hover/ai:delay-75',
+                    'group-focus-within/ai:translate-y-0 group-focus-within/ai:scale-100 group-focus-within/ai:opacity-100 group-focus-within/ai:duration-500 group-focus-within/ai:ease-out-expo'
+                  )}
+                >
+                  <div className="flex items-center gap-3 px-2.5 pt-1.5 pb-2 font-mono text-micro">
+                    <span className="uppercase tracking-mega text-fg-mid">Try asking</span>
+                    <span className="h-px flex-1 bg-edge" aria-hidden="true" />
+                    <span className="text-fg-mid">
+                      or type <span className="font-bold text-fg-soft">help</span>
+                    </span>
+                  </div>
+                  {AI_QUESTIONS.map((q, qi) => (
+                    <div
+                      key={q}
+                      style={{ '--stagger': `${120 + qi * 45}ms` } as React.CSSProperties}
+                      className={cn(
+                        'translate-y-1 opacity-0 transition-[opacity,transform] duration-150 ease-out',
+                        'group-hover/ai:translate-y-0 group-hover/ai:opacity-100 group-hover/ai:duration-500 group-hover/ai:ease-out-expo group-hover/ai:delay-(--stagger)',
+                        'group-focus-within/ai:translate-y-0 group-focus-within/ai:opacity-100 group-focus-within/ai:duration-500 group-focus-within/ai:ease-out-expo group-focus-within/ai:delay-(--stagger)'
+                      )}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          remember(q);
+                          onCommand(q);
+                        }}
+                        className="group/q flex w-full cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-1 text-left transition-colors duration-200 hover:bg-brand-primary/[0.07] focus-visible:bg-brand-primary/[0.07] focus-visible:outline-none"
+                      >
+                        <span className="inline-flex h-[18px] shrink-0 items-center justify-center rounded-[4px] border border-edge-soft bg-fg/[0.02] px-1.5 font-mono text-micro font-bold text-fg-mid transition-colors duration-300 group-hover/q:border-brand-primary/30 group-hover/q:bg-brand-primary/5 group-hover/q:text-brand-primary group-focus-visible/q:border-brand-primary/30 group-focus-visible/q:text-brand-primary">
+                          {String(qi + 1).padStart(2, '0')}
+                        </span>
+                        <span className="truncate font-mono text-fine text-fg-soft transition-colors duration-300 group-hover/q:text-brand-primary group-focus-visible/q:text-brand-primary">
+                          {q}
+                        </span>
+                        <span
+                          aria-hidden="true"
+                          className="ml-auto inline-block font-mono text-label leading-none text-brand-primary opacity-0 -translate-x-2 transition-all duration-400 ease-spring group-hover/q:opacity-100 group-hover/q:translate-x-0 group-focus-visible/q:opacity-100 group-focus-visible/q:translate-x-0"
+                        >
+                          →
+                        </span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
-            onClick={() => textareaRef.current?.focus()}
-          >
-            <div className="shrink-0 flex items-center h-[34px] md:h-[36px] cursor-default select-none">
-              {lastExitCode && lastExitCode !== 0 ? (
-                <span className="font-mono text-fine md:text-xs text-viz-mac-red font-bold mr-1">[{lastExitCode}] ~$</span>
-              ) : (
-                <span className="font-mono text-fine md:text-xs text-brand-primary font-bold mr-1">~$</span>
-              )}
-            </div>
 
-            <div className="relative flex-1 flex min-w-0 font-mono text-fine md:text-caption min-h-[34px] md:min-h-[36px]">
-              <textarea
-                ref={textareaRef}
-                id="hero-terminal-input"
-                value={inputValue}
-                onChange={(e) => {
-                  onInputChange(e.target.value);
-                  adjustTextareaHeight();
-                }}
-                onKeyDown={handleTextareaKeyDown}
-                onFocus={() => setIsInputFocused(true)}
-                onBlur={() => setIsInputFocused(false)}
-                className="w-full bg-transparent border-none outline-none font-mono text-term-fg placeholder-fg-faint caret-brand-primary py-[10px] md:py-[11px] resize-none custom-scrollbar max-h-[160px] min-h-[34px] md:min-h-[36px] leading-relaxed relative z-10 cursor-text"
-                spellCheck={false}
-                placeholder=""
-                autoComplete="off"
-                aria-label="Terminal input"
-                disabled={isTyping}
-                rows={1}
+            <div
+              className={cn(
+                'relative w-full overflow-hidden rounded-lg border transition-[border-color,background-color,box-shadow] duration-500 ease-out-expo',
+                isInputFocused
+                  ? 'border-brand-primary/45 bg-brand-primary/[0.04] shadow-[inset_0_0_40px_-24px_var(--color-brand-primary)]'
+                  : 'border-brand-primary/20 bg-brand-primary/[0.02] group-hover/ai:border-brand-primary/30'
+              )}
+            >
+              {/* Teal bloom behind the spine (ProjectStrip's blooms, in brand teal) */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'pointer-events-none absolute -left-20 -top-16 h-40 w-96 rounded-full bg-radial from-brand-primary/[0.10] to-transparent to-60% transition-opacity duration-700',
+                  isInputFocused ? 'opacity-100' : 'opacity-60 group-hover/ai:opacity-100'
+                )}
+              />
+              {/* Top hairline: the sidebar rows' hover line, breathing at rest, held on focus */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-primary/70 to-transparent',
+                  isInputFocused ? 'opacity-100' : 'opacity-60 motion-safe:animate-breathe-slow'
+                )}
+              />
+              {/* Accent spine: lit at rest, runs full height with a glow on hover/focus */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  'absolute left-0 z-20 w-[3px] rounded-r-sm transition-all duration-300',
+                  isInputFocused
+                    ? 'top-0 bottom-0 bg-brand-primary shadow-[0_0_10px_var(--color-brand-primary)]'
+                    : 'top-2 bottom-2 bg-brand-primary/50 group-hover/ai:top-0 group-hover/ai:bottom-0 group-hover/ai:bg-brand-primary group-hover/ai:shadow-[0_0_10px_var(--color-brand-primary)]'
+                )}
               />
 
-              {showPlaceholder && (
-                <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none z-0">
-                  <PlaceholderCycler ran={ranCommands.current} />
-                </div>
-              )}
-            </div>
+              {/* Header in the sidebar-row layout: lit indicator, AI badge, title,
+                  desc on the right (swaps to the key hints while focused). The
+                  w-6 gutter is shared with the ~$ below so badge and text align. */}
+              <div className="relative z-10 flex items-center gap-2 px-3 pt-2.5">
+                <span className="flex w-6 shrink-0 justify-center" aria-hidden="true">
+                  <span className="size-1 rounded-[1px] bg-brand-primary shadow-[0_0_6px_var(--color-brand-primary)] motion-safe:animate-indicator-breathe" />
+                </span>
+                <span className="inline-flex h-[18px] shrink-0 items-center rounded-[4px] border border-brand-primary/40 bg-brand-primary/10 px-1.5 font-mono text-micro font-bold text-brand-primary">
+                  AI
+                </span>
+                <span className="font-noto text-label font-black uppercase tracking-tight text-fg">Agent</span>
+                <span
+                  key={isInputFocused ? 'keys' : 'desc'}
+                  className="ml-auto truncate pl-3 font-mono text-micro uppercase tracking-tight text-fg-mid animate-terminal-fade-in"
+                >
+                  {isInputFocused ? 'enter to ask · tab to complete' : `ask me anything about ${SITE.firstName}`}
+                </span>
+              </div>
 
-            <div className="shrink-0 flex items-center h-[34px] md:h-[36px] pr-0.5 pb-[1px]">
-              <button
-                type="button"
-                className={cn(
-                  "flex items-center justify-center w-8 h-8 md:w-[34px] md:h-[34px] rounded-[14px] transition-all duration-300",
-                  inputValue.trim()
-                    ? "bg-brand-primary text-black hover:bg-brand-primary/80 hover:scale-105 cursor-pointer shadow-[0_0_10px_rgba(0,200,180,0.3)]"
-                    : "bg-fg/5 text-fg-faint cursor-default"
-                )}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (inputValue.trim() && !isTyping) {
-                    const cmd = inputValue.trim();
-                    const updated = [cmd, ...cmdHistory.filter(c => c !== cmd).slice(0, 49)];
-                    setCmdHistory(updated);
-                    try { sessionStorage.setItem('term_cmd_history', JSON.stringify(updated)); } catch { }
-                    setHistoryIndex(-1);
-                    setGhostText('');
-                    onCommand(inputValue);
-                  }
-                }}
+              <div
+                className="relative z-10 flex w-full cursor-text items-start gap-2 px-3 pb-1"
+                onClick={() => textareaRef.current?.focus()}
               >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="translate-y-[-1px]">
-                  <path d="M12 19V5M5 12l7-7 7 7" />
-                </svg>
-              </button>
+                <span className="flex h-[38px] min-w-6 shrink-0 select-none items-center justify-center font-mono text-xs font-bold">
+                  {lastExitCode && lastExitCode !== 0 ? (
+                    <span className="text-viz-mac-red">[{lastExitCode}] ~$</span>
+                  ) : (
+                    <span className="text-brand-primary">~$</span>
+                  )}
+                </span>
+
+                <div className="relative flex min-h-[38px] min-w-0 flex-1 font-mono text-caption">
+                  <textarea
+                    ref={textareaRef}
+                    id="hero-terminal-input"
+                    value={inputValue}
+                    onChange={(e) => {
+                      onInputChange(e.target.value);
+                      adjustTextareaHeight();
+                    }}
+                    onKeyDown={handleTextareaKeyDown}
+                    onFocus={() => setIsInputFocused(true)}
+                    onBlur={() => setIsInputFocused(false)}
+                    className="relative z-10 min-h-[38px] max-h-[160px] w-full resize-none border-none bg-transparent py-[9px] font-mono leading-5 text-term-fg caret-brand-primary outline-none custom-scrollbar cursor-text"
+                    spellCheck={false}
+                    placeholder=""
+                    autoComplete="off"
+                    aria-label="Ask the AI agent or type a command"
+                    disabled={isTyping}
+                    rows={1}
+                  />
+
+                  {showPlaceholder && (
+                    <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none z-0">
+                      <PlaceholderCycler ran={ranCommands.current} className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex h-[38px] shrink-0 items-center self-end">
+                  <button
+                    type="button"
+                    aria-disabled={!inputValue.trim()}
+                    className={cn(
+                      'group/send inline-flex h-7 items-center gap-1.5 rounded-md border pl-2.5 pr-2 font-mono text-micro font-black tracking-mega transition-all duration-300 ease-out-expo',
+                      inputValue.trim()
+                        ? 'cursor-pointer border-brand-primary/60 bg-brand-primary/10 text-brand-primary shadow-[0_0_14px_-4px_var(--color-brand-primary)] hover:border-brand-primary hover:bg-brand-primary/20'
+                        : 'cursor-default border-edge bg-fg/[0.02] text-fg-mid'
+                    )}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (inputValue.trim() && !isTyping) {
+                        remember(inputValue.trim());
+                        onCommand(inputValue);
+                      }
+                    }}
+                  >
+                    ASK
+                    <span
+                      aria-hidden="true"
+                      className="inline-block text-caption leading-none tracking-normal transition-transform duration-400 ease-spring group-hover/send:translate-x-0.5"
+                    >
+                      →
+                    </span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

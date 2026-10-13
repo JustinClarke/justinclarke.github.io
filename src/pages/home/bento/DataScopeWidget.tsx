@@ -145,7 +145,7 @@ export function DataScopeWidget() {
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <span
-              className="font-mono text-[9px] sm:text-[10px] font-medium border px-1.5 py-0.5 rounded uppercase tracking-widest shrink-0"
+              className="font-mono text-micro font-medium border px-1.5 py-0.5 rounded uppercase tracking-widest shrink-0"
               style={{ borderColor: `color-mix(in srgb, ${DS_AMBER} 30%, transparent)`, color: DS_AMBER, background: `color-mix(in srgb, ${DS_AMBER} 5%, transparent)` }}
             >
               Browser-Native IDE
@@ -165,7 +165,7 @@ export function DataScopeWidget() {
 
         {/* Row 2: description callout */}
         <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2">
-          <p className="text-fine sm:text-caption leading-relaxed text-fg-soft">
+          <p className="text-fine md:text-caption leading-relaxed text-fg-soft">
             Browser-native <span className="font-semibold text-fg">analytics IDE</span>. Drop files, get <span className="font-semibold" style={{ color: DS_AMBER }}>schema detection</span>, <span className="font-semibold" style={{ color: DS_VIOLET }}>profiling</span>, <span className="font-semibold" style={{ color: DS_TEAL }}>SQL</span>, <span className="font-semibold text-fg">charts</span>, and <span className="font-semibold" style={{ color: DS_AMBER }}>schema-graph inference</span>.
           </p>
         </div>
@@ -233,8 +233,8 @@ export function DataScopeWidget() {
               )}
               style={{ animationDelay: `${i * 0.5}s` }}
             >
-              <span className="text-micro md:text-fine leading-none shrink-0">{stage.icon}</span>
-              <span className="font-mono text-micro md:text-micro font-black tracking-[0.08em] leading-none shrink-0">{stage.label}</span>
+              <span className="text-micro leading-none shrink-0">{stage.icon}</span>
+              <span className="font-mono text-micro font-black tracking-[0.08em] leading-none shrink-0">{stage.label}</span>
             </div>
             {i < arr.length - 1 && (
               <span className="relative flex-grow h-px min-w-[10px] bg-fg/10 mx-1.5 md:mx-1.5 lg:mx-2 xl:mx-4">
@@ -255,7 +255,7 @@ export function DataScopeWidget() {
             key={p}
             onClick={(e) => { e.stopPropagation(); setPhase(p); }}
             className={cn(
-              "font-mono text-[10px] px-3 py-1 rounded-full transition-all duration-300 uppercase tracking-widest border",
+              "font-mono text-micro px-3 py-1 rounded-full transition-all duration-300 uppercase tracking-widest border",
               phase === p
                 ? "border-fg/10 bg-fg/[0.03] text-fg font-medium shadow-sm"
                 : "border-transparent text-fg-faint hover:text-fg-soft hover:bg-fg/[0.02]"
@@ -265,7 +265,7 @@ export function DataScopeWidget() {
           </button>
         ))}
         <div className="flex-grow" />
-        <span className="font-mono text-[9px] tracking-widest text-fg-faint">
+        <span className="font-mono text-micro tracking-widest text-fg-faint">
           {PHASES.indexOf(phase) + 1} / {PHASES.length}
         </span>
       </div>
@@ -287,24 +287,24 @@ export function DataScopeWidget() {
                 <div className="absolute top-0 right-0 w-36 h-36 bg-amber-500/5 blur-3xl pointer-events-none" />
                 
                 {/* Header Row: Title + Verdict Badge */}
-                <div className="flex items-center justify-between gap-2 relative z-10">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 relative z-10">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
                       <Sparkles size={11} style={{ color: DS_AMBER }} />
                       BLUEPRINT
                     </span>
-                    <span className="font-mono text-[8px] font-semibold px-2 py-0.5 rounded-full border text-emerald-400 border-emerald-400/30 bg-emerald-400/10 flex items-center gap-1">
+                    <span className="font-mono text-micro font-semibold px-2 py-0.5 rounded-full border text-emerald-400 border-emerald-400/30 bg-emerald-400/10 flex items-center gap-1">
                       <CheckCircle2 size={9} /> E-commerce mini-warehouse
                     </span>
                   </div>
-                  <span className="font-mono text-[7.5px] text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-2 py-0.5 rounded-full">
+                  <span className="font-mono text-micro text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-2 py-0.5 rounded-full">
                     Auto Ingest · <span className="text-emerald-400 font-semibold">100% Valid</span>
                   </span>
                 </div>
 
                 {/* Verdict callout box */}
                 <div className="relative z-10 px-2.5 py-1 rounded-lg bg-fg/[0.025] border-l-2 border-amber-400/80 border-t border-r border-b border-edge-soft/40">
-                  <p className="font-mono text-[9px] text-fg-soft leading-tight">
+                  <p className="font-mono text-micro text-fg-soft leading-tight">
                     <span className="text-fg font-semibold">4 tables · 5,437 rows</span> · Structure verified with 5 foreign key joins. Ready for analytical query execution.
                   </p>
                 </div>
@@ -323,7 +323,7 @@ export function DataScopeWidget() {
                             : "bg-fg/[0.025] border-edge-soft/40 hover:bg-fg/[0.05]"
                         )}
                       >
-                        <div className="flex items-center justify-between text-[7.5px] text-fg-faint mb-0.5">
+                        <div className="flex items-center justify-between text-micro text-fg-faint mb-0.5">
                           <span className="truncate">{fact.label}</span>
                           {isFlagged ? (
                             <AlertTriangle size={9} className="text-rose-400 shrink-0" />
@@ -332,8 +332,8 @@ export function DataScopeWidget() {
                           )}
                         </div>
                         <div
-                          className="font-mono text-[11px] font-black tracking-tight"
-                          style={{ color: isFlagged ? '#EF4444' : DS_AMBER }}
+                          className="font-mono text-fine font-black tracking-tight"
+                          style={{ color: isFlagged ? 'var(--color-sql-red)' : DS_AMBER }}
                         >
                           {fact.value}
                         </div>
@@ -352,11 +352,11 @@ export function DataScopeWidget() {
                   {/* Suggested Actions Card */}
                   <div className="bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col justify-between flex-1 min-h-0 relative overflow-hidden shadow-inner">
                     <div className="flex items-center justify-between shrink-0 border-b border-edge-soft/40 pb-1 mb-1">
-                      <span className="font-mono text-[8.5px] text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                      <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
                         <Zap size={11} style={{ color: DS_AMBER }} />
                         SUGGESTED ACTIONS
                       </span>
-                      <span className="font-mono text-[7.5px] text-fg-faint">3 recommended</span>
+                      <span className="font-mono text-micro text-fg-faint">3 recommended</span>
                     </div>
                     <div className="flex flex-col gap-1.5 flex-grow justify-center py-0.5">
                       {BLUEPRINT_ACTIONS.map((action, i) => (
@@ -365,7 +365,7 @@ export function DataScopeWidget() {
                           initial={{ opacity: 0, x: -4 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.08, duration: 0.2 }}
-                          className="flex items-center gap-2 px-2 py-1 rounded-lg bg-fg/[0.025] border border-edge-soft/40 font-mono text-[8.5px] text-fg-soft cursor-default hover:bg-fg/[0.06] hover:border-fg/20 transition-all duration-200 group w-full"
+                          className="flex items-center gap-2 px-2 py-1 rounded-lg bg-fg/[0.025] border border-edge-soft/40 font-mono text-micro text-fg-soft cursor-default hover:bg-fg/[0.06] hover:border-fg/20 transition-all duration-200 group w-full"
                         >
                           <Zap size={9.5} style={{ color: action.color }} className="shrink-0 group-hover:scale-125 transition-transform" />
                           <span className="truncate leading-tight font-medium text-fg/90">{action.text}</span>
@@ -378,12 +378,12 @@ export function DataScopeWidget() {
                   {/* SQL Console (Bottom half of Left column) */}
                   <div className="bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col justify-between flex-1 min-h-0 shadow-inner">
                     <div className="flex items-center justify-between border-b border-edge-soft/40 pb-1 shrink-0">
-                      <span className="font-mono text-[8.5px] text-fg-faint tracking-widest uppercase flex items-center gap-1.5 font-bold">
+                      <span className="font-mono text-micro text-fg-faint tracking-widest uppercase flex items-center gap-1.5 font-bold">
                         <Terminal size={11} style={{ color: DS_TEAL }} />
                         SQL CONSOLE
                       </span>
                       <span
-                        className="font-mono text-[7.5px] px-1.5 py-0.5 rounded font-semibold uppercase border flex items-center gap-1 shadow-sm"
+                        className="font-mono text-micro px-1.5 py-0.5 rounded font-semibold uppercase border flex items-center gap-1 shadow-sm"
                         style={{
                           background: `color-mix(in srgb, ${DS_AMBER} 12%, transparent)`,
                           borderColor: `color-mix(in srgb, ${DS_AMBER} 35%, transparent)`,
@@ -395,7 +395,7 @@ export function DataScopeWidget() {
                       </span>
                     </div>
 
-                    <div className="font-mono text-[8.5px] text-fg-soft leading-relaxed flex-grow flex flex-col justify-between min-h-0 py-0.5">
+                    <div className="font-mono text-micro text-fg-soft leading-relaxed flex-grow flex flex-col justify-between min-h-0 py-0.5">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={sqlIdx}
@@ -408,7 +408,7 @@ export function DataScopeWidget() {
                           <div className="flex flex-col gap-0.5 bg-fg/[0.015] p-1.5 rounded-lg border border-edge-soft/30 my-auto">
                             {query.sql.split('\n').map((line, i) => (
                               <div key={i} className="truncate flex items-center gap-2">
-                                <span className="text-fg-faint text-[7.5px] w-3 text-right shrink-0 select-none opacity-50">{i + 1}</span>
+                                <span className="text-fg-faint text-micro w-3 text-right shrink-0 select-none opacity-50">{i + 1}</span>
                                 <span className="truncate">
                                   {line.split(/(\b(?:SELECT|FROM|JOIN|GROUP BY|ORDER BY|USING|WHERE|LIMIT|AS|DESC|DISTINCT|COUNT|SUM)\b)/gi).map((part, j) =>
                                     part.match(/^(SELECT|FROM|JOIN|GROUP BY|ORDER BY|USING|WHERE|LIMIT|AS|DESC|DISTINCT|COUNT|SUM)$/i)
@@ -420,10 +420,10 @@ export function DataScopeWidget() {
                             ))}
                           </div>
                           <div className="pt-1 border-t border-edge-soft/30 flex items-center justify-between shrink-0 mt-auto">
-                            <span className="text-emerald-400 font-medium text-[8.5px] flex items-center gap-1 font-mono">
+                            <span className="text-emerald-400 font-medium text-micro flex items-center gap-1 font-mono">
                               <CheckCircle2 size={9} /> {query.result}
                             </span>
-                            <span className="font-mono text-[7.5px] text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.2 rounded">DuckDB WASM</span>
+                            <span className="font-mono text-micro text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.2 rounded">DuckDB WASM</span>
                           </div>
                         </motion.div>
                       </AnimatePresence>
@@ -439,14 +439,14 @@ export function DataScopeWidget() {
                   <div className="bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col justify-between flex-1 min-h-0 relative overflow-hidden shadow-inner">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 blur-2xl pointer-events-none" />
                     <div className="flex items-center justify-between shrink-0 border-b border-edge-soft/40 pb-1 mb-1">
-                      <span className="font-mono text-[8.5px] text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                      <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
                         <ShieldCheck size={11} style={{ color: DS_TEAL }} />
                         DATA QUALITY
                       </span>
-                      <span className="font-mono text-[7.5px] font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 px-1.5 py-0.2 rounded">100% PASS</span>
+                      <span className="font-mono text-micro font-bold text-emerald-400 bg-emerald-400/10 border border-emerald-400/30 px-1.5 py-0.2 rounded">100% PASS</span>
                     </div>
 
-                    <div className="flex flex-col gap-1 text-[8px] font-mono justify-center flex-grow">
+                    <div className="flex flex-col gap-1 text-micro font-mono justify-center flex-grow">
                       {[
                         { label: 'Null Check', detail: '0 nulls in PK', status: 'pass' },
                         { label: 'Duplicates', detail: '100% unique PK', status: 'pass' },
@@ -454,7 +454,7 @@ export function DataScopeWidget() {
                       ].map(check => (
                         <div key={check.label} className="flex items-center justify-between px-1.5 py-0.5 rounded bg-fg/[0.02] border border-edge-soft/30">
                           <span className="text-fg-soft font-medium">{check.label}</span>
-                          <span className="text-emerald-400 font-bold flex items-center gap-0.5 text-[7.5px]">
+                          <span className="text-emerald-400 font-bold flex items-center gap-0.5 text-micro">
                             <Check size={8} /> {check.detail}
                           </span>
                         </div>
@@ -465,11 +465,11 @@ export function DataScopeWidget() {
                   {/* Join Graph Section */}
                   <div className="bg-bento-inset border border-edge-soft rounded-xl p-2 md:p-2.5 flex flex-col justify-between flex-1 min-h-0 shadow-inner">
                     <div className="flex items-center justify-between shrink-0 border-b border-edge-soft/40 pb-1 mb-0.5">
-                      <span className="font-mono text-[8.5px] text-fg-faint uppercase tracking-widest font-bold flex items-center gap-1.5">
+                      <span className="font-mono text-micro text-fg-faint uppercase tracking-widest font-bold flex items-center gap-1.5">
                         <GitFork size={11} style={{ color: DS_AMBER }} />
                         JOIN GRAPH
                       </span>
-                      <span className="font-mono text-[7.5px] text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.2 rounded">5 edges</span>
+                      <span className="font-mono text-micro text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.2 rounded">5 edges</span>
                     </div>
 
                     <div className="flex items-center justify-center flex-grow min-h-0 relative py-1">
@@ -525,11 +525,11 @@ export function DataScopeWidget() {
                 {/* Left (3 cols): Table Explorer - Rich IDE Dataset List */}
                 <div className="col-span-3 bg-bento-inset border border-edge-soft rounded-xl p-2 flex flex-col justify-between relative overflow-hidden h-full min-h-0 shadow-inner">
                   <div className="flex items-center justify-between border-b border-edge-soft/40 pb-1 shrink-0">
-                    <span className="font-mono text-[8.5px] text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                    <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
                       <Database size={11} style={{ color: DS_AMBER }} />
                       EXPLORER
                     </span>
-                    <span className="font-mono text-[7.5px] text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.5 rounded">
+                    <span className="font-mono text-micro text-fg-faint bg-fg/[0.03] border border-edge-soft/40 px-1.5 py-0.5 rounded">
                       4 tables · <span style={{ color: DS_AMBER }} className="font-semibold">5,437</span> rows
                     </span>
                   </div>
@@ -562,18 +562,13 @@ export function DataScopeWidget() {
                                 )}
                                 style={{ color: t.color, background: t.color }}
                               />
-                              <span className={cn("text-[8.5px] font-bold truncate", isActive ? "text-fg" : "text-fg-soft")}>
+                              <span className={cn("text-micro font-bold truncate", isActive ? "text-fg" : "text-fg-soft")}>
                                 {t.name}
                               </span>
                             </span>
-                            {isActive && (
-                              <span className="font-mono text-[6.5px] font-bold uppercase tracking-wider px-1 py-0.2 rounded border border-amber-400/40 text-amber-400 bg-amber-400/10 shrink-0">
-                                ACTIVE
-                              </span>
-                            )}
                           </div>
 
-                          <div className="flex items-center justify-between text-[7.5px] text-fg-faint mt-1">
+                          <div className="flex items-center justify-between text-micro text-fg-faint mt-1">
                             <span>{t.rows} rows</span>
                             <span>{t.cols} cols</span>
                           </div>
@@ -601,26 +596,18 @@ export function DataScopeWidget() {
                   
                   {/* Classifier Header */}
                   <div className="flex items-center justify-between relative z-10 shrink-0 border-b border-edge-soft/40 pb-1">
-                    <span className="font-mono text-[8.5px] text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
+                    <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1.5 font-bold">
                       <Search size={11} style={{ color: DS_VIOLET }} />
                       CLASSIFIER
                     </span>
-                    <span className={cn(
-                      "font-mono text-[7px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded border backdrop-blur-sm flex items-center gap-1",
-                      col.health === 'pass'
-                        ? "text-emerald-400 border-emerald-400/30 bg-emerald-400/10"
-                        : "text-amber-400 border-amber-400/30 bg-amber-400/10"
-                    )}>
-                      {col.health === 'pass' ? (
-                        <>
-                          <CheckCircle2 size={8} /> HEALTHY
-                        </>
-                      ) : (
-                        <>
-                          <AlertTriangle size={8} /> NULLABLE
-                        </>
+                    <span
+                      className={cn(
+                        "w-1.5 h-1.5 rounded-full shrink-0",
+                        col.health === 'pass' ? "bg-emerald-400 text-emerald-400 shadow-[0_0_6px_currentColor]" : "bg-amber-400 text-amber-400 shadow-[0_0_6px_currentColor]"
                       )}
-                    </span>
+                      title={col.health === 'pass' ? 'Healthy' : 'Nullable'}
+                      aria-label={col.health === 'pass' ? 'Healthy' : 'Nullable'}
+                    />
                   </div>
 
                   {/* Rotating Column Details */}
@@ -637,28 +624,28 @@ export function DataScopeWidget() {
                         {/* Column Name & Data Type Header */}
                         <div className="flex items-center justify-between gap-1">
                           <div className="flex items-center gap-1 truncate">
-                            <span className="font-mono text-[8px] text-fg-faint">{col.table}.</span>
-                            <span className="font-mono text-[10.5px] font-black tracking-tight truncate" style={{ color: DS_AMBER }}>
+                            <span className="font-mono text-micro text-fg-faint">{col.table}.</span>
+                            <span className="font-mono text-fine font-black tracking-tight truncate" style={{ color: DS_AMBER }}>
                               {col.col}
                             </span>
                           </div>
-                          <span className="font-mono text-[7.5px] font-bold px-1.5 py-0.5 rounded bg-fg/[0.06] text-fg-soft border border-edge-soft/60 uppercase shrink-0">
+                          <span className="font-mono text-micro font-bold px-1.5 py-0.5 rounded bg-fg/[0.06] text-fg-soft border border-edge-soft/60 uppercase shrink-0">
                             {col.type}
                           </span>
                         </div>
 
                         {/* Structured Metadata Pill Badges */}
                         <div className="flex flex-wrap gap-1 mt-0.5">
-                          <span className="inline-flex items-center gap-1 font-mono text-[7.5px] font-medium px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/30">
+                          <span className="inline-flex items-center gap-1 font-mono text-micro font-medium px-1.5 py-0.5 rounded bg-violet-500/10 text-violet-300 border border-violet-500/30">
                             <Key size={8} className="shrink-0 text-violet-400" />
                             {col.semantic}
                           </span>
-                          <span className="inline-flex items-center gap-1 font-mono text-[7.5px] px-1.5 py-0.5 rounded bg-fg/[0.03] text-fg-soft border border-edge-soft/50">
+                          <span className="inline-flex items-center gap-1 font-mono text-micro px-1.5 py-0.5 rounded bg-fg/[0.03] text-fg-soft border border-edge-soft/50">
                             <Layers size={8} className="shrink-0 text-fg-faint" />
                             {col.distinct} distinct
                           </span>
                           {col.nulls !== '0%' && (
-                            <span className="inline-flex items-center gap-1 font-mono text-[7.5px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                            <span className="inline-flex items-center gap-1 font-mono text-micro px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
                               Nulls: {col.nulls}
                             </span>
                           )}
@@ -667,9 +654,9 @@ export function DataScopeWidget() {
 
                       {/* Mini Sparkline Distribution Histogram */}
                       <div className="flex flex-col gap-1 pt-1.5 border-t border-edge-soft/30 mt-1">
-                        <div className="flex items-center justify-between font-mono text-[7px] text-fg-faint">
-                          <span>DISTRIBUTION · 12 BINS</span>
-                          <span>{col.minMax}</span>
+                        <div className="flex items-center justify-between font-mono text-micro text-fg-faint">
+                          <span className="whitespace-nowrap">DISTRIBUTION</span>
+                          <span className="whitespace-nowrap truncate ml-2">{col.minMax}</span>
                         </div>
                         <div className="flex items-end gap-0.5 h-5 pt-0.5 relative">
                           <div className="absolute inset-x-0 bottom-0 h-[1px] bg-edge-soft/40" />
@@ -695,11 +682,11 @@ export function DataScopeWidget() {
               {/* Bottom Half: Expanded ERD Diagram (62% Height) */}
               <div className="bg-bento-inset border border-edge-soft rounded-xl p-2.5 flex flex-col justify-between h-[62%] min-h-0 relative overflow-hidden">
                 {/* Background Grid Pattern */}
-                <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:10px_10px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[radial-gradient(color-mix(in_srgb,var(--color-fg)_4%,transparent)_1px,transparent_1px)] [background-size:10px_10px] pointer-events-none" />
 
                 {/* ERD Header */}
                 <div className="flex items-center justify-between border-b border-edge-soft/40 pb-1 relative z-10 shrink-0">
-                  <span className="font-mono text-[9px] text-fg-faint uppercase tracking-widest flex items-center gap-1 font-medium">
+                  <span className="font-mono text-micro text-fg-faint uppercase tracking-widest flex items-center gap-1 font-medium">
                     <svg viewBox="0 0 24 24" className="w-2.5 h-2.5 shrink-0" fill="none" stroke={DS_AMBER} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
                       <rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
@@ -707,7 +694,7 @@ export function DataScopeWidget() {
                     </svg>
                     ENTITY RELATIONSHIP DIAGRAM (ERD)
                   </span>
-                  <span className="font-mono text-[7.5px] px-1.5 py-0.2 rounded border border-amber-400/30 bg-amber-400/10 text-amber-400 font-medium">
+                  <span className="font-mono text-micro px-1.5 py-0.2 rounded border border-amber-400/30 bg-amber-400/10 text-amber-400 font-medium">
                     Auto-Inferred Schema
                   </span>
                 </div>
@@ -724,12 +711,12 @@ export function DataScopeWidget() {
 
                   {/* Column 1: Customers */}
                   <div className="w-[30%] -mt-12 group">
-                    <div className="bg-background/80 backdrop-blur-sm border border-amber-500/30 rounded p-1.5 font-mono text-[7.5px] flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] -rotate-3 transition-transform group-hover:rotate-0 group-hover:scale-105">
+                    <div className="bg-background/80 backdrop-blur-sm border border-amber-500/30 rounded p-1.5 font-mono text-micro flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] -rotate-3 transition-transform group-hover:rotate-0 group-hover:scale-105">
                       <div className="flex items-center justify-between border-b border-amber-500/20 pb-0.5 font-bold text-amber-400">
                         <span>tbl_customers</span>
-                        <span className="text-[6.5px] text-fg-faint">400</span>
+                        <span className="text-micro text-fg-faint">400</span>
                       </div>
-                      <div className="flex flex-col gap-0.5 text-fg-soft text-[7px]">
+                      <div className="flex flex-col gap-0.5 text-fg-soft text-micro">
                         <div className="flex justify-between font-semibold text-amber-300">
                           <span>🔑 customer_id</span>
                           <span>PK</span>
@@ -748,12 +735,12 @@ export function DataScopeWidget() {
 
                   {/* Column 2: Orders */}
                   <div className="w-[30%] mt-12 group">
-                    <div className="bg-background/80 backdrop-blur-sm border border-violet-500/30 rounded p-1.5 font-mono text-[7.5px] flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] rotate-2 transition-transform group-hover:rotate-0 group-hover:scale-105">
+                    <div className="bg-background/80 backdrop-blur-sm border border-violet-500/30 rounded p-1.5 font-mono text-micro flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] rotate-2 transition-transform group-hover:rotate-0 group-hover:scale-105">
                       <div className="flex items-center justify-between border-b border-violet-500/20 pb-0.5 font-bold text-violet-400">
                         <span>tbl_orders</span>
-                        <span className="text-[6.5px] text-fg-faint">1.4k</span>
+                        <span className="text-micro text-fg-faint">1.4k</span>
                       </div>
-                      <div className="flex flex-col gap-0.5 text-fg-soft text-[7px]">
+                      <div className="flex flex-col gap-0.5 text-fg-soft text-micro">
                         <div className="flex justify-between font-semibold text-violet-300">
                           <span>🔑 order_id</span>
                           <span>PK</span>
@@ -774,12 +761,12 @@ export function DataScopeWidget() {
                   <div className="w-[30%] flex flex-col gap-3 -mt-4">
                     {/* Items */}
                     <div className="group">
-                      <div className="bg-background/80 backdrop-blur-sm border border-teal-500/30 rounded p-1.5 font-mono text-[7.5px] flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] -rotate-1 transition-transform group-hover:rotate-0 group-hover:scale-105">
+                      <div className="bg-background/80 backdrop-blur-sm border border-teal-500/30 rounded p-1.5 font-mono text-micro flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] -rotate-1 transition-transform group-hover:rotate-0 group-hover:scale-105">
                         <div className="flex items-center justify-between border-b border-teal-500/20 pb-0.5 font-bold text-teal-400">
                           <span>tbl_items</span>
-                          <span className="text-[6.5px] text-fg-faint">3.5k</span>
+                          <span className="text-micro text-fg-faint">3.5k</span>
                         </div>
-                        <div className="flex flex-col gap-0.5 text-fg-soft text-[7px]">
+                        <div className="flex flex-col gap-0.5 text-fg-soft text-micro">
                           <div className="flex justify-between font-semibold text-teal-300">
                             <span>🔑 item_id</span>
                             <span>PK</span>
@@ -798,12 +785,12 @@ export function DataScopeWidget() {
 
                     {/* Products */}
                     <div className="group">
-                      <div className="bg-background/80 backdrop-blur-sm border border-amber-500/30 rounded p-1.5 font-mono text-[7.5px] flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] rotate-1 transition-transform group-hover:rotate-0 group-hover:scale-105">
+                      <div className="bg-background/80 backdrop-blur-sm border border-amber-500/30 rounded p-1.5 font-mono text-micro flex flex-col gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.2)] rotate-1 transition-transform group-hover:rotate-0 group-hover:scale-105">
                         <div className="flex items-center justify-between border-b border-amber-500/20 pb-0.5 font-bold text-amber-400">
                           <span>tbl_products</span>
-                          <span className="text-[6.5px] text-fg-faint">150</span>
+                          <span className="text-micro text-fg-faint">150</span>
                         </div>
-                        <div className="flex flex-col gap-0.5 text-fg-soft text-[7px]">
+                        <div className="flex flex-col gap-0.5 text-fg-soft text-micro">
                           <div className="flex justify-between font-semibold text-amber-300">
                             <span>🔑 product_id</span>
                             <span>PK</span>
@@ -823,7 +810,7 @@ export function DataScopeWidget() {
                 </div>
 
                 {/* ERD Footer legend */}
-                <div className="pt-1 border-t border-edge-soft/40 flex items-center justify-between text-[7.5px] font-mono text-fg-faint relative z-10 shrink-0">
+                <div className="pt-1 border-t border-edge-soft/40 flex items-center justify-between text-micro font-mono text-fg-faint relative z-10 shrink-0">
                   <span className="flex items-center gap-1.5"><span className="text-amber-400">🔑</span> Primary Key <span className="text-teal-400 ml-2">🔗</span> Foreign Key</span>
                   <span className="text-emerald-400 font-medium">1:N Cardinality Verified</span>
                 </div>
@@ -836,7 +823,7 @@ export function DataScopeWidget() {
       </div>
 
       {/* ── Footer metrics ── */}
-      <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-1 justify-between items-center pt-1.5 text-fg-soft font-mono text-micro md:text-micro shrink-0">
+      <div className="hidden lg:flex flex-wrap gap-x-3 gap-y-1 justify-between items-center pt-1.5 text-fg-soft font-mono text-micro shrink-0">
         <div className="flex items-center gap-1.5">
           <Shield size={9} className="shrink-0" />
           <span>Nothing Leaves · 1,015 Tests</span>
@@ -860,7 +847,7 @@ export function DataScopeWidget() {
           {['TypeScript', 'DuckDB-Wasm', 'React', '1,015 Tests'].map(tech => (
             <span
               key={tech}
-              className="font-mono text-micro sm:text-micro px-2 py-0.5 rounded font-bold uppercase tracking-wider"
+              className="font-mono text-micro px-2 py-0.5 rounded font-bold uppercase tracking-wider"
               style={{
                 background: `color-mix(in srgb, ${DS_AMBER} 10%, transparent)`,
                 borderWidth: 1,

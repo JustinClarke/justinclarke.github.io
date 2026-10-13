@@ -78,7 +78,7 @@ export const CommandButton: React.FC<CommandButtonProps> = ({ num, cmd, desc, ho
 
               <div className="flex items-center gap-2">
                 <span className={cn(
-                  "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-micro md:text-micro",
+                  "font-mono font-bold inline-flex items-center justify-center px-1.5 h-[18px] rounded-[4px] border transition-colors duration-300 text-micro",
                   "text-f1-grey border-edge-soft bg-fg/[0.02] group-hover/btn:text-f1-red group-hover/btn:border-f1-red/30 group-hover/btn:bg-f1-red/5"
                 )}>{num}</span>
                 <span className="font-noto font-black tracking-tight text-label uppercase transition-colors duration-300 text-fg group-hover/btn:text-f1-red">

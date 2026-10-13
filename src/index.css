@@ -80,6 +80,18 @@
   --tracking-mega: 0.2em;
   --tracking-ultra: 0.3em;
 
+  /* ── Motion ──
+     ease-out-expo is the site's settle curve (system-control-hover, page
+     enters, bento transitions); ease-spring is the overshoot behind the
+     sidebar rows' sliding → arrows. The two animate-* tokens are the hero AI
+     input's idle state: a slow breathe on its teal hairline (reusing
+     pulse-opacity) and the sidebar's lit indicator-light breathe on its
+     live dot. Consumers gate them with motion-safe:. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-breathe-slow: pulse-opacity 4s ease-in-out infinite;
+  --animate-indicator-breathe: indicator-glow-breathe 2.4s ease-in-out infinite;
+
   /* Brand Colors - Standardized for Tailwind Utility Access */
   --color-brand-primary: #00c8b4;
   --color-brand-bg: #050505;
