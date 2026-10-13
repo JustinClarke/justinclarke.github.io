@@ -26,7 +26,7 @@ export const EngineeringDecisionsSection = forwardRef<HTMLElement, EngineeringDe
             Zero Cloud Compute.
           </h2>
           <p className="font-jetbrains text-sm leading-relaxed text-text-tertiary">
-            Built a headless dbt pipeline running entirely locally on DuckDB. {STATS.dbtModels} models compile and run {STATS.tests} tests in under {STATS.buildSeconds} seconds. Maximum developer velocity, rigorous CI/CD constraints, and zero cloud costs.
+            Built a headless dbt pipeline running entirely locally on DuckDB. {STATS.dbtModels} models compile and run {STATS.tests} tests on a laptop. Maximum developer velocity, rigorous CI/CD constraints, and zero cloud costs.
           </p>
         </div>
 
@@ -45,17 +45,16 @@ export const EngineeringDecisionsSection = forwardRef<HTMLElement, EngineeringDe
           </div>
           <div className="p-6 text-xs md:text-sm text-text-secondary overflow-x-auto whitespace-pre leading-loose">
             <span className="text-text-tertiary italic">
-              -- assert_lap_7term_identity  - fails build if 7-term sum ≠ pace_delta_s ± 0.0001s
+              -- assert_lap_7term_identity: fails build if the 5-term sum ≠ pace_delta_s ± 0.0001s
             </span>{'\n\n'}
             <span className="text-pink-400">SELECT</span> <span className="text-blue-400">count</span>(*) <span className="text-pink-400">FROM</span> fct_lap_residuals{'\n'}
             <span className="text-pink-400">WHERE</span> abs(pace_delta_s - ({'\n'}
             {'  '}fuel_component_s + compound_component_s +{'\n'}
-            {'  '}rubber_component_s + ambient_component_s +{'\n'}
             {'  '}constructor_component_s + dirty_air_tax_s +{'\n'}
             {'  '}driver_skill_residual_s{'\n'}
             )) {'>'} <span className="text-orange-400">0.0001</span>
             {'\n\n'}
-            <span className="text-[color:var(--color-viz-success)] font-semibold">✓ Finished running {STATS.tests} tests in 3.82s : PASS</span>{'\n'}
+            <span className="text-[color:var(--color-viz-success)] font-semibold">✓ Finished running {STATS.tests} tests : PASS</span>{'\n'}
             <span className="text-[color:var(--color-viz-success)] font-semibold">✓ assert_lap_7term_identity ... PASS</span>
             <span className="t-cursor ml-1" />
           </div>

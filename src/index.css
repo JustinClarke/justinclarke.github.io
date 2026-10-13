@@ -46,6 +46,8 @@
   --font-noto: "Noto Sans", sans-serif;
   --font-serif: "DM Serif Text", serif;
   --font-playfair: "Playfair Display", serif;
+  /* DataScope's display face (the app's wordmark and headlines) */
+  --font-grotesk: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* ── Type ramp ──
      The legibility floor is 10px: no text-[Npx] below text-micro anywhere in
@@ -172,7 +174,9 @@
   --color-f1-red: #E10600;
   --color-f1-red-dim: rgba(225, 6, 0, 0.06);
 
-  /* Graphite scale (OTP dark backgrounds) */
+  /* Graphite scale (OTP dark backgrounds; 950 is also the SQL Disaster ERD
+     panel and DataScope's canvas) */
+  --color-graphite-950: #0a0c10;
   --color-graphite-900: #0E1016;
   --color-graphite-850: #131519;
   --color-graphite-800: #191C22;
@@ -229,8 +233,28 @@
   /* IDC Capital Budgeting project gold accent (WACC / NPV highlight) */
   --color-capital: #E6A100;
 
-  /* DataScope Studio project cyan accent (bento card, detail page) */
+  /* DataScope Studio project cyan accent (home bento card) */
   --color-datascope: #00d4ff;
+
+  /* DataScope's own dark register, mirrored from DataScope/src/app/theme.css
+     (authored there in oklch, converted to hex here so the token gate sees
+     it). The /datascope case study draws only from these, so it reads as the
+     same product as data--scope.web.app. The app's --color-active and
+     --color-fk are the existing amber and acc-bi tokens to the digit, so
+     those two alias rather than repeat a hex. Content text stays on the
+     text-* ramp, which lands within a step of the app's ink-2/ink-3.
+     Contrast on ds-canvas: ds-ink 17.7:1, ds-violet-soft 7.4:1,
+     ds-ok 10.2:1; ds-amber-ink on ds-amber 8.7:1 (white on amber is 2.1:1). */
+  --color-ds-canvas: var(--color-graphite-950);
+  --color-ds-panel: #0c0f14;
+  --color-ds-elev: #171b21;
+  --color-ds-ink: #f2f4f7;
+  --color-ds-amber: var(--color-amber);
+  --color-ds-amber-ink: #17120a;
+  --color-ds-violet: var(--color-acc-bi);
+  --color-ds-violet-soft: #c184fc;
+  --color-ds-ok: #35d399;
+  --color-ds-indigo: #818cf8;
 
   /* Spotify acoustic-feature teal (Danceability/Acousticness bars + code syntax) */
   --color-viz-teal: #4fd1c5;
@@ -260,17 +284,15 @@
   --color-blue-bright: #3b82f6;
   --color-sql-red: #ef4444;
 
-  /* Off-the-Pace 7-term identity palette  - the single source for the
+  /* Off-the-Pace 5-term identity palette  - the single source for the
      decomposition waterfall, DAG, hero panel and DecompositionExplainer.
      Keys mirror the fct_lap_residuals component columns. compound/dirty-air/
      driver alias existing tokens (so their hex isn't double-registered by the
-     check-tailwind-tokens gate); fuel/rubber/ambient/constructor are the raw-hex
+     check-tailwind-tokens gate); fuel/constructor are the raw-hex
      homes. Mirrored as raw hex in src/config/constants.ts (TERM_COLORS) for the
      d3/canvas/SVG draw calls that can't read CSS vars. */
   --color-term-fuel: #475569;
   --color-term-compound: var(--color-emerald-dark);
-  --color-term-rubber: #065f46;
-  --color-term-ambient: #2563eb;
   --color-term-constructor: #334155;
   --color-term-dirty-air: var(--color-blue-bright);
   --color-term-driver: var(--color-f1-red);

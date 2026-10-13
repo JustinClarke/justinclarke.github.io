@@ -72,7 +72,7 @@ export const SITE: SiteConfig = {
   name: 'Justin Clarke',
   firstName: 'Justin',
   lastName: 'Clarke',
-  role: 'Analytics Engineer · Full-Stack',
+  role: 'Data & AI Engineer',
   tagline: 'Data to decisions & decisions into products',
   url: 'https://justinclarke.github.io',
   domain: 'justinclarke.github.io',
@@ -85,11 +85,11 @@ export const SITE: SiteConfig = {
     cal: 'justinclarke',
   },
   resumePdf: '/resources/JustinClarke_resume.pdf',
-  defaultTitle: 'Justin Clarke ⋅ Analytics Engineer ⋅ Full-Stack',
+  defaultTitle: 'Justin Clarke ⋅ Data & AI Engineer',
   defaultDescription:
-    'Portfolio of Justin Clarke. Case studies in analytics engineering, data architecture, and high-fidelity data systems - built with SQL, Python, and React.',
+    'Portfolio of Justin Clarke, Data & AI Engineer. Case studies in data systems, analytics engineering and LLM evaluation, built with SQL, Python and React.',
   ogImage: '/assets/og.png',
-  ogImageAlt: 'Justin Clarke - Analytics Engineer portfolio',
+  ogImageAlt: 'Portfolio of Justin Clarke, Data & AI Engineer',
   integrations: {
     umami: {
       websiteId: '066d3deb-ac4b-494d-9eb8-c3fe3c42e22d',

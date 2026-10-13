@@ -1,18 +1,18 @@
 /**
- * DataScopeWidget the "DataScope Studio" bento card — rebuilt to properly
+ * DataScopeWidget the "DataScope Studio" bento card, rebuilt to properly
  * convey the depth of a ~33k LoC analytics IDE. A self-running simulation
  * cycles through three of DataScope's core capabilities:
  *
- *   1. Blueprint  — the post-ingest landing view with verdict + next-actions
- *   2. Schema     — column classifier with semantic types & health profiling
- *   3. SQL + Join — Monaco SQL console with results + join-graph inference
+ *   1. Blueprint: the post-ingest landing view with verdict + next-actions
+ *   2. Schema: column classifier with semantic types & health profiling
+ *   3. SQL + Join: Monaco SQL console with results + join-graph inference
  *
  * The header carries the real reticle logo mark and the split-color wordmark
  * ("DataSc⊕pe"). The pipeline strip shows the actual architecture data flow,
  * not just a library list. Every number mirrors the real ecommerce sample.
  *
  * Fits in: one card in the homepage featured-projects bento grid.
- * Note:    three timers drive the simulation — phase cycler, column
+ * Note:    three timers drive the simulation: phase cycler, column
  *          classifier, and SQL console. None touch real data.
  */
 import { useState, useEffect, useRef, Fragment } from 'react';
@@ -166,12 +166,12 @@ export function DataScopeWidget() {
         {/* Row 2: description callout */}
         <div className="relative rounded-lg border-t border-r border-b border-t-edge-soft border-r-edge-soft border-b-edge-soft bg-bento-subtle backdrop-blur-sm px-3 py-2">
           <p className="text-fine sm:text-caption leading-relaxed text-fg-soft">
-            Browser-native <span className="font-semibold text-fg">analytics IDE</span>. Drop files, get <span className="font-semibold" style={{ color: DS_AMBER }}>schema detection</span>, <span className="font-semibold" style={{ color: DS_VIOLET }}>profiling</span>, <span className="font-semibold" style={{ color: DS_TEAL }}>SQL</span>, <span className="font-semibold text-fg">charts</span>, and <span className="font-semibold" style={{ color: DS_AMBER }}>join-graph inference</span> — nothing leaves your browser.
+            Browser-native <span className="font-semibold text-fg">analytics IDE</span>. Drop files, get <span className="font-semibold" style={{ color: DS_AMBER }}>schema detection</span>, <span className="font-semibold" style={{ color: DS_VIOLET }}>profiling</span>, <span className="font-semibold" style={{ color: DS_TEAL }}>SQL</span>, <span className="font-semibold text-fg">charts</span>, and <span className="font-semibold" style={{ color: DS_AMBER }}>schema-graph inference</span>. Nothing leaves your browser.
           </p>
         </div>
       </div>
 
-      {/* ── Architecture pipeline — actual data flow ── */}
+      {/* ── Architecture pipeline: actual data flow ── */}
       <div className="flex items-center justify-between py-2.5 px-2.5 md:px-2 lg:px-3 xl:px-4 bg-fg/[0.02] border border-edge-soft rounded-xl shrink-0 select-none overflow-hidden">
         {[
           {
@@ -270,7 +270,7 @@ export function DataScopeWidget() {
         </span>
       </div>
 
-      {/* ── Main content — rotating capability demo ── */}
+      {/* ── Main content: rotating capability demo ── */}
       <div className="hidden lg:flex flex-grow min-h-0">
         <AnimatePresence mode="wait">
           {phase === 'blueprint' && (

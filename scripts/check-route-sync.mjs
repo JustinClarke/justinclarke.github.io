@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// check-route-sync.mjs — keeps the docs honest against the route manifest.
+// check-route-sync.mjs keeps the docs honest against the route manifest.
 //
 // src/content/routes.ts is THE list of pages (App.tsx, inject-metadata,
 // sitemap, and screenshots all derive from it). The one consumer that CAN'T
@@ -15,7 +15,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// Node 24 native TS type stripping — same direct-import pattern as
+// Node 24 native TS type stripping, the same direct-import pattern as
 // inject-metadata.js. routes.ts must stay erasable-syntax-only.
 import { ROUTES } from '../src/content/routes.ts';
 

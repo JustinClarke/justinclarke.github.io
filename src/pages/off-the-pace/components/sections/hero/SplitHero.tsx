@@ -112,7 +112,7 @@ function DecompositionPanel() {
         </div>
       </div>
 
-      {/* All 7 signed terms, peeled one-by-one (≤1.2s total; static for reduced-motion) */}
+      {/* All 5 signed terms, peeled one-by-one (≤1.2s total; static for reduced-motion) */}
       <div className="relative z-10 hidden sm:flex flex-col gap-2.5 mb-3 sm:mb-4">
         {HERO_LAP.terms.map((term, i) => (
           <TermRow key={term.key} term={term} index={i} reduce={reduce} />
@@ -121,7 +121,7 @@ function DecompositionPanel() {
 
       {/* Total stripped  - makes the math legible */}
       <div className="relative z-10 hidden sm:flex items-center justify-between gap-3 mb-4 pt-3 border-t border-white/[0.06]">
-        <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-widest text-text-tertiary">Net of 7 causes</span>
+        <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-widest text-text-tertiary">Net of 5 causes</span>
         <span className="font-jetbrains text-fine sm:text-caption text-text-tertiary font-bold tabular-nums">
           {HERO_LAP.totalStripped_s >= 0 ? '+' : '−'}{Math.abs(HERO_LAP.totalStripped_s).toFixed(3)}s
         </span>
@@ -163,7 +163,7 @@ function ProofLine() {
       <span className="font-jetbrains text-micro sm:text-micro uppercase tracking-mega text-f1-red font-black shrink-0">Proven</span>
       <span className="font-jetbrains text-micro sm:text-fine text-text-secondary leading-tight text-left">
         São Paulo 2021: <span className="text-white font-bold tabular-nums">{strat}</span> strategy,{' '}
-        <span className="text-emerald-400 font-bold tabular-nums">{skill}</span> Hamilton  - measured
+        <span className="text-emerald-400 font-bold tabular-nums">{skill}</span> Hamilton, measured
       </span>
       <svg className="w-3 h-3 text-text-ghost group-hover/proof:text-f1-red group-hover/proof:translate-x-0.5 transition-all duration-300 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
     </a>
@@ -304,7 +304,7 @@ export function SplitHero() {
               Lap times lie.
             </p>
             <p className="font-jetbrains text-fine sm:text-xs text-text-tertiary uppercase tracking-[0.12em] sm:tracking-mega leading-relaxed max-w-md mx-auto lg:mx-0">
-              Seven measurable causes explain every lap. This strips them out.
+              Five measurable causes explain every lap. This strips them out.
             </p>
           </div>
 

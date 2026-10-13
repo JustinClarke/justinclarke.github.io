@@ -124,7 +124,7 @@ export const ProjectHero = () => {
           {/* Capability statement : 2 lines, cold-entry oriented */}
           <div className="flex flex-col gap-2 mb-4 text-center px-4 max-w-2xl mx-auto">
             <p className="font-jetbrains text-base sm:text-lg md:text-xl text-text-primary font-bold leading-snug">
-              Seven causes. One <span className="hidden sm:inline">enforced</span> invariant.<br className="hidden sm:block" /> Reproducible locally.
+              Five causes. One <span className="hidden sm:inline">enforced</span> invariant.<br className="hidden sm:block" /> Reproducible locally.
             </p>
             <p className="font-jetbrains text-fine sm:text-xs text-text-tertiary uppercase tracking-[0.15em] leading-relaxed">
               FastF1 → dbt → DuckDB → XGBoost

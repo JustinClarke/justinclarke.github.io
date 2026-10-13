@@ -7,7 +7,7 @@
  *          hover glow) in its data object, so one block of JSX styles all five.
  */
 import { FlaskConical, TestTube, Box, BookOpen, BarChart2 } from 'lucide-react';
-import { STATS, LINKS } from '../../../data/projectStats';
+import { STATS, ML_FACTS, LINKS } from '../../../data/projectStats';
 
 const cards = [
   {
@@ -37,7 +37,7 @@ const cards = [
   {
     icon: Box,
     title: 'Reproducible locally',
-    body: 'DuckDB on-disk warehouse, FastF1 via pip, dbt-core - no cloud account required. The full pipeline runs on a laptop. Zero vendor lock-in.',
+    body: 'DuckDB on-disk warehouse, FastF1 via pip, dbt-core. No cloud account required. The full pipeline runs on a laptop. Zero vendor lock-in.',
     accent: 'text-amber-400',
     boxDefault: 'bg-transparent border-2 border-amber-500/60',
     boxHover: 'group-hover:bg-amber-500 group-hover:border-amber-500 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]',
@@ -62,7 +62,7 @@ const cards = [
   {
     icon: BarChart2,
     title: 'ML layer validated',
-    body: `Five XGBoost models with conformal calibration (0.804 empirical @ 0.80 nominal). ONNX parity proven to atol=1e-5. Leakage probe confirmed race_year recoverable at 99.99% excluded. SHAP + permutation importance shipped. ${STATS.mlTests} ML tests on CI.`,
+    body: `Five XGBoost models with conformal calibration (${ML_FACTS.calibrationEmpirical} empirical @ ${ML_FACTS.calibrationNominal.toFixed(2)} nominal). ONNX parity proven to atol=1e-5. Leakage probe recovered race_year at ${ML_FACTS.leakageProbeAccuracy} accuracy, so it is excluded. SHAP + permutation importance shipped. ${STATS.mlTests} ML tests on CI.`,
     accent: 'text-blue-400',
     boxDefault: 'bg-transparent border-2 border-blue-500/60',
     boxHover: 'group-hover:bg-blue-500 group-hover:border-blue-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]',

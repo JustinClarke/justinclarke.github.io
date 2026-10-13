@@ -1,6 +1,6 @@
 /**
  * InvariantWaterfall the "break the invariant" demo: a live, interactive
- * waterfall that shows the 7-term additive identity reconstructing a real lap
+ * waterfall that shows the 5-term additive identity reconstructing a real lap
  * time, with the warehouse assertion (`assert_additive_identity`, ±0.0001s)
  * evaluated in the browser. Nudge any coefficient and the reconstruction drifts
  * off the real lap time  - the assertion flips red and a faux CI line prints
@@ -75,7 +75,7 @@ export function InvariantWaterfall() {
             The additive identity, live
           </h3>
           <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed mt-2 max-w-xl">
-            Every lap, seven measured causes must reconstruct the clock to within{' '}
+            Every lap, five measured causes must reconstruct the clock to within{' '}
             <span className="text-text-secondary">±0.0001s</span>  - or{' '}
             <span className="text-text-secondary lowercase">assert_additive_identity</span> fails the build.
             Nudge a coefficient and watch it break.
@@ -89,7 +89,7 @@ export function InvariantWaterfall() {
       {/* Waterfall */}
       <div className="px-3 sm:px-6 pt-5">
         <svg viewBox={`0 0 ${VB_W} ${VB_H}`} className="w-full h-auto" role="img"
-          aria-label={`Waterfall reconstructing the ${toLapClock(actual)} lap time from a ${toLapClock(baseline)} structural baseline plus seven signed components.`}>
+          aria-label={`Waterfall reconstructing the ${toLapClock(actual)} lap time from a ${toLapClock(baseline)} structural baseline plus five signed components.`}>
           {/* baseline + lap-time reference lines */}
           {[
             { v: baseline, label: `baseline ${toLapClock(baseline)}`, color: 'rgba(255,255,255,0.25)' },

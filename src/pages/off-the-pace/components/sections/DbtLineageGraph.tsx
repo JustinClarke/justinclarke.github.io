@@ -3,7 +3,7 @@
  * top-down layered graph. Nodes, edges and per-node test counts are baked from
  * the dbt manifest (data/dag.json)  - no runtime fetch, no hand-typed paths. The
  * graph narrows as it descends, dramatising how 18 upstream models converge into
- * a single fact table that the 7-term invariant must hold on.
+ * a single fact table that the 5-term invariant must hold on.
  *
  * Fits in: PipelineSection on the architecture page, replacing the old
  *          hand-typed "simplified DAG path".

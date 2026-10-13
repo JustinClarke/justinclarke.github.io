@@ -1,5 +1,5 @@
 /**
- * DecompositionExplainer the "same lap, seven causes" chart: two drivers on the
+ * DecompositionExplainer the "same lap, five causes" chart: two drivers on the
  * SAME lap, each a horizontal bar split into coloured segments. Segment widths
  * are SECONDS-proportional on a single shared scale, so HAM vs VER read true  -
  * the bigger bar really did have the bigger measured swing.
@@ -31,7 +31,7 @@ export function DecompositionExplainer() {
             The Decomposition
           </span>
           <h2 className="text-2xl md:text-3xl font-noto font-black text-text-primary uppercase tracking-tighter">
-            Same lap. Seven causes.
+            Same lap. Five causes.
           </h2>
         </div>
         <p className="font-jetbrains text-fine text-text-tertiary max-w-sm leading-relaxed">
@@ -64,7 +64,7 @@ export function DecompositionExplainer() {
               <div className="h-7 bg-white/[0.04] border border-white/10 rounded-lg flex overflow-hidden">
                 {driver.terms.map((seg) => {
                   const widthPct = (Math.abs(seg.seconds) / MAX_TOTAL_ABS) * 100;
-                  if (widthPct < 0.4) return null; // skip ~zero terms (e.g. rubber)
+                  if (widthPct < 0.4) return null; // skip ~zero terms (e.g. dirty air on a clean lap)
                   const signed = `${seg.seconds >= 0 ? '+' : '−'}${Math.abs(seg.seconds).toFixed(3)}s`;
                   return (
                     <div
@@ -84,11 +84,11 @@ export function DecompositionExplainer() {
       </div>
 
       <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed max-w-xl">
-        On the overtake lap the red <span className="text-f1-red font-semibold">SKILL</span> segment  -
-        the only part the driver controls  - was{' '}
+        On the overtake lap the red <span className="text-f1-red font-semibold">SKILL</span> segment,
+        the only part the driver controls, was{' '}
         <span className="text-text-secondary font-semibold">−3.110s</span> for Hamilton against{' '}
         <span className="text-text-secondary font-semibold">−1.517s</span> for Verstappen: a 1.60s execution
-        edge the stopwatch hid behind near-identical lap times. Everything else is physics  - and now
+        edge the stopwatch hid behind near-identical lap times. Everything else is physics, and now
         it's measured.
       </p>
 

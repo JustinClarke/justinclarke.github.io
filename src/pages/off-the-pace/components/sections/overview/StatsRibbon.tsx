@@ -58,7 +58,7 @@ export function StatsRibbon() {
   }, []);
 
   const races = useCounter(STATS.races, 2000, isVisible);
-  // Numeric part of STATS.telemetryRowsPerSeason ("90M+") - single source, the
+  // Numeric part of STATS.telemetryRowsPerSeason ("17M") - single source, the
   // "M+" unit stays in the markup below.
   const rows = useCounter(parseInt(STATS.telemetryRowsPerSeason, 10), 2500, isVisible);
   const models = useCounter(STATS.dbtModels, 1800, isVisible);
@@ -78,7 +78,7 @@ export function StatsRibbon() {
 
         <div className="flex flex-col items-center justify-center p-4 text-center border-l border-white/5">
           <span className="font-noto text-3xl sm:text-4xl md:text-5xl font-black text-text-primary tracking-tighter mb-2">
-            {rows}M+
+            {rows}M
           </span>
           <span className="font-jetbrains text-micro sm:text-micro md:text-xs uppercase tracking-wider md:tracking-widest text-slate-400 font-semibold">
             Telemetry Rows
@@ -105,7 +105,7 @@ export function StatsRibbon() {
         </div>
       </div>
       <p className="font-jetbrains text-micro text-text-tertiary text-center">
-        {STATS.seasons} seasons · {STATS.telemetryHz}Hz telemetry · modeled locally  - zero cloud spend
+        {STATS.seasons} seasons · {STATS.telemetryHz}Hz telemetry · modeled locally · zero cloud spend
       </p>
     </div>
   );

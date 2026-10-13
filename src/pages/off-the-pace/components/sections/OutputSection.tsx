@@ -4,8 +4,9 @@
  * "decomposition bars" that break each lap time into its causal components.
  *
  * Fits in: rendered by SourceView's Science & Output block.
- * Note:    DATA_SAMPLES holds illustrative figures; the dropdown picks which
- *          race feeds both the table and the decomposition bars.
+ * Note:    DATA_SAMPLES holds real fct_lap_residuals rows (top five ml_eligible
+ *          cars on one lap per race, dev.duckdb, 2026-10-13); the dropdown picks
+ *          which race feeds both the table and the decomposition bars.
  */
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -20,8 +21,6 @@ interface LapData {
   lapTime: number;
   fuel: number;
   compound: number;
-  rubber: number;
-  ambient: number;
   constructor: number;
   dirtyAir: number;
   driverSkill: number;
@@ -31,46 +30,46 @@ interface LapData {
 const DATA_SAMPLES: Record<string, { race: string; lap: number; data: LapData[] }> = {
   'abu-dhabi-2021': {
     race: '2021 Abu Dhabi',
-    lap: 14,
+    lap: 13,
     data: [
-      { driver: 'HAM', lapTime: 88.392, fuel: 1.241, compound: 0.762, rubber: 0.214, ambient: 0.082, constructor: -0.310, dirtyAir: 0.000, driverSkill: -0.184, mlEligible: true },
-      { driver: 'VER', lapTime: 88.651, fuel: 1.239, compound: 0.780, rubber: 0.198, ambient: 0.081, constructor: 0.112, dirtyAir: 0.218, driverSkill: 0.074, mlEligible: true },
-      { driver: 'BOT', lapTime: 88.910, fuel: 1.237, compound: 0.771, rubber: 0.221, ambient: 0.083, constructor: -0.309, dirtyAir: 0.401, driverSkill: 0.127, mlEligible: true },
-      { driver: 'PER', lapTime: 88.820, fuel: 1.238, compound: 0.778, rubber: 0.205, ambient: 0.082, constructor: 0.109, dirtyAir: 0.000, driverSkill: 0.097, mlEligible: true },
-      { driver: 'LEC', lapTime: 89.441, fuel: 1.235, compound: 0.795, rubber: 0.289, ambient: 0.083, constructor: 0.387, dirtyAir: 0.102, driverSkill: 0.131, mlEligible: true },
+      { driver: 'HAM', lapTime: 88.258, fuel: 2.094, compound: 3.405, constructor: -1.296, dirtyAir: 0.000, driverSkill: -1.965, mlEligible: true },
+      { driver: 'PER', lapTime: 89.267, fuel: 2.094, compound: 1.994, constructor: -1.879, dirtyAir: 0.000, driverSkill: 1.039, mlEligible: true },
+      { driver: 'SAI', lapTime: 89.801, fuel: 2.094, compound: 1.994, constructor: -0.319, dirtyAir: 0.000, driverSkill: 0.012, mlEligible: true },
+      { driver: 'NOR', lapTime: 90.583, fuel: 2.094, compound: 1.994, constructor: -0.139, dirtyAir: 0.000, driverSkill: 0.615, mlEligible: true },
+      { driver: 'LEC', lapTime: 90.323, fuel: 2.094, compound: 1.994, constructor: -0.319, dirtyAir: 0.331, driverSkill: 0.203, mlEligible: true },
     ]
   },
   'monaco-2023': {
     race: '2023 Monaco',
-    lap: 32,
+    lap: 15,
     data: [
-      { driver: 'ALO', lapTime: 75.234, fuel: 0.841, compound: 0.521, rubber: 0.178, ambient: 0.065, constructor: -0.215, dirtyAir: 0.102, driverSkill: -0.134, mlEligible: true },
-      { driver: 'VER', lapTime: 75.489, fuel: 0.839, compound: 0.538, rubber: 0.165, ambient: 0.064, constructor: 0.087, dirtyAir: 0.341, driverSkill: 0.106, mlEligible: true },
-      { driver: 'HAM', lapTime: 75.612, fuel: 0.838, compound: 0.545, rubber: 0.172, ambient: 0.065, constructor: 0.145, dirtyAir: 0.212, driverSkill: 0.168, mlEligible: true },
-      { driver: 'SAI', lapTime: 76.041, fuel: 0.837, compound: 0.558, rubber: 0.189, ambient: 0.066, constructor: 0.312, dirtyAir: 0.198, driverSkill: 0.235, mlEligible: true },
-      { driver: 'RUS', lapTime: 75.823, fuel: 0.840, compound: 0.542, rubber: 0.168, ambient: 0.064, constructor: 0.176, dirtyAir: 0.167, driverSkill: 0.108, mlEligible: true },
+      { driver: 'ALO', lapTime: 77.444, fuel: 2.708, compound: 2.979, constructor: -0.029, dirtyAir: 0.000, driverSkill: -0.853, mlEligible: true },
+      { driver: 'OCO', lapTime: 78.018, fuel: 2.708, compound: 3.441, constructor: -0.991, dirtyAir: 0.000, driverSkill: 0.221, mlEligible: true },
+      { driver: 'SAI', lapTime: 77.883, fuel: 2.708, compound: 2.793, constructor: -0.882, dirtyAir: 0.331, driverSkill: 0.294, mlEligible: true },
+      { driver: 'HAM', lapTime: 78.189, fuel: 2.708, compound: 3.441, constructor: -0.967, dirtyAir: 0.331, driverSkill: 0.037, mlEligible: true },
+      { driver: 'LEC', lapTime: 78.312, fuel: 2.708, compound: 2.793, constructor: -0.882, dirtyAir: 0.331, driverSkill: 0.723, mlEligible: true },
     ]
   },
   'monza-2024': {
     race: '2024 Monza',
     lap: 18,
     data: [
-      { driver: 'VER', lapTime: 132.641, fuel: 1.842, compound: 0.912, rubber: 0.245, ambient: 0.095, constructor: -0.278, dirtyAir: 0.000, driverSkill: -0.220, mlEligible: true },
-      { driver: 'LEC', lapTime: 132.989, fuel: 1.840, compound: 0.924, rubber: 0.258, ambient: 0.096, constructor: 0.134, dirtyAir: 0.287, driverSkill: 0.126, mlEligible: true },
-      { driver: 'HAM', lapTime: 133.214, fuel: 1.841, compound: 0.931, rubber: 0.261, ambient: 0.097, constructor: 0.198, dirtyAir: 0.198, driverSkill: 0.210, mlEligible: true },
-      { driver: 'NOR', lapTime: 133.457, fuel: 1.839, compound: 0.938, rubber: 0.272, ambient: 0.098, constructor: 0.287, dirtyAir: 0.342, driverSkill: 0.285, mlEligible: true },
-      { driver: 'SAI', lapTime: 133.821, fuel: 1.838, compound: 0.945, rubber: 0.289, ambient: 0.099, constructor: 0.401, dirtyAir: 0.214, driverSkill: 0.347, mlEligible: true },
+      { driver: 'SAI', lapTime: 85.678, fuel: 1.644, compound: 1.355, constructor: -0.592, dirtyAir: 0.331, driverSkill: -0.179, mlEligible: true },
+      { driver: 'VER', lapTime: 85.469, fuel: 1.644, compound: 0.990, constructor: -0.448, dirtyAir: 0.000, driverSkill: 0.164, mlEligible: true },
+      { driver: 'PER', lapTime: 85.448, fuel: 1.644, compound: 0.990, constructor: -0.448, dirtyAir: 0.000, driverSkill: 0.143, mlEligible: true },
+      { driver: 'PIA', lapTime: 84.028, fuel: 1.644, compound: 0.110, constructor: -1.277, dirtyAir: 0.000, driverSkill: 0.431, mlEligible: true },
+      { driver: 'NOR', lapTime: 83.920, fuel: 1.644, compound: 0.220, constructor: -1.277, dirtyAir: 0.331, driverSkill: -0.118, mlEligible: true },
     ]
   },
   'silverstone-2022': {
     race: '2022 Silverstone',
-    lap: 25,
+    lap: 26,
     data: [
-      { driver: 'VER', lapTime: 90.342, fuel: 1.542, compound: 0.684, rubber: 0.198, ambient: 0.071, constructor: -0.198, dirtyAir: 0.112, driverSkill: -0.146, mlEligible: true },
-      { driver: 'LEC', lapTime: 90.678, fuel: 1.540, compound: 0.698, rubber: 0.212, ambient: 0.072, constructor: 0.156, dirtyAir: 0.287, driverSkill: 0.154, mlEligible: true },
-      { driver: 'HAM', lapTime: 90.523, fuel: 1.541, compound: 0.691, rubber: 0.205, ambient: 0.071, constructor: 0.087, dirtyAir: 0.198, driverSkill: -0.027, mlEligible: true },
-      { driver: 'PER', lapTime: 90.812, fuel: 1.539, compound: 0.705, rubber: 0.218, ambient: 0.073, constructor: 0.234, dirtyAir: 0.341, driverSkill: 0.236, mlEligible: true },
-      { driver: 'RUS', lapTime: 90.641, fuel: 1.542, compound: 0.697, rubber: 0.210, ambient: 0.072, constructor: 0.145, dirtyAir: 0.167, driverSkill: 0.111, mlEligible: true },
+      { driver: 'HAM', lapTime: 92.655, fuel: 1.713, compound: 2.966, constructor: -1.500, dirtyAir: 0.331, driverSkill: -1.618, mlEligible: true },
+      { driver: 'SAI', lapTime: 92.976, fuel: 1.713, compound: 0.233, constructor: -1.378, dirtyAir: 0.000, driverSkill: 1.645, mlEligible: true },
+      { driver: 'NOR', lapTime: 94.108, fuel: 1.713, compound: 3.073, constructor: -0.090, dirtyAir: 0.000, driverSkill: -1.350, mlEligible: true },
+      { driver: 'ALO', lapTime: 94.013, fuel: 1.713, compound: 2.966, constructor: 0.007, dirtyAir: 0.000, driverSkill: -1.436, mlEligible: true },
+      { driver: 'PER', lapTime: 92.666, fuel: 1.713, compound: 2.644, constructor: -0.871, dirtyAir: 0.000, driverSkill: -1.583, mlEligible: true },
     ]
   },
 };
@@ -80,8 +79,6 @@ const COMPONENT_SPAN = 52;
 const BAR_SEGMENTS: { key: keyof LapData; label: string; bg: string; text: string; title: string }[] = [
   { key: 'fuel',     label: 'FUEL', bg: 'bg-slate-700',   text: 'text-text-tertiary', title: 'Fuel Weight Penalty' },
   { key: 'compound', label: 'CMP',  bg: 'bg-emerald-600', text: 'text-text-primary', title: 'Tyre Compound Stint Age' },
-  { key: 'rubber',   label: 'RBR',  bg: 'bg-emerald-800', text: 'text-text-secondary', title: 'Rubber Track Evolution' },
-  { key: 'ambient',  label: 'WX',   bg: 'bg-blue-600',    text: 'text-text-primary', title: 'Weather & Air Density' },
   { key: 'dirtyAir', label: 'AIR',  bg: 'bg-blue-500/70', text: 'text-white',    title: 'Turbulent Dirty Air Tax' },
 ];
 
@@ -152,7 +149,7 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
           A causal decomposition,<br />down to the millisecond.
         </h2>
         <p className="text-text-tertiary text-sm max-w-2xl font-jetbrains leading-relaxed mb-8">
-          The engine doesn't output a chart. It outputs a pristine, 1-lap grain feature matrix : <code className="text-emerald-400 bg-emerald-400/5 px-1.5 py-0.5 rounded font-bold border border-emerald-400/10">fct_lap_residuals</code>  - where each component is a precisely isolated, physically-grounded additive term in seconds. Seven terms. CI-enforced identity. Positive = slower.
+          The engine doesn't output a chart. It outputs a pristine, 1-lap grain feature matrix : <code className="text-emerald-400 bg-emerald-400/5 px-1.5 py-0.5 rounded font-bold border border-emerald-400/10">fct_lap_residuals</code>  - where each component is a precisely isolated, physically-grounded additive term in seconds. Five terms. CI-enforced identity. Positive = slower.
         </p>
 
         <div className="terminal rounded-xl border border-white/10 bg-[#1A1D22] overflow-hidden font-jetbrains shadow-2xl">
@@ -173,8 +170,8 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
               <span className="text-pink-400">SELECT</span>
               <span className="text-white"> lap_id, driver_id, lap_time_s,</span>
             </div>
-            <div><span className="text-white">       fuel_component_s, compound_component_s, rubber_component_s,</span></div>
-            <div><span className="text-white">       ambient_component_s, constructor_component_s,</span></div>
+            <div><span className="text-white">       fuel_component_s, compound_component_s,</span></div>
+            <div><span className="text-white">       constructor_component_s,</span></div>
             <div><span className="text-white">       dirty_air_tax_s,</span></div>
             <div><span className="text-white">       </span><span className="text-pink-400">driver_skill_residual_s</span><span className="text-white">,  </span><span className="text-text-tertiary italic">-- the human element</span></div>
             <div><span className="text-white">       ml_eligible</span></div>
@@ -232,8 +229,6 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
                   <th className="py-3 px-4 font-normal text-right">lap_time_s</th>
                   <th className="py-3 px-4 font-normal text-right">fuel_comp_s</th>
                   <th className="py-3 px-4 font-normal text-right">compound_s</th>
-                  <th className="py-3 px-4 font-normal text-right">rubber_s</th>
-                  <th className="py-3 px-4 font-normal text-right">ambient_s</th>
                   <th className="py-3 px-4 font-normal text-right">constructor_s</th>
                   <th className="py-3 px-4 font-normal text-right">dirty_air_s</th>
                   <th className="py-3 px-4 font-bold text-right text-f1-red bg-f1-red/5">driver_skill_s</th>
@@ -247,8 +242,6 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
                     <td className="py-3 px-4 text-right text-text-secondary">{row.lapTime.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right text-red-400">+{row.fuel.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right text-red-400">+{row.compound.toFixed(3)}</td>
-                    <td className="py-3 px-4 text-right text-red-400">+{row.rubber.toFixed(3)}</td>
-                    <td className="py-3 px-4 text-right text-red-400">+{row.ambient.toFixed(3)}</td>
                     <td className="py-3 px-4 text-right" style={{ color: row.constructor < 0 ? 'var(--color-emerald)' : 'var(--color-sql-red)' }}>
                       {row.constructor < 0 ? '' : '+'}{row.constructor.toFixed(3)}
                     </td>
@@ -278,7 +271,7 @@ export const OutputSection = ({ id }: OutputSectionProps) => {
             Lap decomposition · {DATA_SAMPLES[selectedSample]?.race} · Lap {DATA_SAMPLES[selectedSample]?.lap}
           </div>
           <p className="font-jetbrains text-fine text-text-tertiary mb-6">
-            Same lap, decomposed - the red <span className="text-f1-red font-semibold">SKILL</span> segment is the only part the driver controls.
+            Same lap, decomposed: the red <span className="text-f1-red font-semibold">SKILL</span> segment is the only part the driver controls.
           </p>
 
           {DATA_SAMPLES[selectedSample]?.data.slice(0, 2).map((row) => (

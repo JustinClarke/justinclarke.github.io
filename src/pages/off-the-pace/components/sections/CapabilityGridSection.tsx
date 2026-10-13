@@ -47,7 +47,7 @@ export const CapabilityGridSection: React.FC = () => {
           <CapCard
             icon="🏎"
             title="Ghost Car Simulator"
-            desc="Counterfactual lap reconstruction - what would HAM have lapped in a Ferrari? Recombines ego driver skill with host constructor pace. Self-consistency gate - ego == host → predicted == actual."
+            desc="Counterfactual lap reconstruction: what would HAM have lapped in a Ferrari? Recombines ego driver skill with host constructor pace. Self-consistency gate: ego == host → predicted == actual."
             meta="fct_ghost_car_pace • fct_ghost_race_finish"
             glowColor="rgba(225,6,0,0.1)"
           />
@@ -61,14 +61,14 @@ export const CapabilityGridSection: React.FC = () => {
           <CapCard
             icon="🧮"
             title="Tyre Cliff Predictor"
-            desc="Multi-horizon XGBoost target - next_lap_degradation_jump_s, 3-lap and 5-lap cumulative jumps. Features include push load, dirty air thermal load, cumulative thermal surface/bulk indices, and powertrain signature."
+            desc="Multi-horizon XGBoost target: next_lap_degradation_jump_s, 3-lap and 5-lap cumulative jumps. Features include push load, dirty air thermal load, cumulative thermal surface/bulk indices, and powertrain signature."
             meta="fct_cliff_prediction_features • XGBoost (built)"
             glowColor="rgba(16,185,129,0.1)"
           />
           <CapCard
             icon="⚙"
             title="Powertrain Fingerprint"
-            desc="Per-lap driving style signature from raw 10Hz telemetry - gear change count, mean/max RPM, full-throttle percentage, DRS activation share, and short-shift index (early upshifts as energy proxy)."
+            desc="Per-lap driving style signature from raw ~7.6Hz telemetry: gear change count, mean/max RPM, full-throttle percentage, DRS activation share, and short-shift index (early upshifts as energy proxy)."
             meta="int_lap_powertrain_signature"
             glowColor="rgba(245,158,11,0.1)"
           />

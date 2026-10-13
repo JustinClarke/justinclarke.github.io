@@ -91,7 +91,7 @@ export const CapitalBudgetingPage = () => {
                  </span>
                </div>
                
-               <h1 className="sr-only">Capital Architecture Model - Industrial Feasibility Engine for Maritime Projects</h1>
+               <h1 className="sr-only">Capital Architecture Model: Industrial Feasibility Engine for Maritime Projects</h1>
                <div aria-hidden="true" className="font-noto text-[12vw] sm:text-7xl md:text-[8rem] font-black leading-[0.75] tracking-tighter mb-8 md:mb-10 uppercase text-center break-words mx-auto">
                  Capital<br/>
                  <span className="text-capital relative italic font-playfair lowercase font-normal">Architecture.</span>
@@ -280,8 +280,8 @@ export const CapitalBudgetingPage = () => {
               </div>
               <div className="space-y-4 p-8 md:p-10 rounded-[32px] bg-white/[0.02] border border-white/5 shadow-2xl">
                  {[
-                   { l: 'Heavy equip - Y1–Y5', v: '₱67.1M/yr' },
-                   { l: 'Auxiliary equip - Y1–Y10', v: '₱4.8M/yr' },
+                   { l: 'Heavy equip · Y1–Y5', v: '₱67.1M/yr' },
+                   { l: 'Auxiliary equip · Y1–Y10', v: '₱4.8M/yr' },
                    { l: 'Total dep. Y1–Y5', v: '₱76.3M/yr', h: true },
                    { l: 'Y5 rehab capex', v: '₱152.4M', r: true },
                    { l: 'Y10 heavy salvage (12%)', v: '₱45.7M', g: true },

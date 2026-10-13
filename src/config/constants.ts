@@ -49,15 +49,13 @@ export const OTHER_LANGUAGES = [
 
 export const PIPELINE_COLORS = ['var(--color-brand-primary)', 'var(--color-acc-cloud)', 'var(--color-acc-bi)'] as const;
 
-// Off-the-Pace 7-term identity palette, raw hex for d3/canvas/SVG draw calls
+// Off-the-Pace 5-term identity palette, raw hex for d3/canvas/SVG draw calls
 // that cannot read CSS vars (the decomposition waterfall + dbt DAG). This is the
 // sanctioned JS home and MUST mirror the --color-term-* tokens in src/index.css.
 // Keys match IDENTITY_TERMS / fct_lap_residuals component columns.
 export const TERM_COLORS = {
   fuel_component_s: '#475569',        // --color-term-fuel        (slate-600)
   compound_component_s: '#047857',    // --color-term-compound    (emerald-dark)
-  rubber_component_s: '#065f46',      // --color-term-rubber      (emerald-800)
-  ambient_component_s: '#2563eb',     // --color-term-ambient     (blue-600)
   constructor_component_s: '#334155', // --color-term-constructor (slate-700)
   dirty_air_tax_s: '#3b82f6',         // --color-term-dirty-air   (blue-bright)
   driver_skill_residual_s: '#e10600', // --color-term-driver      (f1-red)
@@ -139,7 +137,7 @@ export const STROKTALK_PALETTE = [
     hex: '#2ECC8F',
     name: 'Signal Mint',
     role: 'Primary · CTA',
-    note: 'The brand green. Reserved for the one action that moves a patient forward Training, Complete, Update. One clear next step, never competing with itself.',
+    note: 'The brand green. Reserved for the one action that moves a patient forward: Training, Complete, Update. One clear next step, never competing with itself.',
   },
   {
     hex: '#16A578',
@@ -157,7 +155,7 @@ export const STROKTALK_PALETTE = [
     hex: '#EF5364',
     name: 'Coral Cue',
     role: 'Accent · Focus',
-    note: 'Used on a single word in each prompt the same, Sort, below to point attention exactly where comprehension is being tested. Never decorative.',
+    note: 'Used on a single word in each prompt (the same, Sort, below) to point attention exactly where comprehension is being tested. Never decorative.',
   },
   {
     hex: '#F1F3F4',
@@ -166,6 +164,20 @@ export const STROKTALK_PALETTE = [
     note: 'The near-white card base. Generous neutral space lowers cognitive load and lets the 3D characters and one accent breathe.',
   },
 ] as const;
+
+/**
+ * DataScope particle constellation (src/pages/datascope/components/ui/ParticleField.tsx).
+ * Canvas draw calls can't read Tailwind classes, so the hexes live here. They
+ * mirror --color-ds-amber / -ds-violet / -ds-ink in @theme, which in turn
+ * mirror the live app's own --color-active / --color-fk / --color-ink.
+ */
+export const DATASCOPE_PARTICLE_COLORS = {
+  amber: '#f59e0b',
+  violet: '#a855f7',
+  bone: '#f2f4f7',
+  /** Link strokes: bone at a per-pair alpha, so kept as an rgb triplet. */
+  linkRgb: '242, 244, 247',
+} as const;
 
 export const LINKEDIN_BANNER_COLORS = {
   dark: {

@@ -1,9 +1,9 @@
 /**
- * DocsGovernanceSection section "08 / Docs & Governance": three CI-workflow
+ * DocsGovernanceSection section "08 / Docs & Governance": three headline CI-workflow
  * cards, four documentation "pillar" cards, and an ADR strip with a docs link.
  *
  * Fits in: rendered by SourceView's final block.
- * Note:    Each CI workflow carries its own `style` object (token-based colours
+ * Note:    The repo runs 15 workflows; these are the three core ones. Each CI workflow carries its own `style` object (token-based colours
  *          via color-mix) so the three cards read amber / blue / green.
  */
 import React from 'react';
@@ -16,14 +16,14 @@ interface DocsGovernanceSectionProps {
 const CI_WORKFLOWS = [
   {
     name: 'dbt-ci.yml',
-    desc: `Full dbt build + ${STATS.tests} tests on every PR. Fails if any test breaks or assert_lap_7term_identity drifts.`,
+    desc: `Full dbt build + ${STATS.tests} tests on every PR. Fails if any test breaks or the additive identity drifts.`,
     badge: 'dbt + DuckDB',
     style: { color: 'var(--color-viz-warning)', borderColor: 'color-mix(in srgb, var(--color-viz-warning) 20%, transparent)', backgroundColor: 'color-mix(in srgb, var(--color-viz-warning) 5%, transparent)' },
   },
   {
     name: 'docs-ci.yml',
-    desc: 'Reference drift check - git diff --exit-code on auto-generated schema docs. Docs can never drift from the live schema.',
-    badge: 'Docusaurus',
+    desc: 'Validates the Mintlify site, checks for broken links, and runs git diff --exit-code on the auto-generated schema reference. Docs can never drift from the live schema.',
+    badge: 'Mintlify',
     style: { color: 'var(--color-viz-info)', borderColor: 'color-mix(in srgb, var(--color-viz-info) 20%, transparent)', backgroundColor: 'color-mix(in srgb, var(--color-viz-info) 5%, transparent)' },
   },
   {
@@ -37,19 +37,19 @@ const CI_WORKFLOWS = [
 const DOC_PILLARS = [
   {
     title: 'Understand',
-    desc: 'Narrative documentation  - thesis, design decisions, why each layer exists and what problem it solves.',
+    desc: 'Start Here, key concepts and case studies: the thesis, and why each layer exists.',
   },
   {
-    title: 'Learn-dbt',
-    desc: '13 chapters walking the DAG from Bronze to Gold. Each chapter is a dbt node with annotated SQL.',
+    title: 'Transform',
+    desc: 'Model families, macros and CI gates across 141 pages, walking the DAG from Bronze to Gold.',
   },
   {
-    title: 'ML Docs',
-    desc: '8 pages covering training, calibration, ONNX export, leakage probe, and the limitation register.',
+    title: 'Machine Learning',
+    desc: '15 pages covering training, calibration, ONNX export, the leakage probe and the limitation register.',
   },
   {
     title: 'Auto-Reference',
-    desc: `dbt-generated schema reference  - all ${STATS.dbtModels} models, columns, tests, lineage : CI-enforced to never drift.`,
+    desc: `dbt-generated schema reference: all ${STATS.dbtModels} models, columns, tests and lineage, CI-enforced to never drift.`,
   },
 ];
 
@@ -61,10 +61,10 @@ export const DocsGovernanceSection: React.FC<DocsGovernanceSectionProps> = ({ id
           08 / Docs & Governance
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
-          Docusaurus + three CI workflows.<br />Docs can't drift.
+          Mintlify docs + 15 CI workflows.<br />Docs can't drift.
         </h2>
         <p className="text-text-tertiary text-sm max-w-xl font-jetbrains leading-relaxed mb-10">
-          The project ships a full Docusaurus site alongside the code  - four sections, ADR register, and a reference layer auto-generated from the dbt schema. A <code className="text-xs" style={{ color: 'var(--color-viz-success)' }}>git diff --exit-code</code> in CI ensures the reference never falls out of sync.
+          The project ships a Mintlify site alongside the code: five tabs, ten ADRs, and a reference layer auto-generated from the dbt schema. A <code className="text-xs" style={{ color: 'var(--color-viz-success)' }}>git diff --exit-code</code> in CI ensures the reference never falls out of sync.
         </p>
 
         {/* Three CI workflows */}
@@ -102,7 +102,7 @@ export const DocsGovernanceSection: React.FC<DocsGovernanceSectionProps> = ({ id
         {/* ADR + links strip */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-white/[0.06]">
           <div className="font-jetbrains text-fine text-text-tertiary leading-relaxed">
-            <span className="text-text-tertiary font-semibold">ADR register</span>  - architectural decisions recorded as numbered ADRs in <code className="text-text-tertiary">docs/adr/</code>. Each non-obvious design choice has an entry.
+            <span className="text-text-tertiary font-semibold">ADR register</span>  - ten numbered ADRs in <code className="text-text-tertiary">Architecture Decisions</code> on the docs site. Each non-obvious design choice has an entry.
           </div>
           <a
             href={LINKS.docs}

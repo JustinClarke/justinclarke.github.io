@@ -14,7 +14,7 @@ interface FeatureScaleSectionProps {
 }
 
 const METRICS = [
-  { value: String(STATS.races), label: 'Races Processed', sub: 'across 7 seasons' },
+  { value: String(STATS.races), label: 'Races Processed', sub: `across ${STATS.seasons} seasons` },
   { value: STATS.telemetryRowsPerSeason, label: 'Telemetry Rows', sub: 'per season' },
   { value: String(STATS.dbtModels), label: 'dbt Models', sub: 'in the pipeline' },
   { value: String(STATS.tests), label: 'CI Tests', sub: 'passing' },

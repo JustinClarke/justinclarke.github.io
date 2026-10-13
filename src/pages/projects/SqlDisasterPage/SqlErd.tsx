@@ -85,7 +85,7 @@ export const SqlErd = () => {
   }, []);
 
   return (
-    <div className="w-full relative overflow-hidden rounded-[24px] md:rounded-[40px] border border-white/10 bg-[#0a0c10] shadow-2xl">
+    <div className="w-full relative overflow-hidden rounded-[24px] md:rounded-[40px] border border-white/10 bg-graphite-950 shadow-2xl">
       {/* HUD Header */}
       <div className="flex items-center justify-between px-6 md:px-10 py-4 md:py-6 border-b border-white/5 bg-white/[0.01]">
         <div className="flex items-center gap-4">
@@ -128,7 +128,7 @@ export const SqlErd = () => {
                   width="24" 
                   height="14" 
                   rx="4" 
-                  fill="#0a0c10" 
+                  fill="var(--color-graphite-950)"
                   stroke="white" 
                   strokeOpacity="0.3" 
                 />

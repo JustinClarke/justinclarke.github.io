@@ -71,7 +71,7 @@ export const TerminalHeader: React.FC<TerminalHeaderProps> = memo(({ bootStep, o
       <div className="space-y-2 md:space-y-3">
         <div className="flex items-baseline gap-2 md:gap-3">
           <span className="font-mono text-fine md:text-xs text-brand-primary font-bold shrink-0 select-none" style={fadeIn(650)}>~$</span>
-          <span className="font-mono text-xs md:text-sm text-term-fg leading-relaxed block font-bold" style={fadeIn(850)}>data product engineer</span>
+          <span className="font-mono text-xs md:text-sm text-term-fg leading-relaxed block font-bold" style={fadeIn(850)}>{SITE.role.toLowerCase()}</span>
         </div>
         <div className="pl-4 md:pl-6 border-l border-edge-soft space-y-3.5 md:space-y-4">
           <div style={fadeIn(1050)}><TechStack animate /></div>

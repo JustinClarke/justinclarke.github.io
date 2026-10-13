@@ -59,10 +59,10 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
           07 / Validation
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
-          Trained 2018–2024.<br />2025 is the holdout.
+          Trained 2018–2025.<br />2026 is the holdout.
         </h2>
         <p className="text-text-tertiary text-sm max-w-xl font-jetbrains leading-relaxed mb-8">
-          The 2025 season is a designated reproducible out-of-sample holdout. Until it ingests, headline numbers come from the final TimeSeriesSplit fold (2024). The switch to a true holdout requires no code change.
+          The 2026 season is the designated out-of-sample holdout. Until it ingests, headline numbers come from the final TimeSeriesSplit fold (2025), a validation fold that also admitted features. The switch to a true holdout requires no code change.
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
@@ -96,7 +96,7 @@ export const ValidationSection: React.FC<ValidationSectionProps> = ({ id }) => {
 
             <div>
               <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary block mb-4">
-                Project Status  - built vs planned
+                Project Status: built vs planned
               </span>
               <div className="flex flex-col">
                 {BUILD_STATUS.map((item) => (

@@ -1,61 +1,57 @@
 /**
- * DataScopeLogo.tsx
- * The official DataScope logo mark — the lightning-bolt shape from
- * the DataScope preloader (public/favicon.svg in the DataScope repo).
+ * DataScopeLogo the DataScope wordmark: "Data", "Sc", the reticle as the
+ * "o", then "pe".
  *
- * Props mirror ReticleMark so existing call-sites can swap 1-for-1.
+ * Fits in: the hero and the chapter nav on /datascope.
+ * Note:    geometry and offsets are copied from the live app's own `Logo`
+ *          (DataScope/src/app/WorkbenchShell.tsx), so the two render the same
+ *          mark. Size it with a font-size class; everything is in em.
  */
+import { cn } from '@/utils';
+
 interface DataScopeLogoProps {
-  size?: number;
   className?: string;
+  /** Soft amber-to-violet bloom behind the mark (hero only). */
   glow?: boolean;
 }
 
-export function DataScopeLogo({
-  size = 24,
-  className = '',
-  glow = false,
-}: DataScopeLogoProps) {
+export function DataScopeLogo({ className, glow = false }: DataScopeLogoProps) {
   return (
     <div
-      className={`relative inline-flex items-center justify-center shrink-0 ${className}`}
-      style={{ width: size, height: size }}
+      role="img"
+      aria-label="DataScope"
+      className={cn(
+        'relative inline-flex select-none items-center font-grotesk font-bold leading-none tracking-[-0.035em]',
+        className,
+      )}
     >
       {glow && (
-        <div
-          className="absolute inset-0 rounded-full blur-md opacity-60 animate-pulse pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #863bff 0%, #00d4ff 100%)' }}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -inset-x-6 -inset-y-4 -z-10 rounded-full bg-radial from-ds-amber/25 via-ds-violet/10 to-transparent to-70% blur-2xl"
         />
       )}
-      {/* viewBox matches the 48×46 source to preserve proportions */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 48 46"
-        width={size}
-        height={size}
-        fill="none"
-        className="relative z-10"
-        aria-label="DataScope logo"
-      >
-        {/* Outer bolt shape */}
-        <path
-          fill="#863bff"
-          d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z"
-        />
-        {/* Inner highlight sheen (masked — simplified to a gradient overlay) */}
-        <path
-          fill="url(#ds-logo-sheen)"
-          opacity="0.5"
-          d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z"
-        />
-        <defs>
-          <linearGradient id="ds-logo-sheen" x1="0" y1="0" x2="48" y2="46" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#ede6ff" />
-            <stop offset="50%" stopColor="#863bff" stopOpacity="0" />
-            <stop offset="100%" stopColor="#47bfff" />
-          </linearGradient>
-        </defs>
-      </svg>
+      <span className="text-ds-ink">Data</span>
+      <span className="text-ds-amber">Sc</span>
+      <ReticleGlyph className="mt-[0.18em] -mr-[0.04em] h-[0.75em] w-[0.75em] self-center" />
+      <span className="text-ds-amber">pe</span>
     </div>
+  );
+}
+
+/** The reticle on its own: ring, four crosshair ticks, amber slice, violet core. */
+export function ReticleGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 100 100" aria-hidden="true" className={cn('shrink-0 text-ds-ink', className)}>
+      <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="9" />
+      <path
+        d="M50 4 V15 M50 85 V96 M4 50 H15 M85 50 H96"
+        stroke="currentColor"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path d="M50 50 L50 20 A30 30 0 0 1 76 65 Z" className="fill-ds-amber" />
+      <circle cx="50" cy="50" r="10" className="fill-ds-violet" />
+    </svg>
   );
 }

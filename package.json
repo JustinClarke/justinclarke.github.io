@@ -49,7 +49,7 @@
     "vitest": "^4.1.8",
     "yaml": "^2.9.0"
   },
-  "description": "Portfolio of Justin Clarke Data Product Engineer. Featuring live F1 telemetry simulation, an interactive terminal, and production-grade data engineering case studies.",
+  "description": "Portfolio of Justin Clarke, Data & AI Engineer. Featuring live F1 telemetry simulation, an interactive terminal, and production-grade data engineering case studies.",
   "author": "Justin Clarke",
   "repository": {
     "type": "git",

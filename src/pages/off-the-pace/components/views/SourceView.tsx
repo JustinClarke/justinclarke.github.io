@@ -233,7 +233,7 @@ export function SourceView() {
                 {STATS.dbtModels} dbt models.<br />One enforced invariant.
               </h2>
               <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed">
-                Every model is a node in a directed acyclic graph. Every edge has a test. The 7-term identity  - components sum to within ±0.0001s of the actual lap time  - runs on CI against every race in the dataset. If it breaks, the build breaks.
+                Every model is a node in a directed acyclic graph. Every edge has a test. The 5-term identity (components sum to within ±0.0001s of the actual lap time) runs on CI against every race in the dataset. If it breaks, the build breaks.
               </p>
             </div>
             <PipelineSection />

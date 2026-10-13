@@ -30,7 +30,7 @@ export const smoothScrollTo = (target: string | Element | number, duration = 1.6
     return;
   }
 
-  const element = typeof target === 'string' ? document.getElementById(target) : target;
+  const element = typeof target === 'string' ? document.getElementById(target.replace(/^#/, '')) : target;
   if (!element) return;
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {

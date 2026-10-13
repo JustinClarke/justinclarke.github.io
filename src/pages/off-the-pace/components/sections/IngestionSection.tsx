@@ -16,13 +16,13 @@ interface IngestionSectionProps {
 
 const DATASETS = [
   { key: 'laps',          label: 'Laps',          desc: 'Timing, sector splits, tyre data, lap flags' },
-  { key: 'telemetry',     label: 'Telemetry',     desc: '10Hz positional + RPM/gear/throttle/DRS/X/Y/Z' },
+  { key: 'telemetry',     label: 'Telemetry',     desc: '~7.6Hz positional + RPM/gear/throttle/DRS/X/Y/Z' },
   { key: 'weather',       label: 'Weather',       desc: 'Air/track temp, humidity, barometric pressure' },
   { key: 'race_control',  label: 'Race Control',  desc: 'SC/VSC windows, penalties, flags, messages' },
 ];
 
 const SCALE_METRICS = [
-  { value: String(STATS.racesIngested), label: 'Races Ingested', sub: 'Bronze coverage : 168' },
+  { value: String(STATS.racesIngested), label: 'Races Ingested', sub: `Bronze coverage : ${STATS.racesIngested}` },
   { value: String(STATS.races),         label: 'Races Processed', sub: 'in fct_lap_residuals' },
   { value: STATS.telemetryRowsPerSeason, label: 'Telemetry Rows', sub: 'per season' },
   { value: `${STATS.telemetryHz}Hz`,    label: 'Telemetry Rate', sub: 'positional data' },
@@ -39,7 +39,7 @@ export const IngestionSection: React.FC<IngestionSectionProps> = ({ id }) => {
             02 / Ingestion : Bronze Layer
           </span>
           <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
-            168 races ingested.<br />4 datasets per race.
+            {STATS.racesIngested} races ingested.<br />4 datasets per race.
           </h2>
           <p className="text-text-tertiary text-sm max-w-2xl font-jetbrains leading-relaxed">
             FastF1 + OpenF1 → Hive-partitioned Parquet, organised by <code className="text-emerald-400 text-xs">season/race_id/dataset</code>. JSON-Schema contracts validated at ingest. <code className="text-emerald-400 text-xs">data_quality.py</code> gates reject under-lap counts and telemetry gaps before any transform runs.

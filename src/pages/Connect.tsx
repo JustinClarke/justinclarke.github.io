@@ -102,7 +102,7 @@ export function ConnectPage() {
       `N:${SITE.lastName};${SITE.firstName};;;`,
       `EMAIL;TYPE=INTERNET:${SITE.email}`,
       'TEL;TYPE=CELL:+971585376967',
-      'TITLE:Data Product Engineer',
+      `TITLE:${SITE.role}`,
       `URL:${SITE.url}`,
       `X-SOCIALPROFILE;type=linkedin:${SITE.social.linkedin}`,
       `X-SOCIALPROFILE;type=github:${SITE.social.github}`,
@@ -184,7 +184,7 @@ export function ConnectPage() {
                     <div className="absolute left-0 top-1 bottom-1 w-[2px] bg-gradient-to-b from-brand-primary via-brand-primary/45 to-transparent rounded-full shadow-[0_0_8px_rgba(0,200,180,0.4)] opacity-90" />
 
                     <span className="font-mono !text-xs md:!text-sm text-term-fg leading-relaxed block font-bold">
-                      data product engineer
+                      {SITE.role.toLowerCase()}
                     </span>
 
                     {/* Responsive Stack Badges (Visible on all sizes, wraps beautifully) */}

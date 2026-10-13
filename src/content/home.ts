@@ -9,7 +9,7 @@ import { HeroMetadata, CloserMetadata } from '@/types';
 import { SITE } from './site';
 
 export const heroMetadata: HeroMetadata = {
-  role: 'Full-Stack · Analytics Engineer',
+  role: 'Data & AI Engineer',
   name: 'Justin\nClarke',
   bio: 'Data to decisions & decisions into products',
   cta: 'Get in touch',

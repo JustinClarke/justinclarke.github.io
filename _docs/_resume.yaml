@@ -839,6 +839,7 @@ contact:
   github: github.com/JustinClarke          # note: verify exact casing before printing
   portfolio: justinclarke.github.io
   phone: "+971 58 537 6967"
+  location: "Dubai, UAE"
   # location: REMOVED 2026-09-10 at owner's request. Set it per application instead —
   # sent resumes have carried both "Dubai, UAE" and "Bangalore, India" headers, and a
   # master value here would silently contradict one of them. Check the phone number
@@ -852,7 +853,7 @@ contact:
 headlines:
   - id: head-data-analyst
     for: [data-analyst, bi-developer]
-    text: "Data Product Engineer — BI, KPI Reporting & Stakeholder Insight"
+    text: "Data & AI Engineer — BI, KPI Reporting & Stakeholder Insight"
   - id: head-analytics-engineer
     for: [analytics-engineer]
     text: "Analytics Engineer — dbt, Pipeline Architecture & Tested Data Models"
@@ -1025,9 +1026,9 @@ summaries:
   - id: sum-general
     for: [general, product-developer, ai-engineer]
     text: >
-      Data and AI engineer working where language models meet production databases — the point
-      at which a confident answer and a correct answer stop being the same thing. Builds both
-      the data platform and the evaluation that keeps what sits on top of it honest.
+      Data and AI engineer: Data engineer working where language models meet production
+      databases. Builds both the data platform and the evaluation that keeps what sits on top
+      of it honest.
     notes: |
       REWRITTEN 2026-08-17, then REGISTER-CORRECTED the same day. The first rewrite read
       "I build both sides of it, and I test the side that lies" — rejected, correctly, as too
@@ -1083,7 +1084,7 @@ summaries:
   - id: sum-data-analyst
     for: [data-analyst, bi-developer]
     text: >
-      Data Product Engineer with 2+ years turning operational data from POS, ERP and
+      Data & AI Engineer with 2+ years turning operational data from POS, ERP and
       e-commerce systems into automated KPI reporting that business leaders actually use.
       Strong in SQL, Python, Power BI and DAX; comfortable translating ambiguous business
       requirements into validated, reconciled metrics. Dubai-based, immediately available.
@@ -1174,9 +1175,8 @@ experience:
       # -- the five canonical bullets (approved copy, 2026-08-17) -----------------
       - id: vns-01
         text: >
-          Built data ingestion and transformation pipelines in Microsoft Fabric Notebooks for
-          clients across retail, F&B and e-commerce, processing multi-million-record datasets
-          for downstream analytics.
+          Built ingestion and transformation pipelines in Microsoft Fabric Notebooks for retail,
+          F&B and e-commerce clients, processing multi-million-record datasets.
         metric: multi-million-record pipelines, 3 client verticals
         skills: [Microsoft Fabric, PySpark, Python, SQL, data pipelines, ETL]
         tags: [analytics-engineer, data-analyst, bi-developer, data-engineer, data-platform-engineer]
@@ -1184,8 +1184,8 @@ experience:
 
       - id: vns-02
         text: >
-          Optimized large-scale SQL and transformation pipelines, reducing average downstream
-          refresh times from ~45 minutes to ~20 minutes.
+          Cut downstream refresh times from ~45 to ~20 minutes by optimizing SQL and
+          transformation pipelines.
         metric: ~45 min -> ~20 min refresh (>50% cut)
         skills: [SQL, Power Query, query optimization, performance tuning]
         tags: [data-analyst, analytics-engineer, bi-developer, data-engineer, data-platform-engineer]
@@ -1193,8 +1193,8 @@ experience:
 
       - id: vns-03
         text: >
-          Developed Python-based data processing and validation workflows, including
-          cross-source reconciliation and automated quality checks.
+          Built Python validation workflows with cross-source reconciliation and automated
+          quality checks, plus custom React/TypeScript client data tools.
         metric: automated cross-source reconciliation + quality checks
         skills: [Python, pandas, data validation, reconciliation, data quality]
         tags: [data-analyst, analytics-engineer, data-engineer, research-engineer, ai-systems-engineer]
@@ -1225,8 +1225,8 @@ experience:
 
       - id: vns-05
         text: >
-          Automated recurring analytical workflows, eliminating approximately 12 hours/week of
-          manual reporting effort.
+          Eliminated ~12 hours/week of manual reporting by automating recurring analytical
+          workflows.
         metric: ~12 hrs/week of manual effort eliminated
         skills: [automation, Power BI, DAX, KPI reporting]
         tags: [data-analyst, bi-developer, analytics-engineer, data-engineer, platform-engineer]
@@ -1281,10 +1281,10 @@ experience:
   # ---------------------------------------------------------------------------
   - id: litestore
     company: LiteStore
-    title: Product & Analytics Developer
+    title: Founding Product & Analytics Developer
     start: 2021-04
     end: 2023-04
-    location: India (remote)
+    location: Bangalore, India
     context: |
       Sole engineer on litestore.in, a multi-tenant Retail-as-a-Service platform. "Brands"
       = physical retail tenants renting mall space; each gets a landing page on the site.
@@ -1292,9 +1292,8 @@ experience:
     accomplishments:
       - id: lite-01
         text: >
-          Sole engineer for a Retail-as-a-Service platform serving 11 retail brands across 3
-          mall locations — owning frontend architecture, multi-tenant theming, analytics,
-          client-facing feature delivery and ongoing maintenance end-to-end.
+          Sole engineer for a Retail-as-a-Service platform serving 11 brands across 3 mall
+          locations, owning architecture, analytics and delivery end-to-end.
         metric: 11 brands, 3 malls, sole engineer
         skills: [Next.js, React, ownership, multi-tenant architecture]
         tags: [frontend, software-engineer]
@@ -1302,10 +1301,9 @@ experience:
 
       - id: lite-02
         text: >
-          Led the Create React App -> Next.js 12 migration, redesigning around statically
-          pre-rendered routes (Pages Router + getStaticProps) for SEO-friendly storefronts and
-          edge caching, cutting average page load from ~3.0s to 0.6s.
-        metric: 3.0s -> 0.6s load (5x)
+          Cut page load from 3.0s to 0.6s migrating to Next.js with static pre-rendering;
+          documented the system and onboarded my own successor.
+        metric: 3.0s -> 0.6s load (5x); successor onboarded
         skills: [Next.js, React, SSG, getStaticProps, Vercel edge, performance]
         tags: [frontend, software-engineer]
         strength: signature
@@ -1342,10 +1340,9 @@ experience:
 
       - id: lite-06
         text: >
-          Instrumented Google Analytics 4 across the platform with staging/production env
-          isolation, and used the analytics to drive A/B experiments that delivered a 20%
-          conversion uplift.
-        metric: 20% conversion uplift via A/B testing
+          Drove a 20% conversion uplift via GA4-instrumented A/B experiments; platform
+          delivered Rs 2.2 Cr+ GMV.
+        metric: 20% conversion uplift via A/B testing; Rs 2.2 Cr+ GMV
         skills: [GA4, A/B testing, conversion optimization, analytics instrumentation]
         tags: [data-analyst, frontend]
         strength: signature   # the analytics + business-impact bullet for Data Analyst cuts
@@ -1424,7 +1421,10 @@ experience:
   # ---------------------------------------------------------------------------
   - id: datascope
     company: DataScope
-    title: Founder
+    title: Independent Research Project
+    tagline: Privacy-First AI Data Analysis Workspace
+    links:
+      site: justinclarke.github.io/datascope
     start: 2026-05
     end: present
     # location: REMOVED 2026-09-10 — a "Dubai, UAE" line here contradicted a
@@ -1489,11 +1489,10 @@ experience:
     accomplishments:
       - id: ds-01
         text: >
-          Built a browser-native analytics workspace that runs a full OLAP engine (DuckDB-Wasm)
-          entirely client-side — SQL editing, pivoting, profiling and charting over files that
-          are never uploaded — shipping as a zero-deployment static bundle that runs from any
-          host or offline from disk.
-        metric: full OLAP engine client-side, zero upload, zero backend
+          Built a React/DuckDB-Wasm data tool: plain-English questions turned into SQL over the
+          user's files, with three inference backends (local WebLLM, the user's API key, or
+          Ollama endpoint) and a no-network mode.
+        metric: 3 inference backends + no-network mode, plain-English to SQL
         skills: [React, TypeScript, DuckDB-Wasm, Vite, zero-backend architecture]
         tags: [frontend, software-engineer, data-engineer]
         strength: signature
@@ -1516,11 +1515,10 @@ experience:
 
       - id: ds-03
         text: >
-          Designed a 3-tier AI system — off (no network at all), in-browser WebLLM on WebGPU, or
-          a cloud provider — behind one staged NL→SQL pipeline with full client-side trace
-          inspection and stateless key-passing, so the privacy guarantee weakens only by explicit
-          user choice and every tier is graded by the same eval harness.
-        metric: 3 AI tiers, one NL→SQL pipeline, client-side trace, stateless secrets
+          Built a staged question-to-SQL pipeline with a client-side trace the user can inspect,
+          plus an edge gateway on Cloudflare Workers (AI routing, Durable Object rate limiting,
+          opt-in key vault, MCP endpoint).
+        metric: staged NL→SQL pipeline, client-side trace, Cloudflare Workers edge gateway
         skills: [AI integration, prompt engineering, WebLLM, Cloudflare Workers, security]
         tags: [frontend, ai-engineer, applied-ai-engineer, ai-systems-engineer]
         strength: strong
@@ -1604,12 +1602,10 @@ experience:
 
       - id: ds-08
         text: >
-          Established the evaluation infrastructure: a 58-question NL→SQL harness scored on
-          execution, correctness and repair across five providers, bracketed by two controls
-          the industry usually omits — a deliberately weak local-template floor at 19.0% and a
-          mock ceiling at 100% — so every later claim was positioned between an honest floor
-          and a known maximum rather than quoted as a bare vendor number.
-        metric: 58 questions x 5 providers, floor + ceiling controls
+          Built an eval harness that scores execution rate, correctness, repair rate and token
+          cost per provider on a 58-question labelled set. WebLLM scored 72% correct and the
+          cloud-edge route scored 53%.
+        metric: 58 questions; WebLLM 72% correct, cloud-edge 53%
         skills: [evals, benchmarking, NL-to-SQL, experiment design, WebLLM, Cloudflare Workers]
         tags: [ai-engineer, ml-engineer, applied-ai-engineer, ai-systems-engineer, research-engineer]
         strength: signature
@@ -1719,6 +1715,19 @@ experience:
           Do NOT compress these three into "ran ablations on prompting". The specificity is
           the entire value; a generic version of this bullet is worth nothing.
 
+      # -- added from resume text 2026-10-13 ---------------------------------------
+      - id: ds-13
+        text: >
+          Prototyped reliability techniques: an agentic query loop where the model reads its own
+          results and decides whether to retry, 8 deterministic repair rules for known LLM
+          failure modes, and controlled ablations: beating a 5-sample self-consistency vote at
+          lower cost.
+        metric: 8 deterministic repair rules; beat a 5-sample self-consistency vote at lower cost
+        skills: [agentic loops, LLM reliability, SQL repair, ablation design, self-consistency, NL-to-SQL]
+        tags: [ai-engineer, ai-systems-engineer, applied-ai-engineer, research-engineer]
+        strength: strong
+        evidence: "NONE RECORDED. Text supplied in the 2026-10-13 resume; trace to a run file before sending (cf. dc-01/dc-02 and duckchat docs/baselines)."
+
       # -- team ------------------------------------------------------------------
       - id: ds-10
         text: >
@@ -1767,8 +1776,8 @@ projects:
   # ---------------------------------------------------------------------------
   - id: off-the-pace
     name: Off The Pace
-    tagline: "When a car is off the pace, why? — F1 lap-time causal decomposition, ML, and a zero-server analytics app."
-    role: Sole creator
+    tagline: "F1 Performance Analytics & Lap-Time Attribution Platform"
+    role: Independent Research Project
     status: Live / actively developed
     dates_note: |
       DISCREPANCY, flagged 2026-09-10. The `start`/`end` above now read Nov 2025 - Apr 2026
@@ -1783,6 +1792,7 @@ projects:
     start: 2025-11
     end: 2026-04
     links:
+      site: justinclarke.github.io/f1
       app: off-the-pace.web.app
       docs: offthepace.mintlify.app
       repo: github.com/JustinClarke   # note: confirm exact repo path before printing
@@ -1835,13 +1845,10 @@ projects:
     accomplishments:
       - id: otp-01
         text: >
-          Answered "when a car is off the pace, why?" by decomposing all 137,447 laps of seven
-          F1 seasons into seven additive physical components — fuel, compound, rubber, ambient,
-          constructor, dirty air and driver skill — so lost time is attributed to a named cause
-          rather than a ranking, and guarded the model with a CI-enforced invariant that the
-          terms must reconstruct true lap-time pace to within 0.0001s or the build fails
-          (observed residual ~1.4e-14s, machine precision).
-        metric: 137,447 laps, 7-term decomposition, CI-enforced to 0.0001s
+          Enforced data quality in CI: a macro fails the build if derived components don't
+          rebuild the lap total within 0.0001 s, and the test suite runs on every push via
+          GitHub Actions.
+        metric: CI-enforced to 0.0001 s, runs on every push
         skills: [causal modelling, dbt, SQL, fixed effects, statistics]
         tags: [analytics-engineer, ml-engineer, data-engineer, data-platform-engineer, f1-performance-software, research-engineer]
         strength: signature
@@ -1854,11 +1861,10 @@ projects:
 
       - id: otp-02
         text: >
-          Engineered the data layer end to end: 149 races of FastF1 and OpenF1 telemetry
-          ingested to Hive-partitioned Parquet, transformed through a dbt medallion
-          architecture of 74 models on DuckDB, and guarded by 658 CI-enforced data-quality
-          tests — 62 of them bespoke assertions written for failures generic tests cannot see.
-        metric: 74 dbt models, 658 CI tests (62 bespoke)
+          Built a batch pipeline that ingests 8 seasons (173 races, 161k+ laps) from public
+          telemetry APIs into partitioned Parquet, then transforms it in a 93-model dbt/DuckDB
+          warehouse.
+        metric: 8 seasons, 173 races, 161k+ laps, 93 dbt models
         skills: [dbt, DuckDB, SQL, Hive partitioning, Parquet, FastF1, data testing, medallion architecture]
         tags: [analytics-engineer, data-engineer, data-platform-engineer, platform-engineer]
         strength: signature
@@ -1873,13 +1879,9 @@ projects:
 
       - id: otp-03
         text: >
-          Built a 5-model XGBoost suite (degradation quantile trio, tyre-cliff classifier,
-          AFT survival model for stint life) over 30+ physics-grounded features, exported to
-          ONNX with verified numerical parity and conformal calibration landing empirical
-          coverage at 0.806 against a nominal 0.80 — every model gated on beating a
-          baseline under season-grouped TimeSeriesSplit: all five clear it, four with
-          statistical significance.
-        metric: 5/5 beat baseline (4/5 significant), 30+ features, coverage 0.806 at nominal 0.80
+          Trained 5 gradient-boosted models, exported to ONNX with parity tests; all 5 beat a
+          baseline in evaluation.
+        metric: 5 models, ONNX parity tests, 5/5 beat baseline
         skills: [XGBoost, ONNX, feature engineering, conformal calibration, survival analysis, scikit-learn, Optuna, SciPy]
         tags: [ml-engineer, ml-platform-engineer, research-engineer, motorsport-data-scientist]
         strength: signature
@@ -1907,11 +1909,9 @@ projects:
 
       - id: otp-04
         text: >
-          Enforced a CI leakage spine — an sqlglot audit of compiled SQL plus an adversarial
-          probe that recovers race_year from the feature matrix at 0.996 accuracy against a
-          0.168 majority-class floor, proving the column would leak if admitted — so no
-          forward-looking information reaches training.
-        metric: CI-enforced leakage audit; probe 0.996 vs 0.168 chance
+          Built a leakage audit for ML features: CI tests block any feature that can see future
+          laps or pool across seasons, before models are exported.
+        metric: CI-enforced leakage audit
         skills: [data leakage, sqlglot, ML validation, CI/CD]
         tags: [ml-engineer, analytics-engineer, ai-engineer, ml-platform-engineer, research-engineer, motorsport-data-scientist]
         strength: strong
@@ -1930,11 +1930,10 @@ projects:
 
       - id: otp-05
         text: >
-          Shipped 30 interactive analytics features as a zero-backend React + TypeScript SPA
-          (330 TS files) running analytical SQL over F1 telemetry in-browser via DuckDB-Wasm at
-          sub-10ms, with live ML inference via ONNX Runtime Web — no server, no login, and no
-          cost to serve, because nothing is computed at request time.
-        metric: 30 features, sub-10ms in-browser SQL, zero servers, zero serving cost
+          Shipped a server-less analytics app: React and DuckDB-Wasm run SQL in the browser and
+          ONNX Runtime Web does inference, so there is no backend to run or pay for. 31
+          interactive features.
+        metric: 31 interactive features, zero servers
         skills: [React, TypeScript, DuckDB-Wasm, ONNX Runtime Web, Vite]
         tags: [frontend, ml-engineer, software-engineer, f1-performance-software]
         strength: signature
@@ -1979,11 +1978,9 @@ projects:
 
       - id: otp-09
         text: >
-          Implemented a two-way high-dimensional fixed-effects (HDFE) panel regression that
-          separates car quality from driver quality — the central confound in F1 analysis, where
-          no driver is ever observed in every car — recovering per-driver and per-constructor
-          effects from one panel instead of crediting the driver with the team's advantage.
-        metric: two-way HDFE, driver effect de-confounded from car effect
+          Modeled statistical effects with a two-way fixed-effects regression, separating driver
+          skill from car pace.
+        metric: two-way fixed-effects, driver skill separated from car pace
         skills: [econometrics, fixed effects, panel regression, statistics, PyFixest, Python]
         tags: [data-analyst, analytics-engineer, ml-engineer, research-engineer, f1-performance-software]
         strength: signature
@@ -2131,10 +2128,10 @@ projects:
 
   # ---------------------------------------------------------------------------
   - id: ibis-oss
-    name: "Ibis (open source) — cross-backend SQL compiler fix"
+    name: "Ibis • SQL Compiler Compatibility Fix"
     tagline: "Diagnosed and fixed a silent cross-backend SQL breakage in Ibis, the Python dataframe library, upstream and under maintainer review."
     role: External contributor
-    status: "PR #12104 open under review (not merged) as of 2026-09-10"
+    status: "PR #12104 · Merged"
     links:
       pr: github.com/ibis-project/ibis/pull/12104
       issue: github.com/ibis-project/ibis/issues/12101
@@ -2153,13 +2150,10 @@ projects:
     accomplishments:
       - id: oss-01
         text: >
-          Diagnosed and fixed a silent cross-backend failure in Ibis, the Python dataframe
-          library: a sqlglot upgrade renamed an argument of the DROP expression, and because
-          unrecognised keyword arguments are ignored rather than raising, every SQL backend
-          began emitting `DROP TABLE IF EXISTS` with no table name — a corruption that failed
-          downstream instead of at the call site. Fixed it behind a version-adaptive shim and
-          migrated 19 database backends onto it, with a regression test citing the issue.
-        metric: 19 backends fixed behind one compatibility shim; 24 files, +138/-117
+          Fixed SQL generation compatibility with sqlglot 30.18 by implementing a
+          version-compatible Drop expression helper, preventing malformed DROP TABLE IF EXISTS
+          statements.
+        metric: sqlglot 30.18 compatibility; PR #12104 merged
         skills: [Python, sqlglot, SQL compilers, debugging, open-source contribution, pytest]
         tags: [backend-engineer, data-engineer, software-engineer, data-platform-engineer, platform-engineer]
         strength: signature
@@ -2183,10 +2177,9 @@ projects:
 
       - id: oss-02
         text: >
-          Revised the contribution in response to maintainer review, relocating the shim into
-          the project's existing compatibility module and aligning it with the conventions
-          already used there rather than introducing a parallel one.
-        metric: maintainer review answered and incorporated
+          Addressed SQL backend compatibility regressions and validated changes across affected
+          backends.
+        metric: changes validated across affected backends
         skills: [code review, collaboration, open-source contribution, Python]
         tags: [software-engineer, backend-engineer, data-engineer]
         strength: strong
@@ -2541,8 +2534,8 @@ education:
   #   notes: include as in-progress; signals analytics + business depth for tier-1 employers
 
   - id: msc-qmul
-    degree: MSc, Computer Science
-    institution: Queen Mary University of London
+    degree: M.Sc in Computer Science
+    institution: Queen Mary, University of London
     start: 2022
     end: 2023
     highlights:
@@ -2552,8 +2545,8 @@ education:
       - "Security & System Design: Gained expertise in secure system architecture, natural language processing"
 
   - id: btech-gitam
-    degree: B.Tech, Computer Science & Engineering
-    institution: Gandhi Institute of Technology and Management (GITAM)
+    degree: B.Tech in Computer Science & Engineering
+    institution: Gandhi Institute of Technology and Management
     start: 2018
     end: 2022
     highlights:
@@ -2577,6 +2570,19 @@ certifications:
 # =============================================================================
 skills:
   groups:
+    # -- from resume text 2026-10-13: the three printed skills lines ---------------
+    - id: resume-data-pipelines
+      label: Data & Pipelines
+      lead_for: [general]
+      items: [SQL, Python, dbt, DuckDB, Microsoft Fabric, Parquet, data quality testing, CI/CD]
+    - id: resume-ai
+      label: AI
+      lead_for: [general]
+      items: [LLM eval, grounded generation, hallucination gating, "NL→SQL", "local inference (Ollama, WebLLM)"]
+    - id: resume-core
+      label: Core
+      lead_for: [general]
+      items: [React, TypeScript, Node.js, "Advanced Excel (pivots, macros, VBA)", Git, GitHub Actions]
     - id: ui-ux-design-ops
       label: UI/UX & Design Operations
       lead_for: [designer, product-designer]

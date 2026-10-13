@@ -9,7 +9,7 @@ const projectRoot = path.join(__dirname, '..');
 
 // Configuration
 const WARN_ONLY = false; // Set to false to block (exit 1) on violations
-// Escape hatches: put the marker anywhere on the offending line — `// tw-allow-hex`
+// Escape hatches: put the marker anywhere on the offending line: `// tw-allow-hex`
 // in TS, `{/* tw-allow-hex */}` in JSX. Each must be justified in code review.
 const ALLOW_HEX = 'tw-allow-hex'; // raw hex that duplicates a @theme token
 const ALLOW_MICRO = 'tw-allow-micro'; // sub-10px text (decorative glyphs only)
@@ -121,8 +121,8 @@ function scanSourceFiles(tokens) {
         }
       }
 
-      // 2. Type floor: arbitrary font sizes below 10px (any variant prefix —
-      //    md:text-[8px], after:text-[9px] — the size literal is what matters)
+      // 2. Type floor: arbitrary font sizes below 10px (any variant prefix,
+      //    md:text-[8px], after:text-[9px]; the size literal is what matters)
       if (!line.includes(ALLOW_MICRO)) {
         const pxRegex = /text-\[(\d+(?:\.\d+)?)px\]/g;
         let match;

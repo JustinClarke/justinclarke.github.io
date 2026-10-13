@@ -367,7 +367,7 @@ export const TerminalBody: React.FC<TerminalBodyProps> = ({
               </div>
               <div className="space-y-1">
                 <div className="space-y-2.5">
-                  <Typewriter text="data product engineer" speed={12} delay={880} className="font-mono text-fine sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
+                  <Typewriter text={SITE.role.toLowerCase()} speed={12} delay={880} className="font-mono text-fine sm:text-xs text-term-fg leading-relaxed block font-bold" as="span" skip={true} />
                   <TechStack animate className="!text-fine" />
                   <Typewriter text="Data to decisions & decisions into products" speed={12} delay={1650} className="font-mono text-fine sm:text-xs text-term-dim leading-relaxed block" as="span" skip={true} />
                 </div>

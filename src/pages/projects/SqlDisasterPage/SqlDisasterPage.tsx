@@ -48,7 +48,7 @@ const ENTITY_REGISTRY = [
 
 const SCHEMA_FEATURES = [
   { t: 'M:N Modeling', d: '4 junction tables with composite Primary Keys enforcing relational integrity across the volunteer-to-team and supply-to-region chains.' },
-  { t: 'Check Invariants', d: 'CHECK constraints enforce current_occupancy ≤ capacity across all 9 shelter nodes - prevents logical data violations at the schema level.' },
+  { t: 'Check Invariants', d: 'CHECK constraints enforce current_occupancy ≤ capacity across all 9 shelter nodes, preventing logical data violations at the schema level.' },
   { t: 'FK Integrity', d: 'Foreign Key chains span regional dispatch zones: Agency → Team → Disaster → Region → Shelter, ensuring cascading constraint coverage.' },
   { t: 'Geographic Ops', d: 'NDRRMC and PRC agency coordination nodes model real Philippine relief hierarchy across 7 affected regions and 5 concurrent disaster events.' },
 ];
@@ -132,7 +132,7 @@ export const SqlDisasterPage = () => {
             </div>
 
             {/* Hero type */}
-            <h1 className="sr-only">SQL Disaster Response System - Philippine Relief Logistics Database</h1>
+            <h1 className="sr-only">SQL Disaster Response System: Philippine Relief Logistics Database</h1>
             <div
               aria-hidden="true"
               className="font-noto text-[18vw] sm:text-8xl md:text-[10rem] font-black leading-none tracking-tighter mb-6 uppercase flex flex-col items-center"
@@ -286,7 +286,7 @@ export const SqlDisasterPage = () => {
               </h2>
               <p className="font-mono text-sm md:text-base text-text-tertiary leading-relaxed max-w-md">
                 Designed a robust MySQL architecture to synchronize relief efforts across 7 Philippine regions.
-                Modeled multi-tier disasters - Typhoon Yagi, Luzon Earthquake, Mt. Kanlaon - and their full
+                Modeled multi-tier disasters (Typhoon Yagi, Luzon Earthquake, Mt. Kanlaon) and their full
                 resource allocation chains.
               </p>
 
@@ -349,7 +349,7 @@ export const SqlDisasterPage = () => {
                 <span className="text-text-dim">Engine.</span>
               </h2>
               <p className="font-mono text-sm md:text-base text-text-tertiary max-w-xl leading-relaxed">
-                The interactive dashboard is 1,603 lines of handwritten Vanilla JS - no React, no framework.
+                The interactive dashboard is 1,603 lines of handwritten Vanilla JS, with no React and no framework.
                 Built on D3 v7 force simulation with custom physics, multi-layer filtering, and a programmatic alert system.
               </p>
             </div>
@@ -375,7 +375,7 @@ export const SqlDisasterPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {[
                 { icon: '◉', title: 'Force Simulation', desc: 'D3 force-directed graph with custom charge, link distance, and collision physics tuned for 61-node readability.' },
-                { icon: '◈', title: 'Programmatic Alerts', desc: 'Alert panel generated dynamically from node data - shelter load thresholds, active disaster states, standby team detection.' },
+                { icon: '◈', title: 'Programmatic Alerts', desc: 'Alert panel generated dynamically from node data: shelter load thresholds, active disaster states, standby team detection.' },
                 { icon: '◎', title: 'Multi-layer Filtering', desc: 'Entity type toggling, full-text node search, edge hover inspection, pin/unpin state, and keyboard controls.' },
               ].map(f => (
                 <div key={f.title} className="p-6 border border-white/5 rounded-2xl bg-white/[0.02] hover:border-sql-agency/15 transition-all duration-300">

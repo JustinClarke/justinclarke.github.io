@@ -893,7 +893,7 @@ export default function TheLongVersion({
                 </div>
               </div>
               <p className="cta-coda">
-                And if you're not hiring - say hi anyway. Some of the best conversations I've had started with no agenda at all.
+                And if you're not hiring, say hi anyway. Some of the best conversations I've had started with no agenda at all.
               </p>
             </div>
 

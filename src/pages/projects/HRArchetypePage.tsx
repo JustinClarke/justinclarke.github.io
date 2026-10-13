@@ -317,7 +317,7 @@ export const HRArchetypePage = () => {
               >
                 Transforming workforce sentiment into{' '}
                 <span className="text-white font-black italic">retention decisions</span>.{' '}
-                A 13-axis diagnostic classifying employee risk across 8 behavioural archetypes  -  so HR leads act before attrition becomes visible.
+                A 13-axis diagnostic classifying employee risk across 8 behavioural archetypes, so HR leads can act before attrition becomes visible.
               </motion.p>
 
               <motion.div
@@ -555,7 +555,7 @@ export const HRArchetypePage = () => {
               <p className="font-mono text-base md:text-lg text-black/45 leading-relaxed">
                 Every employee falls into one quadrant of the{' '}
                 <span className="text-black font-black italic">Engagement × Risk</span>{' '}
-                matrix. The dashboard surfaces the quadrant in real time  -  with a prescribed intervention for each.
+                matrix. The dashboard surfaces the quadrant in real time, with a prescribed intervention for each.
               </p>
             </ScrollReveal>
           </div>
@@ -624,7 +624,7 @@ export const HRArchetypePage = () => {
                     />
                   </div>
                   <p className="font-mono text-micro text-text-tertiary uppercase font-bold">
-                    Window before predicted exit  -  designed for proactive retention.
+                    Window before predicted exit, designed for proactive retention.
                   </p>
                   <div className="grid grid-cols-2 gap-3 pt-3 border-t border-white/[0.06]">
                     {[{ v: '7-panel', l: 'Dashboard' }, { v: 'onSnapshot', l: 'Realtime' }, { v: 'Arrow-Key', l: 'Presentation Mode' }, { v: 'CSV + TXT', l: 'Export' }].map(m => (
@@ -678,7 +678,7 @@ export const HRArchetypePage = () => {
               <p className="font-mono text-sm md:text-base text-text-tertiary leading-relaxed">
                 Most workforce tools measure performance.{' '}
                 <span className="text-white font-black">This one measures trust.</span>{' '}
-                The 13th axis captures how employees feel about being monitored  -  an ethical guardrail that prevents surveillance-driven attrition from compounding the very problem it was meant to solve.
+                The 13th axis captures how employees feel about being monitored: an ethical guardrail that prevents surveillance-driven attrition from compounding the very problem it was meant to solve.
               </p>
 
               {/* Detail rows  -  flex-1 pushes them to fill remaining height alongside stack */}

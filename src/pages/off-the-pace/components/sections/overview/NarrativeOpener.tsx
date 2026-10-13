@@ -6,8 +6,8 @@
  */
 export function NarrativeOpener() {
   const causes = [
-    'Car baseline', 'Fuel mass', 'Tyre chemistry', 'Rubber evolution',
-    'Air density', 'Dirty-air wake', 'Driver skill'
+    'Car baseline', 'Fuel mass', 'Tyre chemistry',
+    'Dirty-air wake', 'Driver skill'
   ];
 
   return (
@@ -18,7 +18,7 @@ export function NarrativeOpener() {
       </h1>
       <div className="w-12 h-0.5 bg-f1-red" />
       <p className="font-jetbrains text-sm text-text-tertiary leading-relaxed max-w-2xl">
-        Every lap time hides seven physically-grounded causes. This engine separates them:causally, additively, and to the millisecond:to isolate true performance.
+        Every lap time hides five physically-grounded causes. This engine separates them:causally, additively, and to the millisecond:to isolate true performance.
       </p>
 
       <div className="flex flex-wrap gap-2 max-w-3xl mt-2 select-none">

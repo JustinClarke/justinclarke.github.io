@@ -24,7 +24,7 @@ export function CaseStudiesSection({ id }: { id?: string }) {
           Attributed Findings
         </h2>
         <p className="text-text-tertiary text-sm font-jetbrains leading-relaxed max-w-xl">
-          The 7-term identity isn't just theory. It produces precise, debate-ending answers to historic F1 moments by separating constructor pace, driver skill, and strategic variables.
+          The 5-term identity puts seconds on historic F1 moments by separating car, tyre age, traffic and fuel from a driver skill residual, and says plainly when the residual is the biggest piece.
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export function CaseStudiesSection({ id }: { id?: string }) {
                             <td className="py-1.5 px-2 text-right text-text-tertiary tabular-nums">{r.tyreAge}</td>
                             <td className="py-1.5 px-2 text-right text-text-secondary tabular-nums">{r.lapTime_s.toFixed(2)}s</td>
                             <td className="py-1.5 px-2 text-right text-amber-400/90 tabular-nums">+{r.compoundPenalty_s.toFixed(2)}</td>
-                            <td className="py-1.5 px-2 text-right text-emerald-400 tabular-nums">{r.driverSkill_s.toFixed(2)}</td>
+                            <td className={`py-1.5 px-2 text-right tabular-nums ${r.driverSkill_s < 0 ? 'text-emerald-400' : 'text-red-400'}`}>{r.driverSkill_s > 0 ? '+' : ''}{r.driverSkill_s.toFixed(2)}</td>
                             <td className="py-1.5 pl-2 text-right text-text-tertiary tabular-nums">{r.dirtyAir_s.toFixed(2)}</td>
                           </tr>
                         );
@@ -97,10 +97,11 @@ export function CaseStudiesSection({ id }: { id?: string }) {
                 </div>
 
                 <p className="font-jetbrains text-micro text-text-tertiary leading-relaxed">
-                  Positive = slower than the field baseline. By L71 Verstappen's tyres cost{' '}
-                  <span className="text-amber-400/90">+14.08s</span>; he answered with a{' '}
-                  <span className="text-emerald-400">−12.86s</span> skill residual  - the structural
-                  battle his strategy could not win.
+                  Positive = slower than the field baseline. By L71 the compound term is only{' '}
+                  <span className="text-amber-400/90">+0.68s</span> for Verstappen, and both drivers'
+                  residuals are positive (<span className="text-red-400">+1.39s</span> HAM,{' '}
+                  <span className="text-red-400">+2.24s</span> VER). The model does not credit the win to
+                  driving, and says so.
                 </p>
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-1 pt-3 border-t border-white/5">

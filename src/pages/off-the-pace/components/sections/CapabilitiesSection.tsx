@@ -35,7 +35,7 @@ const problems = [
     number: '03',
     code: 'ERR_DRIFT_VIOLATION',
     title: 'Additive Invariance',
-    problem: 'The seven components must reconstruct the observed lap time exactly any drift poisons downstream ML.',
+    problem: 'The five components must reconstruct the observed lap time exactly any drift poisons downstream ML.',
     solution: 'CI-enforced singular test assert_lap_7term_identity fails the build if identity breaks.',
     accent: 'var(--color-acc-bi)',
   },
@@ -111,7 +111,7 @@ export const CapabilitiesSection: React.FC<CapabilitiesSectionProps> = ({ id }) 
           What this system does.<br />What makes it hard.
         </h2>
         <p className="text-text-tertiary text-sm max-w-2xl font-jetbrains leading-relaxed">
-          A headless physics pipeline producing ML-ready feature marts from raw 10Hz F1 telemetry. Three causal identification problems each with an explicit engineering solution baked into the codebase.
+          A headless physics pipeline producing ML-ready feature marts from raw ~7.6Hz F1 telemetry. Three causal identification problems each with an explicit engineering solution baked into the codebase.
         </p>
       </div>
 

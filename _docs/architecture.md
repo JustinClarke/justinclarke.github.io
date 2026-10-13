@@ -228,8 +228,7 @@ Built from `src/content/routes.ts` this is the human-readable version, and `scri
 | `/the-long-version` | `TheLongVersionPage` | dark; slower transition |
 | `/f1` | `OffThePaceOverview` | F1 case study visual presentation |
 | `/off-the-pace` | `OffThePaceSource` | F1 case study technical/data read |
-| `/datascope` | `DataScopeOverview` | dark; DataScope keynote & interactive sandbox |
-| `/datascope/architecture` | `DataScopeArchitecture` | dark; DataScope systems & evaluation deep-dive |
+| `/datascope` | `DataScopePage` | dark; DataScope + DuckChat case study, one page that zooms from product to eval research |
 | `/connect` | `ConnectPage` | |
 | `/contact` | `ConnectPage` | `aliasOf: '/connect'` same page, own canonical URL |
 | `/linkedin-banner` | `LinkedinBannerPage` | `hidden` excluded from injection, sitemap, screenshots |

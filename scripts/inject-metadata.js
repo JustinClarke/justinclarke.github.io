@@ -1,6 +1,6 @@
 /**
  * inject-metadata.js post-build metadata injection, driven by the
- * src/content/routes.ts manifest (imported directly — Node 24 strips the
+ * src/content/routes.ts manifest (imported directly; Node 24 strips the
  * TypeScript types natively).
  *
  * For every non-hidden route (aliases included) it stamps a copy of the built

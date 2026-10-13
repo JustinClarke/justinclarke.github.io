@@ -25,12 +25,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     title: 'São Paulo Grand Prix',
     subtitle: 'Was it the driver or the strategy?',
     date: 'Nov 14, 2021',
-    finding: "Hamilton's 10.5s win was built on a precise mix of a 2.9s strategic tyre advantage and outdriving his car by 1.6s on the decisive overtake lap.",
+    finding: "Over the final 13 laps Hamilton gained 11.0s on Verstappen. The car and the later stop explain about 2.8s of it; the other three quarters sits in the residual, which the warehouse cannot split between driving and tyre wear.",
     link: 'https://offthepace.mintlify.app/findings/sao-paulo-2021',
     metrics: [
-      { label: 'Strategic Tyre Adv.', value: '-2.91s' },
-      { label: 'Overtake Lap Skill Delta', value: '-1.59s', highlight: true },
-      { label: 'Max Lap Overperformance', value: '-12.86s' },
+      { label: 'Tyre-Age Edge (L59-71)', value: '0.86s' },
+      { label: 'Car + Tyre Age', value: '2.80s of 11.0s' },
+      { label: 'Unexplained Residual', value: '+8.54s', highlight: true },
     ]
   },
   // Future case studies can be added here

@@ -75,7 +75,7 @@ export const MLImpactSection = forwardRef<HTMLElement, MLImpactSectionProps>(({ 
           A classifier trained to recover <code className="text-amber-400">race_year</code> from the
           feature set hits <span className="text-text-primary font-semibold">{ML_FACTS.leakageProbeAccuracy}</span> accuracy
           against a <span className="text-text-primary font-semibold">{ML_FACTS.leakageMajority}</span> majority-class
-          floor  - proof the feature would leak the season into the model. So it was{' '}
+          floor, proof that the feature would leak the season into the model. So it was{' '}
           <span className="text-amber-400 font-semibold">excluded</span>. Honest evaluation means
           catching the shortcut <em>before</em> it inflates the score, not after.
         </p>

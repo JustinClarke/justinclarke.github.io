@@ -48,8 +48,8 @@ export function ProductPipeline() {
           <span className="font-jetbrains text-micro uppercase tracking-widest text-text-tertiary mb-2 font-mono">01 / Ingest</span>
           <h3 className="font-noto text-xl font-bold text-text-primary mb-3 group-hover:text-white transition-colors">FastF1 Telemetry</h3>
           <p className="text-xs text-text-tertiary leading-relaxed font-jetbrains">
-            {STATS.races} races × 4 datasets  - laps, weather, race control, and {STATS.telemetryHz}Hz
-            car telemetry  - extracted locally into Hive-partitioned Parquet.
+            {STATS.races} races × 4 datasets (laps, weather, race control and {STATS.telemetryHz}Hz
+            car telemetry), extracted locally into Hive-partitioned Parquet.
           </p>
         </div>
 

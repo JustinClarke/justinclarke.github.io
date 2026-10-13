@@ -247,7 +247,7 @@ export const FUNNY_ERRORS: Record<string, TerminalLine[]> = {
   ],
   hello: [line('g', "hello to you too. type 'help' if you're lost. type 'whoami' if you're curious.")],
   hi: [line('g', "hey 👋  type 'help' to get oriented. or just start exploring.")],
-  ls: [line('b', "too vague. try 'ls projects' - that's where the interesting stuff lives.")],
+  ls: [line('b', "too vague. try 'ls projects'. that's where the interesting stuff lives.")],
   cat: [line('b', "try 'profile.read()' or just type 'whoami'. same energy, better output.")],
   'npm install': [
     line('viz-success', "already installed. Justin ships production-ready, not localhost."),

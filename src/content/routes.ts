@@ -57,7 +57,7 @@ export const ROUTES = [
     path: '/project/sql-disaster',
     title: 'SQL Disaster Response System',
     description:
-      'SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics - composite keys, NTILE risk tiers, and a live D3 command dashboard. Full ERD inside.',
+      'SQL case study: an 11-entity relational database modeling Philippine disaster relief logistics: composite keys, NTILE risk tiers and a live D3 command dashboard. Full ERD inside.',
     schemaType: 'CreativeWork',
     dark: true,
     sitemap: { priority: 0.9, lastmod: '2026-06-09' },
@@ -101,7 +101,7 @@ export const ROUTES = [
     path: '/f1',
     title: 'Off The Pace ⋅ Overview',
     description:
-      'A causal ML engine isolating the true forces behind Formula 1 lap times - fuel mass, tyre degradation, dirty air, and driver skill  - down to the millisecond.',
+      'A causal ML engine isolating the true forces behind Formula 1 lap times (fuel mass, tyre degradation, dirty air and driver skill), down to the millisecond.',
     sitemap: { priority: 0.9, lastmod: '2026-06-09' },
     preloadChunks: ['OffThePaceOverview-', 'OverviewView-', 'FeaturedProjects-'],
     preloadImage: '/assets/audif1.avif',
@@ -110,26 +110,18 @@ export const ROUTES = [
     path: '/off-the-pace',
     title: 'Off The Pace ⋅ Architecture & Engineering',
     description:
-      'The engineering behind the F1 Causal Pace Engine: 60 dbt models, 336 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator.',
+      'The engineering behind the F1 Causal Pace Engine: 93 dbt models, 996 CI tests, 5 XGBoost models all beating baseline, and a Frisch-Waugh ghost car simulator.',
     sitemap: { priority: 0.8, lastmod: '2026-06-09' },
     preloadChunks: ['OffThePaceSource-', 'SourceView-'],
     preloadImage: '/assets/audif1.avif',
   },
   {
     path: '/datascope',
-    title: 'DataScope Studio ⋅ Client-Side Analytics & AI',
+    title: 'DataScope ⋅ Browser-Native Analytics & AI Evaluation',
     description:
-      'Browser-native analytics workspace powered by DuckDB-Wasm and DuckChat. Zero upload, 100% on-device OLAP with AST-guaranteed deterministic AI.',
+      'Case study: an analytics workspace that runs entirely in the browser on DuckDB-Wasm, and the evaluation programme behind its AI layer. Live app, architecture, SQL repairs and measured results.',
     dark: true,
-    sitemap: { priority: 0.9, lastmod: '2026-10-05' },
-  },
-  {
-    path: '/datascope/architecture',
-    title: 'DataScope ⋅ Architecture & Evaluation Programme',
-    description:
-      'Systems engineering and AI eval deep-dive: DuckDB-Wasm IPC, DuckChat AST repair layer, 408-call Grounding Ladder, and small-model frontier testing.',
-    dark: true,
-    sitemap: { priority: 0.8, lastmod: '2026-10-05' },
+    sitemap: { priority: 0.9, lastmod: '2026-10-13' },
   },
   {
     path: '/connect',

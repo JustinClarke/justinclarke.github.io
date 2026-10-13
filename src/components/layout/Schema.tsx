@@ -21,7 +21,7 @@ interface SchemaProps {
 export const Schema: React.FC<SchemaProps> = ({
   type = 'Person',
   name = SITE.name,
-  description = 'Senior Analytics Engineer and Full-Stack Developer specialized in high-performance data systems.',
+  description = `${SITE.role} specialising in high-performance data systems and LLM evaluation.`,
   image = `${SITE.url}${SITE.ogImage}`,
   url = SITE.url,
 }) => {
@@ -33,7 +33,7 @@ export const Schema: React.FC<SchemaProps> = ({
         "description": description,
         "url": url,
         "image": image,
-        "jobTitle": "Senior Analytics Engineer",
+        "jobTitle": SITE.role,
         "sameAs": [
           `https://github.com/${SITE.social.github}`,
           `https://linkedin.com/in/${SITE.social.linkedin}`

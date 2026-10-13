@@ -31,48 +31,34 @@ const DETAILS: Record<string, TermDetail> = {
     title: 'θ_compound : KM Tyre Cliff Model',
     mathSymbol: 'θ_compound(age_i)',
     formula: 'non_linear_degradation_cliff_s',
-    desc: 'A non-linear compound degradation curve fitted to historical stints. Captures the "cliff"  - the abrupt pace drop when a tyre crosses its thermal and structural threshold. Parameters - compound_cliff_onset_laps, compound_cliff_severity, compound_grip_peak. Multi-horizon ML targets ship with the feature mart (next_lap_degradation_jump_s, next_3_lap, next_5_lap).',
-  },
-  rubber: {
-    title: 'θ_rubber : Track Surface Evolution',
-    mathSymbol: 'θ_rubber · R_i',
-    formula: 'track_surface_rubber_effect_s',
-    desc: 'Rubber laid by the field across the session increases grip across the race. Estimated as a session-level exponential smoothing curve (int_track_evolution) using field lap times, then partitioned from individual driver variation.',
-  },
-  ambient: {
-    title: 'θ_ambient : Weather & Air Density',
-    mathSymbol: 'θ_ambient · W_i',
-    formula: 'ambient_temperature_effect_s',
-    desc: 'Ambient temperature, track temperature, humidity, and barometric pressure (pressure_hpa) all affect PU output and tyre behaviour. Estimated as a linear additive weather component using stg_weather joined at lap level via session time.',
+    desc: 'A non-linear compound degradation curve fitted to historical stints. Captures the "cliff": the abrupt pace drop when a tyre crosses its thermal and structural threshold. Parameters - compound_cliff_onset_laps, compound_cliff_severity, compound_grip_peak. Multi-horizon ML targets ship with the feature mart (next_lap_degradation_jump_s, next_3_lap, next_5_lap).',
   },
   car: {
     title: 'θ_car : Constructor Structural Pace',
     mathSymbol: 'θ_car · V_i',
     formula: 'constructor_structural_pace_gap_s',
-    desc: "The within-race car performance gap between teams, isolated from tyre state and traffic. Estimated using a synthetic teammate panel - for each driver, we compare against their own team partner's clean laps on the same stint lap, same compound. Produces power-sector and aero-sector pace indices with confidence bands via int_constructor_structural_pace.",
+    desc: "The within-race car performance gap between teams, isolated from tyre state and traffic. Estimated using a synthetic teammate panel: for each driver, we compare against their own team partner's clean laps on the same stint lap, same compound. Produces power-sector and aero-sector pace indices with confidence bands via int_constructor_structural_pace.",
   },
   air: {
     title: 'θ̂_air : Dirty Air Tax (Causal OLS with Lagged Instrument)',
     mathSymbol: 'θ̂_air · A_i−1',
     formula: 'dirty_air_share_lag1 * dirty_air_coefficient_s',
-    desc: 'The pace cost of following another car in turbulent air. Confounders abound - a driver trailing closely is often faster (DRS boost) or slower (aero degradation) at the same time. We use a 1-lap lag instrument  - dirty air share from the previous lap  - to ensure causal ordering. Lapping-traffic laps are excluded from the calibration panel to prevent bias. Global θ̂_air estimated via SQL OLS: COVAR_POP(residual, air_lag1) / VAR_POP(air_lag1). Bounded [0, 5.0s] per lap.',
+    desc: 'The pace cost of following another car in turbulent air. Confounders abound: a driver trailing closely is often faster (DRS boost) or slower (aero degradation) at the same time. We estimate it within stints (stint fixed effects plus tyre-age bins) with tyre cost subtracted, on a declared 2018 to 2025 window, then freeze it as a declared value: 0.331 s per lap. Safety car, VSC, red-flag and restart laps are excluded from training.',
   },
   skill: {
     title: 'ε_i : Driver Skill Residual',
     mathSymbol: 'ε_i (driver)',
     formula: 'lap_time_residual_skill_s',
-    desc: 'The unexplained remainder after every measurable physical factor is removed. This is the driver signal. Negative = faster than the model predicts. Aggregated at race grain in fct_driver_skill_features with synthetic-teammate deltas, strategic divergence share, and constructor confidence scores for the ML driver ranking model.',
+    desc: 'The unexplained remainder after every measurable physical factor is removed. Track rubber and weather already sit inside the field base pace, so they are not subtracted a second time. This is the driver signal, together with everything the model does not capture. Negative = faster than the model predicts. Aggregated at race grain in fct_driver_skill_features with synthetic-teammate deltas, strategic divergence share, and constructor confidence scores for the ML driver ranking model.',
   },
 };
 
-const TERM_KEYS = ['fuel', 'compound', 'rubber', 'ambient', 'car', 'air', 'skill'] as const;
+const TERM_KEYS = ['fuel', 'compound', 'car', 'air', 'skill'] as const;
 type TermKey = typeof TERM_KEYS[number];
 
 const TERM_LABELS: Record<TermKey, React.ReactNode> = {
   fuel:     <span>θ<sub>fuel</sub> · F<sub>i</sub></span>,
   compound: <span>θ<sub>compound</sub>(age<sub>i</sub>)</span>,
-  rubber:   <span>θ<sub>rubber</sub> · R<sub>i</sub></span>,
-  ambient:  <span>θ<sub>ambient</sub> · W<sub>i</sub></span>,
   car:      <span>θ<sub>car</sub> · V<sub>i</sub></span>,
   air:      <span>θ̂<sub>air</sub> · A<sub>i−1</sub></span>,
   skill:    <span>ε<sub>i</sub> <span className="text-micro opacity-70">(driver)</span></span>,
@@ -93,10 +79,6 @@ const TelemetryChart: React.FC<{ term: TermKey }> = ({ term }) => {
         <linearGradient id="compoundGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--color-f1-red)" stopOpacity="0.25" />
           <stop offset="100%" stopColor="var(--color-f1-red)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="rubberGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--color-viz-success)" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="var(--color-viz-success)" stopOpacity="0" />
         </linearGradient>
         <linearGradient id="carGrad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="var(--color-viz-info)" stopOpacity="0.2" />
@@ -198,58 +180,6 @@ const TelemetryChart: React.FC<{ term: TermKey }> = ({ term }) => {
           <text x="40" y="192" className="font-jetbrains text-micro fill-white/40">L0 (New)</text>
           <text x="360" y="192" className="font-jetbrains text-micro fill-white/40 text-end">L40 (Cliffed)</text>
           <text x="200" y="210" className="font-jetbrains text-micro fill-white/60 font-bold text-center" textAnchor="middle">TYRE AGE vs PACE LOSS (CLIFF PROFILE)</text>
-        </>
-      )}
-
-      {term === 'rubber' && (
-        <>
-          {/* Shaded Area */}
-          <path d="M 40 40 Q 120 135 360 155 L 360 40 Z" fill="url(#rubberGrad)" />
-          {/* Plot Line */}
-          <path
-            d="M 40 40 Q 120 135 360 155"
-            stroke="var(--color-viz-success)"
-            strokeWidth="2.5"
-            fill="none"
-            className="animate-draw"
-          />
-          {/* Labels */}
-          <text x="35" y="44" className="font-jetbrains text-micro fill-white/40 text-end">0.0s</text>
-          <text x="35" y="159" className="font-jetbrains text-micro fill-white/40 text-end">-1.2s</text>
-          <text x="40" y="192" className="font-jetbrains text-micro fill-white/40">Session Start</text>
-          <text x="360" y="192" className="font-jetbrains text-micro fill-white/40 text-end">Session End</text>
-          <text x="200" y="210" className="font-jetbrains text-micro fill-white/60 font-bold text-center" textAnchor="middle">TRACK RUBBER EVOLUTION (GRIP GAIN)</text>
-        </>
-      )}
-
-      {term === 'ambient' && (
-        <>
-          {/* Thermal / Density Waveforms */}
-          {/* Temp wave (Red) */}
-          <path
-            d="M 40 120 C 100 80, 160 160, 220 70 C 280 140, 320 90, 360 110"
-            stroke="var(--color-f1-red)"
-            strokeWidth="2"
-            fill="none"
-            className="animate-draw"
-          />
-          {/* Air density inverse wave (Blue) */}
-          <path
-            d="M 40 95 C 100 135, 160 55, 220 145 C 280 75, 320 125, 360 105"
-            stroke="var(--color-viz-info)"
-            strokeWidth="2"
-            fill="none"
-            className="animate-draw"
-          />
-          <text x="225" y="60" className="font-jetbrains text-micro fill-f1-red font-bold">TEMP</text>
-          <text x="225" y="160" className="font-jetbrains text-micro fill-viz-info font-bold">AIR DENSITY</text>
-          
-          {/* Labels */}
-          <text x="35" y="44" className="font-jetbrains text-micro fill-white/40 text-end">Max</text>
-          <text x="35" y="179" className="font-jetbrains text-micro fill-white/40 text-end">Min</text>
-          <text x="40" y="192" className="font-jetbrains text-micro fill-white/40">Race Start</text>
-          <text x="360" y="192" className="font-jetbrains text-micro fill-white/40 text-end">Finish</text>
-          <text x="200" y="210" className="font-jetbrains text-micro fill-white/60 font-bold text-center" textAnchor="middle">WEATHER VARIABLES & THERMAL EFFICIENCY</text>
         </>
       )}
 
@@ -376,10 +306,10 @@ export const ScienceSection: React.FC<ScienceSectionProps> = ({ id }) => {
           03 / The Science
         </span>
         <h2 className="text-3xl md:text-4xl font-noto font-black text-text-primary uppercase tracking-tighter mb-4">
-          Econometrics meets<br />10Hz telemetry.
+          Econometrics meets<br />~8Hz telemetry.
         </h2>
         <p className="text-text-tertiary text-sm max-w-xl font-jetbrains leading-relaxed mb-8">
-          This isn't rolling averages. Isolating confounded variables from time-series race data demands genuine causal identification. We use lagged instruments, Frisch-Waugh detrending, and OLS estimation - not correlation.
+          This isn't rolling averages. Isolating confounded variables from time-series race data demands genuine causal identification. We use lagged instruments, Frisch-Waugh detrending, and OLS estimation rather than correlation.
         </p>
 
         <div className="bg-graphite-800/20 border border-white/5 p-6 rounded-xl">

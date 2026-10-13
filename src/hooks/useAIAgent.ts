@@ -176,7 +176,7 @@ export async function callAIAgent(
       timedOut = true;
       if (fullText) {
         return {
-          lines: [...parseAIResponseToLines(fullText, buildMeta()), { t: 'r', text: '↳ response timed out partial answer above.' }],
+          lines: [...parseAIResponseToLines(fullText, buildMeta()), { t: 'r', text: '↳ response timed out. partial answer above.' }],
           fullText,
           timedOut,
         };

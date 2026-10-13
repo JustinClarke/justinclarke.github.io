@@ -63,7 +63,7 @@ export const PipelineSection: React.FC = () => {
           <StageCard
             layer="Layer 0 // Bronze"
             title="Ingestion"
-            desc="FastF1 + OpenF1 → Hive-partitioned Parquet. 10Hz positional telemetry, race control messages, pit data, lap times."
+            desc="FastF1 + OpenF1 → Hive-partitioned Parquet. ~7.6Hz positional telemetry, race control messages, pit data, lap times."
             tags={['FastF1', 'OpenF1', 'Parquet', 'Hive']}
           />
           <StageCard
@@ -144,7 +144,7 @@ export const PipelineSection: React.FC = () => {
               10 <span className="text-f1-red text-lg font-bold">Hz</span>
             </div>
             <p className="font-jetbrains text-fine text-text-tertiary leading-relaxed mt-4">
-              Raw positional, RPM, gear, throttle, DRS state, X/Y/Z coordinates from FastF1. ~90M rows per season.
+              Raw positional, RPM, gear, throttle, DRS state, X/Y/Z coordinates from FastF1. ~17M rows per season.
             </p>
           </div>
 

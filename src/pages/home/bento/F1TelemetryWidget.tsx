@@ -12,6 +12,7 @@ import { Fragment } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { Database, Sparkles } from 'lucide-react';
 import { cn } from '@/utils';
+import { STATS } from '../../off-the-pace/data/projectStats';
 import { useF1Telemetry } from './useF1Telemetry';
 import { HudHeader } from './f1/HudHeader';
 import { ControlsBar } from './f1/ControlsBar';
@@ -174,7 +175,7 @@ export function F1TelemetryWidget() {
       <div className="flex flex-wrap gap-x-3 gap-y-1 justify-between items-center pt-1.5 text-neutral-400 font-mono text-micro md:text-micro shrink-0">
         <div className="flex items-center gap-1.5">
           <Database size={10} className="shrink-0" />
-          <span>90M+ Telemetry Rows / Season</span>
+          <span>{STATS.telemetryRowsPerSeason} Telemetry Rows / Season</span>
         </div>
         <div className="flex items-center gap-1.5 text-amber-500 animate-pulse">
           <Sparkles size={10} className="shrink-0" />
