@@ -1,14 +1,16 @@
 /**
- * ScrollHint the little "SCROLL TO EXPLORE" cue with the animated mouse-wheel,
- * pinned under the hero terminal.
+ * ScrollHint a hairline and chevron that surface only when the visitor has
+ * been idle for a while, then breathe very slowly under the hero terminal.
+ * No copy, no chrome: it stays out of the way until it is actually useful.
  *
- * Fits in: rendered by the Hero (src/pages/home/Hero/index.tsx). Purely visual  
- *          it has no behaviour of its own, it just reacts to one prop.
- * Note:    all of the motion lives in the <style> block below as CSS keyframes.
- *          The component's only job is to switch a class on/off so the hint
- *          fades away once the visitor starts scrolling.
+ * Fits in: rendered by the Hero (src/pages/home/Hero/index.tsx) and the
+ *          Off The Pace split hero.
+ * Note:    idle = no scroll / wheel / touch / key input for IDLE_MS. Any input
+ *          hides it and restarts the timer. The breathing is one slow CSS
+ *          keyframe shared by line and chevron so they move as one. Respects
+ *          prefers-reduced-motion by holding a static, dim cue.
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface ScrollHintProps {
   hasScrolled: boolean;
@@ -16,126 +18,83 @@ interface ScrollHintProps {
   variant?: 'teal' | 'f1';
 }
 
+const IDLE_MS = 6000;
+const INPUT_EVENTS = ['scroll', 'wheel', 'touchmove', 'keydown'] as const;
+
 export const ScrollHint: React.FC<ScrollHintProps> = ({ hasScrolled, className = '', variant = 'teal' }) => {
+  const [idle, setIdle] = useState(false);
+
+  useEffect(() => {
+    let timer: number;
+    const arm = () => {
+      setIdle(false);
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => setIdle(true), IDLE_MS);
+    };
+    arm();
+    INPUT_EVENTS.forEach((e) => window.addEventListener(e, arm, { passive: true }));
+    return () => {
+      window.clearTimeout(timer);
+      INPUT_EVENTS.forEach((e) => window.removeEventListener(e, arm));
+    };
+  }, []);
+
+  const visible = idle && !hasScrolled;
+
   return (
     <>
       <style>{`
-        @keyframes scrollTextIntro {
-          0%, 50% {
-            color: transparent;
-            filter: drop-shadow(0 0 0px transparent);
-          }
-          55%, 65% {
-            color: #2e3033; /* dark grey */
-            filter: drop-shadow(0 0 0px transparent);
-          }
-          75%, 100% {
-            color: var(--color-light-bg); /* white */
-            filter: drop-shadow(0 0 6px rgba(255,255,255,0.45));
-          }
-        }
-        @keyframes scrollBorderIntro {
-          0%, 50% {
-            border-color: transparent;
-            box-shadow: inset 0 0 0px transparent;
-          }
-          55%, 65% {
-            border-color: rgba(63, 63, 70, 0.35); /* dark grey */
-            box-shadow: inset 0 0 0px transparent;
-          }
-          75%, 100% {
-            border-color: rgba(255, 255, 255, 0.5); /* white */
-            box-shadow: inset 0 0 6px rgba(255,255,255,0.15), 0 0 8px rgba(255,255,255,0.2);
-          }
-        }
-        @keyframes scrollDotIntro {
-          0%, 50% {
-            background-color: transparent;
-            box-shadow: 0 0 0px transparent;
-          }
-          55%, 65% {
-            background-color: #2e3033;
-            box-shadow: 0 0 0px transparent;
-          }
-          75%, 100% {
-            background-color: var(--color-light-bg);
-            box-shadow: 0 0 8px rgba(255,255,255,0.95);
-          }
-        }
-        @keyframes scrollWheel {
-          0% { transform: translateY(0); opacity: 0.15; }
-          30% { opacity: 1; }
-          60% { transform: translateY(10px); opacity: 0; }
-          100% { transform: translateY(0); opacity: 0.15; }
-        }
-        @keyframes scrollBlink {
-          0%, 100% { opacity: 1; }
-          50%      { opacity: 0.35; }
-        }
-        .animate-scroll-text {
-          color: transparent;
-          opacity: 1;
-          animation: scrollTextIntro 10s ease-in-out 5s forwards;
-        }
-        .animate-scroll-border {
-          border-color: transparent;
-          animation: scrollBorderIntro 10s ease-in-out 5s forwards;
-        }
-        .animate-scroll-dot {
-          background-color: transparent;
-          animation: scrollDotIntro 10s ease-in-out 5s forwards,
-                     scrollWheel 2.2s cubic-bezier(0.16, 1, 0.3, 1) 10s infinite;
-        }
-        .animate-scroll-blink {
-          animation: scrollBlink 1.8s ease-in-out infinite 15s;
+        @keyframes scrollHintBreathe {
+          0%, 100% { opacity: 0.3; transform: translateY(0); }
+          50%      { opacity: 0.8; transform: translateY(3px); }
         }
         .scroll-hint-container {
           transform: translate(-50%, 0);
-          transition: opacity 1s ease-out, transform 1s ease-out;
+          opacity: 0;
+          transition: opacity 1.8s ease-in-out;
         }
-        .scroll-hint-container.has-scrolled {
-          opacity: 0 !important;
-          transform: translate(-50%, -16px);
+        .scroll-hint-container.is-visible { opacity: 1; }
+        .scroll-hint-track {
+          background: linear-gradient(
+            to bottom,
+            transparent,
+            color-mix(in srgb, var(--scroll-hint-color) 55%, transparent) 50%,
+            transparent
+          );
         }
-        @media (min-width: 768px) {
-          .scroll-hint-container.has-scrolled {
-            transform: translate(-50%, 16px);
-          }
+        .scroll-hint-breathe {
+          animation: scrollHintBreathe 7s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .scroll-hint-breathe { animation: none; opacity: 0.5; }
         }
       `}</style>
 
-      {/* Scroll hint retro terminal style, starts dark grey, turns light teal, blinks if idle, disappears in other sections */}
-      {/* aria-hidden: purely decorative, kept out of the a11y tree. The
-          has-scrolled class (added once hasScrolled is true) triggers the CSS fade-out. */}
+      {/* aria-hidden: purely decorative, kept out of the a11y tree. */}
       <div
         aria-hidden="true"
-        className={`scroll-hint-container ${hasScrolled ? 'has-scrolled' : ''} pointer-events-none left-1/2 flex flex-col items-center z-20 ${className || 'absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+20px)]'}`}
+        className={`scroll-hint-container ${visible ? 'is-visible' : ''} pointer-events-none left-1/2 flex flex-col items-center z-20 ${className || 'absolute bottom-full mb-3 md:bottom-auto md:top-[calc(100%+16px)]'}`}
         style={
-          variant === 'f1'
-            ? ({
-              '--scroll-hint-primary': 'var(--color-f1-red)',
-              '--scroll-hint-border': 'rgba(225, 6, 0, 0.65)',
-              '--scroll-hint-glow': 'rgba(225, 6, 0, 0.6)',
-              '--scroll-hint-glow-dim': 'rgba(225, 6, 0, 0.1)',
-              '--scroll-hint-glow-md': 'rgba(225, 6, 0, 0.15)',
-              '--scroll-hint-glow-bright': 'rgba(225, 6, 0, 1)',
-            } as React.CSSProperties)
-            : undefined
+          {
+            '--scroll-hint-color': variant === 'f1' ? 'var(--color-f1-red)' : 'var(--color-light-bg)',
+          } as React.CSSProperties
         }
       >
-        <div className="flex flex-col items-center gap-1.5">
-          <div className="animate-scroll-blink">
-            <div className="animate-scroll-text flex items-center gap-1.5 font-mono text-micro font-bold uppercase tracking-[0.25em] pl-[0.25em] whitespace-nowrap">
-              <span className="opacity-45">[</span>
-              <span className="md:hidden opacity-70">↓</span>
-              <span>SCROLL TO EXPLORE</span>
-              <span className="md:hidden opacity-70">↓</span>
-              <span className="opacity-45">]</span>
-            </div>
-          </div>
-          <div className="animate-scroll-border relative w-[18px] h-[28px] border rounded-full flex justify-center p-[3px] hidden md:flex">
-            <div className="animate-scroll-dot w-[3px] h-[5px] rounded-full" />
-          </div>
+        <div className="scroll-hint-breathe flex flex-col items-center">
+          <div className="scroll-hint-track h-12 w-px" />
+          <svg
+            className="-mt-1 text-(--scroll-hint-color)"
+            width="14"
+            height="8"
+            viewBox="0 0 14 8"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M1 1l6 6 6-6" />
+          </svg>
         </div>
       </div>
     </>
